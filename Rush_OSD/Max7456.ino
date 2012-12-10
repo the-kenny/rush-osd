@@ -3,6 +3,7 @@
 #define DATAIN  12//MISO
 #define SPICLOCK  13//sck
 
+#define MAX7456SELECT 6//ss 
 #define MAX7456SELECT 10//ss 
 
 #define MAX7456RESET 9//RESET
@@ -149,7 +150,7 @@ void MAX7456Setup(void)
 
   pinMode(MAX7456SELECT,OUTPUT);
   digitalWrite(MAX7456SELECT,HIGH); //disable device
-
+  
   pinMode(DATAOUT, OUTPUT);
   pinMode(DATAIN, INPUT);
   pinMode(SPICLOCK,OUTPUT);
@@ -237,7 +238,6 @@ void MAX7456_DrawScreen(char *string,int Adresse)
   screen[xx]=0;
 
 }
-
 
 void MAX7456_Send(int add,char data)
 {

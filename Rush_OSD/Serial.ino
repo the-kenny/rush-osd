@@ -186,14 +186,11 @@ void serialMSPCheck()
     if((ROW==4)&&(COL==3)&&(configPage==2)) yawRate--;
     if((ROW==5)&&(COL==3)&&(configPage==2)) dynThrPID--;
 
-    if((ROW==1)&&(COL==3)&&(configPage==3)) enableBuzzer=!enableBuzzer;
     if((ROW==2)&&(COL==3)&&(configPage==3)) enableVoltage=!enableVoltage;
     if((ROW==3)&&(COL==3)&&(configPage==3)) lowVoltage--;
     if((ROW==4)&&(COL==3)&&(configPage==3)) enableTemperature=!enableTemperature;
     if((ROW==5)&&(COL==3)&&(configPage==3)) highTemperature--;
     if((ROW==6)&&(COL==3)&&(configPage==3)) displayGPS=!displayGPS;
-    if((ROW==7)&&(COL==3)&&(configPage==3)) armedtimeWarning--;
-
 
     if((ROW==3)&&(COL==3)&&(configPage==4)) rssiTimer=15;
     if((ROW==4)&&(COL==3)&&(configPage==4)) rssiMax=rssiADC;
@@ -246,13 +243,13 @@ void serialMSPCheck()
     if((ROW==4)&&(COL==3)&&(configPage==2)) yawRate++;
     if((ROW==5)&&(COL==3)&&(configPage==2)) dynThrPID++;
 
-    if((ROW==1)&&(COL==3)&&(configPage==3)) enableBuzzer=!enableBuzzer;
+    
     if((ROW==2)&&(COL==3)&&(configPage==3)) enableVoltage=!enableVoltage;
     if((ROW==3)&&(COL==3)&&(configPage==3)) lowVoltage++;
     if((ROW==4)&&(COL==3)&&(configPage==3)) enableTemperature=!enableTemperature;
     if((ROW==5)&&(COL==3)&&(configPage==3)) highTemperature++;
     if((ROW==6)&&(COL==3)&&(configPage==3)) displayGPS=!displayGPS;
-    if((ROW==7)&&(COL==3)&&(configPage==3)) armedtimeWarning++;
+
 
 
     if((ROW==3)&&(COL==3)&&(configPage==4)) rssiTimer=15;
@@ -335,7 +332,6 @@ void serialMSPreceive()
   }
 }
 
-
 void configExit()
 {
   configPage=1;
@@ -345,7 +341,6 @@ void configExit()
   askPID=0;
   waitStick=3;
 }
-
 
 void saveExit()
 {
@@ -415,13 +410,4 @@ void blankserialRequest(char requestMSP)
   Serial.write(requestMSP);
   Serial.write(requestMSP);
 }
-
-
-
-
-
-
-
-
-
 

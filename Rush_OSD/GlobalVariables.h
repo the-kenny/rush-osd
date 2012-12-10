@@ -7,9 +7,11 @@
 #define NARROW 1
 #define WIDE 0
 
+//#define ON 1
+//#define OFF 0
+
 //General use variables
 int xx=0,yy=0,zz=0,tt=0;
-int a,b,c,d,e,f;
 Metro MetroTimer = Metro(100); 
 int tenthSec=0;
 int halfSec=0;
@@ -79,7 +81,6 @@ int32_t GPS_longitude;
 int16_t GPS_altitude;
 int16_t GPS_speed=0;
 int16_t GPS_ground_course;
-
 uint8_t GPS_update=0;
 int16_t GPS_directionToHome=0;
 uint8_t GPS_numSat=0;
@@ -104,9 +105,6 @@ static uint16_t MwHeading=0;
    float amperagesum =0; 
 #endif
    
-
-
-
 // Rssi
 int rssi =0;
 int rssiADC=0;
@@ -128,19 +126,11 @@ uint8_t enableTemperature=1;
 uint8_t highTemperature=50;           // Celcius or Fahrenheit
 
 uint8_t displayGPS=1;
-uint8_t enableBuzzer=1;
-uint8_t armedtimeWarning=6;           // Minutes
-
 
 // For Altitude
-int holdRelativeAltitude=0;
 char altitudeOk=0;
-int absoluteAltitudeAtStart = 0;
 int altitude =1;
-int32_t oldMwAltitude=0;
 float climbRate = 0;
-
-
 
 // For Statistics
 int16_t speedMAX=GPS_speed;
@@ -186,11 +176,8 @@ uint8_t flyingSecond=0;
 #define MSP_RESET_CONF           208   //in message          no param
 #define MSP_WP_SET               209   //in message          sets a given WP (WP#,lat, lon, alt, flags)
 #define MSP_SELECT_SETTING       210   //in message          Select Setting Number (0-2)
-
 #define MSP_SPEK_BIND            240   //in message          no param
-
 #define MSP_EEPROM_WRITE         250   //in message          no param
-
 #define MSP_DEBUGMSG             253   //out message         debug string buffer
 #define MSP_DEBUG                254   //out message         debug1,debug2,debug3,debug4
 
@@ -235,7 +222,7 @@ prog_char configMsg17[] PROGMEM = "MwCycle Time";
 prog_char configMsg18[] PROGMEM = "MwI2C Errors";
 //-----------------------------------------------------------Page3
 prog_char configMsg19[] PROGMEM = "3/6 DISPLAY & ALARM";
-prog_char configMsg20[] PROGMEM = "                   ";
+prog_char configMsg20[] PROGMEM = "      ";
 prog_char configMsg21[] PROGMEM = "ON";
 prog_char configMsg22[] PROGMEM = "OFF";
 prog_char configMsg23[] PROGMEM = "Display Voltage";
@@ -243,7 +230,7 @@ prog_char configMsg24[] PROGMEM = "VOLTAGE ALARM";
 prog_char configMsg25[] PROGMEM = "Display Temperature";
 prog_char configMsg26[] PROGMEM = "SET ALARM TEMP";
 prog_char configMsg27[] PROGMEM = "Display GPS";
-prog_char configMsg28[] PROGMEM = "ARMED TIME ALARM:";
+prog_char configMsg28[] PROGMEM = "                  ";
 prog_char configMsg29[] PROGMEM = " ";
 prog_char configMsg30[] PROGMEM = "                   ";
 //-----------------------------------------------------------Page4
@@ -285,6 +272,7 @@ const char* configMsgs[] PROGMEM = {
   configMsg31, configMsg32, configMsg33, configMsg34, configMsg35, configMsg36, configMsg37, configMsg38, configMsg39, configMsg40,
   configMsg41, configMsg42, configMsg43, configMsg44, configMsg45, configMsg46, configMsg47, configMsg48, configMsg49, configMsg50,
   configMsg51, configMsg52, configMsg53, configMsg54, configMsg55, configMsg56, configMsg57, configMsg58};
+
 
 
 

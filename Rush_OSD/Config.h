@@ -1,7 +1,7 @@
 
 
                                       /**********************************************************************************/
-                                       /*    RUSH KV 2.0               Configurable parameters        RUSH KV 2.0        */
+                                       /*    RUSH KV 1.1               Configurable parameters        RUSH KV 1.1        */
                                         /**********************************************************************************/
 
 // ____________________________________________________________________General configuration________________________________________________________________________//
@@ -79,7 +79,7 @@ const char videoSignalType=1;
 
 /*********************      Led output      *******************************/
 
-#define BST 7                       
+#define BST 7                        // pin 7 for original Rushduino Board
 #define BST_OFF digitalWrite(BST,LOW);
 #define BST_ON digitalWrite(BST,HIGH);
 
@@ -183,7 +183,6 @@ const uint8_t lowrssiAlarm=75;     // This will make blink the Rssi if lower the
 #define EEPROM_DISPLAYGPS          8
 #define EEPROM_SCREENTYPE         9
 #define EEPROM_UNITSYSTEM         10
-#define EEPROM_ARMEDTIMEWARNING   11
 
 // POSITION OF EACH CHARACTER OR LOGO IN THE MAX7456
 unsigned char speedUnitAdd[2] ={
@@ -192,20 +191,16 @@ unsigned char speedUnitAdd[2] ={
 unsigned char AHUnitAdd[8] = {
   0x10,0x11,0x12,0x13,0x14,0x15,0x16,0x17};
 unsigned char voltageUnitAdd = 0xa9;
-unsigned char vidvoltageUnitAdd = 0xa9;
 unsigned char temperatureUnitAdd[2] = {
   0x0e,0x0d};   
 unsigned char flyTimeUnitAdd=0x9c;
 unsigned char onTimeUnitAdd=0x9b;
 unsigned char amperageUnitAdd = 0x9a;
-unsigned char UnitAdd = 0xa4;
+
 unsigned char rssiUnitAdd = 0xba;
 unsigned char sensorAdd[4] = {
   0xa0,0xa1,0xa2,0xa4}; //acc,mag,bar
-unsigned char relativeAltitudeUnitAdd[2] ={
-  0xa7,0xb8};
-unsigned char rcValueAdd[7] = {
-  0x00,0xc5,0xc4,0xc3,0xc2,0xc1,0Xc0};
+
 #if defined MULTIWIILOGO
   char MultiWiiLogoL1Add[17]={
   0xd0,0xd1,0xd2,0xd3,0xd4,0xd5,0xd6,0xd7,0xd8,0xd9,0xda,0xdb,0xdc,0xdd,0xde,0};
@@ -214,6 +209,7 @@ char MultiWiiLogoL2Add[17]={
 char MultiWiiLogoL3Add[17]={
   0xf0,0xf1,0xf2,0xf3,0xf4,0xf5,0xf6,0xf7,0xf8,0xf9,0xfa,0xfb,0xfc,0xfd,0xfe,0};
 #endif
+
 unsigned char MwHeadingUnitAdd=0xbd;
 unsigned char GPS_numSatAdd[2]={
   0x1e,0x1f};

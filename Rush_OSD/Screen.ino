@@ -342,7 +342,7 @@ void displayHeadingGraph(void)
 
 void displayIntro(void)
 {
-  strcpy_P(screenBuffer, (char*)pgm_read_word(&(introMessages[0])));
+
   MAX7456_WriteString(screenBuffer,RushduinoVersionPosition);
 
 #if defined VideoSignalType_NTSC 
@@ -651,15 +651,7 @@ void displayPIDConfigScreen(void)
       strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[21])));
       MAX7456_WriteString(screenBuffer,LEVD);
     }
-    else {
-      strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[22])));
-      MAX7456_WriteString(screenBuffer,LEVD);
-    }
-    strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[28])));
-    MAX7456_WriteString(screenBuffer,MAGT); 
-    MAX7456_WriteString(itoa(armedtimeWarning,screenBuffer,10),MAGD);
-        
-  }
+ }  
 
   if(configPage==4)
   {
@@ -1216,6 +1208,9 @@ case 491:
 
   }
 }
+
+
+
 
 
 

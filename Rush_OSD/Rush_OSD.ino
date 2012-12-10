@@ -12,7 +12,7 @@
 // In near future I pretend to have my one site dedicated to Aerial Drones/Photography and FPV stuff related. I will share it. 
 // As I am not a coder professionaly, developments are going to be slower but I intend to keep them going with the new needs to come. 
 // All the things that I possibly do with this software are intended to be my needs I just hope they can meet yours.
-// Along the code are mencioned credits to people who helped me debugging. 
+// Along the code are mencioned credits to people who helped me debugging and implementing new features. 
 // I wish you great flights with Rushduino OSD. 
 
 
@@ -25,7 +25,7 @@
               // Changes the values ​​of pid and rc-tuning, writes in eeprom of Multiwii FC.
               // In config mode, can do acc and mag calibration. 
               // In addition, it works by collecting information analogue inputs. Such as voltage, amperage, rssi, temperature.
-              // In addition displayed information provides status information using an LED and a buzzer.
+              // In addition displayed information provides status information using an LED.
               // At the end of the flight may be useful to look at the statistics.
 
 
@@ -57,7 +57,6 @@
 char screen[480];
 // ScreenBuffer is an intermietary buffer to created Strings to send to Screen buffer
 char screenBuffer[20];
-
 char nextMSPrequest=0;
 char MSPcmdsend=0;
 
@@ -87,98 +86,76 @@ void loop()
   {
     tenthSec++;
     halfSec++;
-
     Blink10hz=!Blink10hz;
-
     calculateTrip();
-
     calculateRssi();
 
     MetroTimer.interval(TIMEBASE);
     if(!serialWait)
     {
                                 //******************** Every second request faster AH Contribution of TrailBlazer ****************************//
-      nextMSPrequest++;
+    nextMSPrequest++;
       switch (nextMSPrequest) {
-      case 1:
-        MSPcmdsend=MSP_IDENT;
-        break;
-      
-      case 2:
-        MSPcmdsend=MSP_ATTITUDE;
-        break;
-
-      case 3:
-        MSPcmdsend=MSP_STATUS;
-        break;
-
-      case 4:
-        MSPcmdsend=MSP_ATTITUDE;
-        break;
-        
-      case 5:
-        MSPcmdsend=MSP_RAW_IMU;
-        break;
-
-      case 6:
-        MSPcmdsend=MSP_ATTITUDE;
-        break;
-        
-      case 7:
-        MSPcmdsend=MSP_RAW_GPS;
-        break;
-
-      case 8:
-        MSPcmdsend=MSP_ATTITUDE;
-        break;
-        
-      case 9:
-        MSPcmdsend=MSP_COMP_GPS;
-        break;
-
+      case 1: 
+      MSPcmdsend=MSP_IDENT; 
+      break;
+      case 2: 
+      MSPcmdsend=MSP_ATTITUDE; 
+      break;
+      case 3: 
+      MSPcmdsend=MSP_STATUS; 
+      break;
+      case 4: 
+      MSPcmdsend=MSP_ATTITUDE; 
+      break;
+      case 5: 
+      MSPcmdsend=MSP_RAW_IMU; 
+      break;
+      case 6: 
+      MSPcmdsend=MSP_ATTITUDE; 
+      break;
+      case 7: 
+      MSPcmdsend=MSP_RAW_GPS; 
+      break;
+      case 8: 
+      MSPcmdsend=MSP_ATTITUDE; 
+      break;
+      case 9: 
+      MSPcmdsend=MSP_COMP_GPS; 
+      break;
       case 10:
-        MSPcmdsend=MSP_ATTITUDE;
-        break;
-
-      case 11:
-        MSPcmdsend=MSP_ALTITUDE;
-        break;
-        
-      case 12:
-        MSPcmdsend=MSP_ATTITUDE;
-        break;
-        
-      case 13:
-        MSPcmdsend=MSP_RC_TUNING;
-        break;
-
-      case 14:
-        MSPcmdsend=MSP_ATTITUDE;
-        break;
-        
-      case 15:
-        MSPcmdsend=MSP_PID;
-        break;
-        
-      case 16:
-        MSPcmdsend=MSP_ATTITUDE;
-        break;
-      
-      case 17:
-        MSPcmdsend=MSP_BAT;
-        break;
-   
-        case 201:
-        MSPcmdsend=MSP_STATUS;
-        break;
-
-      case 202:
-        MSPcmdsend=MSP_RAW_IMU;
-        break;
-
-      case 203:
-        MSPcmdsend=MSP_ATTITUDE;
-        break;
+      MSPcmdsend=MSP_ATTITUDE; 
+      break;
+      case 11: 
+      MSPcmdsend=MSP_ALTITUDE; 
+      break;
+      case 12: 
+      MSPcmdsend=MSP_ATTITUDE; 
+      break;
+      case 13: 
+      MSPcmdsend=MSP_RC_TUNING; 
+      break;
+      case 14: 
+      MSPcmdsend=MSP_ATTITUDE; 
+      break;
+      case 15: 
+      MSPcmdsend=MSP_PID; 
+      break;
+      case 16: 
+      MSPcmdsend=MSP_ATTITUDE; 
+      break;
+      case 17: 
+      MSPcmdsend=MSP_BAT; 
+      break;
+      case 201: 
+      MSPcmdsend=MSP_STATUS; 
+      break;
+      case 202: 
+      MSPcmdsend=MSP_RAW_IMU; 
+      break;
+      case 203: 
+      MSPcmdsend=MSP_ATTITUDE; 
+      break;
 
       default:
         MSPcmdsend=MSP_RC;
@@ -196,7 +173,7 @@ void loop()
       blankserialRequest(MSPcmdsend);
 
     }
-
+  
     MAX7456_DrawScreen(screen,0);
     if( allSec < 9 ) displayIntro();
     else
@@ -319,7 +296,7 @@ void loop()
 
 void calculateTrip(void)
 {
- if(GPS_fix && (GPS_speed>0)) trip += ((GPS_speed * 1000)/3600)*0.1; 
+ if(GPS_fix && (GPS_speed>0)) trip = ((GPS_speed * 1000)/3600)*0.1; 
 }
 
 void calculateRssi(void)
@@ -345,8 +322,6 @@ void writeEEPROM(void)
   EEPROM.write(EEPROM_DISPLAYGPS,displayGPS);
   EEPROM.write(EEPROM_SCREENTYPE,screenType);
   EEPROM.write(EEPROM_UNITSYSTEM,unitSystem);
-  EEPROM.write(EEPROM_ARMEDTIMEWARNING,armedtimeWarning);
-
 }
 
 void readEEPROM(void)
@@ -361,11 +336,7 @@ void readEEPROM(void)
   displayGPS= EEPROM.read(EEPROM_DISPLAYGPS);
   screenType= EEPROM.read(EEPROM_SCREENTYPE);
   unitSystem= EEPROM.read(EEPROM_UNITSYSTEM);
-  armedtimeWarning= EEPROM.read(EEPROM_ARMEDTIMEWARNING);
+ 
 }
-
-
-
-
 
 
