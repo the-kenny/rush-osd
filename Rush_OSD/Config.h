@@ -19,14 +19,16 @@ const char videoSignalType=1;
 #define EEPROM_WRITE_DELAY 5
 
 // Voltage match multimeter (you can change this value to match real voltage)
-#define DIVIDERRATIO 25           // R1/R2 of voltagePin.
+#define DIVIDERRATIO 25             // R1/R2 of voltagePin.
+
+#define ESTCLIMB 60                 // Here you can adjust Climb rate (60 is empirical value)
 
 // Current mode
-//#define VBAT                      // uncomment to read MWvoltage (must define it on MWcode)
-//#define HARDSENSOR                // uncomment if you use current sensor on OSD analogue pin (MW_POWERMETER is DEFAULT and must be defined on MWCode)
-//#define AMPERAGE                  // uncomment to display amperage (need current sensor on OSD analogue pin, DONT WORK WITH MW_POWERMETER)
+//#define VBAT                      // Uncomment to change from Analog Pin to MwVbat (must define it on MWcode)
+//#define HARDSENSOR                // Uncomment to change from MW_POWERMETER to Hard current sensor on analogue Pin (MW_POWERMETER is DEFAULT and must be defined on MWCode)
+//#define AMPERAGE                  // Uncomment to display amperage (need current sensor on OSD analogue pin, DONT WORK WITH MW_POWERMETER)
 
-//#define COORDINATES               // if commented only GPS altitude will be displayed on screen by default (use with display GPS ON, on OSD page 3)
+//#define COORDINATES               // Uncomment to display coordinates (use with display GPS ON, on OSD page 3)
 
 // For Sensors presence
 #define ACCELEROMETER  1//0b00000001
@@ -216,13 +218,13 @@ int GPS_directionToHomePosition[2][2]=    {
 
 // TOP OF THE SCREEN
 int GPS_distanceToHomePosition[2][2]=     {
-  LINE02+22  ,LINE02+20  ,LINE02+24  ,LINE02+21  };
+  LINE02+23  ,LINE02+21  ,LINE02+25  ,LINE02+22  };
 int speedPosition[2][2] =                 {
   LINE03+23  ,LINE03+21  ,LINE03+25  ,LINE03+22  };  // [0] En Km/h   [1] En Mph
 int GPS_angleToHomePosition[2][2]=        {
   LINE04+14  ,LINE04+14  ,LINE04+14  ,LINE04+14  };
-int MwGPSAltPosition[2][2] =              {
-  LINE04+52  ,LINE04+50  ,LINE04+24  ,LINE04+51  }; //54          
+//int MwGPSAltPosition[2][2] =              {
+  //LINE04+52  ,LINE04+50  ,LINE04+24  ,LINE04+51  };           
 
 int sensorPosition[2][2]=                 {
   LINE03+2   ,LINE03+4   ,LINE03+2   ,LINE03+4   };
@@ -250,8 +252,8 @@ int MwGPSLatPosition[2][2] =              {
 int MwGPSLonPosition[2][2] =              {
   LINE10+11+2   ,LINE10+11+4   ,LINE10+2+11+60   ,LINE10+11+4+60  };
    
-//int MwGPSAltPosition[2][2] =              {
- // LINE10+23   ,LINE10+22   ,LINE10+24+60   ,LINE10+22+60  };                       //Original place
+int MwGPSAltPosition[2][2] =              {
+  LINE10+24   ,LINE10+23   ,LINE10+25+60   ,LINE10+23+60  };                     
  
 int rssiPosition[2][2]=                   {
   LINE12+3   ,LINE12+5   ,LINE12+3+60   ,LINE12+5+60   }; 

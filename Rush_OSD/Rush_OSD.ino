@@ -1,20 +1,19 @@
 
 // This software is a copy of the original Rushduino-OSD project was written by Jean-Gabriel Maurice.
 // http://code.google.com/p/rushduino-osd/
-
-// First of all I would like to thank those who labor Rushduino-OSD project before me.
 // It's open source, simple and seems easy editable.
-// I have the original since released.
-// Rushduino_V9 beta 0.7 software was the last one that the autor coded and some problems of compatibility with MWC.
+// I have the original Hrdware since released.
+// Rushduino_V9 beta 0.7 software was the last one that the autor coded and big problems of compatibility with MWC where found at the time.
 // Rushduino project has been forgotten for a long time. 
 // Modelci started to make some arrangements without having the original hardware, it is a bit dificult to know the compatibility of the code.
-// Traiblazer coded new and smoother AH.
-// After all this I decided to keep it working for future releases of MWC with or without help, I both this Rushduino OSD and pretend to use it as much as other users.
-// For now I will share my developments on Multiwii forum http://www.multiwii.com/forum/viewtopic.php?f=8&t=922
+// After all this I decided to keep it working for future releases of MWC with or without help.
+// For more information about this hardware Multiwii forum http://www.multiwii.com/forum/viewtopic.php?f=8&t=922
+// For new code releases http://code.google.com/p/rush-osd-development/
 // In near future I pretend to have my one site dedicated to Aerial Drones/Photography and FPV stuff related. I will share it. 
 // As I am not a coder professionaly, developments are going to be slower but I intend to keep them going with the new needs to come. 
-// All the things that I possibly do with this software are intended to be my needs I just hope that they can meet yours.
-// I wish you great flights with Rushduino OSD.
+// All the things that I possibly do with this software are intended to be my needs I just hope they can meet yours.
+// Along the code are mencioned credits to people who helped me debugging. 
+// I wish you great flights with Rushduino OSD. 
 /***********************************************************************************************************************************************/
 /*                                                          Created for Multiwii r1240                                                         */
 /***********************************************************************************************************************************************/
@@ -26,7 +25,12 @@
 // At the end of the flight may be useful to look at the statistics.
 
 /***********************************************************************************************************************************************/
-/*                                                           RUSH_KV_0.1 Kataventos                                                           */
+/*                                                           RUSH_KV_1.0 Kataventos                                                            */                                                                                                                                            
+/* 1- Implementation of Powermeter and Vbat;                                                                                                   */
+/* 2- Altitude and Vario debuged;                                                                                                              */
+/* 3- GPS_Speed debugged;                                                                                                                      */
+/* 4- Statistics debugged;                                                                                                                     */
+/* 5- New options on config.h                                                                                                                  */
 /***********************************************************************************************************************************************/
 
 
@@ -92,7 +96,7 @@ void loop()
     if(!serialWait)
     {
 
-
+                                //******************** Every second request faster AH Contribution of TrailBlazer ****************************//
       nextMSPrequest++;
       switch (nextMSPrequest) {
       case 1:
@@ -258,7 +262,7 @@ void loop()
 
           displayAngleToHome();
 
-          displaySpeed();
+          displayGPS_speed();
 
           if (displayGPS) displayGPSPosition();
 

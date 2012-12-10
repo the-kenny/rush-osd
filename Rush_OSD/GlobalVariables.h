@@ -80,7 +80,7 @@ uint8_t GPS_fix=0;
 int32_t GPS_latitude;
 int32_t GPS_longitude;
 int16_t GPS_altitude;
-int16_t GPS_speed;
+int16_t GPS_speed=0;
 int16_t GPS_ground_course;
 
 uint8_t GPS_update=0;
@@ -136,6 +136,8 @@ int absoluteAltitudeAtStart = 0;
 int altitude =1;
 int32_t oldMwAltitude=0;
 float climbRate = 0;
+
+
 
 // For Statistics
 int16_t speedMAX=0;
@@ -193,7 +195,7 @@ uint8_t flyingSecond=0;
 // ---------------------------------------------------------------------------------------
 
 // For Intro
-prog_char message0[] PROGMEM = "Rush_KV_0.1";
+prog_char message0[] PROGMEM = "Rush_KV_1.0";
 prog_char message1[] PROGMEM = "Video signal: NTSC";
 prog_char message2[] PROGMEM = "Video signal: PAL";
 prog_char message3[] PROGMEM = "Screen Type: WIDE";

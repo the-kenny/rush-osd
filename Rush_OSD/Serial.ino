@@ -81,7 +81,7 @@ void serialMSPCheck()
     MwAltitude =read32(); 
     MwVario = read16();
   }
-
+  
   if (cmdMSP==MSP_BAT)  
    {
    MwVBat=read8();

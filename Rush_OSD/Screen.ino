@@ -1,19 +1,6 @@
-void FindNull(void){
-  for(xx=0;screenBuffer[xx]!=0;xx++);
-}
-
-void displaySpeed(void)
+void FindNull(void)
 {
-  if(!GPS_fix){
-    GPS_speed = 0;
-  } 
-  //if(GPS_speed > speedMAX) speedMAX = GPS_speed;
-  itoa(GPS_speed,screenBuffer,10);     
-  FindNull();   // find the NULL
-  if(unitSystem)  GPS_speed = GPS_speed / 27.8;          // 27.8 (cm/sec ---> Km/h)
-  screenBuffer[xx++]=speedUnitAdd[unitSystem];    
-  screenBuffer[xx]=0;                   // Restore the NULL
-  MAX7456_WriteString(screenBuffer,speedPosition[videoSignalType][screenType]);
+  for(xx=0;screenBuffer[xx]!=0;xx++);
 }
 
 void displaySensors(void)
@@ -237,7 +224,7 @@ void displayTime(void)
   itoa(onMinute,screenBuffer,10);     
   FindNull();
   screenBuffer[xx++]=0x3a;
-  screenBuffer[xx]=0;                          // find the NULL 
+  screenBuffer[xx]=0;                          // Find the NULL 
   if(onMinute<10) xx=2;
   if(onMinute>=10) xx=3;
   if(onMinute>=100) xx=4;
@@ -419,6 +406,23 @@ void displayNumberOfSat(void)
   MAX7456_WriteString(screenBuffer,GPS_numSatPosition[videoSignalType][screenType]+2);
 }
 
+void displayGPS_speed(void)
+{  
+  if(!GPS_fix){
+  GPS_speed = GPS_speed;
+  }
+  int xx=0;
+  int pos;
+  screenBuffer[0]=speedUnitAdd[unitSystem];
+  screenBuffer[1]=0;
+  MAX7456_WriteString(screenBuffer,speedPosition[videoSignalType][screenType]);
+  if(!unitSystem) xx= GPS_speed * 0.036;
+  if (xx > speedMAX) speedMAX = xx;
+  itoa(xx,screenBuffer,10);
+  MAX7456_WriteString(screenBuffer,speedPosition[videoSignalType][screenType]+1);
+    
+}
+                                 
 void displayAltitude(void)
 {
   MwAltitude=MwAltitude;
@@ -430,7 +434,7 @@ void displayAltitude(void)
   if(!armed) {
     altitudeOk=0;
   }
-  if(unitSystem)  altitude = MwAltitude / 100;   // MW sends in cm, 100 to be to equal 1 meter )
+  if(unitSystem)  altitude = MwAltitude / 100;   // MW sends in cm, 100 to be to equal 1 meter 
   if(!unitSystem) altitude = MwAltitude / 100;   
   screenBuffer[0]=MwAltitudeAdd[unitSystem];
   screenBuffer[1]=0;
@@ -442,6 +446,8 @@ void displayAltitude(void)
   MAX7456_WriteString(screenBuffer,MwAltitudePosition[videoSignalType][screenType]+1);
 }
 
+                  
+
 void displayClimbRate(void)
 {
   climbRate=MwVario;
@@ -451,8 +457,8 @@ void displayClimbRate(void)
   screenBuffer[1]=0;
   MAX7456_WriteString(screenBuffer,MwClimbRatePosition[videoSignalType][screenType]);
 
-  if(!unitSystem) xx= climbRate / 60;      // Impirical value
-  if(unitSystem)  xx= climbRate / 60; 
+  if(!unitSystem) xx= climbRate / ESTCLIMB;   
+  if(unitSystem)  xx= climbRate / ESTCLIMB; 
   itoa(xx,screenBuffer,10);
   MAX7456_WriteString(screenBuffer,MwClimbRatePosition[videoSignalType][screenType]+1);
 
