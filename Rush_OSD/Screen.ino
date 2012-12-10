@@ -146,11 +146,13 @@ void displayHorizon(short rollAngle, short pitchAngle)
 
 void displayVoltage(void)
 {
-#if defined VBAT
+#if defined VIDVOLTAGE_VBAT
+  vidvoltage=MwVBat;
+#endif
+#if defined MAINVOLTAGE_VBAT
   voltage=MwVBat;
-#endif  
-  
-  // Real voltage is Voltage / 10
+#endif
+
   itoa(voltage,screenBuffer,10);     
   FindNull();   // find the NULL
   yy=screenBuffer[xx-1];
@@ -168,14 +170,13 @@ void displayVoltage(void)
   screenBuffer[xx++]=voltageUnitAdd;   
   screenBuffer[xx]=0;                           // Restore the NULL
   MAX7456_WriteString(screenBuffer,voltagePosition[videoSignalType][screenType]);
-
-
+  
 #if defined SHOWBATLEVELEVOLUTION
-  if (voltage > 125) screenBuffer[0]=0x90; 
+  if (voltage > 124) screenBuffer[0]=0x90; 
   else
-    if (voltage < 100) screenBuffer[0]=0x96; 
+    if (voltage < 105) screenBuffer[0]=0x96; 
     else 
-      if (voltage < 105) screenBuffer[0]=0x95; 
+      if (voltage < 108) screenBuffer[0]=0x95; 
     else        
       if (voltage < 110) screenBuffer[0]=0x94; 
     else
@@ -183,19 +184,39 @@ void displayVoltage(void)
       else        
         if (voltage < 120) screenBuffer[0]=0x92; 
       else        
-        if (voltage < 125) screenBuffer[0]=0x91; 
+        if (voltage < 122) screenBuffer[0]=0x91; 
 #else 
   screenBuffer[0]=0x97;    
 #endif
   screenBuffer[1]=0;
   MAX7456_WriteString(screenBuffer,voltagePosition[videoSignalType][screenType]-1);
-}
+#if defined VIDVOLTAGE  
+  itoa(vidvoltage,screenBuffer,10);     
+  FindNull();   // find the NULL
+  yy=screenBuffer[xx-1];
 
-void displayTime(void)
+  if((vidvoltage)<10)
+  {
+    screenBuffer[xx-1]='0';
+    screenBuffer[xx++]='.';
+  }
+  else
+  {
+    screenBuffer[xx-1]='.';
+  }  
+  screenBuffer[xx++]=yy;
+  screenBuffer[xx++]=voltageUnitAdd;   
+  screenBuffer[xx]=0; 
+  MAX7456_WriteString(screenBuffer,vidvoltagePosition[videoSignalType][screenType]);
+  screenBuffer[0]=0x97;
+  screenBuffer[1]=0;
+  MAX7456_WriteString(screenBuffer,vidvoltagePosition[videoSignalType][screenType]-1);
+#endif
+ } 
+   void displayTime(void)
 {
   if(flyMinute>0) flyingMinute=flyMinute;
-  if(flySecond>0) flyingSecond=flySecond;
-  
+  if(flySecond>0) flyingSecond=flySecond; 
   screenBuffer[0]=flyTimeUnitAdd;    
   screenBuffer[1]=0;  
   MAX7456_WriteString(screenBuffer,flyTimePosition[videoSignalType][screenType]);     
@@ -215,9 +236,8 @@ void displayTime(void)
     screenBuffer[1]=screenBuffer[0];
     screenBuffer[0]='0';
   }
-
+  
   MAX7456_WriteString(screenBuffer,flyTimePosition[videoSignalType][screenType]+1+xx);
-
   screenBuffer[0]=onTimeUnitAdd;    
   screenBuffer[1]=0;  
   MAX7456_WriteString(screenBuffer,onTimePosition[videoSignalType][screenType]);     
@@ -263,18 +283,19 @@ void displayAmperage(void)
   MAX7456_WriteString(screenBuffer,amperagePosition[videoSignalType][screenType]);
 }
 
-
 void displaypMeterSum(void)
 {
-   #if defined (HARDSENSOR)
-  pMeterSum = amperageConsumed;
+#if defined (HARDSENSOR)
+  pMeterSum = amperagesum;
 #endif
-  amperageConsumed=0;
-  itoa (pMeterSum,screenBuffer,10); 
-  FindNull();                                           // Find the NULL
-  screenBuffer[xx++]=pMeterSumUnitAdd;                  // Replace NULL by unit
-  screenBuffer[xx]=0;                                   // Restore the NULL
-  MAX7456_WriteString(screenBuffer,pMeterSumPosition[videoSignalType][screenType]);   
+  int xx=0;
+  int pos;
+  screenBuffer[0]=0xa4;  
+  screenBuffer[1]=0;
+  MAX7456_WriteString(screenBuffer,pMeterSumPosition[videoSignalType][screenType]);
+  if(!unitSystem) xx= pMeterSum / EST_PMSum;
+  itoa(xx,screenBuffer,10);
+  MAX7456_WriteString(screenBuffer,pMeterSumPosition[videoSignalType][screenType]+1); 
 }
 
 void displayRSSI(void)
@@ -315,12 +336,9 @@ void displayHeadingGraph(void)
   screenBuffer[6] = headGraph[xx+2];
   screenBuffer[7] = headGraph[xx+3]; 
   screenBuffer[8] = headGraph[xx+4];  
-
   screenBuffer[9] = 0; 
-
   MAX7456_WriteString(screenBuffer,MwHeadingGraphPosition[videoSignalType][screenType]);
 }
-
 
 void displayIntro(void)
 {
@@ -345,11 +363,11 @@ void displayIntro(void)
     strcpy_P(screenBuffer, (char*)pgm_read_word(&(introMessages[4])));
     MAX7456_WriteString(screenBuffer,RushduinoVersionPosition+60);
   }
-  /******************************************************************
+#if defined MULTIWIILOGO
   MAX7456_WriteString(MultiWiiLogoL1Add,RushduinoVersionPosition+120);
   MAX7456_WriteString(MultiWiiLogoL2Add,RushduinoVersionPosition+120+LINE);
   MAX7456_WriteString(MultiWiiLogoL3Add,RushduinoVersionPosition+120+LINE+LINE);
-  ******************************************************************/
+#endif
   
   strcpy_P(screenBuffer, (char*)pgm_read_word(&(introMessages[5])));
   MAX7456_WriteString(screenBuffer,RushduinoVersionPosition+120+LINE+LINE+LINE);
@@ -407,20 +425,19 @@ void displayNumberOfSat(void)
 }
 
 void displayGPS_speed(void)
-{  
-  if(!GPS_fix){
-  GPS_speed = GPS_speed;
-  }
+{
+  if (!GPS_fix){
+    GPS_speed = 0;
+}    
   int xx=0;
   int pos;
   screenBuffer[0]=speedUnitAdd[unitSystem];
   screenBuffer[1]=0;
   MAX7456_WriteString(screenBuffer,speedPosition[videoSignalType][screenType]);
   if(!unitSystem) xx= GPS_speed * 0.036;
-  if (xx > speedMAX) speedMAX = xx;
   itoa(xx,screenBuffer,10);
-  MAX7456_WriteString(screenBuffer,speedPosition[videoSignalType][screenType]+1);
-    
+  if (xx > speedMAX) speedMAX = xx; 
+  MAX7456_WriteString(screenBuffer,speedPosition[videoSignalType][screenType]+1);    
 }
                                  
 void displayAltitude(void)
@@ -432,21 +449,17 @@ void displayAltitude(void)
     altitudeMAX=MwAltitude;
   }
   if(!armed) {
-    altitudeOk=0;
+    altitudeOk=MwAltitude;
   }
-  if(unitSystem)  altitude = MwAltitude / 100;   // MW sends in cm, 100 to be to equal 1 meter 
-  if(!unitSystem) altitude = MwAltitude / 100;   
+  if(unitSystem)  altitude = MwAltitude/100; 
+  if(!unitSystem) altitude = MwAltitude/100;   
   screenBuffer[0]=MwAltitudeAdd[unitSystem];
   screenBuffer[1]=0;
   MAX7456_WriteString(screenBuffer,MwAltitudePosition[videoSignalType][screenType]);
-
-  if (altitudeOk) altitudeMAX = 0;
-
+  if(altitudeOk && (altitude > altitudeMAX)) altitudeMAX = altitude;
   itoa(altitude,screenBuffer,10);
   MAX7456_WriteString(screenBuffer,MwAltitudePosition[videoSignalType][screenType]+1);
 }
-
-                  
 
 void displayClimbRate(void)
 {
@@ -462,20 +475,20 @@ void displayClimbRate(void)
   itoa(xx,screenBuffer,10);
   MAX7456_WriteString(screenBuffer,MwClimbRatePosition[videoSignalType][screenType]+1);
 
-  if (climbRate > 20)   screenBuffer[0]=0xB3; 
+  if (climbRate > 10)   screenBuffer[0]=0xB3; 
   else
-    if (climbRate > 10)    screenBuffer[0]=0xB2; 
+    if (climbRate > 5)    screenBuffer[0]=0xB2; 
     else 
-      if (climbRate > 4)    screenBuffer[0]=0xB1; 
+      if (climbRate > 3)    screenBuffer[0]=0xB1; 
     else        
       if (climbRate > 1)  screenBuffer[0]=0xB0; 
     else screenBuffer[0]=0xBC;
 
-  if (climbRate < -20)  screenBuffer[0]=0xB4; 
+  if (climbRate < -10)  screenBuffer[0]=0xB4; 
   else        
-    if (climbRate < -10)   screenBuffer[0]=0xB5; 
+    if (climbRate < -5)   screenBuffer[0]=0xB5; 
   else        
-    if (climbRate < -4)   screenBuffer[0]=0xB6; 
+    if (climbRate < -3)   screenBuffer[0]=0xB6; 
   else 
     if (climbRate < -1) screenBuffer[0]=0xB7;
   screenBuffer[1]=0;
@@ -504,9 +517,8 @@ void displayAngleToHome(void)
 {
   itoa(GPS_directionToHome,screenBuffer,10);     
   FindNull();
-  screenBuffer[xx++]=0xBD;              // °
-  screenBuffer[xx]=0;                   // Restore le NULL
-  // REVOIR POSITION
+  screenBuffer[xx++]=0xBD;              
+  screenBuffer[xx]=0;                
   MAX7456_WriteString(screenBuffer,GPS_angleToHomePosition[videoSignalType][screenType]);
 }
 
@@ -607,16 +619,6 @@ void displayPIDConfigScreen(void)
   {
     strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[19])));
     MAX7456_WriteString(screenBuffer,35);   
-    strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[20])));
-    MAX7456_WriteString(screenBuffer,ROLLT);
-    if(enableBuzzer){
-      strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[21]))); //ON
-      MAX7456_WriteString(screenBuffer,ROLLD);
-    }
-    else{ 
-      strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[22]))); //OFF
-      MAX7456_WriteString(screenBuffer,ROLLD);
-    }
     strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[23])));
     MAX7456_WriteString(screenBuffer,PITCHT); 
     if(enableVoltage){
@@ -775,19 +777,17 @@ void displayPIDConfigScreen(void)
     {        
       screenBuffer[1]=screenBuffer[0];
       screenBuffer[0]='0';
-      //screenBuffer[2]=0;
     }
     MAX7456_WriteString(screenBuffer,VELD+xx);
-
     strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[57])));
     MAX7456_WriteString(screenBuffer,LEVT);
-    MAX7456_WriteString(itoa(pMeterSum,screenBuffer,10),LEVD);
+    if(!unitSystem) xx= pMeterSum / EST_PMSum;
+    MAX7456_WriteString(itoa(xx,screenBuffer,10),LEVD);
     strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[58])));
     MAX7456_WriteString(screenBuffer,MAGT);
     MAX7456_WriteString(itoa(temperMAX,screenBuffer,10),MAGD);
   }
-
-
+  
   if(ROW>10) ROW=10;
   if(ROW<1) ROW=1;
   if(COL>3) COL=3;
@@ -1216,7 +1216,6 @@ case 491:
 
   }
 }
-
 
 
 

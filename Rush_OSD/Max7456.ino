@@ -3,7 +3,6 @@
 #define DATAIN  12//MISO
 #define SPICLOCK  13//sck
 
-#define MAX7456SELECT 6//ss 
 #define MAX7456SELECT 10//ss 
 
 #define MAX7456RESET 9//RESET

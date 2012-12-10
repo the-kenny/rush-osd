@@ -14,24 +14,36 @@
 // All the things that I possibly do with this software are intended to be my needs I just hope they can meet yours.
 // Along the code are mencioned credits to people who helped me debugging. 
 // I wish you great flights with Rushduino OSD. 
-/***********************************************************************************************************************************************/
-/*                                                          Created for Multiwii r1240                                                         */
-/***********************************************************************************************************************************************/
-// This software communicates using MSP via the serial port. Therefore Multiwii develop-dependent.
-// Changes the values ​​of pid and rc-tuning, writes in eeprom of Multiwii FC.
-// In config mode, can do acc and mag calibration. 
-// In addition, it works by collecting information analogue inputs. Such as voltage, amperage, rssi, temperature.
-// In addition displayed information provides status information using an LED and a buzzer.
-// At the end of the flight may be useful to look at the statistics.
 
-/***********************************************************************************************************************************************/
-/*                                                           RUSH_KV_1.0 Kataventos                                                            */                                                                                                                                            
-/* 1- Implementation of Powermeter and Vbat;                                                                                                   */
-/* 2- Altitude and Vario debuged;                                                                                                              */
-/* 3- GPS_Speed debugged;                                                                                                                      */
-/* 4- Statistics debugged;                                                                                                                     */
-/* 5- New options on config.h                                                                                                                  */
-/***********************************************************************************************************************************************/
+
+              /************************************************************************************************************************************************/
+              /*                                                      Created for Multiwii r1240 or higher                                                    */
+              /************************************************************************************************************************************************/
+
+
+              // This software communicates using MSP via the serial port. Therefore Multiwii develop-dependent.
+              // Changes the values ​​of pid and rc-tuning, writes in eeprom of Multiwii FC.
+              // In config mode, can do acc and mag calibration. 
+              // In addition, it works by collecting information analogue inputs. Such as voltage, amperage, rssi, temperature.
+              // In addition displayed information provides status information using an LED and a buzzer.
+              // At the end of the flight may be useful to look at the statistics.
+
+
+
+
+              /***********************************************************************************************************************************************/
+              /*                                                           RUSH_KV_2.0 Kataventos                                                            */
+              /*                                                                                                                                             */
+              /*                  1-Division adjustment for PowerMeter;                                                                                      */
+              /*                  2-Analogue video voltage working;                                                                                          */
+              /*                  3-Option between Vbat and analogue read for MAIN and VIDEO voltages;                                                       */
+              /*                  4-MaxSpeed debugged on statistics;                                                                                         */
+              /*                  5-AltitudeMax debugged on statistics;                                                                                      */
+              /*                  6-Amperage offset and amperage calibration djustment on config.h;                                                          */
+              /*                  7-Multiwii logo lives again, can be supressed on config.h                                                                  */
+              /*                                                                                                                                             */
+              /*                                                                                                                                             */
+              /***********************************************************************************************************************************************/
 
 
 
@@ -43,40 +55,30 @@
 
 // Screen is the Screen buffer between program an MAX7456 that will be writen to the screen at 10hz
 char screen[480];
-
 // ScreenBuffer is an intermietary buffer to created Strings to send to Screen buffer
 char screenBuffer[20];
 
-
 char nextMSPrequest=0;
 char MSPcmdsend=0;
-
-#if defined(BUZZER)
-static uint8_t  toggleBeep = 0;
-static uint8_t  buzzerFreq;         // delay between buzzer ring
-#endif
-
 
 void setup()
 {
   Serial.begin(SERIAL_SPEED);
   Serial.flush();
   pinMode(BST,OUTPUT);
-  BUZZERPIN_PINMODE;
   MAX7456Setup();
   readEEPROM();
   analogReference(INTERNAL);
-
 }
-
 
 void loop()
 {
   // Process AI
   temperature=(analogRead(temperaturePin)*1.1)/10.23;  
-  voltage=(analogRead(voltagePin)*1.1*DIVIDERRATIO)/102.3; 
+  voltage=(analogRead(voltagePin)*1.1*DIVIDERRATIO)/102.3;
+  vidvoltage=(analogRead(vidvoltagePin)*1.1*VIDDIVIDERRATIO)/102.3;
   rssiADC = (analogRead(rssiPin)*1.1)/1023;
-  amperage = (analogRead(amperagePin)*1.1)/10.23;
+  amperage = (AMPRERAGE_OFFSET - (analogRead(amperagePin)*AMPERAGE_CAL))/10.23;
 
   // Blink Basic Sanity Test Led at 1hz
   if(tenthSec>10) BST_ON else BST_OFF 
@@ -95,7 +97,6 @@ void loop()
     MetroTimer.interval(TIMEBASE);
     if(!serialWait)
     {
-
                                 //******************** Every second request faster AH Contribution of TrailBlazer ****************************//
       nextMSPrequest++;
       switch (nextMSPrequest) {
@@ -196,8 +197,6 @@ void loop()
 
     }
 
-
-
     MAX7456_DrawScreen(screen,0);
     if( allSec < 9 ) displayIntro();
     else
@@ -211,40 +210,19 @@ void loop()
       else
       {
         if(enableVoltage&&((voltage>lowVoltage)||(Blink2hz))) displayVoltage();
-#if defined(BUZZER)
-        if ((voltage<lowVoltage)&&(enableBuzzer)&&enableVoltage) {
-          buzzerFreq = 1;
-          buzzer(buzzerFreq); 
-        }
-#endif
-
         if(enableRSSI&&((rssi>lowrssiAlarm)||(Blink2hz))) displayRSSI();
-
+        
         displayTime();
         displaySensors();
         displayMode();
 
         if(enableTemperature&&((temperature<highTemperature)||(Blink2hz))) displayTemperature();
-#if defined(BUZZER)
-        if ((temperature>highTemperature)&&(enableBuzzer)&&enableTemperature) {
-          buzzerFreq = 2;
-          buzzer(buzzerFreq); 
-        }
-#endif
 
-#if defined(AMPERAGE)
+#if defined HARDSENSOR
         displayAmperage();
-#endif
-
+#endif  
         displaypMeterSum();
         displayArmed();
-
-#if defined(BUZZER)
-        if ((armedTimer>armedtimeWarning)&&(armedtimeWarning>0)&&(enableBuzzer)){
-          buzzerFreq = 0;
-          buzzer(buzzerFreq); // external buzzer routine that handles buzzer events globally now
-        }
-#endif
 
         if(MwSensorPresent&ACCELEROMETER) displayHorizon(MwAngle[0],MwAngle[1]*-1);
         if(MwSensorPresent&MAGNETOMETER)  {
@@ -259,11 +237,9 @@ void loop()
           displayNumberOfSat();
           displayDirectionToHome();
           displayDistanceToHome();
-
-          displayAngleToHome();
-
+          displayAngleToHome();          
           displayGPS_speed();
-
+          
           if (displayGPS) displayGPSPosition();
 
         }
@@ -281,12 +257,13 @@ void loop()
   {
     onSecond++;
     
-    amperageConsumed += amperage / 36; //(mAh)
+#if defined HARDSENSOR 
+    amperagesum += amperage / AMPDIVISION; //(mAh)
+#endif
+
     tenthSec=0;
     armedTimer++;
-
-
-
+    
     if(!armed) {
       armedTimer=0;
       flyMinute=0;
@@ -342,7 +319,7 @@ void loop()
 
 void calculateTrip(void)
 {
-  if(GPS_fix && (GPS_speed>0)) trip += ((GPS_speed * 1000)/3600)*0.1;
+ if(GPS_fix && (GPS_speed>0)) trip += ((GPS_speed * 1000)/3600)*0.1; 
 }
 
 void calculateRssi(void)
@@ -366,7 +343,6 @@ void writeEEPROM(void)
   EEPROM.write(EEPROM_DISPLAYTEMPERATURE,enableTemperature);
   EEPROM.write(EEPROM_TEMPERATUREMAX,highTemperature);
   EEPROM.write(EEPROM_DISPLAYGPS,displayGPS);
-  EEPROM.write(EEPROM_ENABLEBUZZER,enableBuzzer);
   EEPROM.write(EEPROM_SCREENTYPE,screenType);
   EEPROM.write(EEPROM_UNITSYSTEM,unitSystem);
   EEPROM.write(EEPROM_ARMEDTIMEWARNING,armedtimeWarning);
@@ -383,7 +359,6 @@ void readEEPROM(void)
   enableTemperature= EEPROM.read(EEPROM_DISPLAYTEMPERATURE);
   highTemperature= EEPROM.read(EEPROM_TEMPERATUREMAX);
   displayGPS= EEPROM.read(EEPROM_DISPLAYGPS);
-  enableBuzzer= EEPROM.read(EEPROM_ENABLEBUZZER);
   screenType= EEPROM.read(EEPROM_SCREENTYPE);
   unitSystem= EEPROM.read(EEPROM_UNITSYSTEM);
   armedtimeWarning= EEPROM.read(EEPROM_ARMEDTIMEWARNING);

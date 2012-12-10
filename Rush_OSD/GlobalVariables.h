@@ -7,9 +7,6 @@
 #define NARROW 1
 #define WIDE 0
 
-#define ON 1
-#define OFF 0
-
 //General use variables
 int xx=0,yy=0,zz=0,tt=0;
 int a,b,c,d,e,f;
@@ -17,9 +14,9 @@ Metro MetroTimer = Metro(100);
 int tenthSec=0;
 int halfSec=0;
 uint8_t tenthSecFlag=1;
-int Blink1hz=0; // This is turing on and off at 1hz
-int Blink2hz=0; // This is turing on and off at 2hz
-int Blink10hz=0; // This is turing on and off at 10hz
+int Blink1hz=0;                               // This is turing on and off at 1hz
+int Blink2hz=0;                               // This is turing on and off at 2hz
+int Blink10hz=0;                              // This is turing on and off at 10hz
 int ble=0;
 uint8_t rssiTimer=0;
 uint8_t accCalibrationTimer=0;
@@ -102,8 +99,12 @@ char headGraph[]={
 static uint16_t MwHeading=0;
 
 // For Amperage
-float amperage =0.0; // its the real value x10
-float amperageConsumed =0;  
+   float amperage =0.0;                // its the real value x10
+#if defined (HARDSENSOR)
+   float amperagesum =0; 
+#endif
+   
+
 
 
 // Rssi
@@ -111,22 +112,24 @@ int rssi =0;
 int rssiADC=0;
 int rssiMin;
 int rssiMax;    
-int rssi_Int=0;  // intermediare value
+int rssi_Int=0;  
 uint8_t enableRSSI=1;
 
 // For Voltage
-float voltage=0; // its the real value x10
+float voltage=0;                      // its the real value x10
+float vidvoltage=0;                   // its the real value x10
 uint8_t enableVoltage=1;
-uint8_t lowVoltage=105; // x10 volts
+uint8_t enableVidvoltage=1;
+uint8_t lowVoltage=105; 
 
 // For temprature
-float temperature=0; // its the real value x10
+float temperature=0;                  // its the real value x10
 uint8_t enableTemperature=1;
-uint8_t highTemperature=50;  // Celcius or Fahrenheit
+uint8_t highTemperature=50;           // Celcius or Fahrenheit
 
 uint8_t displayGPS=1;
 uint8_t enableBuzzer=1;
-uint8_t armedtimeWarning=6; // Minutes
+uint8_t armedtimeWarning=6;           // Minutes
 
 
 // For Altitude
@@ -140,7 +143,7 @@ float climbRate = 0;
 
 
 // For Statistics
-int16_t speedMAX=0;
+int16_t speedMAX=GPS_speed;
 int8_t temperMAX=0;
 int16_t altitudeMAX=0;
 int16_t distanceMAX=0;
@@ -195,7 +198,7 @@ uint8_t flyingSecond=0;
 // ---------------------------------------------------------------------------------------
 
 // For Intro
-prog_char message0[] PROGMEM = "Rush_KV_1.0";
+prog_char message0[] PROGMEM = "Rush_KV_2.0";
 prog_char message1[] PROGMEM = "Video signal: NTSC";
 prog_char message2[] PROGMEM = "Video signal: PAL";
 prog_char message3[] PROGMEM = "Screen Type: WIDE";
@@ -232,15 +235,15 @@ prog_char configMsg17[] PROGMEM = "MwCycle Time";
 prog_char configMsg18[] PROGMEM = "MwI2C Errors";
 //-----------------------------------------------------------Page3
 prog_char configMsg19[] PROGMEM = "3/6 DISPLAY & ALARM";
-prog_char configMsg20[] PROGMEM = "BUZZER";
+prog_char configMsg20[] PROGMEM = "                   ";
 prog_char configMsg21[] PROGMEM = "ON";
 prog_char configMsg22[] PROGMEM = "OFF";
 prog_char configMsg23[] PROGMEM = "Display Voltage";
-prog_char configMsg24[] PROGMEM = "SET ALARM VOLTAGE";
+prog_char configMsg24[] PROGMEM = "VOLTAGE ALARM";
 prog_char configMsg25[] PROGMEM = "Display Temperature";
 prog_char configMsg26[] PROGMEM = "SET ALARM TEMP";
 prog_char configMsg27[] PROGMEM = "Display GPS";
-prog_char configMsg28[] PROGMEM = "SET ALARM ARMED T:";
+prog_char configMsg28[] PROGMEM = "ARMED TIME ALARM:";
 prog_char configMsg29[] PROGMEM = " ";
 prog_char configMsg30[] PROGMEM = "                   ";
 //-----------------------------------------------------------Page4
@@ -272,12 +275,12 @@ prog_char configMsg53[] PROGMEM = "Max DisToHome:";
 prog_char configMsg54[] PROGMEM = "Max Altitude:";
 prog_char configMsg55[] PROGMEM = "Max Speed:";
 prog_char configMsg56[] PROGMEM = "Flying Time:";
-prog_char configMsg57[] PROGMEM = "Consumed Amp.:";
+prog_char configMsg57[] PROGMEM = "Drained Amps.:";
 prog_char configMsg58[] PROGMEM = "Max Temp.:";
 
 const char* configMsgs[] PROGMEM = {
   configMsg0, configMsg1, configMsg2, configMsg3, configMsg4, configMsg5, configMsg6, configMsg7, configMsg8, configMsg9, configMsg10,
-  configMsg11, configMsg12, configMsg13, configMsg14, configMsg15, configMsg16, configMsg17,   configMsg18, configMsg19, configMsg20,
+  configMsg11, configMsg12, configMsg13, configMsg14, configMsg15, configMsg16, configMsg17,   configMsg18, configMsg19,configMsg20,
   configMsg21, configMsg22, configMsg23, configMsg24, configMsg25, configMsg26, configMsg27, configMsg28, configMsg29, configMsg30,
   configMsg31, configMsg32, configMsg33, configMsg34, configMsg35, configMsg36, configMsg37, configMsg38, configMsg39, configMsg40,
   configMsg41, configMsg42, configMsg43, configMsg44, configMsg45, configMsg46, configMsg47, configMsg48, configMsg49, configMsg50,
