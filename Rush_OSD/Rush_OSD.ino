@@ -1,4 +1,3 @@
-
 // This software is a copy of the original Rushduino-OSD project was written by Jean-Gabriel Maurice.
 // http://code.google.com/p/rushduino-osd/
 // It's open source, simple and seems easy editable.
@@ -22,7 +21,7 @@
 
 
               // This software communicates using MSP via the serial port. Therefore Multiwii develop-dependent.
-              // Changes the values ​​of pid and rc-tuning, writes in eeprom of Multiwii FC.
+              // Changes the values of pid and rc-tuning, writes in eeprom of Multiwii FC.
               // In config mode, can do acc and mag calibration. 
               // In addition, it works by collecting information analogue inputs. Such as voltage, amperage, rssi, temperature.
               // In addition displayed information provides status information using an LED.
@@ -66,7 +65,7 @@ void setup()
   Serial.flush();
   pinMode(BST,OUTPUT);
   MAX7456Setup();
-  readEEPROM();
+  //readEEPROM();
   analogReference(INTERNAL);
 }
 
