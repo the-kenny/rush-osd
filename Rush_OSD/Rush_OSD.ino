@@ -65,7 +65,7 @@ void setup()
   Serial.flush();
   pinMode(BST,OUTPUT);
   MAX7456Setup();
-  //readEEPROM();
+  readEEPROM();
   analogReference(INTERNAL);
 }
 
