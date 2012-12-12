@@ -173,7 +173,7 @@ void loop()
 
     }
   
-    MAX7456_DrawScreen(screen,0);
+    MAX7456_DrawScreen();
     if( allSec < 9 ) displayIntro();
     else
     { 

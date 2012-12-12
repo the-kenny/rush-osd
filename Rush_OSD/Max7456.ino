@@ -1,13 +1,13 @@
 
-#define DATAOUT 11//MOSI
-#define DATAIN  12//MISO
-#define SPICLOCK  13//sck
+#define DATAOUT 11		//MOSI
+#define DATAIN  12		//MISO
+#define SPICLOCK  13		//sck
 
-#define MAX7456SELECT 6//ss 
-#define MAX7456SELECT 10//ss 
+//#define MAX7456SELECT 6	//ss 
+#define MAX7456SELECT 10	//ss 
 
-#define MAX7456RESET 9//RESET
-#define VSYNC 2// INT0
+#define MAX7456RESET 9		//RESET
+#define VSYNC 2			// INT0
 
 //MAX7456 opcodes
 #define DMM_reg   0x04
@@ -117,8 +117,6 @@
 #define MAX7456ADD_RB15         0x1f
 #define MAX7456ADD_OSDBL        0x6c
 
-volatile byte screen_buffer[MAX_screen_size];
-
 volatile byte writeOK;
 volatile byte valid_string;
 volatile byte save_screen;
@@ -198,7 +196,7 @@ void MAX7456Setup(void)
 }
 
 // Copy string from ram into screen buffer
-void MAX7456_WriteString(char *string, int Adresse)
+void MAX7456_WriteString(const char *string, int Adresse)
 {
   int xx;
 
@@ -209,56 +207,40 @@ void MAX7456_WriteString(char *string, int Adresse)
 }
 
 // Copy string from progmem into the screen buffer
-void MAX7456_WriteString_P(char *string, int Adresse)
+void MAX7456_WriteString_P(const char *string, int Adresse)
 {
-  int xx;
-
-  for(xx=0;string[xx]!=0;)
+  int xx = 0;
+  char c;
+  while((c = (char)pgm_read_byte(&string[xx++])) != 0)
   {
-    screen[Adresse++] = pgm_read_byte(&string[xx++]);
+    screen[Adresse++] = c;
   }
 }
 
-
-void MAX7456_DrawScreen(char *string,int Adresse)
+void MAX7456_DrawScreen()
 {
   int xx;
-  pinMode(10,OUTPUT);
-  pinMode(10,HIGH);
 #if defined(DISPLAY_DEBUG_MODE)
-  for(xx=0;xx!=480;xx++)
+  for(xx=0;xx<MAX_screen_size;xx++)
   {
     Screen[xx]=0xff;
   }
-  Screen[xx]=0;
   DisplayDebugScreen(); 
 #endif
 
   digitalWrite(MAX7456SELECT,LOW);
-  for(xx=0;string[xx]!=0;)
+  for(xx=0;xx<MAX_screen_size;++xx)
   {
-    MAX7456_Send(MAX7456ADD_DMAH,Adresse>>8);
-    MAX7456_Send(MAX7456ADD_DMAL,Adresse++);
-    MAX7456_Send(MAX7456ADD_DMDI,string[xx]);
-    string[xx++]=' ';
+    MAX7456_Send(MAX7456ADD_DMAH, xx>>8);
+    MAX7456_Send(MAX7456ADD_DMAL, xx);
+    MAX7456_Send(MAX7456ADD_DMDI, screen[xx]);
+    screen[xx] = ' ';
   }
   digitalWrite(MAX7456SELECT,HIGH);
-  for(xx=0;xx!=480;xx++)
-  {
-    screen[xx]=0x20;
-
-  }
-  screen[xx]=0;
-
 }
 
-void MAX7456_Send(int add,char data)
+void MAX7456_Send(int add, char data)
 {
   spi_transfer(add);
   spi_transfer(data);
-
 }
-
-
-
-

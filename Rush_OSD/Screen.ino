@@ -740,7 +740,7 @@ void displayPIDConfigScreen(void)
     }
     MAX7456_WriteString(screenBuffer,VELD+xx);
 
-    MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[57]))), LEVT);
+    MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[57])), LEVT);
     if(!unitSystem) xx= pMeterSum / EST_PMSum;
     MAX7456_WriteString(itoa(xx,screenBuffer,10),LEVD);
 

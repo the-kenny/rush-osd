@@ -11,7 +11,7 @@
 //#define OFF 0
 
 //General use variables
-int xx=0,yy=0,zz=0,tt=0;
+int xx=0,yy=0;
 Metro MetroTimer = Metro(100); 
 int tenthSec=0;
 int halfSec=0;
