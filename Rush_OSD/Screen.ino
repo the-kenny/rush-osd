@@ -63,9 +63,14 @@ void displayMode(void)
 
 void displayArmed(void)
 {
+  static const char _disarmed[] PROGMEM = "DISARMED";
+  static const char _armed[] PROGMEM = " ARMED";
+
   armed = (MwSensorActive&ARMEDMODE);
-  if(armedTimer==0) MAX7456_WriteString("DISARMED",motorArmedPosition[videoSignalType][screenType]);
-  if((armedTimer>1)&&(armedTimer<9)&&(Blink10hz))MAX7456_WriteString(" ARMED",motorArmedPosition[videoSignalType][screenType]);
+  if(armedTimer==0)
+    MAX7456_WriteString_P(_disarmed, motorArmedPosition[videoSignalType][screenType]);
+  else if((armedTimer>1) && (armedTimer<9) && (Blink10hz))
+    MAX7456_WriteString_P(_armed, motorArmedPosition[videoSignalType][screenType]);
 }
 
 void displayHorizonPart(int X,int Y,int roll)
@@ -346,39 +351,31 @@ void displayIntro(void)
   MAX7456_WriteString(screenBuffer,RushduinoVersionPosition);
 
 #if defined VideoSignalType_NTSC 
-  strcpy_P(screenBuffer, (char*)pgm_read_word(&(introMessages[1])));
-  MAX7456_WriteString(screenBuffer,RushduinoVersionPosition+30); 
+  MAX7456_WriteString_P((char*)pgm_read_word(&(introMessages[1])), RushduinoVersionPosition+30); 
 #endif
 
 #if defined VideoSignalType_PAL 
-  strcpy_P(screenBuffer, (char*)pgm_read_word(&(introMessages[2])));
-  MAX7456_WriteString(screenBuffer,RushduinoVersionPosition+30); 
+  MAX7456_WriteString_P((char*)pgm_read_word(&(introMessages[2])), RushduinoVersionPosition+30); 
 #endif
 
   if(screenType==WIDE){
-    strcpy_P(screenBuffer, (char*)pgm_read_word(&(introMessages[3])));
-    MAX7456_WriteString(screenBuffer,RushduinoVersionPosition+60);      
+    MAX7456_WriteString_P((char*)pgm_read_word(&(introMessages[3])), RushduinoVersionPosition+60);      
   }
   else{
-    strcpy_P(screenBuffer, (char*)pgm_read_word(&(introMessages[4])));
-    MAX7456_WriteString(screenBuffer,RushduinoVersionPosition+60);
+    MAX7456_WriteString_P((char*)pgm_read_word(&(introMessages[4])), RushduinoVersionPosition+60);
   }
 #if defined MULTIWIILOGO
-  MAX7456_WriteString(MultiWiiLogoL1Add,RushduinoVersionPosition+120);
-  MAX7456_WriteString(MultiWiiLogoL2Add,RushduinoVersionPosition+120+LINE);
-  MAX7456_WriteString(MultiWiiLogoL3Add,RushduinoVersionPosition+120+LINE+LINE);
+  MAX7456_WriteString_P(MultiWiiLogoL1Add, RushduinoVersionPosition+120);
+  MAX7456_WriteString_P(MultiWiiLogoL2Add, RushduinoVersionPosition+120+LINE);
+  MAX7456_WriteString_P(MultiWiiLogoL3Add, RushduinoVersionPosition+120+LINE+LINE);
 #endif
   
-  strcpy_P(screenBuffer, (char*)pgm_read_word(&(introMessages[5])));
-  MAX7456_WriteString(screenBuffer,RushduinoVersionPosition+120+LINE+LINE+LINE);
+  MAX7456_WriteString_P((char*)pgm_read_word(&(introMessages[5])), RushduinoVersionPosition+120+LINE+LINE+LINE);
   MAX7456_WriteString(itoa(MwVersion,screenBuffer,10),RushduinoVersionPosition+128+LINE+LINE+LINE);
 
-  strcpy_P(screenBuffer, (char*)pgm_read_word(&(introMessages[6])));
-  MAX7456_WriteString(screenBuffer,RushduinoVersionPosition+120+LINE+LINE+LINE+LINE+LINE);
-  strcpy_P(screenBuffer, (char*)pgm_read_word(&(introMessages[7])));
-  MAX7456_WriteString(screenBuffer,RushduinoVersionPosition+125+LINE+LINE+LINE+LINE+LINE+LINE);
-  strcpy_P(screenBuffer, (char*)pgm_read_word(&(introMessages[8])));
-  MAX7456_WriteString(screenBuffer,RushduinoVersionPosition+125+LINE+LINE+LINE+LINE+LINE+LINE+LINE);
+  MAX7456_WriteString_P((char*)pgm_read_word(&(introMessages[6])), RushduinoVersionPosition+120+LINE+LINE+LINE+LINE+LINE);
+  MAX7456_WriteString_P((char*)pgm_read_word(&(introMessages[7])), RushduinoVersionPosition+125+LINE+LINE+LINE+LINE+LINE+LINE);
+  MAX7456_WriteString_P((char*)pgm_read_word(&(introMessages[8])), RushduinoVersionPosition+125+LINE+LINE+LINE+LINE+LINE+LINE+LINE);
 }
 
 void displayGPSPosition(void)
@@ -537,49 +534,44 @@ void displayPIDConfigScreen(void)
 {
   char CURSOR[]="*";
 
-  strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[0])));
-  MAX7456_WriteString(screenBuffer,SAVEP); //EXIT
-  strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[1])));
-  MAX7456_WriteString(screenBuffer,SAVEP+6); //SaveExit
-  strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[2])));
-  MAX7456_WriteString(screenBuffer,SAVEP+16); //<Page>
+  MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[0])), SAVEP);		//EXIT
+  MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[1])), SAVEP+6);	//SaveExit
+  MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[2])), SAVEP+16);	//<Page>
 
   if(configPage==1)
   {
-    strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[3])));
-    MAX7456_WriteString(screenBuffer,38);    
-    strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[4])));
-    MAX7456_WriteString(screenBuffer,ROLLT);
+    MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[3])), 38);    
+    MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[4])), ROLLT);
     MAX7456_WriteString(itoa(P8[0],screenBuffer,10),ROLLP);
     MAX7456_WriteString(itoa(I8[0],screenBuffer,10),ROLLI);
     MAX7456_WriteString(itoa(D8[0],screenBuffer,10),ROLLD);
-    strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[5])));
-    MAX7456_WriteString(screenBuffer,PITCHT); 
-    MAX7456_WriteString(itoa(P8[1],screenBuffer,10),PITCHP);
-    MAX7456_WriteString(itoa(I8[1],screenBuffer,10),PITCHI);
-    MAX7456_WriteString(itoa(D8[1],screenBuffer,10),PITCHD);
-    strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[6])));
-    MAX7456_WriteString(screenBuffer,YAWT); 
+
+    MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[5])), PITCHT); 
+    MAX7456_WriteString(itoa(P8[1],screenBuffer,10), PITCHP);
+    MAX7456_WriteString(itoa(I8[1],screenBuffer,10), PITCHI);
+    MAX7456_WriteString(itoa(D8[1],screenBuffer,10), PITCHD);
+
+    MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[6])), YAWT); 
     MAX7456_WriteString(itoa(P8[2],screenBuffer,10),YAWP);
     MAX7456_WriteString(itoa(I8[2],screenBuffer,10),YAWI);
     MAX7456_WriteString(itoa(D8[2],screenBuffer,10),YAWD);
-    strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[7])));
-    MAX7456_WriteString(screenBuffer,ALTT); 
+
+    MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[7])), ALTT); 
     MAX7456_WriteString(itoa(P8[3],screenBuffer,10),ALTP);
     MAX7456_WriteString(itoa(I8[3],screenBuffer,10),ALTI);
     MAX7456_WriteString(itoa(D8[3],screenBuffer,10),ALTD);
-    strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[8])));
-    MAX7456_WriteString(screenBuffer,VELT); 
+
+    MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[8])), VELT); 
     MAX7456_WriteString(itoa(P8[4],screenBuffer,10),VELP);
     MAX7456_WriteString(itoa(I8[4],screenBuffer,10),VELI);
     MAX7456_WriteString(itoa(D8[4],screenBuffer,10),VELD);
-    strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[9])));
-    MAX7456_WriteString(screenBuffer,LEVT);
+
+    MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[9])), LEVT);
     MAX7456_WriteString(itoa(P8[7],screenBuffer,10),LEVP);
     MAX7456_WriteString(itoa(I8[7],screenBuffer,10),LEVI);
     MAX7456_WriteString(itoa(D8[7],screenBuffer,10),LEVD);
-    strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[10])));
-    MAX7456_WriteString(screenBuffer,MAGT);
+
+    MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[10])), MAGT);
     MAX7456_WriteString(itoa(P8[8],screenBuffer,10),MAGP);
 
     MAX7456_WriteString("P",71);
@@ -589,169 +581,145 @@ void displayPIDConfigScreen(void)
 
   if(configPage==2)
   {
-    strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[11])));
-    MAX7456_WriteString(screenBuffer,38);   
-    strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[12])));
-    MAX7456_WriteString(screenBuffer,ROLLT);
+    MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[11])), 38);   
+    MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[12])), ROLLT);
     MAX7456_WriteString(itoa(rcRate8,screenBuffer,10),ROLLD);
-    strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[13])));
-    MAX7456_WriteString(screenBuffer,PITCHT); 
+    MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[13])), PITCHT); 
     MAX7456_WriteString(itoa(rcExpo8,screenBuffer,10),PITCHD);
-    strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[14])));
-    MAX7456_WriteString(screenBuffer,YAWT); 
+    MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[14])), YAWT); 
     MAX7456_WriteString(itoa(rollPitchRate,screenBuffer,10),YAWD);
-    strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[15])));
-    MAX7456_WriteString(screenBuffer,ALTT); 
+    MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[15])), ALTT); 
     MAX7456_WriteString(itoa(yawRate,screenBuffer,10),ALTD);
-    strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[16])));
-    MAX7456_WriteString(screenBuffer,VELT); 
+    MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[16])), VELT); 
     MAX7456_WriteString(itoa(dynThrPID,screenBuffer,10),VELD);
-    strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[17])));
-    MAX7456_WriteString(screenBuffer,LEVT);
+    MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[17])), LEVT);
     MAX7456_WriteString(itoa(cycleTime,screenBuffer,10),LEVD);
-    strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[18])));
-    MAX7456_WriteString(screenBuffer,MAGT);
+    MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[18])), MAGT);
     MAX7456_WriteString(itoa(I2CError,screenBuffer,10),MAGD);  
-
   }
 
   if(configPage==3)
   {
-    strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[19])));
-    MAX7456_WriteString(screenBuffer,35);   
-    strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[23])));
-    MAX7456_WriteString(screenBuffer,PITCHT); 
+    MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[19])), 35);   
+    MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[23])), PITCHT); 
     if(enableVoltage){
-      strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[21])));
-      MAX7456_WriteString(screenBuffer,PITCHD);
+      MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[21])), PITCHD);
     }
     else {
-      strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[22])));
-      MAX7456_WriteString(screenBuffer,PITCHD); 
+      MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[22])), PITCHD); 
     } 
-    strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[24])));
-    MAX7456_WriteString(screenBuffer,YAWT); 
+    MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[24])), YAWT); 
     MAX7456_WriteString(itoa(lowVoltage,screenBuffer,10),YAWD); 
-    strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[25])));
-    MAX7456_WriteString(screenBuffer,ALTT); 
+    MAX7456_WriteString((char*)pgm_read_word(&(configMsgs[25])), ALTT); 
     if(enableTemperature){
-      strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[21])));
-      MAX7456_WriteString(screenBuffer,ALTD);
+      MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[21])), ALTD);
     }
     else {
-      strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[22])));
-      MAX7456_WriteString(screenBuffer,ALTD);
+      MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[22])), ALTD);
     }  
-    strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[26])));
-    MAX7456_WriteString(screenBuffer,VELT); 
+    MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[26])), VELT); 
     MAX7456_WriteString(itoa(highTemperature,screenBuffer,10),VELD);    
-     strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[27])));
-    MAX7456_WriteString(screenBuffer,LEVT); 
+    MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[27])), LEVT); 
     if(displayGPS){
-      strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[21])));
-      MAX7456_WriteString(screenBuffer,LEVD);
+      MAX7456_WriteString((char*)pgm_read_word(&(configMsgs[21])), LEVD);
     }
- }  
+  }
 
   if(configPage==4)
   {
-    strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[31])));
-    MAX7456_WriteString(screenBuffer ,39);   
-    strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[32])));
-    MAX7456_WriteString(screenBuffer,ROLLT);
+    MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[31])), 39);   
+
+    MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[32])), ROLLT);
     MAX7456_WriteString(itoa(rssiADC,screenBuffer,10),ROLLD);
-    strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[33])));
-    MAX7456_WriteString(screenBuffer,PITCHT); 
+
+    MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[33])), PITCHT); 
     MAX7456_WriteString(itoa(rssi,screenBuffer,10),PITCHD);
-    strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[34])));
-    MAX7456_WriteString(screenBuffer,YAWT); 
+
+    MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[34])), YAWT); 
     if(rssiTimer>0) MAX7456_WriteString(itoa(rssiTimer,screenBuffer,10),YAWD-5);
     MAX7456_WriteString(itoa(rssiMin,screenBuffer,10),YAWD);
-    strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[35])));
-    MAX7456_WriteString(screenBuffer,ALTT); 
+
+    MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[35])), ALTT); 
     MAX7456_WriteString(itoa(rssiMax,screenBuffer,10),ALTD);
-    strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[36])));
-    MAX7456_WriteString(screenBuffer,VELT); 
+
+    MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[36])), VELT); 
     if(enableRSSI){
-      strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[21])));
-      MAX7456_WriteString(screenBuffer,VELD);
+      MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[21])), VELD);
     }
     else{ 
-      strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[22])));
-      MAX7456_WriteString(screenBuffer,VELD);
+      MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[22])), VELD);
     }
-    strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[37])));
-    MAX7456_WriteString(screenBuffer,LEVT); 
+
+    MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[37])), LEVT); 
     if(unitSystem==METRIC){
-      strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[38])));
-      MAX7456_WriteString(screenBuffer,LEVD-2);
+      MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[38])), LEVD-2);
     }
     else {
-      strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[39])));
-      MAX7456_WriteString(screenBuffer,LEVD-2);
+      MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[39])), LEVD-2);
     }
-    strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[40])));
-    MAX7456_WriteString(screenBuffer,MAGT); 
+
+    MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[40])), MAGT); 
     if(screenType==NARROW){
-      strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[41])));
-      MAX7456_WriteString(screenBuffer,MAGD-2);
+      MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[41])), MAGD-2);
     }
     else {
-      strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[42])));
-      MAX7456_WriteString(screenBuffer,MAGD-1);
+      MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[42])), MAGD-1);
     }  
   }
 
   if(configPage==5)
   {
-    strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[43])));
-    MAX7456_WriteString(screenBuffer ,37);   
-    strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[44])));
-    MAX7456_WriteString(screenBuffer,ROLLT);
-    if(accCalibrationTimer>0) MAX7456_WriteString(itoa(accCalibrationTimer,screenBuffer,10),ROLLD);
-    else MAX7456_WriteString("-",ROLLD);
-    strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[45])));
-    MAX7456_WriteString(screenBuffer,PITCHT); 
-    MAX7456_WriteString(itoa(MwAccSmooth[0],screenBuffer,10),PITCHD);
-    strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[46])));
-    MAX7456_WriteString(screenBuffer,YAWT); 
-    MAX7456_WriteString(itoa(MwAccSmooth[1],screenBuffer,10),YAWD);
-    strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[47])));
-    MAX7456_WriteString(screenBuffer,ALTT); 
-    MAX7456_WriteString(itoa(MwAccSmooth[2],screenBuffer,10),ALTD);
-    strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[48])));
-    MAX7456_WriteString(screenBuffer,VELT);
-    if(magCalibrationTimer>0) MAX7456_WriteString(itoa(magCalibrationTimer,screenBuffer,10),VELD);
-    else MAX7456_WriteString("-",VELD);
-    strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[49])));
-    MAX7456_WriteString(screenBuffer,LEVT);
-    MAX7456_WriteString(itoa(MwHeading,screenBuffer,10),LEVD);
-    strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[50])));
-    MAX7456_WriteString(screenBuffer,MAGT);
-    if(eepromWriteTimer>0) MAX7456_WriteString(itoa(eepromWriteTimer,screenBuffer,10),MAGD);
-    else MAX7456_WriteString("-",MAGD);
+    MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[43])), 37);   
 
+    MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[44])), ROLLT);
+    if(accCalibrationTimer>0)
+      MAX7456_WriteString(itoa(accCalibrationTimer,screenBuffer,10),ROLLD);
+    else
+      MAX7456_WriteString("-",ROLLD);
+
+    MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[45])), PITCHT); 
+    MAX7456_WriteString(itoa(MwAccSmooth[0],screenBuffer,10),PITCHD);
+
+    MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[46])), YAWT); 
+    MAX7456_WriteString(itoa(MwAccSmooth[1],screenBuffer,10),YAWD);
+
+    MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[47])), ALTT); 
+    MAX7456_WriteString(itoa(MwAccSmooth[2],screenBuffer,10),ALTD);
+
+    MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[48])), VELT);
+    if(magCalibrationTimer>0)
+      MAX7456_WriteString(itoa(magCalibrationTimer,screenBuffer,10),VELD);
+    else
+      MAX7456_WriteString("-",VELD);
+
+    MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[49])), LEVT);
+    MAX7456_WriteString(itoa(MwHeading,screenBuffer,10),LEVD);
+
+    MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[50])), MAGT);
+    if(eepromWriteTimer>0)
+      MAX7456_WriteString(itoa(eepromWriteTimer,screenBuffer,10),MAGD);
+    else
+      MAX7456_WriteString("-",MAGD);
   } 
 
   if(configPage==6)
   {
-    strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[51])));
-    MAX7456_WriteString(screenBuffer ,38);
-    strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[52])));
-    MAX7456_WriteString(screenBuffer,ROLLT);
+    MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[51])), 38);
+
+    MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[52])), ROLLT);
     MAX7456_WriteString(itoa(trip,screenBuffer,10),ROLLD);
-    strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[53])));
-    MAX7456_WriteString(screenBuffer,PITCHT); 
+
+    MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[53])), PITCHT); 
     MAX7456_WriteString(itoa(distanceMAX,screenBuffer,10),PITCHD);
-    strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[54])));
-    MAX7456_WriteString(screenBuffer,YAWT); 
+
+    MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[54])), YAWT); 
     MAX7456_WriteString(itoa(altitudeMAX,screenBuffer,10),YAWD);
-    strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[55])));
-    MAX7456_WriteString(screenBuffer,ALTT); 
+
+    MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[55])), ALTT); 
     MAX7456_WriteString(itoa(speedMAX,screenBuffer,10),ALTD);
     
-    strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[56])));
-    MAX7456_WriteString(screenBuffer,VELT);
+    MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[56])), VELT);
+
     strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[30]))); //screenBuffer cleaning.
     itoa(flyingMinute,screenBuffer,10);
     if(flyingMinute<10) {
@@ -771,12 +739,12 @@ void displayPIDConfigScreen(void)
       screenBuffer[0]='0';
     }
     MAX7456_WriteString(screenBuffer,VELD+xx);
-    strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[57])));
-    MAX7456_WriteString(screenBuffer,LEVT);
+
+    MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[57]))), LEVT);
     if(!unitSystem) xx= pMeterSum / EST_PMSum;
     MAX7456_WriteString(itoa(xx,screenBuffer,10),LEVD);
-    strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[58])));
-    MAX7456_WriteString(screenBuffer,MAGT);
+
+    MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[58])), MAGT);
     MAX7456_WriteString(itoa(temperMAX,screenBuffer,10),MAGD);
   }
   
@@ -1208,14 +1176,3 @@ case 491:
 
   }
 }
-
-
-
-
-
-
-
-
-
-
-

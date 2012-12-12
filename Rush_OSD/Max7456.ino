@@ -197,16 +197,29 @@ void MAX7456Setup(void)
 
 }
 
-
-void MAX7456_WriteString(char *string,int Adresse)
+// Copy string from ram into screen buffer
+void MAX7456_WriteString(char *string, int Adresse)
 {
   int xx;
 
   for(xx=0;string[xx]!=0;)
   {
-    screen[Adresse++]=string[xx++];
+    screen[Adresse++] = string[xx++];
   }
 }
+
+// Copy string from progmem into the screen buffer
+void MAX7456_WriteString_P(char *string, int Adresse)
+{
+  int xx;
+
+  for(xx=0;string[xx]!=0;)
+  {
+    screen[Adresse++] = pgm_read_byte(&string[xx++]);
+  }
+}
+
+
 void MAX7456_DrawScreen(char *string,int Adresse)
 {
   int xx;
