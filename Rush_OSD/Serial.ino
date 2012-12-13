@@ -208,7 +208,7 @@ void serialMSPCheck()
     if((ROW==10)&&(COL==2)) saveExit();
   }                   
 
-  if(configMode&&!waitStick&&(MwRcData[YAWSTICK]>MAXSTICK)) // DECREASE
+  if(configMode&&!waitStick&&(MwRcData[YAWSTICK]>MAXSTICK)) // INCREASE
   {  
     waitStick =1;
     if((ROW==1)&&(COL==1)&&(configPage==1)) P8[0]++;
@@ -410,4 +410,3 @@ void blankserialRequest(char requestMSP)
   Serial.write(requestMSP);
   Serial.write(requestMSP);
 }
-
