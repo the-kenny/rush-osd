@@ -185,7 +185,7 @@ uint8_t flyingSecond=0;
 // ---------------------------------------------------------------------------------------
 
 // For Intro
-prog_char message0[] PROGMEM = "Rush_KV_2.0";
+prog_char message0[] PROGMEM = "Rush_KV_2.1";
 prog_char message1[] PROGMEM = "Video signal: NTSC";
 prog_char message2[] PROGMEM = "Video signal: PAL";
 prog_char message3[] PROGMEM = "Screen Type: WIDE";
@@ -272,12 +272,3 @@ const char* configMsgs[] PROGMEM = {
   configMsg31, configMsg32, configMsg33, configMsg34, configMsg35, configMsg36, configMsg37, configMsg38, configMsg39, configMsg40,
   configMsg41, configMsg42, configMsg43, configMsg44, configMsg45, configMsg46, configMsg47, configMsg48, configMsg49, configMsg50,
   configMsg51, configMsg52, configMsg53, configMsg54, configMsg55, configMsg56, configMsg57, configMsg58};
-
-
-
-
-
-
-
-
-
