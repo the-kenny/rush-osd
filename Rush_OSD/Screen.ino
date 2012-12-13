@@ -128,7 +128,7 @@ void displayHorizon(short rollAngle, short pitchAngle)
   displayHorizonPart(-1*rollAngle,8,pitchAngle );
 
 #if defined(DISPLAY_HORIZON_BR) 
-  //Draw center scree
+  //Draw center screen
   screen[219-30]=0x03;
   screen[224-30-1]=0x1D;
   screen[224-30+1]=0x1D;
@@ -348,7 +348,7 @@ void displayHeadingGraph(void)
 void displayIntro(void)
 {
 
-  MAX7456_WriteString(screenBuffer,RushduinoVersionPosition);
+  MAX7456_WriteString_P((char*)pgm_read_word(&(introMessages[0])), RushduinoVersionPosition);
 
 #if defined VideoSignalType_NTSC 
   MAX7456_WriteString_P((char*)pgm_read_word(&(introMessages[1])), RushduinoVersionPosition+30); 
@@ -600,7 +600,7 @@ void displayPIDConfigScreen(void)
 
   if(configPage==3)
   {
-    MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[19])), 35);   
+    MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[19])), 35);  
     MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[23])), PITCHT); 
     if(enableVoltage){
       MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[21])), PITCHD);
@@ -610,7 +610,8 @@ void displayPIDConfigScreen(void)
     } 
     MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[24])), YAWT); 
     MAX7456_WriteString(itoa(lowVoltage,screenBuffer,10),YAWD); 
-    MAX7456_WriteString((char*)pgm_read_word(&(configMsgs[25])), ALTT); 
+    MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[25])), ALTT); 
+   
     if(enableTemperature){
       MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[21])), ALTD);
     }
@@ -620,8 +621,12 @@ void displayPIDConfigScreen(void)
     MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[26])), VELT); 
     MAX7456_WriteString(itoa(highTemperature,screenBuffer,10),VELD);    
     MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[27])), LEVT); 
+    
     if(displayGPS){
-      MAX7456_WriteString((char*)pgm_read_word(&(configMsgs[21])), LEVD);
+      MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[21])), LEVD);
+     }  
+     else {
+      MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[22])), LEVD);
     }
   }
 
@@ -1149,9 +1154,8 @@ case 491:
   case 603: 
     MAX7456_WriteString(CURSOR,SAVEP+16-1); 
     break; // PAGE
-
-
-
+    
+    
   case 691: 
     ROW=10; 
     break;  // exit
