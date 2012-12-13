@@ -10,9 +10,9 @@
 // For new code releases http://code.google.com/p/rush-osd-development/
 // In near future I pretend to have my one site dedicated to Aerial Drones/Photography and FPV stuff related. I will share it. 
 // As I am not a coder professionaly, developments are going to be slower but I intend to keep them going with the new needs to come. 
-// All the things that I possibly do with this software are intended to be my needs I just hope they can meet yours.
-// Along the code are mencioned credits to people who helped me debugging and implementing new features. 
-// I wish you great flights with Rushduino OSD. 
+// All the things that I and commiters possibly do with this software is intended to be our needs, we just hope they can meet yours.
+// Along the code are mencioned credits to people who helped debugging and implementing new features. 
+// I wish you great flights with Rushduino or Minim OSD. 
 
 
               /************************************************************************************************************************************************/
@@ -28,20 +28,9 @@
               // At the end of the flight may be useful to look at the statistics.
 
 
-
-
               /***********************************************************************************************************************************************/
-              /*                                                           RUSH_KV_2.0 Kataventos                                                            */
-              /*                                                                                                                                             */
-              /*                  1-Division adjustment for PowerMeter;                                                                                      */
-              /*                  2-Analogue video voltage working;                                                                                          */
-              /*                  3-Option between Vbat and analogue read for MAIN and VIDEO voltages;                                                       */
-              /*                  4-MaxSpeed debugged on statistics;                                                                                         */
-              /*                  5-AltitudeMax debugged on statistics;                                                                                      */
-              /*                  6-Amperage offset and amperage calibration djustment on config.h;                                                          */
-              /*                  7-Multiwii logo lives again, can be supressed on config.h                                                                  */
-              /*                                                                                                                                             */
-              /*                                                                                                                                             */
+              /*                                                                 RUSH_KV_2.1                                                                 */
+              /*                                           Thanks to Itain that helped debugging on many ways on this release                                */
               /***********************************************************************************************************************************************/
 
 
@@ -72,11 +61,13 @@ void setup()
 void loop()
 {
   // Process AI
+  #if defined RUSHDUINO
   temperature=(analogRead(temperaturePin)*1.1)/10.23;  
   voltage=(analogRead(voltagePin)*1.1*DIVIDERRATIO)/102.3;
   vidvoltage=(analogRead(vidvoltagePin)*1.1*VIDDIVIDERRATIO)/102.3;
   rssiADC = (analogRead(rssiPin)*1.1)/1023;
   amperage = (AMPRERAGE_OFFSET - (analogRead(amperagePin)*AMPERAGE_CAL))/10.23;
+  #endif
 
   // Blink Basic Sanity Test Led at 1hz
   if(tenthSec>10) BST_ON else BST_OFF 
@@ -295,7 +286,7 @@ void loop()
 
 void calculateTrip(void)
 {
- if(GPS_fix && (GPS_speed>0)) trip = ((GPS_speed * 1000)/3600)*0.1; 
+ if(GPS_fix && (GPS_speed>0)) trip += ((GPS_speed * 1000)/3600)*0.1; 
 }
 
 void calculateRssi(void)
@@ -337,5 +328,4 @@ void readEEPROM(void)
   unitSystem= EEPROM.read(EEPROM_UNITSYSTEM);
  
 }
-
 
