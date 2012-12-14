@@ -472,22 +472,22 @@ void displayClimbRate(void)
   itoa(xx,screenBuffer,10);
   MAX7456_WriteString(screenBuffer,MwClimbRatePosition[videoSignalType][screenType]+1);
 
-  if (climbRate > 10)   screenBuffer[0]=0xB3; 
+  if (climbRate > 30)   screenBuffer[0]=0xB3; 
   else
-    if (climbRate > 5)    screenBuffer[0]=0xB2; 
+    if (climbRate > 20)    screenBuffer[0]=0xB2; 
     else 
-      if (climbRate > 3)    screenBuffer[0]=0xB1; 
+      if (climbRate > 10)    screenBuffer[0]=0xB1; 
     else        
-      if (climbRate > 1)  screenBuffer[0]=0xB0; 
+      if (climbRate > 5)  screenBuffer[0]=0xB0; 
     else screenBuffer[0]=0xBC;
 
-  if (climbRate < -10)  screenBuffer[0]=0xB4; 
+  if (climbRate < -30)  screenBuffer[0]=0xB4; 
   else        
-    if (climbRate < -5)   screenBuffer[0]=0xB5; 
+    if (climbRate < -20)   screenBuffer[0]=0xB5; 
   else        
-    if (climbRate < -3)   screenBuffer[0]=0xB6; 
+    if (climbRate < -10)   screenBuffer[0]=0xB6; 
   else 
-    if (climbRate < -1) screenBuffer[0]=0xB7;
+    if (climbRate < -5) screenBuffer[0]=0xB7;
   screenBuffer[1]=0;
   if (climbRate>= -1) pos = MwClimbRatePosition[videoSignalType][screenType]-2; 
   else pos = MwClimbRatePosition[videoSignalType][screenType]-2+LINE;
