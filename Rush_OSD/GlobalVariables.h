@@ -54,22 +54,21 @@ static uint8_t thrExpo8;
 
 
 #define SERIALBUFFERSIZE 128
-static uint8_t serialBuffer[SERIALBUFFERSIZE]; // this hold the imcomming string from serial O string
+static uint8_t serialBuffer[SERIALBUFFERSIZE]; // this hold the imcoming string from serial O string
 uint8_t serialMSPStringOK=0;
 uint8_t receiverIndex=0;
 static uint16_t  MwAccSmooth[3]={0,0,0};       // Those will hold Accelerator data
 int32_t  MwAltitude=0;                         // This hold barometric value
 
-// This hold headting to north
-int MwAngle[2]={0,0};     // Those will hold Accelerator Angle
-static uint16_t MwRcData[8]={
+// This hold heading to north
+int MwAngle[2]={0,0};           // Those will hold Accelerator Angle
+static uint16_t MwRcData[8]={   // This hold receiver pulse signal
   1500,1500,1500,1500,1500,1500,1500,1500} ;
 
-// This hold receiver pulse signal
 uint16_t  MwSensorPresent=0;
 uint32_t  MwSensorActive=0;
 uint8_t MwVersion=0;
-uint8_t  MwVBat=0;
+uint8_t MwVBat=0;
 int16_t MwVario=0;
 uint8_t armed=0;
 int16_t armedTimer=0;
@@ -95,7 +94,7 @@ uint8_t flyMinute=0;
 uint8_t flySecond=0;
 
 // For Heading
-char headGraph[]={
+const char headGraph[]={
   0x1b,0x1d,0x1c,0x1d,0x19,0x1d,0x1c,0x1d,0x1B,0x1d,0x1c,0x1d,0x18,0x1d,0x1c,0x1d,0x1A,0x1d,0x1c,0x1d,0x19,0x1D,0x1c,0x1d};
 static uint16_t MwHeading=0;
 
@@ -185,87 +184,87 @@ uint8_t flyingSecond=0;
 // ---------------------------------------------------------------------------------------
 
 // For Intro
-prog_char message0[] PROGMEM = "Rush_KV_2.1";
-prog_char message1[] PROGMEM = "Video signal: NTSC";
-prog_char message2[] PROGMEM = "Video signal: PAL";
-prog_char message3[] PROGMEM = "Screen Type: WIDE";
-prog_char message4[] PROGMEM = "Screen Type: NARROW";
-prog_char message5[] PROGMEM = "Version:";
-prog_char message6[] PROGMEM = "MENU:THRT MIDDLE";
-prog_char message7[] PROGMEM = "YAW RIGHT";
-prog_char message8[] PROGMEM = "PITCH FULL";
+const char message0[] PROGMEM = "Rush_KV_2.1";
+const char message1[] PROGMEM = "Video signal: NTSC";
+const char message2[] PROGMEM = "Video signal: PAL";
+const char message3[] PROGMEM = "Screen Type: WIDE";
+const char message4[] PROGMEM = "Screen Type: NARROW";
+const char message5[] PROGMEM = "Version:";
+const char message6[] PROGMEM = "MENU:THRT MIDDLE";
+const char message7[] PROGMEM = "YAW RIGHT";
+const char message8[] PROGMEM = "PITCH FULL";
 
 const char* introMessages[] PROGMEM = {
   message0, message1, message2, message3, message4, message5, message6, message7, message8};
 
 // For Config
-prog_char configMsg0[] PROGMEM = "EXIT";
-prog_char configMsg1[] PROGMEM = "  SAVE";
-prog_char configMsg2[] PROGMEM = "<PAGE>";
+const char configMsg0[] PROGMEM = "EXIT";
+const char configMsg1[] PROGMEM = "  SAVE";
+const char configMsg2[] PROGMEM = "<PAGE>";
 //-----------------------------------------------------------Page1
-prog_char configMsg3[] PROGMEM = "1/6 PID CONFIG";
-prog_char configMsg4[] PROGMEM = "ROLL";
-prog_char configMsg5[] PROGMEM = "PITCH";
-prog_char configMsg6[] PROGMEM = "YAW";
-prog_char configMsg7[] PROGMEM = "ALT";
-prog_char configMsg8[] PROGMEM = "GPS";
-prog_char configMsg9[] PROGMEM = "LEVEL";
-prog_char configMsg10[] PROGMEM = "MAG";
+const char configMsg3[] PROGMEM = "1/6 PID CONFIG";
+const char configMsg4[] PROGMEM = "ROLL";
+const char configMsg5[] PROGMEM = "PITCH";
+const char configMsg6[] PROGMEM = "YAW";
+const char configMsg7[] PROGMEM = "ALT";
+const char configMsg8[] PROGMEM = "GPS";
+const char configMsg9[] PROGMEM = "LEVEL";
+const char configMsg10[] PROGMEM = "MAG";
 //-----------------------------------------------------------Page2
-prog_char configMsg11[] PROGMEM = "2/6 RC TUNING";
-prog_char configMsg12[] PROGMEM = "RC RATE";
-prog_char configMsg13[] PROGMEM = "EXPO";
-prog_char configMsg14[] PROGMEM = "ROLL PITCH RATE";
-prog_char configMsg15[] PROGMEM = "YAW RATE";
-prog_char configMsg16[] PROGMEM = "THROTTLE PID ATT";
-prog_char configMsg17[] PROGMEM = "MwCycle Time";
-prog_char configMsg18[] PROGMEM = "MwI2C Errors";
+const char configMsg11[] PROGMEM = "2/6 RC TUNING";
+const char configMsg12[] PROGMEM = "RC RATE";
+const char configMsg13[] PROGMEM = "EXPO";
+const char configMsg14[] PROGMEM = "ROLL PITCH RATE";
+const char configMsg15[] PROGMEM = "YAW RATE";
+const char configMsg16[] PROGMEM = "THROTTLE PID ATT";
+const char configMsg17[] PROGMEM = "MwCycle Time";
+const char configMsg18[] PROGMEM = "MwI2C Errors";
 //-----------------------------------------------------------Page3
-prog_char configMsg19[] PROGMEM = "3/6 DISPLAY & ALARM";
-prog_char configMsg20[] PROGMEM = "      ";
-prog_char configMsg21[] PROGMEM = "ON";
-prog_char configMsg22[] PROGMEM = "OFF";
-prog_char configMsg23[] PROGMEM = "Display Voltage";
-prog_char configMsg24[] PROGMEM = "VOLTAGE ALARM";
-prog_char configMsg25[] PROGMEM = "Display Temperature";
-prog_char configMsg26[] PROGMEM = "SET ALARM TEMP";
-prog_char configMsg27[] PROGMEM = "Display GPS";
-prog_char configMsg28[] PROGMEM = "                  ";
-prog_char configMsg29[] PROGMEM = " ";
-prog_char configMsg30[] PROGMEM = "                   ";
+const char configMsg19[] PROGMEM = "3/6 DISPLAY & ALARM";
+const char configMsg20[] PROGMEM = "      ";
+const char configMsg21[] PROGMEM = "ON";
+const char configMsg22[] PROGMEM = "OFF";
+const char configMsg23[] PROGMEM = "Display Voltage";
+const char configMsg24[] PROGMEM = "VOLTAGE ALARM";
+const char configMsg25[] PROGMEM = "Display Temperature";
+const char configMsg26[] PROGMEM = "SET ALARM TEMP";
+const char configMsg27[] PROGMEM = "Display GPS";
+const char configMsg28[] PROGMEM = "                  ";
+const char configMsg29[] PROGMEM = " ";
+const char configMsg30[] PROGMEM = "                   ";
 //-----------------------------------------------------------Page4
-prog_char configMsg31[] PROGMEM = "4/6 DISPLAY";
-prog_char configMsg32[] PROGMEM = "Actual RSSIADC(/4)";
-prog_char configMsg33[] PROGMEM = "Actual RSSI";
-prog_char configMsg34[] PROGMEM = "SET RSSI MIN";
-prog_char configMsg35[] PROGMEM = "SET RSSI MAX";
-prog_char configMsg36[] PROGMEM = "Display RSSI";
-prog_char configMsg37[] PROGMEM = "UNIT SYSTEM";
-prog_char configMsg38[] PROGMEM = "METRIC";
-prog_char configMsg39[] PROGMEM = "IMPERL";
-prog_char configMsg40[] PROGMEM = "Screen Type";
-prog_char configMsg41[] PROGMEM = "NARROW";
-prog_char configMsg42[] PROGMEM = "WIDE";
+const char configMsg31[] PROGMEM = "4/6 DISPLAY";
+const char configMsg32[] PROGMEM = "Actual RSSIADC(/4)";
+const char configMsg33[] PROGMEM = "Actual RSSI";
+const char configMsg34[] PROGMEM = "SET RSSI MIN";
+const char configMsg35[] PROGMEM = "SET RSSI MAX";
+const char configMsg36[] PROGMEM = "Display RSSI";
+const char configMsg37[] PROGMEM = "UNIT SYSTEM";
+const char configMsg38[] PROGMEM = "METRIC";
+const char configMsg39[] PROGMEM = "IMPERL";
+const char configMsg40[] PROGMEM = "Screen Type";
+const char configMsg41[] PROGMEM = "NARROW";
+const char configMsg42[] PROGMEM = "WIDE";
 //-----------------------------------------------------------Page5
-prog_char configMsg43[] PROGMEM = "5/6 CALIBRATION";
-prog_char configMsg44[] PROGMEM = "ACC Calibration";
-prog_char configMsg45[] PROGMEM = "ACC ROLL :";
-prog_char configMsg46[] PROGMEM = "ACC PITCH :";
-prog_char configMsg47[] PROGMEM = "ACC Z :";
-prog_char configMsg48[] PROGMEM = "MAG Calibration";
-prog_char configMsg49[] PROGMEM = "Heading";
-prog_char configMsg50[] PROGMEM = "MW EEPROM Write";
+const char configMsg43[] PROGMEM = "5/6 CALIBRATION";
+const char configMsg44[] PROGMEM = "ACC Calibration";
+const char configMsg45[] PROGMEM = "ACC ROLL :";
+const char configMsg46[] PROGMEM = "ACC PITCH :";
+const char configMsg47[] PROGMEM = "ACC Z :";
+const char configMsg48[] PROGMEM = "MAG Calibration";
+const char configMsg49[] PROGMEM = "Heading";
+const char configMsg50[] PROGMEM = "MW EEPROM Write";
 //-----------------------------------------------------------Page6
-prog_char configMsg51[] PROGMEM = "6/6 STATISTICS";
-prog_char configMsg52[] PROGMEM = "TRIP:";
-prog_char configMsg53[] PROGMEM = "Max DisToHome:";
-prog_char configMsg54[] PROGMEM = "Max Altitude:";
-prog_char configMsg55[] PROGMEM = "Max Speed:";
-prog_char configMsg56[] PROGMEM = "Flying Time:";
-prog_char configMsg57[] PROGMEM = "Drained Amps.:";
-prog_char configMsg58[] PROGMEM = "Max Temp.:";
+const char configMsg51[] PROGMEM = "6/6 STATISTICS";
+const char configMsg52[] PROGMEM = "TRIP:";
+const char configMsg53[] PROGMEM = "Max DisToHome:";
+const char configMsg54[] PROGMEM = "Max Altitude:";
+const char configMsg55[] PROGMEM = "Max Speed:";
+const char configMsg56[] PROGMEM = "Flying Time:";
+const char configMsg57[] PROGMEM = "Drained Amps.:";
+const char configMsg58[] PROGMEM = "Max Temp.:";
 
-const char* configMsgs[] PROGMEM = {
+const char *configMsgs[] PROGMEM = {
   configMsg0, configMsg1, configMsg2, configMsg3, configMsg4, configMsg5, configMsg6, configMsg7, configMsg8, configMsg9, configMsg10,
   configMsg11, configMsg12, configMsg13, configMsg14, configMsg15, configMsg16, configMsg17,   configMsg18, configMsg19,configMsg20,
   configMsg21, configMsg22, configMsg23, configMsg24, configMsg25, configMsg26, configMsg27, configMsg28, configMsg29, configMsg30,

@@ -191,21 +191,20 @@ const uint8_t lowrssiAlarm=75;     // This will make blink the Rssi if lower the
 #define EEPROM_UNITSYSTEM         10
 
 // POSITION OF EACH CHARACTER OR LOGO IN THE MAX7456
-unsigned char speedUnitAdd[2] ={
-  0xa5,0xa6}
-; // [0][0] and [0][1] = Km/h   [1][0] and [1][1] = Mph
-unsigned char AHUnitAdd[8] = {
+const unsigned char speedUnitAdd[2] ={
+  0xa5,0xa6} ; // [0][0] and [0][1] = Km/h   [1][0] and [1][1] = Mph
+const unsigned char AHUnitAdd[8] = {
   0x10,0x11,0x12,0x13,0x14,0x15,0x16,0x17};
-unsigned char voltageUnitAdd = 0xa9;
-unsigned char temperatureUnitAdd[2] = {
+const unsigned char voltageUnitAdd = 0xa9;
+const unsigned char temperatureUnitAdd[2] = {
   0x0e,0x0d};
-unsigned char flyTimeUnitAdd=0x9c;
-unsigned char onTimeUnitAdd=0x9b;
-unsigned char amperageUnitAdd = 0x9a;
+const unsigned char flyTimeUnitAdd=0x9c;
+const unsigned char onTimeUnitAdd=0x9b;
+const unsigned char amperageUnitAdd = 0x9a;
 
-unsigned char rssiUnitAdd = 0xba;
-unsigned char sensorAdd[4] = {
-  0xa0,0xa1,0xa2,0xa4}; //acc,mag,bar
+const unsigned char rssiUnitAdd = 0xba;
+const unsigned char sensorAdd[4] = {
+  0xa0,0xa1,0xa2,0xa4}; //acc,mag,bar,GPS
 
 #if defined MULTIWIILOGO
 const char MultiWiiLogoL1Add[17] PROGMEM = {
@@ -216,14 +215,14 @@ const char MultiWiiLogoL3Add[17] PROGMEM = {
   0xf0,0xf1,0xf2,0xf3,0xf4,0xf5,0xf6,0xf7,0xf8,0xf9,0xfa,0xfb,0xfc,0xfd,0xfe,0};
 #endif
 
-unsigned char MwHeadingUnitAdd=0xbd;
-unsigned char GPS_numSatAdd[2]={
+const unsigned char MwHeadingUnitAdd=0xbd;
+const unsigned char GPS_numSatAdd[2]={
   0x1e,0x1f};
-unsigned char MwAltitudeAdd[2]={
+const unsigned char MwAltitudeAdd[2]={
   0xa7,0xa8};
-unsigned char MwClimbRateAdd[2]={
+const unsigned char MwClimbRateAdd[2]={
   0x9f,0x99};
-unsigned char GPS_distanceToHomeAdd[2]={
+const unsigned char GPS_distanceToHomeAdd[2]={
   0x9d,0x9e};
 
 
@@ -232,62 +231,62 @@ unsigned char GPS_distanceToHomeAdd[2]={
 //                                         WIDE        NARROW      WIDE        NARROW
 //
 // TOP OF THE SCREEN
-int GPS_numSatPosition[2][2]=             {
+const int GPS_numSatPosition[2][2]=             {
   LINE02+2   ,LINE02+4   ,LINE02+2   ,LINE02+4   };
-int GPS_directionToHomePosition[2][2]=    {
+const int GPS_directionToHomePosition[2][2]=    {
   LINE03+14  ,LINE03+14  ,LINE03+14  ,LINE03+14  };
 
 // TOP OF THE SCREEN
-int GPS_distanceToHomePosition[2][2]=     {
+const int GPS_distanceToHomePosition[2][2]=     {
   LINE02+23  ,LINE02+21  ,LINE02+25  ,LINE02+22  };
-int speedPosition[2][2] =                 {
+const int speedPosition[2][2] =                 {
   LINE03+23  ,LINE03+21  ,LINE03+25  ,LINE03+22  };  // [0] En Km/h   [1] En Mph
-int GPS_angleToHomePosition[2][2]=        {
+const int GPS_angleToHomePosition[2][2]=        {
   LINE04+14  ,LINE04+14  ,LINE04+14  ,LINE04+14  };
 #if defined GPSALT_UNDERSPEED
-int MwGPSAltPosition[2][2] =              {
+const int MwGPSAltPosition[2][2] =              {
   LINE04+23  ,LINE04+21  ,LINE04+25  ,LINE04+22  };
 #endif
-int sensorPosition[2][2]=                 {
+const int sensorPosition[2][2]=                 {
   LINE03+2   ,LINE03+4   ,LINE03+2   ,LINE03+4   };
-int MwHeadingPosition[2][2] =             {
+const int MwHeadingPosition[2][2] =             {
   LINE02+19  ,LINE02+17  ,LINE02+19  ,LINE02+17  };
-int MwHeadingGraphPosition[2][2] =        {
+const int MwHeadingGraphPosition[2][2] =        {
   LINE02+10  ,LINE02+10  ,LINE02+10  ,LINE02+10  };
 
 // MIDDLE OF THE SCREEN
-int MwAltitudePosition[2][2]=             {
+const int MwAltitudePosition[2][2]=             {
   LINE07+2   ,LINE07+4   ,LINE07+2   ,LINE07+4   };
-int MwClimbRatePosition[2][2]=            {
+const int MwClimbRatePosition[2][2]=            {
   LINE07+24  ,LINE07+26  ,LINE07+25  ,LINE07+26  };
 
 
 // BOTTOM OF THE SCREEN
-int flyTimePosition[2][2]=                {
+const int flyTimePosition[2][2]=                {
   LINE12+22  ,LINE12+21  ,LINE12+23+60  ,LINE12+21+60  };
-int onTimePosition[2][2]=                 {
+const int onTimePosition[2][2]=                 {
   LINE13+22  ,LINE13+21  ,LINE13+23+60  ,LINE13+21+60  };
-int motorArmedPosition[2][2]=            {
+const int motorArmedPosition[2][2]=            {
   LINE12+11  ,LINE12+11  ,LINE11+11+60  ,LINE11+11+60  };
-int MwGPSLatPosition[2][2] =              {
+const int MwGPSLatPosition[2][2] =              {
   LINE10+2   ,LINE10+4   ,LINE10+2+60   ,LINE10+4+60   };
-int MwGPSLonPosition[2][2] =              {
+const int MwGPSLonPosition[2][2] =              {
   LINE10+11+2   ,LINE10+11+4   ,LINE10+2+11+60   ,LINE10+11+4+60  };
 #if defined COORDINATES
-int MwGPSAltPosition[2][2] =              {
+const int MwGPSAltPosition[2][2] =              {
   LINE10+24   ,LINE10+23   ,LINE10+25+60   ,LINE10+23+60  };
 #endif
-int rssiPosition[2][2]=                   {
+const int rssiPosition[2][2]=                   {
   LINE12+3   ,LINE12+5   ,LINE12+3+60   ,LINE12+5+60   };
-int temperaturePosition[2][2]=          {
+const int temperaturePosition[2][2]=          {
   LINE11+2   ,LINE11+4   ,LINE11+2   ,LINE11+4   };
-int voltagePosition[2][2]  =                {
+const int voltagePosition[2][2]  =                {
   LINE13+3  ,LINE13+5   ,LINE13+3+60   ,LINE13+5+60   };
- int vidvoltagePosition[2][2]  =                {
+const int vidvoltagePosition[2][2]  =                {
   LINE11+3  ,LINE11+5   ,LINE11+3+60   ,LINE11+5+60   };
-int amperagePosition[2][2] =               {
+const int amperagePosition[2][2] =               {
   LINE13+10   ,LINE13+12  ,LINE13+10+60   ,LINE13+12+60   };
-int pMeterSumPosition[2][2] =       {
+const int pMeterSumPosition[2][2] =       {
   LINE13+16   ,LINE13+18   ,LINE13+16+60   ,LINE13+18+60    };
 
-char RushduinoVersionPosition = 35;
+const char RushduinoVersionPosition = 35;
