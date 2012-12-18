@@ -22,7 +22,7 @@ const char videoSignalType=1;
 
 /**********************       Serial speed      ************************/
 
-#define SERIAL_SPEED 115200 
+#define SERIAL_SPEED 115200
 
 /*******************************************      Mode Active (you MUST define according your MWC options)      *****************************/
 
@@ -43,13 +43,13 @@ const char videoSignalType=1;
 /***************************************        Voltage and Amperage        ********************************************/
  /*                                                                                                                     */
   /************** Voltage match multimeter (you can change this options to match your setup/requirements) ****************/
-                             
+
 #define DIVIDERRATIO 25             // Main voltage ratio
 #define VIDDIVIDERRATIO 25          // Video voltage ratio
 //#define VIDVOLTAGE_VBAT           // Uncomment to change from VIDEO VLOTAGE Analog Pin to MwVbat (must be defined on MWcode)
 //#define MAINVOLTAGE_VBAT          // Uncomment to change from MAIN VLOTAGE Analog Pin to MwVbat (must be defined on MWcode)
 
-#define EST_PMSum 2.6                 /****  NOTE  **** If you use hardware CURRENT sensor on OSD use (#define EST_PMSum 1) BEFORE ANY ADJUSTMENT OR CALIBRATION 
+#define EST_PMSum 2.6                 /****  NOTE  **** If you use hardware CURRENT sensor on OSD use (#define EST_PMSum 1) BEFORE ANY ADJUSTMENT OR CALIBRATION
                                                       this value is empirical and you can find "yours" after some flights using the same instructions as for VBAT adjustment
                                                       on Mwc (first you have to MWC fine tune your voltage (VBat))                                                            ****/
 
@@ -61,7 +61,7 @@ const char videoSignalType=1;
 
 /*****************************      Climb rate adjust      **********************************/
 
-#define ESTCLIMB 60                 // Here you can adjust Climb rate (60 is empirical value) 
+#define ESTCLIMB 60                 // Here you can adjust Climb rate (60 is empirical value)
 
 /**********************************         Display Settings         ************************/
 
@@ -76,10 +76,10 @@ const char videoSignalType=1;
 //#define VIDVOLTAGE                // Uncomment if you want to display video voltage
 
 /********************       For Sensors presence      *********************/
- 
+
 #define ACCELEROMETER  1//0b00000001
-#define BAROMETER      2//0b00000010  
-#define MAGNETOMETER   4//0b00000100  
+#define BAROMETER      2//0b00000010
+#define MAGNETOMETER   4//0b00000100
 #define GPSSENSOR      8//0b00001000
 //#define SONAR         16//0b00010000
 
@@ -114,7 +114,7 @@ const uint8_t lowrssiAlarm=75;     // This will make blink the Rssi if lower the
 #define LINE01    0
 #define LINE02    30
 #define LINE03    60
-#define LINE04    90  
+#define LINE04    90
 #define LINE05    120
 #define LINE06    150
 #define LINE07    180
@@ -192,13 +192,13 @@ const uint8_t lowrssiAlarm=75;     // This will make blink the Rssi if lower the
 
 // POSITION OF EACH CHARACTER OR LOGO IN THE MAX7456
 unsigned char speedUnitAdd[2] ={
-  0xa5,0xa6} 
+  0xa5,0xa6}
 ; // [0][0] and [0][1] = Km/h   [1][0] and [1][1] = Mph
 unsigned char AHUnitAdd[8] = {
   0x10,0x11,0x12,0x13,0x14,0x15,0x16,0x17};
 unsigned char voltageUnitAdd = 0xa9;
 unsigned char temperatureUnitAdd[2] = {
-  0x0e,0x0d};   
+  0x0e,0x0d};
 unsigned char flyTimeUnitAdd=0x9c;
 unsigned char onTimeUnitAdd=0x9b;
 unsigned char amperageUnitAdd = 0x9a;
@@ -228,12 +228,12 @@ unsigned char GPS_distanceToHomeAdd[2]={
 
 
 // POSITION OF EACH INFORMATION IN THE SCREEN BUFFER
-//                                         NTSC        NTSC        PAL         PAL       
-//                                         WIDE        NARROW      WIDE        NARROW                                       
+//                                         NTSC        NTSC        PAL         PAL
+//                                         WIDE        NARROW      WIDE        NARROW
 //
 // TOP OF THE SCREEN
 int GPS_numSatPosition[2][2]=             {
-  LINE02+2   ,LINE02+4   ,LINE02+2   ,LINE02+4   }; 
+  LINE02+2   ,LINE02+4   ,LINE02+2   ,LINE02+4   };
 int GPS_directionToHomePosition[2][2]=    {
   LINE03+14  ,LINE03+14  ,LINE03+14  ,LINE03+14  };
 
@@ -247,7 +247,7 @@ int GPS_angleToHomePosition[2][2]=        {
 #if defined GPSALT_UNDERSPEED
 int MwGPSAltPosition[2][2] =              {
   LINE04+23  ,LINE04+21  ,LINE04+25  ,LINE04+22  };
-#endif  
+#endif
 int sensorPosition[2][2]=                 {
   LINE03+2   ,LINE03+4   ,LINE03+2   ,LINE03+4   };
 int MwHeadingPosition[2][2] =             {
@@ -257,9 +257,9 @@ int MwHeadingGraphPosition[2][2] =        {
 
 // MIDDLE OF THE SCREEN
 int MwAltitudePosition[2][2]=             {
-  LINE07+2   ,LINE07+4   ,LINE07+2   ,LINE07+4   }; 
+  LINE07+2   ,LINE07+4   ,LINE07+2   ,LINE07+4   };
 int MwClimbRatePosition[2][2]=            {
-  LINE07+24  ,LINE07+26  ,LINE07+25  ,LINE07+26  }; 
+  LINE07+24  ,LINE07+26  ,LINE07+25  ,LINE07+26  };
 
 
 // BOTTOM OF THE SCREEN
@@ -268,26 +268,26 @@ int flyTimePosition[2][2]=                {
 int onTimePosition[2][2]=                 {
   LINE13+22  ,LINE13+21  ,LINE13+23+60  ,LINE13+21+60  };
 int motorArmedPosition[2][2]=            {
-  LINE12+11  ,LINE12+11  ,LINE11+11+60  ,LINE11+11+60  }; 
+  LINE12+11  ,LINE12+11  ,LINE11+11+60  ,LINE11+11+60  };
 int MwGPSLatPosition[2][2] =              {
   LINE10+2   ,LINE10+4   ,LINE10+2+60   ,LINE10+4+60   };
 int MwGPSLonPosition[2][2] =              {
   LINE10+11+2   ,LINE10+11+4   ,LINE10+2+11+60   ,LINE10+11+4+60  };
-#if defined COORDINATES   
+#if defined COORDINATES
 int MwGPSAltPosition[2][2] =              {
   LINE10+24   ,LINE10+23   ,LINE10+25+60   ,LINE10+23+60  };
-#endif   
+#endif
 int rssiPosition[2][2]=                   {
-  LINE12+3   ,LINE12+5   ,LINE12+3+60   ,LINE12+5+60   }; 
+  LINE12+3   ,LINE12+5   ,LINE12+3+60   ,LINE12+5+60   };
 int temperaturePosition[2][2]=          {
-  LINE11+2   ,LINE11+4   ,LINE11+2   ,LINE11+4   }; 
+  LINE11+2   ,LINE11+4   ,LINE11+2   ,LINE11+4   };
 int voltagePosition[2][2]  =                {
   LINE13+3  ,LINE13+5   ,LINE13+3+60   ,LINE13+5+60   };
  int vidvoltagePosition[2][2]  =                {
-  LINE11+3  ,LINE11+5   ,LINE11+3+60   ,LINE11+5+60   };   
+  LINE11+3  ,LINE11+5   ,LINE11+3+60   ,LINE11+5+60   };
 int amperagePosition[2][2] =               {
-  LINE13+10   ,LINE13+12  ,LINE13+10+60   ,LINE13+12+60   }; 
+  LINE13+10   ,LINE13+12  ,LINE13+10+60   ,LINE13+12+60   };
 int pMeterSumPosition[2][2] =       {
   LINE13+16   ,LINE13+18   ,LINE13+16+60   ,LINE13+18+60    };
 
-char RushduinoVersionPosition = 35; 
+char RushduinoVersionPosition = 35;

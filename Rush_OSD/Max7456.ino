@@ -3,8 +3,8 @@
 #define DATAIN  12		//MISO
 #define SPICLOCK  13		//sck
 
-//#define MAX7456SELECT 6	//ss 
-#define MAX7456SELECT 10	//ss 
+//#define MAX7456SELECT 6	//ss
+#define MAX7456SELECT 10	//ss
 
 #define MAX7456RESET 9		//RESET
 #define VSYNC 2			// INT0
@@ -66,7 +66,7 @@
 #define WHITE_level_120 0x00
 
 
-#if defined(VideoSignalType_PAL) 
+#if defined(VideoSignalType_PAL)
 #define ENABLE_display 0x48
 #define ENABLE_display_vert 0x4c
 #define MAX7456_reset 0x42
@@ -87,7 +87,7 @@
 
 
 #define MAX7456ADD_VM0          0x00  //0b0011100// 00 // 00             ,0011100
-#define MAX7456ADD_VM1          0x01   
+#define MAX7456ADD_VM1          0x01
 #define MAX7456ADD_HOS          0x02
 #define MAX7456ADD_VOS          0x03
 #define MAX7456ADD_DMM          0x04
@@ -148,7 +148,7 @@ void MAX7456Setup(void)
 
   pinMode(MAX7456SELECT,OUTPUT);
   digitalWrite(MAX7456SELECT,HIGH); //disable device
-  
+
   pinMode(DATAOUT, OUTPUT);
   pinMode(DATAIN, INPUT);
   pinMode(SPICLOCK,OUTPUT);
@@ -157,7 +157,7 @@ void MAX7456Setup(void)
   // SPCR = 01010000
   //interrupt disabled,spi enabled,msb 1st,master,clk low when idle,
   //sample on leading edge of clk,system clock/4 rate (4 meg)
- 
+
   SPCR = (1<<SPE)|(1<<MSTR);
   spi_junk=SPSR;
   spi_junk=SPDR;
@@ -183,12 +183,12 @@ void MAX7456Setup(void)
 
 
 #if defined VideoSignalType_NTSC
-  spi_transfer(OSD_ENABLE|VIDEO_MODE_NTSC);  
+  spi_transfer(OSD_ENABLE|VIDEO_MODE_NTSC);
 #endif
 
 #if defined VideoSignalType_PAL
-  spi_transfer(OSD_ENABLE|VIDEO_MODE_PAL);  
-#endif   
+  spi_transfer(OSD_ENABLE|VIDEO_MODE_PAL);
+#endif
   digitalWrite(MAX7456SELECT,HIGH);
   delay(100);
 
@@ -225,7 +225,7 @@ void MAX7456_DrawScreen()
   {
     Screen[xx]=0xff;
   }
-  DisplayDebugScreen(); 
+  DisplayDebugScreen();
 #endif
 
   digitalWrite(MAX7456SELECT,LOW);

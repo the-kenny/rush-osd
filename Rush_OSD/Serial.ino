@@ -26,7 +26,7 @@ void serialMSPCheck()
 {
   p=0;
 
-  if (cmdMSP==MSP_IDENT)  
+  if (cmdMSP==MSP_IDENT)
   {
     MwVersion= read8();                             // MultiWii Firmware version
 
@@ -35,20 +35,20 @@ void serialMSPCheck()
   if (cmdMSP==MSP_STATUS)
   {
     cycleTime=read16();
-    I2CError=read16();  
+    I2CError=read16();
     MwSensorPresent = read16();
-    MwSensorActive = read32();                    
+    MwSensorActive = read32();
     read8(); //
   }
 
-  if (cmdMSP==MSP_RAW_IMU)  
+  if (cmdMSP==MSP_RAW_IMU)
   {
     for(i=0;i<3;i++) MwAccSmooth[i] = read16();    // for(i=0;i<3;i++) serialize16(accSmooth[i]);
   }
 
   if (cmdMSP==MSP_RC)
   {
-    for(i=0;i<8;i++) MwRcData[i] = read16(); 
+    for(i=0;i<8;i++) MwRcData[i] = read16();
   }
 
   if (cmdMSP==MSP_RAW_GPS)
@@ -62,47 +62,47 @@ void serialMSPCheck()
     GPS_ground_course = read16();
   }
 
-  if (cmdMSP==MSP_COMP_GPS)  
+  if (cmdMSP==MSP_COMP_GPS)
   {
     GPS_distanceToHome=read16();
     GPS_directionToHome=read16();
-    GPS_update=read8();     
+    GPS_update=read8();
   }
 
-  if (cmdMSP==MSP_ATTITUDE)  
+  if (cmdMSP==MSP_ATTITUDE)
   {
     for(i=0;i<2;i++) MwAngle[i] = read16();
     MwHeading = read16();
-    read16();    
+    read16();
   }
 
-  if (cmdMSP==MSP_ALTITUDE)  
+  if (cmdMSP==MSP_ALTITUDE)
   {
-    MwAltitude =read32(); 
+    MwAltitude =read32();
     MwVario = read16();
   }
-  
-  if (cmdMSP==MSP_BAT)  
+
+  if (cmdMSP==MSP_BAT)
    {
    MwVBat=read8();
    pMeterSum=read16();
    }
-   
 
-  if (cmdMSP==MSP_RC_TUNING)  
+
+  if (cmdMSP==MSP_RC_TUNING)
   {
 
-    rcRate8 = read8(); 
+    rcRate8 = read8();
     rcExpo8 = read8();
-    rollPitchRate = read8(); 
+    rollPitchRate = read8();
     yawRate = read8();
     dynThrPID = read8();
     thrMid8 = read8();
     thrExpo8 = read8();
   }
 
-  if (cmdMSP==MSP_PID)  
-  { 
+  if (cmdMSP==MSP_PID)
+  {
     for(i=0; i<PIDITEMS; i++){
       P8[i] = read8();
       I8[i] = read8();
@@ -115,44 +115,44 @@ void serialMSPCheck()
   serialMSPStringOK=0;
 
 
-  if((MwRcData[PITCHSTICK]>MAXSTICK)&&(MwRcData[YAWSTICK]>MAXSTICK)&&(MwRcData[THROTTLESTICK]>MINSTICK)&&!configMode&&!waitStick&&(allSec>5)&&!armed) 
+  if((MwRcData[PITCHSTICK]>MAXSTICK)&&(MwRcData[YAWSTICK]>MAXSTICK)&&(MwRcData[THROTTLESTICK]>MINSTICK)&&!configMode&&!waitStick&&(allSec>5)&&!armed)
   {
     waitStick =1;
     configMode = 1;
     askPID=2;
   }
-  
+
    if(configMode&&!waitStick&&(MwRcData[THROTTLESTICK]<MINSTICK)) // EXIT
-  {  
+  {
     configExit();
   }
-  
+
   if(configMode&&!waitStick&&(MwRcData[ROLLSTICK]>MAXSTICK)) // MOVE RIGHT
-  {  
+  {
     waitStick =1;
-    COL++; 
+    COL++;
   }
 
   if(configMode&&!waitStick&&(MwRcData[ROLLSTICK]<MINSTICK)) // MOVE LEFT
-  {  
+  {
     waitStick =1;
-    COL--; 
-  }     
+    COL--;
+  }
 
   if(configMode&&!waitStick&&(MwRcData[PITCHSTICK]>MAXSTICK)) // MOVE UP
-  {  
-    waitStick =1;  
-    ROW--; 
+  {
+    waitStick =1;
+    ROW--;
   }
 
   if(configMode&&!waitStick&&(MwRcData[PITCHSTICK]<MINSTICK)) // MOVE DOWN
-  {  
+  {
     waitStick =1;
-    ROW++; 
-  }          
+    ROW++;
+  }
 
   if(configMode&&!waitStick&&(MwRcData[YAWSTICK]<MINSTICK)) // DECREASE
-  {  
+  {
     waitStick =1;
     if((ROW==1)&&(COL==1)&&(configPage==1)) P8[0]--;
     if((ROW==1)&&(COL==2)&&(configPage==1)) I8[0]--;
@@ -206,10 +206,10 @@ void serialMSPCheck()
     if(configPage<MINPAGE) configPage = MAXPAGE;
     if((ROW==10)&&(COL==1)) configExit();
     if((ROW==10)&&(COL==2)) saveExit();
-  }                   
+  }
 
   if(configMode&&!waitStick&&(MwRcData[YAWSTICK]>MAXSTICK)) // INCREASE
-  {  
+  {
     waitStick =1;
     if((ROW==1)&&(COL==1)&&(configPage==1)) P8[0]++;
     if((ROW==1)&&(COL==2)&&(configPage==1)) I8[0]++;
@@ -243,7 +243,7 @@ void serialMSPCheck()
     if((ROW==4)&&(COL==3)&&(configPage==2)) yawRate++;
     if((ROW==5)&&(COL==3)&&(configPage==2)) dynThrPID++;
 
-    
+
     if((ROW==2)&&(COL==3)&&(configPage==3)) enableVoltage=!enableVoltage;
     if((ROW==3)&&(COL==3)&&(configPage==3)) lowVoltage++;
     if((ROW==4)&&(COL==3)&&(configPage==3)) enableTemperature=!enableTemperature;
@@ -266,14 +266,14 @@ void serialMSPCheck()
     if(configPage>MAXPAGE) configPage = MINPAGE;
     if((ROW==10)&&(COL==1)) configExit();
     if((ROW==10)&&(COL==2)) saveExit();
-  }            
+  }
 }
 // End of decoded received commands from MultiWii
 // --------------------------------------------------------------------------------------
 
 void serialMSPreceive()
 {
-  uint8_t c;  
+  uint8_t c;
 
   static enum _serial_state {
     IDLE,
@@ -282,7 +282,7 @@ void serialMSPreceive()
     HEADER_ARROW,
     HEADER_SIZE,
     HEADER_CMD,
-  } 
+  }
   c_state = IDLE;
 
   if(Serial.available())
@@ -292,7 +292,7 @@ void serialMSPreceive()
     if (c_state == IDLE)
     {
       c_state = (c=='$') ? HEADER_START : IDLE;
-    }  
+    }
     else if (c_state == HEADER_START)
     {
       c_state = (c=='M') ? HEADER_M : IDLE;
@@ -306,7 +306,7 @@ void serialMSPreceive()
       if (c > SERIALBUFFERSIZE)
       {  // now we are expecting the payload size
         c_state = IDLE;
-      }  
+      }
       else
       {
         dataSize = c;
@@ -383,7 +383,7 @@ void saveExit()
     Serial.write(rcExpo8);
     checksum ^= rcExpo8;
     Serial.write(rollPitchRate);
-    checksum ^= rollPitchRate; 
+    checksum ^= rollPitchRate;
     Serial.write(yawRate);
     checksum ^= yawRate;
     Serial.write(dynThrPID);
@@ -393,7 +393,7 @@ void saveExit()
     Serial.write(thrExpo8);
     checksum ^= thrExpo8;
     Serial.write((byte)checksum);
-  } 
+  }
 
   if (configPage==3 || configPage==4){
     writeEEPROM();

@@ -12,7 +12,7 @@
 
 //General use variables
 int xx=0,yy=0;
-Metro MetroTimer = Metro(100); 
+Metro MetroTimer = Metro(100);
 int tenthSec=0;
 int halfSec=0;
 uint8_t tenthSecFlag=1;
@@ -63,7 +63,7 @@ int32_t  MwAltitude=0;                         // This hold barometric value
 // This hold headting to north
 int MwAngle[2]={0,0};     // Those will hold Accelerator Angle
 static uint16_t MwRcData[8]={
-  1500,1500,1500,1500,1500,1500,1500,1500} ; 
+  1500,1500,1500,1500,1500,1500,1500,1500} ;
 
 // This hold receiver pulse signal
 uint16_t  MwSensorPresent=0;
@@ -102,15 +102,15 @@ static uint16_t MwHeading=0;
 // For Amperage
    float amperage =0.0;                // its the real value x10
 #if defined (HARDSENSOR)
-   float amperagesum =0; 
+   float amperagesum =0;
 #endif
-   
+
 // Rssi
 int rssi =0;
 int rssiADC=0;
 int rssiMin;
-int rssiMax;    
-int rssi_Int=0;  
+int rssiMax;
+int rssi_Int=0;
 uint8_t enableRSSI=1;
 
 // For Voltage
@@ -118,7 +118,7 @@ float voltage=0;                      // its the real value x10
 float vidvoltage=0;                   // its the real value x10
 uint8_t enableVoltage=1;
 uint8_t enableVidvoltage=1;
-uint8_t lowVoltage=105; 
+uint8_t lowVoltage=105;
 
 // For temprature
 float temperature=0;                  // its the real value x10
@@ -142,7 +142,7 @@ uint8_t flyingMinute=0;
 uint8_t flyingSecond=0;
 
 // ---------------------------------------------------------------------------------------
-// Defines imported from Multiwii Serial Protocol 0 MultiWii_release_candidate_2_1_r949 
+// Defines imported from Multiwii Serial Protocol 0 MultiWii_release_candidate_2_1_r949
 #define MSP_VERSION        	 0
 
 #define MSP_IDENT                100   //out message         multitype + multiwii version + protocol version + capability variable
@@ -160,7 +160,7 @@ uint8_t flyingSecond=0;
 #define MSP_PID                  112   //out message         up to 16 P I D (8 are used)
 #define MSP_BOX                  113   //out message         up to 16 checkbox (11 are used)
 #define MSP_MISC                 114   //out message         powermeter trig + 8 free for future use
-#define MSP_MOTOR_PINS           115   //out message         which pins are in use for motors & servos, for GUI 
+#define MSP_MOTOR_PINS           115   //out message         which pins are in use for motors & servos, for GUI
 #define MSP_BOXNAMES             116   //out message         the aux switch names
 #define MSP_PIDNAMES             117   //out message         the PID names
 #define MSP_WP                   118   //out message         get a WP, WP# is in the payload, returns (WP#, lat, lon, alt, flags) WP#0-home, WP#16-poshold
@@ -181,7 +181,7 @@ uint8_t flyingSecond=0;
 #define MSP_DEBUGMSG             253   //out message         debug string buffer
 #define MSP_DEBUG                254   //out message         debug1,debug2,debug3,debug4
 
-// End of imported defines from Multiwii Serial Protocol 0 MultiWii_release_candidate_2_1_r949 
+// End of imported defines from Multiwii Serial Protocol 0 MultiWii_release_candidate_2_1_r949
 // ---------------------------------------------------------------------------------------
 
 // For Intro
