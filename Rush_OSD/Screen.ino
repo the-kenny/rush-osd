@@ -59,7 +59,7 @@ void displayMode(void)
   if(MwSensorActive&GPSHOLDMODE) screenBuffer[3]=0xef;
   screenBuffer[4]=0;
   MAX7456_WriteString(screenBuffer,sensorPosition[videoSignalType][screenType]+4);    
-} 
+}
 
 void displayArmed(void)
 {
@@ -381,11 +381,14 @@ void displayIntro(void)
 void displayGPSPosition(void)
 {
   if(!GPS_fix)
-  {
-    GPS_latitude = 0;
-    GPS_longitude = 0;
-    GPS_altitude = 0;
-  }
+    return;
+
+  //if(!GPS_fix)
+  //{
+  //  GPS_latitude = 0;
+  //  GPS_longitude = 0;
+  //  GPS_altitude = 0;
+  //}
   
 #if defined COORDINATES
   screenBuffer[0]=0xCA;
@@ -412,7 +415,7 @@ void displayGPSPosition(void)
 void displayNumberOfSat(void)
 {
   screenBuffer[0]=GPS_numSatAdd[0];    // Remplace le NULL par le/les symboles d'unité
-  screenBuffer[1]=GPS_numSatAdd[1];                   // Restore le NULL
+  screenBuffer[1]=GPS_numSatAdd[1];    // Restore le NULL
   screenBuffer[2]=0;
   MAX7456_WriteString(screenBuffer,GPS_numSatPosition[videoSignalType][screenType]);
 
@@ -423,9 +426,12 @@ void displayNumberOfSat(void)
 
 void displayGPS_speed(void)
 {
-  if (!GPS_fix){
-    GPS_speed = 0;
-}    
+  if (!GPS_fix)
+    return;
+
+  //if (!GPS_fix)
+  //  GPS_speed = 0;
+    
   int xx=0;
   int pos;
   screenBuffer[0]=speedUnitAdd[unitSystem];
@@ -496,6 +502,9 @@ void displayClimbRate(void)
 
 void displayDistanceToHome(void)
 {
+  if(!GPS_fix)
+    return;
+
   screenBuffer[0]=0xb8;
   screenBuffer[1]=0;
   MAX7456_WriteString(screenBuffer,GPS_distanceToHomePosition[videoSignalType][screenType]);
@@ -512,6 +521,11 @@ void displayDistanceToHome(void)
 
 void displayAngleToHome(void)
 {
+  if(!GPS_fix)
+    return;
+  if(GPS_distanceToHome <= 2 && Blink2hz)
+    return;
+
   itoa(GPS_directionToHome,screenBuffer,10);     
   FindNull();
   screenBuffer[xx++]=0xBD;              
@@ -521,6 +535,11 @@ void displayAngleToHome(void)
 
 void displayDirectionToHome(void)
 {
+  if(!GPS_fix)
+    return;
+  if(GPS_distanceToHome <= 2 && Blink2hz)
+    return;
+
   int16_t d = MwHeading + 22 + 180 + 360 - GPS_directionToHome;
   d = 2*((d % 360) / 45);
 
