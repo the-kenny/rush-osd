@@ -322,6 +322,6 @@ void readEEPROM(void)
   enableTemperature= EEPROM.read(EEPROM_DISPLAYTEMPERATURE);
   highTemperature= EEPROM.read(EEPROM_TEMPERATUREMAX);
   displayGPS= EEPROM.read(EEPROM_DISPLAYGPS);
-  screenType= EEPROM.read(EEPROM_SCREENTYPE);
-  unitSystem= EEPROM.read(EEPROM_UNITSYSTEM);
+  screenType= !!EEPROM.read(EEPROM_SCREENTYPE);
+  unitSystem= !!EEPROM.read(EEPROM_UNITSYSTEM);
 }
