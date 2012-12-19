@@ -327,20 +327,20 @@ void displayHeading(void)
 
 void displayHeadingGraph(void)
 {
-  char aa=0;
-  xx=MwHeading;
-  xx = xx + 180;
-  xx = (xx / 22.5)+4;
+  int xx;
+  xx = MwHeading * 4;
+  xx = xx + 720 + 45;
+  xx = xx / 90;
 
-  screenBuffer[0] = headGraph[xx-4];
-  screenBuffer[1] = headGraph[xx-3];
-  screenBuffer[2] = headGraph[xx-2];
-  screenBuffer[3] = headGraph[xx-1];
-  screenBuffer[4] = headGraph[xx];
-  screenBuffer[5] = headGraph[xx+1];
-  screenBuffer[6] = headGraph[xx+2];
-  screenBuffer[7] = headGraph[xx+3];
-  screenBuffer[8] = headGraph[xx+4];
+  screenBuffer[0] = headGraph[xx++];
+  screenBuffer[1] = headGraph[xx++];
+  screenBuffer[2] = headGraph[xx++];
+  screenBuffer[3] = headGraph[xx++];
+  screenBuffer[4] = headGraph[xx++];
+  screenBuffer[5] = headGraph[xx++];
+  screenBuffer[6] = headGraph[xx++];
+  screenBuffer[7] = headGraph[xx++];
+  screenBuffer[8] = headGraph[xx];
   screenBuffer[9] = 0;
   MAX7456_WriteString(screenBuffer,MwHeadingGraphPosition[videoSignalType][screenType]);
 }
