@@ -1,13 +1,18 @@
+#define DATAOUT 11              // MOSI
+#define DATAIN  12              // MISO
+#define SPICLOCK  13            // sck
 
-#define DATAOUT 11		//MOSI
-#define DATAIN  12		//MISO
-#define SPICLOCK  13		//sck
+#if defined MINIMOSD
+  #define MAX7456SELECT 6       // ss
+  #define MAX7456RESET 10       // RESET
+#endif
 
-//#define MAX7456SELECT 6	//ss
-#define MAX7456SELECT 10	//ss
+#if defined RUSHDUINO
+  #define MAX7456SELECT 10      // ss 
+  #define MAX7456RESET 9        // RESET
+#endif
 
-#define MAX7456RESET 9		//RESET
-#define VSYNC 2			// INT0
+#define VSYNC 2                 // INT0
 
 //MAX7456 opcodes
 #define DMM_reg   0x04
@@ -126,11 +131,11 @@ volatile int  count;
 //////////////////////////////////////////////////////////////
 byte spi_transfer(volatile byte data)
 {
-  SPDR = data;			  // Start the transmission
+  SPDR = data;                    // Start the transmission
   while (!(SPSR & (1<<SPIF)))     // Wait the end of the transmission
   {
   };
-  return SPDR;			  // return the received byte
+  return SPDR;                    // return the received byte
 }
 
 
