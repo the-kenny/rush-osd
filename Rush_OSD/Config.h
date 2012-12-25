@@ -25,7 +25,13 @@ const char videoSignalType=1;
 #define SERIAL_SPEED 115200
 
 /*******************************************      Mode Active (you MUST define according your MWC options)      *****************************/
-
+/*
+Only MWii version newer than 2.1 (including dev versions)
+How to config correctly the Mode active in order to show sensors and Arm/Disarm indication:
+-) Take a look at "MultiWii.ino" file of MWii sketch in "enum box...."
+-) Assign a power of 2 for each sensor/device defined in MWii "config.h" skipping sensor/devices not defined.
+-) These found numbers are to be defined here....
+*/
 #define STABLEMODE     1            // OK
 #define BAROMODE       4            // OK
 #define MAGMODE        8            // OK
@@ -34,6 +40,16 @@ const char videoSignalType=1;
 #define GPSHOMEMODE    64           // OK
 #define GPSHOLDMODE    128          // OK
 //#define BOXCAMTRIG     256        // not used
+
+/*
+// MWii version 2.1 and older
+#define STABLEMODE     1
+#define BAROMODE       2
+#define MAGMODE        4
+#define ARMEDMODE      32
+#define GPSHOMEMODE    64
+#define GPSHOLDMODE    128
+*/
 
 /**********    Here you can define time out for Mag calibration and EEProm write (mostly useful for mag calibration)    ***********/
 
