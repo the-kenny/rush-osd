@@ -87,6 +87,7 @@ How to config correctly the Mode active in order to show sensors and Arm/Disarm 
 //#define COORDINATES               // Uncomment to display coordinates and altitude on the orinal place (use with display GPS ON, on OSD page 3)
 #define WITHDECORATION
 #define SHOWHEADING
+#define HEADING360                  // Heading shows as 0..359; Comment for -179..180
 //#define SHOWBATLEVELEVOLUTION     // Uncomment to display battery evolution
 #define MULTIWIILOGO                // Comment to supress Multiwii logo at start up, good to use other character maps
 //#define VIDVOLTAGE                // Uncomment if you want to display video voltage

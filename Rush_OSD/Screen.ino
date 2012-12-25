@@ -318,7 +318,12 @@ void displayRSSI(void)
 
 void displayHeading(void)
 {
-  itoa(MwHeading,screenBuffer,10);
+  int16_t heading = MwHeading;
+#if defined HEADING360
+  if(heading < 0)
+    heading += 360;
+#endif
+  itoa(heading,screenBuffer,10);
   FindNull();
   screenBuffer[xx++]=MwHeadingUnitAdd;                 // Restore the NULL by the unit Symbols
   screenBuffer[xx]=0;
