@@ -1,3 +1,52 @@
+char *ItoaPadded(int val, char *str, uint8_t bytes)  {
+  uint8_t neg = 0;
+  if(val < 0) {
+    neg = 1;
+    val = -val;
+  }
+  str[bytes] = 0;
+  for(;;) {
+    str[--bytes] = '0' + (val % 10);
+    val = val / 10;
+    if(bytes == 0 || val == 0)
+      break;
+  }
+  if(neg && bytes > 0)
+    str[--bytes] = '-';
+
+  while(bytes != 0)
+    str[--bytes] = ' ';
+
+  return str;
+}
+
+char *FormatGPSCoord(int32_t val, char *str, uint8_t p, char pos, char neg) {
+  if(val < 0) {
+    pos = neg;
+    val = -val;
+  }
+
+  uint8_t bytes = p+8;
+
+  str[bytes] = 0;
+  str[--bytes] = pos;
+  for(;;) {
+    if(bytes == p) {
+      str[--bytes] = '.';
+      continue;
+    }
+    str[--bytes] = '0' + (val % 10);
+    val = val / 10;
+    if(bytes < 3 && val == 0)
+       break;
+   }
+
+   while(bytes != 0)
+     str[--bytes] = ' ';
+
+   return str;
+}
+
 void FindNull(void)
 {
   for(xx=0;screenBuffer[xx]!=0;xx++);
@@ -322,8 +371,10 @@ void displayHeading(void)
 #if defined HEADING360
   if(heading < 0)
     heading += 360;
+  ItoaPadded(heading,screenBuffer,3);
+#else
+  ItoaPadded(heading,screenBuffer,4);
 #endif
-  itoa(heading,screenBuffer,10);
   FindNull();
   screenBuffer[xx++]=MwHeadingUnitAdd;                 // Restore the NULL by the unit Symbols
   screenBuffer[xx]=0;
@@ -399,13 +450,13 @@ void displayGPSPosition(void)
   screenBuffer[0]=0xCA;
   screenBuffer[1]=0;
   MAX7456_WriteString(screenBuffer,MwGPSLatPosition[videoSignalType][screenType]);
-  ltoa(GPS_latitude,screenBuffer,10);
+  FormatGPSCoord(GPS_latitude,screenBuffer,3,'N','S');
   MAX7456_WriteString(screenBuffer,MwGPSLatPosition[videoSignalType][screenType]+1);
 
   screenBuffer[0]=0xCB;
   screenBuffer[1]=0;
   MAX7456_WriteString(screenBuffer,MwGPSLonPosition[videoSignalType][screenType]);
-  ltoa(GPS_longitude,screenBuffer,10);
+  FormatGPSCoord(GPS_longitude,screenBuffer,4,'E','W');
   MAX7456_WriteString(screenBuffer,MwGPSLonPosition[videoSignalType][screenType]+1);
 #endif
 
