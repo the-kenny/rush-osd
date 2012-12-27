@@ -32,7 +32,7 @@ char *FormatGPSCoord(int32_t val, char *str, uint8_t p, char pos, char neg) {
   str[--bytes] = pos;
   for(;;) {
     if(bytes == p) {
-      str[--bytes] = '.';
+      str[--bytes] = DECIMAL;
       continue;
     }
     str[--bytes] = '0' + (val % 10);
@@ -214,11 +214,11 @@ void displayVoltage(void)
   if((voltage)<10)
   {
     screenBuffer[xx-1]='0';
-    screenBuffer[xx++]='.';
+    screenBuffer[xx++]=DECIMAL;
   }
   else
   {
-    screenBuffer[xx-1]='.';
+    screenBuffer[xx-1]=DECIMAL;
   }
   screenBuffer[xx++]=yy;
   screenBuffer[xx++]=voltageUnitAdd;
@@ -252,11 +252,11 @@ void displayVoltage(void)
   if((vidvoltage)<10)
   {
     screenBuffer[xx-1]='0';
-    screenBuffer[xx++]='.';
+    screenBuffer[xx++]=DECIMAL;
   }
   else
   {
-    screenBuffer[xx-1]='.';
+    screenBuffer[xx-1]=DECIMAL;
   }
   screenBuffer[xx++]=yy;
   screenBuffer[xx++]=voltageUnitAdd;
@@ -325,11 +325,11 @@ void displayAmperage(void)
   if((amperage)<10)
   {
     screenBuffer[xx-1]='0';
-    screenBuffer[xx++]='.';
+    screenBuffer[xx++]=DECIMAL;
   }
   else
   {
-    screenBuffer[xx-1]='.';
+    screenBuffer[xx-1]=DECIMAL;
   }
   screenBuffer[xx++]=yy;                                 // Find the NULL
   screenBuffer[xx++]=amperageUnitAdd;                    // Replace NULL by unit

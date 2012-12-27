@@ -117,7 +117,7 @@ const uint8_t temperaturePin=6;    // Temperature pin 6 for original Rushduino B
 const uint8_t rssiSample=30;
 const uint8_t lowrssiAlarm=75;     // This will make blink the Rssi if lower then this value
 
-
+#define DECIMAL '.'                // Decimal point character
 
 /*----------------------------------------------       End of configurable parameters      ----------------------------------------------------*/
 
