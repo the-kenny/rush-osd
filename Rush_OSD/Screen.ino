@@ -1,16 +1,22 @@
-char *ItoaPadded(int val, char *str, uint8_t bytes)  {
+char *ItoaPadded(int val, char *str, uint8_t bytes, uint8_t decimalpos)  {
   uint8_t neg = 0;
   if(val < 0) {
     neg = 1;
     val = -val;
   }
+
   str[bytes] = 0;
   for(;;) {
+    if(bytes == decimalpos) {
+      str[--bytes] = DECIMAL;
+      decimalpos = 0;
+    }
     str[--bytes] = '0' + (val % 10);
     val = val / 10;
-    if(bytes == 0 || val == 0)
+    if(bytes == 0 || (decimalpos == 0 && val == 0))
       break;
   }
+
   if(neg && bytes > 0)
     str[--bytes] = '-';
 
@@ -207,67 +213,38 @@ void displayVoltage(void)
   voltage=MwVBat;
 #endif
 
-  itoa(voltage,screenBuffer,10);
-  FindNull();   // find the NULL
-  yy=screenBuffer[xx-1];
-
-  if((voltage)<10)
-  {
-    screenBuffer[xx-1]='0';
-    screenBuffer[xx++]=DECIMAL;
-  }
-  else
-  {
-    screenBuffer[xx-1]=DECIMAL;
-  }
-  screenBuffer[xx++]=yy;
-  screenBuffer[xx++]=voltageUnitAdd;
-  screenBuffer[xx]=0;                           // Restore the NULL
+  ItoaPadded(voltage, screenBuffer, 4, 3);
+  screenBuffer[4] = voltageUnitAdd;
+  screenBuffer[5] = 0;
   MAX7456_WriteString(screenBuffer,voltagePosition[videoSignalType][screenType]);
 
 #if defined SHOWBATLEVELEVOLUTION
   if (voltage > 124) screenBuffer[0]=0x90;
-  else
-    if (voltage < 105) screenBuffer[0]=0x96;
-    else
-      if (voltage < 108) screenBuffer[0]=0x95;
-    else
-      if (voltage < 110) screenBuffer[0]=0x94;
-    else
-      if (voltage < 115) screenBuffer[0]=0x93;
-      else
-        if (voltage < 120) screenBuffer[0]=0x92;
-      else
-        if (voltage < 122) screenBuffer[0]=0x91;
+  else if (voltage < 105) screenBuffer[0]=0x96;
+  else if (voltage < 108) screenBuffer[0]=0x95;
+  else if (voltage < 110) screenBuffer[0]=0x94;
+  else if (voltage < 115) screenBuffer[0]=0x93;
+  else if (voltage < 120) screenBuffer[0]=0x92;
+  else if (voltage < 122) screenBuffer[0]=0x91;
 #else
   screenBuffer[0]=0x97;
 #endif
   screenBuffer[1]=0;
   MAX7456_WriteString(screenBuffer,voltagePosition[videoSignalType][screenType]-1);
-#if defined VIDVOLTAGE
-  itoa(vidvoltage,screenBuffer,10);
-  FindNull();   // find the NULL
-  yy=screenBuffer[xx-1];
 
-  if((vidvoltage)<10)
-  {
-    screenBuffer[xx-1]='0';
-    screenBuffer[xx++]=DECIMAL;
-  }
-  else
-  {
-    screenBuffer[xx-1]=DECIMAL;
-  }
-  screenBuffer[xx++]=yy;
-  screenBuffer[xx++]=voltageUnitAdd;
-  screenBuffer[xx]=0;
+#if defined VIDVOLTAGE
+  ItoaPadded(vidvoltage, screenBuffer, 4, 3)
+  screenBuffer[4]=voltageUnitAdd;
+  screenBuffer[5]=0;
   MAX7456_WriteString(screenBuffer,vidvoltagePosition[videoSignalType][screenType]);
+
   screenBuffer[0]=0x97;
   screenBuffer[1]=0;
   MAX7456_WriteString(screenBuffer,vidvoltagePosition[videoSignalType][screenType]-1);
 #endif
- }
-   void displayTime(void)
+}
+
+void displayTime(void)
 {
   if(flyMinute>0) flyingMinute=flyMinute;
   if(flySecond>0) flyingSecond=flySecond;
@@ -316,24 +293,9 @@ void displayVoltage(void)
 void displayAmperage(void)
 {
   // Real Ampere is ampere / 10
-  xx= amperage;
-  itoa(xx,screenBuffer,10);
-  FindNull();
-
-  yy=screenBuffer[xx-1];
-
-  if((amperage)<10)
-  {
-    screenBuffer[xx-1]='0';
-    screenBuffer[xx++]=DECIMAL;
-  }
-  else
-  {
-    screenBuffer[xx-1]=DECIMAL;
-  }
-  screenBuffer[xx++]=yy;                                 // Find the NULL
-  screenBuffer[xx++]=amperageUnitAdd;                    // Replace NULL by unit
-  screenBuffer[xx]=0;                                    // Restore the NULL
+  ItoaPadded(amperage, screenBuffer, 4, 3);     // 99.9 ampere max!
+  screenBuffer[4]=amperageUnitAdd;
+  screenBuffer[5]=0;
   MAX7456_WriteString(screenBuffer,amperagePosition[videoSignalType][screenType]);
 }
 
@@ -371,13 +333,14 @@ void displayHeading(void)
 #if defined HEADING360
   if(heading < 0)
     heading += 360;
-  ItoaPadded(heading,screenBuffer,3);
+  ItoaPadded(heading,screenBuffer,3,0);
+  screenBuffer[3]=MwHeadingUnitAdd;                 // Restore the NULL by the unit Symbols
+  screenBuffer[4]=0;
 #else
-  ItoaPadded(heading,screenBuffer,4);
+  ItoaPadded(heading,screenBuffer,4,0);
+  screenBuffer[4]=MwHeadingUnitAdd;                 // Restore the NULL by the unit Symbols
+  screenBuffer[5]=0;
 #endif
-  FindNull();
-  screenBuffer[xx++]=MwHeadingUnitAdd;                 // Restore the NULL by the unit Symbols
-  screenBuffer[xx]=0;
   MAX7456_WriteString(screenBuffer,MwHeadingPosition[videoSignalType][screenType]);
 }
 
