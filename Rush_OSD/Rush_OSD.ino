@@ -1,19 +1,28 @@
 // This software is a copy of the original Rushduino-OSD project was written by Jean-Gabriel Maurice.
 // http://code.google.com/p/rushduino-osd/
-// It's open source, simple and seems easy editable.
 // I have the original Hrdware since released.
 // Rushduino_V9 beta 0.7 software was the last one that the autor coded and big problems of compatibility with MWC where found at the time.
 // Rushduino project has been forgotten for a long time.
-// Modelci started to make some arrangements without having the original hardware, it is a bit dificult to know the compatibility of the code.
-// After all this I decided to keep it working for future releases of MWC with or without help.
-// For more information about this hardware Multiwii forum http://www.multiwii.com/forum/viewtopic.php?f=8&t=922
+// For more information about this software <  Multiwii forum > http://www.multiwii.com/forum/viewtopic.php?f=8&t=922
 // For new code releases http://code.google.com/p/rush-osd-development/
-// In near future I pretend to have my one site dedicated to Aerial Drones/Photography and FPV stuff related. I will share it.
-// As I am not a coder professionaly, developments are going to be slower but I intend to keep them going with the new needs to come.
-// All the things that I and commiters possibly do with this software is intended to be our needs, we just hope they can meet yours.
-// Along the code are mencioned credits to people who helped debugging and implementing new features.
-// I wish you great flights with Rushduino or Minim OSD.
 
+
+
+
+               /***********************************************************************************************************************************************/
+                /*                                                                                                                                           */
+                 /*                                                                                                                                           */
+                  /*                                              This software is the result of a team work                                                   */  
+                 /*                                                                                                                                           */
+               /*                                                                                                                                           */
+              /*                                                                                                                                           */
+             /*                                                       THANKS TO  - ITAIN -  - CARLONB -                                                   */
+             /*                                                                                                                                           */
+              /*                                                                                                                                           */
+               /*********************************************************************************************************************************************/                                                                                                             
+                                                                                                                                                              
+                                                                                                                                                              
+                                                                                                                                                              
 
               /************************************************************************************************************************************************/
               /*                                                      Created for Multiwii r1240 or higher                                                    */
@@ -23,16 +32,14 @@
               // This software communicates using MSP via the serial port. Therefore Multiwii develop-dependent.
               // Changes the values of pid and rc-tuning, writes in eeprom of Multiwii FC.
               // In config mode, can do acc and mag calibration.
-              // In addition, it works by collecting information analogue inputs. Such as voltage, amperage, rssi, temperature.
-              // In addition displayed information provides status information using an LED.
+              // In addition, it works by collecting information analogue inputs. Such as voltage, amperage, rssi, temperature on the original hardware (RUSHDUINO).
               // At the end of the flight may be useful to look at the statistics.
 
 
               /***********************************************************************************************************************************************/
               /*                                                                 RUSH_KV_2.1                                                                 */
-              /*                                           Thanks to Itain that helped debugging on many ways on this release                                */
+              /*                                                            MINIMOSD INTEGRATION                                                             */
               /***********************************************************************************************************************************************/
-
 
 
 #include <avr/pgmspace.h>
