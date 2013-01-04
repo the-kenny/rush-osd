@@ -79,10 +79,8 @@ How to config correctly the Mode active in order to show sensors and Arm/Disarm 
 
 /**********************************         Display Settings         ************************/
 
-#define GPSALT_UNDERSPEED           // GPS altitude is displayed under GPS speed comment to deactivate
 #define DISPLAY_HORIZON_BR
-#define DISPLAY_GPSPOSITION
-#define COORDINATES                 // Uncomment to display coordinates and altitude on the orinal place (use with display GPS ON, on OSD page 3)
+//#define COORDINATES               // Uncomment to display coordinates and altitude on the orinal place (use with display GPS ON, on OSD page 3)
 #define WITHDECORATION
 #define SHOWHEADING
 #define HEADING360                  // Heading shows as 0..359; Comment for -179..180
@@ -104,7 +102,6 @@ How to config correctly the Mode active in order to show sensors and Arm/Disarm 
 #define BST 7                        // pin 7 for original Rushduino Board
 #define BST_OFF digitalWrite(BST,LOW);
 #define BST_ON digitalWrite(BST,HIGH);
-
 
 /********************      Analog input defines     ***********************/
 
@@ -289,10 +286,6 @@ const int MwGPSLatPosition[2][2] =              {
 const int MwGPSLonPosition[2][2] =              {
   LINE10+13+2   ,LINE10+13+4   ,LINE10+2+13+60   ,LINE10+13+4+60  };
 #endif
-//#if defined COORDINATES
-//const int MwGPSAltPosition[2][2] =              {
-//  LINE10+24   ,LINE10+23   ,LINE10+25+60   ,LINE10+23+60  };
-//#endif
 const int rssiPosition[2][2]=                   {
   LINE12+3   ,LINE12+5   ,LINE12+3+60   ,LINE12+5+60   };
 const int temperaturePosition[2][2]=          {
