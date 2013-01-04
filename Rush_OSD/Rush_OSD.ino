@@ -195,6 +195,9 @@ void loop()
 #endif
         displaypMeterSum();
         displayArmed();
+#if defined THROTTLEPOSITION
+        displayCurrentThrottle();
+#endif
 
         if(MwSensorPresent&ACCELEROMETER) displayHorizon(MwAngle[0],MwAngle[1]*-1);
         if(MwSensorPresent&MAGNETOMETER)  {
