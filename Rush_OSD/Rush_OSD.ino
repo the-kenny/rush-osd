@@ -1,30 +1,26 @@
 
 // This software is a copy of the original Rushduino-OSD project was written by Jean-Gabriel Maurice.
-
 // http://code.google.com/p/rushduino-osd/
-
 // For more information about this software <  Multiwii forum > http://www.multiwii.com/forum/viewtopic.php?f=8&t=922
-
 // For new code releases http://code.google.com/p/rush-osd-development/
-
 // Thanks to all developers that contributed before us, and all users that help us to improve.
-
 // This team wish you great flights.
 
 
 
-
-               /***********************************************************************************************************************************************/
-                /*                                                                                                                                           */
-                 /*                                                                                                                                           */
-                  /*                                              This software is the result of a team work                                                   */  
-                  /*                                                                                                                                           */
-                /*                                                                                                                                           */
-               /*                                                                                                                                           */
-              /*                                                    - KATAVENTOS -  - ITAIN -  - CARLONB -                                                 */
-             /*                                                                                                                                           */
-              /*                                                                                                                                           */
-               /*********************************************************************************************************************************************/                                                                                                             
+              /***********************************************************************************************************************************************/
+              /*                                                           RUSH_KV_2.1                                                                       */
+              /*                                                                                                                                             */
+              /*                                                                                                                                             */
+              /*                                             This software is the result of a team work                                                      */
+              /*                                                                                                                                             */
+              /*                                     KATAVENTOS               ITAIN                    CARLONB                                               */
+              /*                                                                                                                                             */
+              /*                                                                                                                                             */
+              /*                                                                                                                                             */
+              /*                                                                                                                                             */
+              /*                                                                                                                                             */
+              /***********************************************************************************************************************************************/
                                                                                                                                                               
                                                                                                                                                               
                                                                                                                                                               
@@ -44,6 +40,7 @@
               /***********************************************************************************************************************************************/
               /*                                                                 RUSH_KV_2.1                                                                 */
               /*                                                            MINIMOSD INTEGRATION                                                             */
+              /*                                                                                                                                             */
               /***********************************************************************************************************************************************/
 
 
