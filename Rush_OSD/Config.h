@@ -1,4 +1,3 @@
-
                                       /**********************************************************************************/
                                       /*    RUSH KV 2.1               Configurable parameters        RUSH KV 2.1        */
                                       /**********************************************************************************/
@@ -254,14 +253,14 @@ const int GPS_directionToHomePosition[2][2]=    {
 
 // TOP OF THE SCREEN
 const int GPS_distanceToHomePosition[2][2]=     {
-  LINE02+23  ,LINE02+21  ,LINE02+25  ,LINE02+22  };
+  LINE02+22  ,LINE02+20  ,LINE02+24  ,LINE02+21  };
 const int speedPosition[2][2] =                 {
-  LINE03+23  ,LINE03+21  ,LINE03+25  ,LINE03+22  };  // [0] En Km/h   [1] En Mph
+  LINE03+22  ,LINE03+20  ,LINE03+24  ,LINE03+21  };  // [0] En Km/h   [1] En Mph
 const int GPS_angleToHomePosition[2][2]=        {
   LINE04+14  ,LINE04+14  ,LINE04+14  ,LINE04+14  };
 #if defined GPSALT_UNDERSPEED
 const int MwGPSAltPosition[2][2] =              {
-  LINE04+23  ,LINE04+21  ,LINE04+25  ,LINE04+22  };
+  LINE04+22  ,LINE04+20  ,LINE04+24  ,LINE04+21  };
 #endif
 const int sensorPosition[2][2]=                 {
   LINE03+2   ,LINE03+4   ,LINE03+2   ,LINE03+4   };
