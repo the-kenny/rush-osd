@@ -1,10 +1,15 @@
+
 // This software is a copy of the original Rushduino-OSD project was written by Jean-Gabriel Maurice.
+
 // http://code.google.com/p/rushduino-osd/
-// I have the original Hrdware since released.
-// Rushduino_V9 beta 0.7 software was the last one that the autor coded and big problems of compatibility with MWC where found at the time.
-// Rushduino project has been forgotten for a long time.
+
 // For more information about this software <  Multiwii forum > http://www.multiwii.com/forum/viewtopic.php?f=8&t=922
+
 // For new code releases http://code.google.com/p/rush-osd-development/
+
+// Thanks to all developers that contributed before us, and all users that help us to improve.
+
+// This team wish you great flights.
 
 
 
@@ -13,10 +18,10 @@
                 /*                                                                                                                                           */
                  /*                                                                                                                                           */
                   /*                                              This software is the result of a team work                                                   */  
-                 /*                                                                                                                                           */
+                  /*                                                                                                                                           */
+                /*                                                                                                                                           */
                /*                                                                                                                                           */
-              /*                                                                                                                                           */
-             /*                                                       THANKS TO  - ITAIN -  - CARLONB -                                                   */
+              /*                                                    - KATAVENTOS -  - ITAIN -  - CARLONB -                                                 */
              /*                                                                                                                                           */
               /*                                                                                                                                           */
                /*********************************************************************************************************************************************/                                                                                                             
