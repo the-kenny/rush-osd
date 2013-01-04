@@ -269,6 +269,8 @@ const int MwAltitudePosition[2][2]=             {
   LINE07+2   ,LINE07+4   ,LINE07+2   ,LINE07+4   };
 const int MwClimbRatePosition[2][2]=            {
   LINE07+24  ,LINE07+26  ,LINE07+25  ,LINE07+26  };
+const int CurentThrottlePosition[2][2]=            {
+  LINE11+22  ,LINE11+21  ,LINE11+23+60  ,LINE11+21+60  };
 
 
 // BOTTOM OF THE SCREEN
