@@ -136,7 +136,7 @@ int16_t speedMAX=GPS_speed;
 int8_t temperMAX=0;
 int16_t altitudeMAX=0;
 int16_t distanceMAX=0;
-int16_t trip=0;
+float trip=0;
 uint8_t flyingMinute=0;
 uint8_t flyingSecond=0;
 
