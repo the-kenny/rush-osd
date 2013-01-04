@@ -255,10 +255,8 @@ const int speedPosition[2][2] =                 {
   LINE03+22  ,LINE03+20  ,LINE03+24  ,LINE03+21  };  // [0] En Km/h   [1] En Mph
 const int GPS_angleToHomePosition[2][2]=        {
   LINE04+14  ,LINE04+14  ,LINE04+14  ,LINE04+14  };
-#if defined GPSALT_UNDERSPEED
 const int MwGPSAltPosition[2][2] =              {
   LINE04+22  ,LINE04+20  ,LINE04+24  ,LINE04+21  };
-#endif
 const int sensorPosition[2][2]=                 {
   LINE03+2   ,LINE03+4   ,LINE03+2   ,LINE03+4   };
 const int MwHeadingPosition[2][2] =             {
