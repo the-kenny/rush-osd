@@ -233,7 +233,7 @@ void displayVoltage(void)
   MAX7456_WriteString(screenBuffer,voltagePosition[videoSignalType][screenType]-1);
 
 #if defined VIDVOLTAGE
-  ItoaPadded(vidvoltage, screenBuffer, 4, 3)
+  ItoaPadded(vidvoltage, screenBuffer, 4, 3);
   screenBuffer[4]=voltageUnitAdd;
   screenBuffer[5]=0;
   MAX7456_WriteString(screenBuffer,vidvoltagePosition[videoSignalType][screenType]);
@@ -401,14 +401,7 @@ void displayGPSPosition(void)
 {
   if(!GPS_fix)
     return;
-
-  //if(!GPS_fix)
-  //{
-  //  GPS_latitude = 0;
-  //  GPS_longitude = 0;
-  //  GPS_altitude = 0;
-  //}
-
+    
 #if defined COORDINATES
   screenBuffer[0]=0xCA;
   screenBuffer[1]=0;
@@ -447,9 +440,6 @@ void displayGPS_speed(void)
 {
   if (!GPS_fix)
     return;
-
-  //if (!GPS_fix)
-  //  GPS_speed = 0;
 
   int xx=0;
   int pos;
