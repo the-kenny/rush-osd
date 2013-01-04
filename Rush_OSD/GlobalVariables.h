@@ -87,6 +87,10 @@ int16_t I2CError=0;
 int16_t cycleTime=0;
 uint16_t pMeterSum=0;
 
+//For Current Throttle
+int LowT = 1100;
+int HighT = 1900;
+
 // For Time
 uint8_t onMinute=0;
 uint8_t onSecond=0;
