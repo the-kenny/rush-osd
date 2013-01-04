@@ -244,6 +244,33 @@ void displayVoltage(void)
 #endif
 }
 
+void displayCurrentThrottle(void)
+{
+  // CurentThrottlePosition is set in Config.h to line 11 above flyTimePosition
+  // Calibrate high and low throttle settings  --defaults set in GlobalVariables.h 1100-1900
+  if (MwRcData[THROTTLESTICK] > HighT) HighT = MwRcData[THROTTLESTICK] -5;
+  if (MwRcData[THROTTLESTICK] < LowT) LowT = MwRcData[THROTTLESTICK];
+  
+  //insert symbol for throttle 
+  screenBuffer[0]=0xC9;
+  MAX7456_WriteString(screenBuffer,CurentThrottlePosition[videoSignalType][screenType]);
+  //map current throttle to 0 -100 scale
+  if(!armed) {
+    screenBuffer[0]='-';
+    screenBuffer[1]='-';
+    MAX7456_WriteString(screenBuffer,CurentThrottlePosition[videoSignalType][screenType]+2);
+  }
+  else
+  {
+    int CurThrottle = map(MwRcData[THROTTLESTICK],LowT,HighT,0,100);
+    //begin right justify
+    ItoaPadded(CurThrottle,screenBuffer,3,0);
+    screenBuffer[3]='%';
+    MAX7456_WriteString(screenBuffer,CurentThrottlePosition[videoSignalType][screenType]+1);
+  }
+  
+}
+
 void displayTime(void)
 {
   if(flyMinute>0) flyingMinute=flyMinute;
