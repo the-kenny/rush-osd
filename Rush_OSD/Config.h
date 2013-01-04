@@ -79,6 +79,7 @@ How to config correctly the Mode active in order to show sensors and Arm/Disarm 
 
 /**********************************         Display Settings         ************************/
 
+#define THROTTLEPOSITION            // Uncomment to display throttle position
 #define DISPLAY_HORIZON_BR
 //#define COORDINATES               // Uncomment to display coordinates (use with display GPS ON, on OSD page 3)
 #define WITHDECORATION
