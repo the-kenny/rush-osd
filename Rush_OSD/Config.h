@@ -80,7 +80,7 @@ How to config correctly the Mode active in order to show sensors and Arm/Disarm 
 /**********************************         Display Settings         ************************/
 
 #define DISPLAY_HORIZON_BR
-//#define COORDINATES               // Uncomment to display coordinates and altitude on the orinal place (use with display GPS ON, on OSD page 3)
+//#define COORDINATES               // Uncomment to display coordinates (use with display GPS ON, on OSD page 3)
 #define WITHDECORATION
 #define SHOWHEADING
 #define HEADING360                  // Heading shows as 0..359; Comment for -179..180
