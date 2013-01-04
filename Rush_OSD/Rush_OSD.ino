@@ -1,4 +1,3 @@
-
 // This software is a copy of the original Rushduino-OSD project was written by Jean-Gabriel Maurice.
 // http://code.google.com/p/rushduino-osd/
 // For more information about this software <  Multiwii forum > http://www.multiwii.com/forum/viewtopic.php?f=8&t=922
@@ -293,7 +292,8 @@ void loop()
 void calculateTrip(void)
 {
   if(GPS_fix && (GPS_speed>0))
-    trip += ((GPS_speed * 1000)/3600)*0.1;
+    trip += GPS_speed *0.0005;                  // NEB mod : 100/1000*50=0.0005  cm/sec ---> mt/50msec (trip var is float)
+    //trip += ((GPS_speed * 1000)/3600)*0.1;
 }
 
 void calculateRssi(void)
