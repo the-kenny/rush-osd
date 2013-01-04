@@ -1,5 +1,4 @@
 
-
                                       /**********************************************************************************/
                                       /*    RUSH KV 2.1               Configurable parameters        RUSH KV 2.1        */
                                       /**********************************************************************************/
@@ -91,6 +90,7 @@ How to config correctly the Mode active in order to show sensors and Arm/Disarm 
 //#define SHOWBATLEVELEVOLUTION     // Uncomment to display battery evolution
 #define MULTIWIILOGO                // Comment to supress Multiwii logo at start up, good to use other character maps
 //#define VIDVOLTAGE                // Uncomment if you want to display video voltage
+#define DECIMAL '.'                 // Decimal point character, change to what suits you best (.) (,)
 
 /********************       For Sensors presence      *********************/
 
@@ -117,7 +117,6 @@ const uint8_t temperaturePin=6;    // Temperature pin 6 for original Rushduino B
 const uint8_t rssiSample=30;
 const uint8_t lowrssiAlarm=75;     // This will make blink the Rssi if lower then this value
 
-#define DECIMAL '.'                // Decimal point character
 
 /*----------------------------------------------       End of configurable parameters      ----------------------------------------------------*/
 
