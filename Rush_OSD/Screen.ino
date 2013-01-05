@@ -252,7 +252,7 @@ void displayCurrentThrottle(void)
   if (MwRcData[THROTTLESTICK] < LowT) LowT = MwRcData[THROTTLESTICK];
   
   //insert symbol for throttle 
-  screenBuffer[0]=0xC9;
+  screenBuffer[0]=0x20;
   MAX7456_WriteString(screenBuffer,CurentThrottlePosition[videoSignalType][screenType]);
   //map current throttle to 0 -100 scale
   if(!armed) {
