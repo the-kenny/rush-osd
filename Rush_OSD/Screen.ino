@@ -253,11 +253,13 @@ void displayCurrentThrottle(void)
   
   //insert symbol for throttle 
   screenBuffer[0]=0x20;
+  screenBuffer[1]=0;
   MAX7456_WriteString(screenBuffer,CurrentThrottlePosition[videoSignalType][screenType]);
   //map current throttle to 0 -100 scale
   if(!armed) {
     screenBuffer[0]='-';
     screenBuffer[1]='-';
+    screenBuffer[2]=0;
     MAX7456_WriteString(screenBuffer,CurrentThrottlePosition[videoSignalType][screenType]+2);
   }
   else
@@ -266,9 +268,9 @@ void displayCurrentThrottle(void)
     //begin right justify
     ItoaPadded(CurThrottle,screenBuffer,3,0);
     screenBuffer[3]='%';
+    screenBuffer[4]=0;
     MAX7456_WriteString(screenBuffer,CurrentThrottlePosition[videoSignalType][screenType]+1);
   }
-  
 }
 
 void displayTime(void)
