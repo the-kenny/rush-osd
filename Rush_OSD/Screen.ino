@@ -252,22 +252,22 @@ void displayCurrentThrottle(void)
   if (MwRcData[THROTTLESTICK] < LowT) LowT = MwRcData[THROTTLESTICK];
   if(!armed) {
     screenBuffer[0]=0xC8;
-    MAX7456_WriteString(screenBuffer,CurentThrottlePosition[videoSignalType][screenType]);
+    MAX7456_WriteString(screenBuffer,CurrentThrottlePosition[videoSignalType][screenType]);
     screenBuffer[0]='-';
     screenBuffer[1]='-';
     screenBuffer[2]='-';
     screenBuffer[3]='-';
-    MAX7456_WriteString(screenBuffer,CurentThrottlePosition[videoSignalType][screenType]+1);
+    MAX7456_WriteString(screenBuffer,CurrentThrottlePosition[videoSignalType][screenType]+1);
   }
   else
   {
     screenBuffer[0]=0xC8;
-    MAX7456_WriteString(screenBuffer,CurentThrottlePosition[videoSignalType][screenType]);
+    MAX7456_WriteString(screenBuffer,CurrentThrottlePosition[videoSignalType][screenType]);
     int CurThrottle = map(MwRcData[THROTTLESTICK],LowT,HighT,0,100);
     ItoaPadded(CurThrottle,screenBuffer,3,0);
     screenBuffer[3]='%';
     screenBuffer[4]=0;
-    MAX7456_WriteString(screenBuffer,CurentThrottlePosition[videoSignalType][screenType]+1);
+    MAX7456_WriteString(screenBuffer,CurrentThrottlePosition[videoSignalType][screenType]+1);
   }
   
 }
