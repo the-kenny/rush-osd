@@ -104,6 +104,9 @@ How to config correctly the Mode active in order to show sensors and Arm/Disarm 
 #define BST_OFF digitalWrite(BST,LOW);
 #define BST_ON digitalWrite(BST,HIGH);
 
+/*********************      Statistics      *******************************/
+#define RESETSTATISTICS              // Uncomment if you want to reset statistics after each arming - NEB implemented
+
 /********************      Analog input defines     ***********************/
 
 const uint8_t voltagePin=0;

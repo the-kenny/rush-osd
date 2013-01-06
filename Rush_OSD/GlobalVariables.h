@@ -68,6 +68,7 @@ uint8_t MwVersion=0;
 uint8_t MwVBat=0;
 int16_t MwVario=0;
 uint8_t armed=0;
+uint8_t previousarmedstatus=0;  // NEB for statistics after disarming
 int16_t armedTimer=0;
 int16_t GPS_distanceToHome=0;
 uint8_t GPSPresent=0;

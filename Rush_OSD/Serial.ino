@@ -122,7 +122,14 @@ void serialMSPCheck()
     askPID=2;
   }
 
-   if(configMode&&!waitStick&&(MwRcData[THROTTLESTICK]<MINSTICK)) // EXIT
+  //******************** EXIT from SHOW STATISTICS (menu page 6) AFTER DISARM (push throttle up) (Carlonb) NEB
+  if(configMode&&!waitStick&&(MwRcData[THROTTLESTICK]>MINSTICK)&&previousarmedstatus) // EXIT
+  {
+    configExit();
+  }
+
+//if(configMode&&!waitStick&&(MwRcData[THROTTLESTICK]<MINSTICK)) // EXIT
+  if(configMode&&!waitStick&&(MwRcData[THROTTLESTICK]<MINSTICK)&& !previousarmedstatus) // EXIT NEB mod for autostatistics
   {
     configExit();
   }
@@ -151,7 +158,7 @@ void serialMSPCheck()
     ROW++;
   }
 
-  if(configMode&&!waitStick&&(MwRcData[YAWSTICK]<MINSTICK)) // DECREASE
+  if(configMode&&!waitStick&&(MwRcData[YAWSTICK]<MINSTICK)&&!previousarmedstatus) // DECREASE
   {
     waitStick =1;
     if((ROW==1)&&(COL==1)&&(configPage==1)) P8[0]--;
@@ -340,6 +347,15 @@ void configExit()
   configMode=0;
   askPID=0;
   waitStick=3;
+  previousarmedstatus = 0;
+#if defined RESETSTATISTICS  // NEB added for reset statistics if defined
+  trip=0;
+  distanceMAX=0;
+  altitudeMAX=0;
+  speedMAX=0;
+  flyingMinute=0;
+  flyingSecond=0;
+#endif
 }
 
 void saveExit()

@@ -175,6 +175,15 @@ void loop()
     if( allSec < 9 ) displayIntro();
     else
     {
+      if(armed){
+        previousarmedstatus=1;
+      }
+      if(previousarmedstatus && !armed){
+        configPage=6;
+        ROW=10;
+        COL=1;
+        configMode=1;
+      }
       if(configMode)
       {
         displayPIDConfigScreen();
