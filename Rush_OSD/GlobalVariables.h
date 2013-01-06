@@ -11,15 +11,12 @@
 //#define OFF 0
 
 //General use variables
-int xx=0,yy=0;
+int xx=0;
 Metro MetroTimer = Metro(100);
 int tenthSec=0;
 int halfSec=0;
-uint8_t tenthSecFlag=1;
-int Blink1hz=0;                               // This is turing on and off at 1hz
 int Blink2hz=0;                               // This is turing on and off at 2hz
 int Blink10hz=0;                              // This is turing on and off at 10hz
-int ble=0;
 uint8_t rssiTimer=0;
 uint8_t accCalibrationTimer=0;
 uint8_t magCalibrationTimer=0;
