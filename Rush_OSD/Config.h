@@ -30,13 +30,13 @@ How to config correctly the Mode active in order to show sensors and Arm/Disarm 
 -) Assign a power of 2 for each sensor/device defined in MWii "config.h" skipping sensor/devices not defined.
 -) These found numbers are to be defined here....
 */
-#define STABLEMODE     1            // OK
+#define STABLEMODE     3            // OK
 #define BAROMODE       4            // OK
 #define MAGMODE        8            // OK
 //#define BOXCAMSTAB     16         // not used
-#define ARMEDMODE      32           // OK
-#define GPSHOMEMODE    64           // OK
-#define GPSHOLDMODE    128          // OK
+#define ARMEDMODE      16           // OK
+#define GPSHOMEMODE    32           // OK
+#define GPSHOLDMODE    64          // OK
 //#define BOXCAMTRIG     256        // not used
 
 /*
@@ -58,8 +58,8 @@ How to config correctly the Mode active in order to show sensors and Arm/Disarm 
  /*                                                                                                                     */
   /************** Voltage match multimeter (you can change this options to match your setup/requirements) ****************/
 
-#define DIVIDERRATIO 25             // Main voltage ratio
-#define VIDDIVIDERRATIO 25          // Video voltage ratio
+#define DIVIDERRATIO 22.04             // Main voltage ratio
+#define VIDDIVIDERRATIO 22.04          // Video voltage ratio
 //#define VIDVOLTAGE_VBAT           // Uncomment to change from VIDEO VLOTAGE Analog Pin to MwVbat (must be defined on MWcode)
 //#define MAINVOLTAGE_VBAT          // Uncomment to change from MAIN VLOTAGE Analog Pin to MwVbat (must be defined on MWcode)
 
@@ -79,9 +79,9 @@ How to config correctly the Mode active in order to show sensors and Arm/Disarm 
 
 /**********************************         Display Settings         ************************/
 
-//#define THROTTLEPOSITION          // Uncomment to display throttle position
+#define THROTTLEPOSITION          // Uncomment to display throttle position
 #define DISPLAY_HORIZON_BR
-//#define COORDINATES               // Uncomment to display coordinates (use with display GPS ON, on OSD page 3)
+#define COORDINATES               // Uncomment to display coordinates (use with display GPS ON, on OSD page 3)
 #define WITHDECORATION
 #define SHOWHEADING
 #define HEADING360                  // Heading shows as 0..359; Comment for -179..180
@@ -241,66 +241,5 @@ const unsigned char MwClimbRateAdd[2]={
 const unsigned char GPS_distanceToHomeAdd[2]={
   0x9d,0x9e};
 
-
-// POSITION OF EACH INFORMATION IN THE SCREEN BUFFER
-//                                         NTSC        NTSC        PAL         PAL
-//                                         WIDE        NARROW      WIDE        NARROW
-//
-// TOP OF THE SCREEN
-const int GPS_numSatPosition[2][2]=             {
-  LINE02+2   ,LINE02+4   ,LINE02+2   ,LINE02+4   };
-const int GPS_directionToHomePosition[2][2]=    {
-  LINE03+14  ,LINE03+14  ,LINE03+14  ,LINE03+14  };
-
-// TOP OF THE SCREEN
-const int GPS_distanceToHomePosition[2][2]=     {
-  LINE02+22  ,LINE02+20  ,LINE02+24  ,LINE02+21  };
-const int speedPosition[2][2] =                 {
-  LINE03+22  ,LINE03+20  ,LINE03+24  ,LINE03+21  };  // [0] En Km/h   [1] En Mph
-const int GPS_angleToHomePosition[2][2]=        {
-  LINE04+14  ,LINE04+14  ,LINE04+14  ,LINE04+14  };
-const int MwGPSAltPosition[2][2] =              {
-  LINE04+22  ,LINE04+20  ,LINE04+24  ,LINE04+21  };
-const int sensorPosition[2][2]=                 {
-  LINE03+2   ,LINE03+4   ,LINE03+2   ,LINE03+4   };
-const int MwHeadingPosition[2][2] =             {
-  LINE02+19  ,LINE02+17  ,LINE02+19  ,LINE02+17  };
-const int MwHeadingGraphPosition[2][2] =        {
-  LINE02+10  ,LINE02+10  ,LINE02+10  ,LINE02+10  };
-
-// MIDDLE OF THE SCREEN
-const int MwAltitudePosition[2][2]=             {
-  LINE07+2   ,LINE07+4   ,LINE07+2   ,LINE07+4   };
-const int MwClimbRatePosition[2][2]=            {
-  LINE07+24  ,LINE07+26  ,LINE07+25  ,LINE07+26  };
-const int CurrentThrottlePosition[2][2]=            {
-  LINE11+22  ,LINE11+21  ,LINE11+23+60  ,LINE11+21+60  };
-
-
-// BOTTOM OF THE SCREEN
-const int flyTimePosition[2][2]=                {
-  LINE12+22  ,LINE12+21  ,LINE12+23+60  ,LINE12+21+60  };
-const int onTimePosition[2][2]=                 {
-  LINE13+22  ,LINE13+21  ,LINE13+23+60  ,LINE13+21+60  };
-const int motorArmedPosition[2][2]=            {
-  LINE12+11  ,LINE12+11  ,LINE11+11+60  ,LINE11+11+60  };
-#if defined COORDINATES
-const int MwGPSLatPosition[2][2] =              {
-  LINE10+2   ,LINE10+4   ,LINE10+2+60   ,LINE10+4+60   };
-const int MwGPSLonPosition[2][2] =              {
-  LINE10+13+2   ,LINE10+13+4   ,LINE10+2+13+60   ,LINE10+13+4+60  };
-#endif
-const int rssiPosition[2][2]=                   {
-  LINE12+3   ,LINE12+5   ,LINE12+3+60   ,LINE12+5+60   };
-const int temperaturePosition[2][2]=          {
-  LINE11+2   ,LINE11+4   ,LINE11+2   ,LINE11+4   };
-const int voltagePosition[2][2]  =                {
-  LINE13+3  ,LINE13+5   ,LINE13+3+60   ,LINE13+5+60   };
-const int vidvoltagePosition[2][2]  =                {
-  LINE11+3  ,LINE11+5   ,LINE11+3+60   ,LINE11+5+60   };
-const int amperagePosition[2][2] =               {
-  LINE13+10   ,LINE13+12  ,LINE13+10+60   ,LINE13+12+60   };
-const int pMeterSumPosition[2][2] =       {
-  LINE13+16   ,LINE13+18   ,LINE13+16+60   ,LINE13+18+60    };
 
 const char RushduinoVersionPosition = 35;

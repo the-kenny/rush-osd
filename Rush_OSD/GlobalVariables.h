@@ -273,3 +273,30 @@ const char *configMsgs[] PROGMEM = {
   configMsg31, configMsg32, configMsg33, configMsg34, configMsg35, configMsg36, configMsg37, configMsg38, configMsg39, configMsg40,
   configMsg41, configMsg42, configMsg43, configMsg44, configMsg45, configMsg46, configMsg47, configMsg48, configMsg49, configMsg50,
   configMsg51, configMsg52, configMsg53, configMsg54, configMsg55, configMsg56, configMsg57, configMsg58};
+
+// All screen locations defines in ScreenLayout.ino
+enum Positions {
+  GPS_numSatPosition,
+  GPS_directionToHomePosition,
+  GPS_distanceToHomePosition,
+  speedPosition,
+  GPS_angleToHomePosition,
+  MwGPSAltPosition,
+  sensorPosition,
+  MwHeadingPosition,
+  MwHeadingGraphPosition,
+  MwAltitudePosition,
+  MwClimbRatePosition,
+  CurrentThrottlePosition,
+  flyTimePosition,
+  onTimePosition,
+  motorArmedPosition,
+  MwGPSLatPosition,
+  MwGPSLonPosition,
+  rssiPosition,
+  temperaturePosition,
+  voltagePosition,
+  vidvoltagePosition,
+  amperagePosition,
+  pMeterSumPosition,
+};
