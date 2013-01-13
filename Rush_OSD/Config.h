@@ -121,8 +121,6 @@ const uint8_t lowrssiAlarm=75;     // This will make blink the Rssi if lower the
 /******************       FOR DEBUG ONLY      ********************/
 
 
-#define ESTCLIMB 100
-
 #define TIMEBASE_X1   50
 #define TIMEBASE  TIMEBASE_X1
 #define LINE      30
