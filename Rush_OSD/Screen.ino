@@ -219,13 +219,14 @@ void displayVoltage(void)
   MAX7456_WriteString(screenBuffer,getPosition(voltagePosition));
 
 #if defined SHOWBATLEVELEVOLUTION
-  if (voltage > 124) screenBuffer[0]=0x90;
-  else if (voltage < 105) screenBuffer[0]=0x96;
+//  if (voltage >= 123) screenBuffer[0]=0x90;    // little bug
+  if (voltage < 105) screenBuffer[0]=0x96;
   else if (voltage < 108) screenBuffer[0]=0x95;
   else if (voltage < 110) screenBuffer[0]=0x94;
   else if (voltage < 115) screenBuffer[0]=0x93;
   else if (voltage < 120) screenBuffer[0]=0x92;
   else if (voltage < 122) screenBuffer[0]=0x91;
+  else screenBuffer[0]=0x90;                              // Max charge icon
 #else
   screenBuffer[0]=0x97;
 #endif
@@ -254,8 +255,8 @@ void displayCurrentThrottle(void)
   screenBuffer[1]=0;
   MAX7456_WriteString(screenBuffer,getPosition(CurrentThrottlePosition));
   if(!armed) {
-    screenBuffer[0]='-';
-    screenBuffer[1]='-';
+    screenBuffer[0]=' ';
+    screenBuffer[1]=' ';
     screenBuffer[2]='-';
     screenBuffer[3]='-';
     screenBuffer[4]=0;
@@ -509,8 +510,8 @@ void displayClimbRate(void)
   screenBuffer[1]=0;
   MAX7456_WriteString(screenBuffer,getPosition(MwClimbRatePosition));
 
-  if(!unitSystem) xx= climbRate / ESTCLIMB;
-  if(unitSystem)  xx= climbRate / ESTCLIMB;
+  if(!unitSystem) xx= climbRate / 100;
+  if(unitSystem)  xx= climbRate / 100;
   itoa(xx,screenBuffer,10);
   MAX7456_WriteString(screenBuffer,getPosition(MwClimbRatePosition)+1);
 
@@ -531,7 +532,9 @@ void displayClimbRate(void)
   else
     if (climbRate < -5) screenBuffer[0]=0xB7;
   screenBuffer[1]=0;
-  if (climbRate>= -1) pos = getPosition(MwClimbRatePosition)-2;
+ if (climbRate < -5) screenBuffer[0]=0xB7;
+  screenBuffer[1]=0;
+  if (climbRate>= -5) pos = getPosition(MwClimbRatePosition)-2;  // from -1 to -5
   else pos = getPosition(MwClimbRatePosition)-2+LINE;
   MAX7456_WriteString(screenBuffer,pos);
 }
