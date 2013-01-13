@@ -30,13 +30,13 @@ How to config correctly the Mode active in order to show sensors and Arm/Disarm 
 -) Assign a power of 2 for each sensor/device defined in MWii "config.h" skipping sensor/devices not defined.
 -) These found numbers are to be defined here....
 */
-#define STABLEMODE     1            // OK
+#define STABLEMODE     3            // OK
 #define BAROMODE       4            // OK
 #define MAGMODE        8            // OK
 //#define BOXCAMSTAB     16         // not used
-#define ARMEDMODE      32           // OK
-#define GPSHOMEMODE    64           // OK
-#define GPSHOLDMODE    128          // OK
+#define ARMEDMODE      16           // OK
+#define GPSHOMEMODE    32           // OK
+#define GPSHOLDMODE    64          // OK
 //#define BOXCAMTRIG     256        // not used
 
 /*
@@ -58,8 +58,8 @@ How to config correctly the Mode active in order to show sensors and Arm/Disarm 
  /*                                                                                                                     */
   /************** Voltage match multimeter (you can change this options to match your setup/requirements) ****************/
 
-#define DIVIDERRATIO 25             // Main voltage ratio
-#define VIDDIVIDERRATIO 25          // Video voltage ratio
+#define DIVIDERRATIO 22.04             // Main voltage ratio
+#define VIDDIVIDERRATIO 22.04          // Video voltage ratio
 //#define VIDVOLTAGE_VBAT           // Uncomment to change from VIDEO VLOTAGE Analog Pin to MwVbat (must be defined on MWcode)
 //#define MAINVOLTAGE_VBAT          // Uncomment to change from MAIN VLOTAGE Analog Pin to MwVbat (must be defined on MWcode)
 
