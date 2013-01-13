@@ -186,12 +186,12 @@ uint8_t flyingSecond=0;
 // ---------------------------------------------------------------------------------------
 
 // For Intro
-const char message0[] PROGMEM = "Rush_KV_2.1";
-const char message1[] PROGMEM = "Video signal: NTSC";
-const char message2[] PROGMEM = "Video signal: PAL";
-const char message3[] PROGMEM = "Screen Type: WIDE";
-const char message4[] PROGMEM = "Screen Type: NARROW";
-const char message5[] PROGMEM = "Version:";
+const char message0[] PROGMEM = "RUSH_KV_2.2";
+const char message1[] PROGMEM = "VIDEO SIGNAL: NTSC";
+const char message2[] PROGMEM = "VIDEO SIGNAL: PAL";
+const char message3[] PROGMEM = "SCREEN TYPE: WIDE";
+const char message4[] PROGMEM = "SCREEN TYPE: NARROW";
+const char message5[] PROGMEM = "VERSION:";
 const char message6[] PROGMEM = "MENU:THRT MIDDLE";
 const char message7[] PROGMEM = "YAW RIGHT";
 const char message8[] PROGMEM = "PITCH FULL";
@@ -219,32 +219,32 @@ const char configMsg13[] PROGMEM = "EXPO";
 const char configMsg14[] PROGMEM = "ROLL PITCH RATE";
 const char configMsg15[] PROGMEM = "YAW RATE";
 const char configMsg16[] PROGMEM = "THROTTLE PID ATT";
-const char configMsg17[] PROGMEM = "MwCycle Time";
-const char configMsg18[] PROGMEM = "MwI2C Errors";
+const char configMsg17[] PROGMEM = "MWCYCLE TIME";
+const char configMsg18[] PROGMEM = "MWI2C ERRORS";
 //-----------------------------------------------------------Page3
 const char configMsg19[] PROGMEM = "3/6 DISPLAY & ALARM";
 const char configMsg20[] PROGMEM = "      ";
 const char configMsg21[] PROGMEM = "ON";
 const char configMsg22[] PROGMEM = "OFF";
-const char configMsg23[] PROGMEM = "Display Voltage";
+const char configMsg23[] PROGMEM = "DISPLAY VOLTAGE";
 const char configMsg24[] PROGMEM = "VOLTAGE ALARM";
-const char configMsg25[] PROGMEM = "Display Temperature";
+const char configMsg25[] PROGMEM = "DISPLAY TEMPERATURE";
 const char configMsg26[] PROGMEM = "SET ALARM TEMP";
-const char configMsg27[] PROGMEM = "Display GPS";
+const char configMsg27[] PROGMEM = "DISPLAY GPS";
 const char configMsg28[] PROGMEM = "                  ";
 const char configMsg29[] PROGMEM = " ";
 const char configMsg30[] PROGMEM = "                   ";
 //-----------------------------------------------------------Page4
 const char configMsg31[] PROGMEM = "4/6 DISPLAY";
-const char configMsg32[] PROGMEM = "Actual RSSIADC(/4)";
-const char configMsg33[] PROGMEM = "Actual RSSI";
+const char configMsg32[] PROGMEM = "ACTUAL RSSIADC(/4)";
+const char configMsg33[] PROGMEM = "ACTUAL RSSI";
 const char configMsg34[] PROGMEM = "SET RSSI MIN";
 const char configMsg35[] PROGMEM = "SET RSSI MAX";
-const char configMsg36[] PROGMEM = "Display RSSI";
+const char configMsg36[] PROGMEM = "DISPLAY RSSI";
 const char configMsg37[] PROGMEM = "UNIT SYSTEM";
 const char configMsg38[] PROGMEM = "METRIC";
 const char configMsg39[] PROGMEM = "IMPERL";
-const char configMsg40[] PROGMEM = "Screen Type";
+const char configMsg40[] PROGMEM = "SCREEN TYPE";
 const char configMsg41[] PROGMEM = "NARROW";
 const char configMsg42[] PROGMEM = "WIDE";
 //-----------------------------------------------------------Page5
@@ -253,18 +253,18 @@ const char configMsg44[] PROGMEM = "ACC Calibration";
 const char configMsg45[] PROGMEM = "ACC ROLL :";
 const char configMsg46[] PROGMEM = "ACC PITCH :";
 const char configMsg47[] PROGMEM = "ACC Z :";
-const char configMsg48[] PROGMEM = "MAG Calibration";
-const char configMsg49[] PROGMEM = "Heading";
-const char configMsg50[] PROGMEM = "MW EEPROM Write";
+const char configMsg48[] PROGMEM = "MAG CALIBRATION";
+const char configMsg49[] PROGMEM = "HEADING";
+const char configMsg50[] PROGMEM = "MW EEPROM WRITE";
 //-----------------------------------------------------------Page6
 const char configMsg51[] PROGMEM = "6/6 STATISTICS";
 const char configMsg52[] PROGMEM = "TRIP:";
-const char configMsg53[] PROGMEM = "Max DisToHome:";
-const char configMsg54[] PROGMEM = "Max Altitude:";
-const char configMsg55[] PROGMEM = "Max Speed:";
-const char configMsg56[] PROGMEM = "Flying Time:";
-const char configMsg57[] PROGMEM = "Drained Amps.:";
-const char configMsg58[] PROGMEM = "Max Temp.:";
+const char configMsg53[] PROGMEM = "MAX DISTANCE:";
+const char configMsg54[] PROGMEM = "MAX ALTITUDE:";
+const char configMsg55[] PROGMEM = "MAX SPEED:";
+const char configMsg56[] PROGMEM = "FLYING TIME:";
+const char configMsg57[] PROGMEM = "DRAINED AMPS.:";
+const char configMsg58[] PROGMEM = "MAX TEMP.:";
 
 const char *configMsgs[] PROGMEM = {
   configMsg0, configMsg1, configMsg2, configMsg3, configMsg4, configMsg5, configMsg6, configMsg7, configMsg8, configMsg9, configMsg10,
