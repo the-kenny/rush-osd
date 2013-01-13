@@ -1,5 +1,5 @@
                                       /**********************************************************************************/
-                                      /*    RUSH KV 2.1               Configurable parameters        RUSH KV 2.1        */
+                                      /*    RUSH KV 2.2               Configurable parameters        RUSH KV 2.2        */
                                       /**********************************************************************************/
 
 // ____________________________________________________________________General configuration________________________________________________________________________//
@@ -30,13 +30,13 @@ How to config correctly the Mode active in order to show sensors and Arm/Disarm 
 -) Assign a power of 2 for each sensor/device defined in MWii "config.h" skipping sensor/devices not defined.
 -) These found numbers are to be defined here....
 */
-#define STABLEMODE     3            // OK
+#define STABLEMODE     1            // OK
 #define BAROMODE       4            // OK
 #define MAGMODE        8            // OK
 //#define BOXCAMSTAB     16         // not used
-#define ARMEDMODE      16           // OK
-#define GPSHOMEMODE    32           // OK
-#define GPSHOLDMODE    64          // OK
+#define ARMEDMODE      32           // OK
+#define GPSHOMEMODE    64           // OK
+#define GPSHOLDMODE    128          // OK
 //#define BOXCAMTRIG     256        // not used
 
 /*
@@ -58,8 +58,8 @@ How to config correctly the Mode active in order to show sensors and Arm/Disarm 
  /*                                                                                                                     */
   /************** Voltage match multimeter (you can change this options to match your setup/requirements) ****************/
 
-#define DIVIDERRATIO 22.04             // Main voltage ratio
-#define VIDDIVIDERRATIO 22.04          // Video voltage ratio
+#define DIVIDERRATIO 25             // Main voltage ratio
+#define VIDDIVIDERRATIO 25          // Video voltage ratio
 //#define VIDVOLTAGE_VBAT           // Uncomment to change from VIDEO VLOTAGE Analog Pin to MwVbat (must be defined on MWcode)
 //#define MAINVOLTAGE_VBAT          // Uncomment to change from MAIN VLOTAGE Analog Pin to MwVbat (must be defined on MWcode)
 
@@ -73,15 +73,11 @@ How to config correctly the Mode active in order to show sensors and Arm/Disarm 
 #define AMPRERAGE_OFFSET 512        // Amperage = AMPRERAGE_OFFSET - analogRead * AMPERAGE_CAL / 10.23
 
 
-/*****************************      Climb rate adjust      **********************************/
-
-#define ESTCLIMB 60                 // Here you can adjust Climb rate (60 is empirical value)
-
 /**********************************         Display Settings         ************************/
 
 #define THROTTLEPOSITION          // Uncomment to display throttle position
 #define DISPLAY_HORIZON_BR
-#define COORDINATES               // Uncomment to display coordinates (use with display GPS ON, on OSD page 3)
+//#define COORDINATES               // Uncomment to display coordinates (use with display GPS ON, on OSD page 3)
 #define WITHDECORATION
 #define SHOWHEADING
 #define HEADING360                  // Heading shows as 0..359; Comment for -179..180
@@ -218,7 +214,7 @@ const unsigned char flyTimeUnitAdd=0x9c;
 const unsigned char onTimeUnitAdd=0x9b;
 const unsigned char amperageUnitAdd = 0x9a;
 
-const unsigned char rssiUnitAdd = 0xba;
+const unsigned char rssiUnitAdd = 0xc9;
 const unsigned char sensorAdd[4] = {
   0xa0,0xa1,0xa2,0xa4}; //acc,mag,bar,GPS
 
