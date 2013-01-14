@@ -1,3 +1,5 @@
+//@Test
+
 // Thanks to doofusdog.org for this whole code !!
 
 // Code to copy a MCM font file to the Arduino + Max7456 OSD
