@@ -215,7 +215,7 @@ const unsigned char flyTimeUnitAdd=0x9c;
 const unsigned char onTimeUnitAdd=0x9b;
 const unsigned char amperageUnitAdd = 0x9a;
 
-const unsigned char rssiUnitAdd = 0xc9;
+const unsigned char rssiUnitAdd = 0xba;
 const unsigned char sensorAdd[4] = {
   0xa0,0xa1,0xa2,0xa4}; //acc,mag,bar,GPS
 

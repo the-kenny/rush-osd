@@ -249,7 +249,7 @@ const char configMsg41[] PROGMEM = "NARROW";
 const char configMsg42[] PROGMEM = "WIDE";
 //-----------------------------------------------------------Page5
 const char configMsg43[] PROGMEM = "5/6 CALIBRATION";
-const char configMsg44[] PROGMEM = "ACC Calibration";
+const char configMsg44[] PROGMEM = "ACC CALIBRATION";
 const char configMsg45[] PROGMEM = "ACC ROLL :";
 const char configMsg46[] PROGMEM = "ACC PITCH :";
 const char configMsg47[] PROGMEM = "ACC Z :";
