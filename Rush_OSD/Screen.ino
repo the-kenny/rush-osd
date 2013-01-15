@@ -219,7 +219,6 @@ void displayVoltage(void)
   MAX7456_WriteString(screenBuffer,getPosition(voltagePosition));
 
 #if defined SHOWBATLEVELEVOLUTION
-//  if (voltage >= 123) screenBuffer[0]=0x90;    // little bug
   if (voltage < 105) screenBuffer[0]=0x96;
   else if (voltage < 108) screenBuffer[0]=0x95;
   else if (voltage < 110) screenBuffer[0]=0x94;
@@ -246,12 +245,11 @@ void displayVoltage(void)
 }
 
 void displayCurrentThrottle(void)
-{
-  // CurentThrottlePosition is set in Config.h to line 11 above flyTimePosition
-  // Calibrate high and low throttle settings  --defaults set in GlobalVariables.h 1100-1900
-  if (MwRcData[THROTTLESTICK] > HighT) HighT = MwRcData[THROTTLESTICK] -5;
-  if (MwRcData[THROTTLESTICK] < LowT) LowT = MwRcData[THROTTLESTICK];
-  screenBuffer[0]=0xC8;
+{                                                                                  // CurentThrottlePosition is set in Config.h to line 11 above flyTimePosition
+  
+  if (MwRcData[THROTTLESTICK] > HighT) HighT = MwRcData[THROTTLESTICK] -5;         
+  if (MwRcData[THROTTLESTICK] < LowT) LowT = MwRcData[THROTTLESTICK];              // Calibrate high and low throttle settings  --defaults set in GlobalVariables.h 1100-1900
+  screenBuffer[0]=0xC9;
   screenBuffer[1]=0;
   MAX7456_WriteString(screenBuffer,getPosition(CurrentThrottlePosition));
   if(!armed) {
@@ -466,7 +464,7 @@ void displayNumberOfSat(void)
 
 void displayGPS_speed(void)
 {
-  if (!GPS_fix)
+  if(!GPS_fix)
     return;
 
   int xx=0;
@@ -572,17 +570,17 @@ void displayAngleToHome(void)
 
 void displayDirectionToHome(void)
 {
-  if(!GPS_fix)
-    return;
+  /*if(!GPS_fix)
+    return;*/
   if(GPS_distanceToHome <= 2 && Blink2hz)
     return;
 
   int16_t d = MwHeading + 22 + 180 + 360 - GPS_directionToHome;
-  d = 2*((d % 360) / 45);
+  d = ((d % 360) / 22.5);            //2* (( )/45)
 
-  screenBuffer[0] = 0x80 + d;
-  screenBuffer[1] = 0x81 + d;
-  screenBuffer[2]=0;
+  screenBuffer[0] = 0x60 + d;
+  //screenBuffer[1] = 0x81 + d;
+  screenBuffer[1]=0;                //2
   MAX7456_WriteString(screenBuffer,getPosition(GPS_directionToHomePosition));
 }
 
