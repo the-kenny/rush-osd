@@ -237,6 +237,4 @@ const unsigned char MwClimbRateAdd[2]={
   0x9f,0x99};
 const unsigned char GPS_distanceToHomeAdd[2]={
   0x9d,0x9e};
-
-
 const char RushduinoVersionPosition = 35;

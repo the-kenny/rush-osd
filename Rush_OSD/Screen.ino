@@ -515,26 +515,24 @@ void displayClimbRate(void)
   itoa(xx,screenBuffer,10);
   MAX7456_WriteString(screenBuffer,getPosition(MwClimbRatePosition)+1);
 
-  if (climbRate > 30)   screenBuffer[0]=0xB3;
+   if (climbRate > 70)   screenBuffer[0]=0xB3;  
   else
-    if (climbRate > 20)    screenBuffer[0]=0xB2;
+    if (climbRate > 50)    screenBuffer[0]=0xB2; 
     else
-      if (climbRate > 10)    screenBuffer[0]=0xB1;
+      if (climbRate > 30)    screenBuffer[0]=0xB1;  
+      else
+        if (climbRate > 20)  screenBuffer[0]=0xB0; 
+        else screenBuffer[0]=0xBC;
+ 
+  if (climbRate < -70)  screenBuffer[0]=0xB4;
+  else
+    if (climbRate < -50)   screenBuffer[0]=0xB5;
     else
-      if (climbRate > 5)  screenBuffer[0]=0xB0;
-    else screenBuffer[0]=0xBC;
-
-  if (climbRate < -30)  screenBuffer[0]=0xB4;
-  else
-    if (climbRate < -20)   screenBuffer[0]=0xB5;
-  else
-    if (climbRate < -10)   screenBuffer[0]=0xB6;
-  else
-    if (climbRate < -5) screenBuffer[0]=0xB7;
+      if (climbRate < -30)   screenBuffer[0]=0xB6;
+      else
+        if (climbRate < -20) screenBuffer[0]=0xB7;
   screenBuffer[1]=0;
- if (climbRate < -5) screenBuffer[0]=0xB7;
-  screenBuffer[1]=0;
-  if (climbRate>= -5) pos = getPosition(MwClimbRatePosition)-2;  // from -1 to -5
+  if (climbRate>= -20) pos = getPosition(MwClimbRatePosition)-2; 
   else pos = getPosition(MwClimbRatePosition)-2+LINE;
   MAX7456_WriteString(screenBuffer,pos);
 }
