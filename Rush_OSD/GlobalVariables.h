@@ -201,7 +201,7 @@ const char* introMessages[] PROGMEM = {
 
 // For Config
 const char configMsg0[] PROGMEM = "EXIT";
-const char configMsg1[] PROGMEM = "  SAVE";
+const char configMsg1[] PROGMEM = "SAVE-EXIT";
 const char configMsg2[] PROGMEM = "<PAGE>";
 //-----------------------------------------------------------Page1
 const char configMsg3[] PROGMEM = "1/6 PID CONFIG";
