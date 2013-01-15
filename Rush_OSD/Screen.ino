@@ -249,7 +249,7 @@ void displayCurrentThrottle(void)
   
   if (MwRcData[THROTTLESTICK] > HighT) HighT = MwRcData[THROTTLESTICK] -5;         
   if (MwRcData[THROTTLESTICK] < LowT) LowT = MwRcData[THROTTLESTICK];              // Calibrate high and low throttle settings  --defaults set in GlobalVariables.h 1100-1900
-  screenBuffer[0]=0xC9;
+  screenBuffer[0]=0xC8;
   screenBuffer[1]=0;
   MAX7456_WriteString(screenBuffer,getPosition(CurrentThrottlePosition));
   if(!armed) {
