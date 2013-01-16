@@ -1,5 +1,4 @@
-
-/****
+/**
  * Rush_KV Configuration
  * by Ross Power. 
  * 
@@ -22,7 +21,7 @@ import javax.swing.filechooser.FileFilter; // for our configuration file filter 
 //import javax.swing.JOptionPane; // for message dialogue
 
 
-
+String Rush_OSD_GUI_Version = "2.01a";
 
 
 PImage img,OSDBackground,RadioPot;
@@ -126,7 +125,7 @@ int ReadMW = 0;
 
 
 
-String Rush_KV_Version = "0.1";
+
 
 
 Serial g_serial;      // The serial port
@@ -143,7 +142,7 @@ boolean firstContact = false;
 boolean disableSerial = false;
 // Int variables
 static int CHECKBOXITEMS=0;
-static int CONFIGITEMS=10;
+static int CONFIGITEMS=11;
 static int SIMITEMS=10;
 
 int init_com;
@@ -322,9 +321,8 @@ OnTimer = millis();
   frameRate(20); 
 OSDBackground = loadImage("Background1.jpg");
 RadioPot = loadImage("Radio_Pot.png");
-image(OSDBackground,DisplayWindowX+WindowAdjX, DisplayWindowY+WindowAdjY, DisplayWindowX+360-WindowShrinkX, DisplayWindowY+288-WindowShrinkY);
+//image(OSDBackground,DisplayWindowX+WindowAdjX, DisplayWindowY+WindowAdjY, DisplayWindowX+360-WindowShrinkX, DisplayWindowY+288-WindowShrinkY);
 img = loadImage("MW_OSD_Team_Clear.png");
-//img = loadImage("MW_OSD_Team.png");
 img.format = ARGB;
 
 
@@ -561,7 +559,7 @@ void draw() {
   fill(255, 255, 255);
   text("Rush OSD",18,19);
   text("  GUI    V",10,35);
-  text(Rush_KV_Version, 74, 35);
+  text(Rush_OSD_GUI_Version, 74, 35);
   fill(0, 0, 0);
   strokeWeight(3);stroke(0);
   rectMode(CORNERS);
@@ -726,20 +724,20 @@ void serialEvent(Serial g_serial) {
 }
 
 
-//public void REQUEST() {
-  //g_serial.write("*-");
-  //g_serial.write(10);
-//}
-public void READ() {
-  disableSerial = false;
-  for(int i=0;i<CONFIGITEMS;i++) {
-    confItem[i].setValue(0); 
+public void READ(){
+  
+    g_serial.write('$');
+    g_serial.write('M');
+    g_serial.write('>');
+    g_serial.write((byte)0x00);
+    g_serial.write(MSP_OSD_READ);
+    g_serial.write(MSP_OSD_READ);
+    buttonWRITE.setColorBackground(green_);
   }
-  g_serial.write("*-");
-  g_serial.write(10);
-  buttonWRITE.setColorBackground(green_);
-}
-public void WRITE() {
+  
+
+
+public void WRITEOLD() {
   disableSerial = true;
   for(int i=0;i<CONFIGITEMS;i++) {
    println(checkboxConfItem[i].arrayValue()[0]);
@@ -749,14 +747,28 @@ public void WRITE() {
   SendCommand += ",";
   SendCommand += str(int(confItem[i].value()));
    g_serial.write(SendCommand);
-   //println(SendCommand);
-  //g_serial.write(i);
-  //g_serial.write(",");
-  //g_serial.write("1");
-  g_serial.write("\n");
+   g_serial.write("\n");
   // println(i);
   }
   g_serial.clear();   
+}
+
+public void WRITE(){
+   g_serial.write('$');
+    g_serial.write('M');
+    g_serial.write('>');
+    checksum=0;
+    dataSize=CONFIGITEMS;
+    g_serial.write((byte)dataSize);
+    checksum ^= dataSize;
+    g_serial.write(MSP_OSD_WRITE);
+    checksum ^= MSP_OSD_WRITE;
+    for(int i=0; i<CONFIGITEMS; i++){
+      g_serial.write(int(confItem[i].value()));
+      checksum ^= int(confItem[i].value());
+    }
+    g_serial.write((byte)checksum);
+
 }
 
 //void keyPressed() {

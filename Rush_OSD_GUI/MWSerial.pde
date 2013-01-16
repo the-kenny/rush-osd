@@ -7,6 +7,9 @@ int GPSHOMEMODE=  128;          // OK
 int GPSHOLDMODE=  64;          // OK
 //int BOXCAMTRIG     256;        // not used
 
+
+
+
 int time,time2,time3,time4;
 
 int version,versionMisMatch;
@@ -72,7 +75,8 @@ private static final int
   MSP_SET_MISC             =207,
   MSP_RESET_CONF           =208,
   MSP_SELECT_SETTING       =210,
-  
+  MSP_OSD_READ             =220,
+  MSP_OSD_WRITE            =221,
   MSP_SPEK_BIND            =240,
 
   MSP_EEPROM_WRITE         =250,
