@@ -319,10 +319,10 @@ void setup() {
 
 OnTimer = millis();
   frameRate(20); 
-OSDBackground = loadImage("Background1.jpg");
+//OSDBackground = loadImage("Background1.jpg");
 RadioPot = loadImage("Radio_Pot.png");
 //image(OSDBackground,DisplayWindowX+WindowAdjX, DisplayWindowY+WindowAdjY, DisplayWindowX+360-WindowShrinkX, DisplayWindowY+288-WindowShrinkY);
-img = loadImage("MW_OSD_Team_Clear.png");
+img = loadImage("MW_OSD_Team.png");
 img.format = ARGB;
 
 
@@ -563,7 +563,7 @@ void draw() {
   fill(0, 0, 0);
   strokeWeight(3);stroke(0);
   rectMode(CORNERS);
-  image(OSDBackground,DisplayWindowX+WindowAdjX, DisplayWindowY+WindowAdjY, 360-WindowShrinkX, 288-WindowShrinkY);
+  //image(OSDBackground,DisplayWindowX+WindowAdjX, DisplayWindowY+WindowAdjY, 360-WindowShrinkX, 288-WindowShrinkY);
 
     //pushMatrix();
   //rect(DisplayWindowX+WindowAdjX, DisplayWindowY+WindowAdjY, DisplayWindowX+360-WindowShrinkX, DisplayWindowY+288-WindowShrinkY);
