@@ -121,6 +121,10 @@ const uint8_t lowrssiAlarm=75;     // This will make blink the Rssi if lower the
 /******************       FOR DEBUG ONLY      ********************/
 
 
+//#define DATAFIELDTEST              // DEBUG ONLY - Uncomment to overwrite all data-fields on screen with fixed values (123...)
+                                   // Usefull to verify available spaces on screen when changing screen layout  (NEB implemented)         
+
+
 #define TIMEBASE_X1   50
 #define TIMEBASE  TIMEBASE_X1
 #define LINE      30

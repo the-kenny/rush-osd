@@ -74,12 +74,14 @@ void displaySensors(void)
 
 void displayTemperature(void)                           // WILL WORK ONLY WITH V1.2
 {
+#if defined DATAFIELDTEST
+  temperature=123;  // NEB test
+#endif
   if (unitSystem) temperature=temperature*1.8+32;       //Fahrenheit conversion for imperial system.
   if(temperature > temperMAX) temperMAX = temperature;
-  itoa(temperature,screenBuffer,10);
-  FindNull();   // find the NULL
-  screenBuffer[xx++]=temperatureUnitAdd[unitSystem];
-  screenBuffer[xx]=0;                                   // Restore the NULL
+  ItoaPadded(temperature,screenBuffer,3,0);
+  screenBuffer[3]=temperatureUnitAdd[unitSystem];
+  screenBuffer[4]=0;                                   // Restore the NULL                             // Restore the NULL
   MAX7456_WriteString(screenBuffer,getPosition(temperaturePosition));
 }
 
@@ -272,53 +274,45 @@ void displayCurrentThrottle(void)
 
 void displayTime(void)
 {
+// ****** Fly Time  *************
+#if defined DATAFIELDTEST
+  flyMinute=123;  // NEB test
+  flySecond=45;
+  onMinute=123;
+  onSecond=45;
+#endif
   if(flyMinute>0) flyingMinute=flyMinute;
   if(flySecond>0) flyingSecond=flySecond;
-  screenBuffer[0]=flyTimeUnitAdd;
-  screenBuffer[1]=0;
+  ItoaPadded(flyMinute,screenBuffer,3,0);
+  screenBuffer[3]=0x3a;  // : SYMBOL
+  screenBuffer[4]=0;  // NULL 
   MAX7456_WriteString(screenBuffer,getPosition(flyTimePosition));
-  itoa(flyMinute,screenBuffer,10);
-  FindNull();
-  screenBuffer[xx++]=0x3a;
-  screenBuffer[xx]=0;    // find the NULL
-  if(flyMinute<10) xx=2;
-  if(flyMinute>=10) xx=3;
-  if(flyMinute>=100) xx=4;
-  MAX7456_WriteString(screenBuffer,getPosition(flyTimePosition)+1);
 
-
-  itoa(flySecond,screenBuffer,10);
-  if(flySecond<10)
-  {
-    screenBuffer[1]=screenBuffer[0];
-    screenBuffer[0]='0';
-  }
-
-  MAX7456_WriteString(screenBuffer,getPosition(flyTimePosition)+1+xx);
-  screenBuffer[0]=onTimeUnitAdd;
-  screenBuffer[1]=0;
+  ItoaPadded(flySecond,screenBuffer,2,0);
+  if(flySecond<10) screenBuffer[0]='0';    
+  screenBuffer[2]=flyTimeUnitAdd;    // Fly time icon
+  screenBuffer[3]=0;      
+  MAX7456_WriteString(screenBuffer,getPosition(flyTimePosition)+4);
+  
+// ****** ON Time  *************
+  ItoaPadded(onMinute,screenBuffer,3,0);
+  screenBuffer[3]=0x3a;  // : SYMBOL
+  screenBuffer[4]=0;                          // Find the NULL 
   MAX7456_WriteString(screenBuffer,getPosition(onTimePosition));
-  itoa(onMinute,screenBuffer,10);
-  FindNull();
-  screenBuffer[xx++]=0x3a;
-  screenBuffer[xx]=0;                          // Find the NULL
-  if(onMinute<10) xx=2;
-  if(onMinute>=10) xx=3;
-  if(onMinute>=100) xx=4;
-  MAX7456_WriteString(screenBuffer,getPosition(onTimePosition)+1);
-  itoa(onSecond,screenBuffer,10);
-  if(onSecond<10)
-  {
-    screenBuffer[1]=screenBuffer[0];
-    screenBuffer[0]='0';
-    screenBuffer[2]=0;
-  }
-  MAX7456_WriteString(screenBuffer,getPosition(onTimePosition)+1+xx);
+
+  ItoaPadded(onSecond,screenBuffer,2,0);
+  if(onSecond<10) screenBuffer[0]='0';
+  screenBuffer[2]=onTimeUnitAdd;    // On time icon
+  screenBuffer[3]=0;        
+  MAX7456_WriteString(screenBuffer,getPosition(onTimePosition)+4);
 }
 
 void displayAmperage(void)
 {
   // Real Ampere is ampere / 10
+#if defined DATAFIELDTEST
+  amperage=123; // NEB test
+#endif
   ItoaPadded(amperage, screenBuffer, 4, 3);     // 99.9 ampere max!
   screenBuffer[4]=amperageUnitAdd;
   screenBuffer[5]=0;
@@ -330,23 +324,22 @@ void displaypMeterSum(void)
 #if defined (HARDSENSOR)
   pMeterSum = amperagesum;
 #endif
-  int xx=0;
-  int pos;
-  screenBuffer[0]=0xa4;
-  screenBuffer[1]=0;
+  xx= pMeterSum / EST_PMSum;
+#if defined DATAFIELDTEST
+  xx=1234;  // NEB test
+#endif  
+  ItoaPadded(xx,screenBuffer,4,0);
+  screenBuffer[4]=0xa4;  // ma/h Icon
+  screenBuffer[5]=0;          
   MAX7456_WriteString(screenBuffer,getPosition(pMeterSumPosition));
-  if(!unitSystem) xx= pMeterSum / EST_PMSum;
-  itoa(xx,screenBuffer,10);
-  MAX7456_WriteString(screenBuffer,getPosition(pMeterSumPosition)+1);
 }
 
 void displayRSSI(void)
 {
   // Calcul et affichage du Rssi
-  itoa(rssi,screenBuffer,10);
-  FindNull();   // Trouve le NULL
-  screenBuffer[xx++]='%';
-  screenBuffer[xx++]=0;
+  ItoaPadded(rssi,screenBuffer,3,0);
+  screenBuffer[3]='%';
+  screenBuffer[4]=0;
   MAX7456_WriteString(screenBuffer,getPosition(rssiPosition));
   screenBuffer[0]=rssiUnitAdd;
   screenBuffer[1]=0;
@@ -442,23 +435,28 @@ void displayGPSPosition(void)
   MAX7456_WriteString(screenBuffer,getPosition(MwGPSLonPosition)+1);
 #endif
 
-  screenBuffer[0]=0xCC;
-  screenBuffer[1]=0;
+// GPS Altitude
+  #if defined DATAFIELDTEST
+    GPS_altitude=1234;  // NEB test
+  #endif
+  if(unitSystem)  GPS_altitude= GPS_altitude*3.2808;    // Mt to feet
+  if(!unitSystem) GPS_altitude= GPS_altitude;           // Mt
+  ItoaPadded(GPS_altitude,screenBuffer,4,0);
+  screenBuffer[4]=0xCC;                                 // GPS altitude icon
+  screenBuffer[5]=0;      
   MAX7456_WriteString(screenBuffer,getPosition(MwGPSAltPosition));
-  itoa(GPS_altitude,screenBuffer,10);
-  FindNull();
-  MAX7456_WriteString(screenBuffer,getPosition(MwGPSAltPosition)+1);
 }
 
 void displayNumberOfSat(void)
 {
+#if defined DATAFIELDTEST  
+  GPS_numSat=12; // NEB test
+#endif  
   screenBuffer[0]=GPS_numSatAdd[0];    // Remplace le NULL par le/les symboles d'unité
   screenBuffer[1]=GPS_numSatAdd[1];    // Restore le NULL
   screenBuffer[2]=0;
   MAX7456_WriteString(screenBuffer,getPosition(GPS_numSatPosition));
-
-  itoa(GPS_numSat,screenBuffer,10);
-
+  ItoaPadded(GPS_numSat,screenBuffer,2,0);
   MAX7456_WriteString(screenBuffer,getPosition(GPS_numSatPosition)+2);
 }
 
@@ -467,15 +465,16 @@ void displayGPS_speed(void)
   if(!GPS_fix)
     return;
 
-  int xx=0;
-  int pos;
-  screenBuffer[0]=speedUnitAdd[unitSystem];
-  screenBuffer[1]=0;
-  MAX7456_WriteString(screenBuffer,getPosition(speedPosition));
-  if(!unitSystem) xx= GPS_speed * 0.036;
-  itoa(xx,screenBuffer,10);
+#if defined DATAFIELDTEST  
+  GPS_speed=3417; // NEB test
+#endif  
+  if(!unitSystem) xx= GPS_speed * 0.036;      // From MWii cm/sec to Km/h
+  if(unitSystem) xx= GPS_speed * 0.02236932;  //   (0.036*0.62137)  From MWii cm/sec to mph
   if (xx > speedMAX) speedMAX = xx;
-  MAX7456_WriteString(screenBuffer,getPosition(speedPosition)+1);
+  ItoaPadded(xx,screenBuffer,3,0);
+  screenBuffer[3]=speedUnitAdd[unitSystem];   // km/h or mph icon 
+  screenBuffer[4]=0;
+  MAX7456_WriteString(screenBuffer,getPosition(speedPosition));
 }
 
 void displayAltitude(void)
@@ -489,48 +488,51 @@ void displayAltitude(void)
   if(!armed) {
     altitudeOk=MwAltitude;
   }
-  if(unitSystem)  altitude = MwAltitude/100;
-  if(!unitSystem) altitude = MwAltitude/100;
-  screenBuffer[0]=MwAltitudeAdd[unitSystem];
-  screenBuffer[1]=0;
-  MAX7456_WriteString(screenBuffer,getPosition(MwAltitudePosition));
+#if defined DATAFIELDTEST
+  long int altitude=123400;  // NEB test
+#endif
+  if(unitSystem)  altitude = altitude/100*3.2808;  // NEB cm to feet
+  if(!unitSystem) altitude = altitude/100;  // cm to mt 
   if(altitudeOk && (altitude > altitudeMAX)) altitudeMAX = altitude;
-  itoa(altitude,screenBuffer,10);
-  MAX7456_WriteString(screenBuffer,getPosition(MwAltitudePosition)+1);
+  ItoaPadded(altitude,screenBuffer,4,0);
+  screenBuffer[4]=MwAltitudeAdd[unitSystem];
+  screenBuffer[5]=0;   
+  MAX7456_WriteString(screenBuffer,getPosition(MwAltitudePosition));
 }
 
 void displayClimbRate(void)
 {
   climbRate=MwVario;
-  int xx=0;
+#if defined DATAFIELDTEST    
+  climbRate=1200; // NEB test
+#endif
   int pos;
-  screenBuffer[0]=MwClimbRateAdd[unitSystem];
-  screenBuffer[1]=0;
+  if(!unitSystem) xx= climbRate / 100;              // cm/sec ----> mt/sec  NEB
+  if(unitSystem)  xx= climbRate / 100*3.2808;       // cm/sec ----> ft/sec  NEB
+  ItoaPadded(xx,screenBuffer,2,0);
+  screenBuffer[2]=MwClimbRateAdd[unitSystem];
+  screenBuffer[3]=0;  
   MAX7456_WriteString(screenBuffer,getPosition(MwClimbRatePosition));
 
-  if(!unitSystem) xx= climbRate / 100;
-  if(unitSystem)  xx= climbRate / 100;
-  itoa(xx,screenBuffer,10);
-  MAX7456_WriteString(screenBuffer,getPosition(MwClimbRatePosition)+1);
-
-   if (climbRate > 70)   screenBuffer[0]=0xB3;  
+// Note: Here climbrate arrows are cm/sec
+  if (climbRate > 70)   screenBuffer[0]=0xB3;
   else
-    if (climbRate > 50)    screenBuffer[0]=0xB2; 
+    if (climbRate > 50)    screenBuffer[0]=0xB2;
     else
-      if (climbRate > 30)    screenBuffer[0]=0xB1;  
-      else
-        if (climbRate > 20)  screenBuffer[0]=0xB0; 
-        else screenBuffer[0]=0xBC;
- 
+      if (climbRate > 30)    screenBuffer[0]=0xB1;
+    else
+      if (climbRate > 20)  screenBuffer[0]=0xB0;
+    else screenBuffer[0]=0xBC;
+
   if (climbRate < -70)  screenBuffer[0]=0xB4;
   else
     if (climbRate < -50)   screenBuffer[0]=0xB5;
-    else
-      if (climbRate < -30)   screenBuffer[0]=0xB6;
-      else
-        if (climbRate < -20) screenBuffer[0]=0xB7;
+  else
+    if (climbRate < -30)   screenBuffer[0]=0xB6;
+  else
+    if (climbRate < -20) screenBuffer[0]=0xB7;
   screenBuffer[1]=0;
-  if (climbRate>= -20) pos = getPosition(MwClimbRatePosition)-2; 
+  if (climbRate>= -20) pos = getPosition(MwClimbRatePosition)-2;
   else pos = getPosition(MwClimbRatePosition)-2+LINE;
   MAX7456_WriteString(screenBuffer,pos);
 }
@@ -540,17 +542,19 @@ void displayDistanceToHome(void)
   if(!GPS_fix)
     return;
 
-  screenBuffer[0]=0xb8;
+  screenBuffer[0]=0xb8;      // Home icon
   screenBuffer[1]=0;
   MAX7456_WriteString(screenBuffer,getPosition(GPS_distanceToHomePosition));
-  if(unitSystem) GPS_distanceToHome = GPS_distanceToHome * 3.28;
-
+#if defined DATAFIELDTEST
+  GPS_distanceToHome=1234;   // NEB test
+#endif
+  if(unitSystem) GPS_distanceToHome = GPS_distanceToHome * 3.2808;    // mt to feet
+  if(!unitSystem) GPS_distanceToHome = GPS_distanceToHome;            // Mt
   if(GPS_distanceToHome > distanceMAX) distanceMAX = GPS_distanceToHome;
 
-  itoa(GPS_distanceToHome,screenBuffer,10);
-  FindNull();
-  screenBuffer[xx++]=GPS_distanceToHomeAdd[unitSystem];
-  screenBuffer[xx]=0;
+  ItoaPadded(GPS_distanceToHome,screenBuffer,4,0);
+  screenBuffer[4]=GPS_distanceToHomeAdd[unitSystem];                  // mt or ft unit icon 
+  screenBuffer[5]=0;
   MAX7456_WriteString(screenBuffer,getPosition(GPS_distanceToHomePosition)+1);
 }
 
@@ -561,10 +565,9 @@ void displayAngleToHome(void)
   if(GPS_distanceToHome <= 2 && Blink2hz)
     return;
 
-  itoa(GPS_directionToHome,screenBuffer,10);
-  FindNull();
-  screenBuffer[xx++]=0xBD;
-  screenBuffer[xx]=0;
+  ItoaPadded(GPS_directionToHome,screenBuffer,4,0);
+  screenBuffer[4]=0xBD;
+  screenBuffer[5]=0;
   MAX7456_WriteString(screenBuffer,getPosition(GPS_angleToHomePosition));
 }
 
@@ -785,10 +788,14 @@ void displayPIDConfigScreen(void)
       screenBuffer[1]=0x3a;
       xx=2;
     }
-    else {
+    else if (flyingMinute<100){  // NEB added
       screenBuffer[2]=0x3a;
       xx=3;
     }
+    else {
+      screenBuffer[3]=0x3a;
+      xx=4;
+    }        
     MAX7456_WriteString(screenBuffer,VELD);
 
     itoa(flyingSecond,screenBuffer,10);
@@ -800,7 +807,8 @@ void displayPIDConfigScreen(void)
     MAX7456_WriteString(screenBuffer,VELD+xx);
 
     MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[57])), LEVT);
-    if(!unitSystem) xx= pMeterSum / EST_PMSum;
+//    if(!unitSystem) xx= pMeterSum / EST_PMSum;            // NEB Here we do not need unit conversion
+    xx= pMeterSum / EST_PMSum;
     MAX7456_WriteString(itoa(xx,screenBuffer,10),LEVD);
 
     MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[58])), MAGT);

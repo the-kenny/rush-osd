@@ -4,7 +4,6 @@
 #define METRIC 0
 #define IMPERIAL 1
 
-
 #define NARROW 1
 #define WIDE 0
 
@@ -136,7 +135,8 @@ float climbRate = 0;
 
 // For Statistics
 int16_t speedMAX=GPS_speed;
-int8_t temperMAX=0;
+//int8_t temperMAX=0;
+int16_t temperMAX=0;    // NEB - Here needs 16 bit because Fahrenheit may be higher than 255
 int16_t altitudeMAX=0;
 int16_t distanceMAX=0;
 float trip=0;
