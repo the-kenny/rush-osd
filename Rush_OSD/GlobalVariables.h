@@ -268,8 +268,8 @@ const char configMsg53[] PROGMEM = "MAX DISTANCE:";
 const char configMsg54[] PROGMEM = "MAX ALTITUDE:";
 const char configMsg55[] PROGMEM = "MAX SPEED:";
 const char configMsg56[] PROGMEM = "FLYING TIME:";
-const char configMsg57[] PROGMEM = "DRAINED AMPS.:";
-const char configMsg58[] PROGMEM = "MAX TEMP.:";
+const char configMsg57[] PROGMEM = "DRAINED AMPS:";
+const char configMsg58[] PROGMEM = "MAX TEMP:";
 
 const char *configMsgs[] PROGMEM = {
   configMsg0, configMsg1, configMsg2, configMsg3, configMsg4, configMsg5, configMsg6, configMsg7, configMsg8, configMsg9, configMsg10,

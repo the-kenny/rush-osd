@@ -209,9 +209,10 @@ void displayVoltage(void)
 #if defined VIDVOLTAGE_VBAT
   vidvoltage=MwVBat;
 #endif
-#if defined MAINVOLTAGE_VBAT
+if (MAINVOLTAGE_VBAT ==1){
   voltage=MwVBat;
-#endif
+}
+
 
   ItoaPadded(voltage, screenBuffer, 4, 3);
   screenBuffer[4] = voltageUnitAdd;

@@ -141,9 +141,7 @@ String SendCommand = "";
 boolean firstContact = false;   
 boolean disableSerial = false;
 // Int variables
-static int CHECKBOXITEMS=0;
-static int CONFIGITEMS=11;
-static int SIMITEMS=10;
+
 
 int init_com;
 int commListMax;
@@ -210,7 +208,8 @@ String[] ConfigNames = {
   "Temperature Max:",
   "Display GPS:",
   "Screen Type:",
-  "Unit System:"
+  "Unit System:",
+  "Main Voltage MW:"
 };
 
 String[] SimNames= {
@@ -226,6 +225,9 @@ String[] SimNames= {
   "Sim 9:",
   "Sim 10:"
 };
+static int CHECKBOXITEMS=0;
+int CONFIGITEMS=ConfigNames.length;
+static int SIMITEMS=10;
   
 int[] ConfigRanges = {
   0,
@@ -238,7 +240,9 @@ int[] ConfigRanges = {
   255,
   1,
   1,
-  1};
+  1,
+  1
+};
   
   int[] SimRanges = {
   1,

@@ -7,16 +7,16 @@
 
 //******************************************   Define your OSD Board   ****************************************/
 
-//#define MINIMOSD
-#define RUSHDUINO
+#define MINIMOSD
+//#define RUSHDUINO
 
 /*******************************************  Video System  ***********************************/
 
-#define VideoSignalType_PAL
-const char videoSignalType=1;
+//#define VideoSignalType_PAL
+//const char videoSignalType=1;
 
-//#define VideoSignalType_NTSC
-//const char videoSignalType=0;
+#define VideoSignalType_NTSC
+const char videoSignalType=0;
 
 /**********************       Serial speed      ************************/
 
@@ -61,7 +61,7 @@ How to config correctly the Mode active in order to show sensors and Arm/Disarm 
 #define DIVIDERRATIO 25             // Main voltage ratio
 #define VIDDIVIDERRATIO 25          // Video voltage ratio
 //#define VIDVOLTAGE_VBAT           // Uncomment to change from VIDEO VLOTAGE Analog Pin to MwVbat (must be defined on MWcode)
-//#define MAINVOLTAGE_VBAT          // Uncomment to change from MAIN VLOTAGE Analog Pin to MwVbat (must be defined on MWcode)
+uint8_t MAINVOLTAGE_VBAT = 1;       // to change from (0)  to (1) for MAIN VOLOTAGE Analog Pin to MwVbat (must be defined on MWcode)
 
 #define EST_PMSum 2.6                 /****  NOTE  **** If you use hardware CURRENT sensor on OSD use (#define EST_PMSum 1) BEFORE ANY ADJUSTMENT OR CALIBRATION
                                                       this value is empirical and you can find "yours" after some flights using the same instructions as for VBAT adjustment
@@ -152,7 +152,7 @@ const uint8_t lowrssiAlarm=75;     // This will make blink the Rssi if lower the
 // STICK POSITION
 #define MAXSTICK         1900
 #define MINSTICK         1100
-#define MINTROTTLE       1150
+#define MINTROTTLE       1000
 
 // FOR POSITION OF PID CONFIG VALUE
 #define ROLLT 93
@@ -192,7 +192,7 @@ const uint8_t lowrssiAlarm=75;     // This will make blink the Rssi if lower the
 #define MAXPAGE 6
 
 //Current # of setting available
-#define EEPROM_SETTINGS            11
+#define EEPROM_SETTINGS            12
 
 // EEPROM LOCATION IN ARDUINO EEPROM MAP
 #define EEPROM_RSSIMIN             1
@@ -205,6 +205,7 @@ const uint8_t lowrssiAlarm=75;     // This will make blink the Rssi if lower the
 #define EEPROM_DISPLAYGPS          8
 #define EEPROM_SCREENTYPE         9
 #define EEPROM_UNITSYSTEM         10
+#define EEPROM_MAINVOLTAGE_VBAT  11
 
 // POSITION OF EACH CHARACTER OR LOGO IN THE MAX7456
 const unsigned char speedUnitAdd[2] ={

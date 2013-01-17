@@ -330,6 +330,7 @@ void writeEEPROM(void)
   EEPROM.write(EEPROM_DISPLAYGPS,displayGPS);
   EEPROM.write(EEPROM_SCREENTYPE,screenType);
   EEPROM.write(EEPROM_UNITSYSTEM,unitSystem);
+  EEPROM.write(EEPROM_MAINVOLTAGE_VBAT,MAINVOLTAGE_VBAT);
 }
 
 void readEEPROM(void)
@@ -344,4 +345,6 @@ void readEEPROM(void)
   displayGPS= EEPROM.read(EEPROM_DISPLAYGPS);
   screenType= !!EEPROM.read(EEPROM_SCREENTYPE);
   unitSystem= !!EEPROM.read(EEPROM_UNITSYSTEM);
+  MAINVOLTAGE_VBAT = EEPROM.read(EEPROM_MAINVOLTAGE_VBAT);
+  
 }
