@@ -4,6 +4,7 @@
 #define METRIC 0
 #define IMPERIAL 1
 
+
 #define NARROW 1
 #define WIDE 0
 
@@ -135,8 +136,7 @@ float climbRate = 0;
 
 // For Statistics
 int16_t speedMAX=GPS_speed;
-//int8_t temperMAX=0;
-int16_t temperMAX=0;    // NEB - Here needs 16 bit because Fahrenheit may be higher than 255
+int8_t temperMAX=0;
 int16_t altitudeMAX=0;
 int16_t distanceMAX=0;
 float trip=0;
@@ -178,6 +178,10 @@ uint8_t flyingSecond=0;
 #define MSP_RESET_CONF           208   //in message          no param
 #define MSP_WP_SET               209   //in message          sets a given WP (WP#,lat, lon, alt, flags)
 #define MSP_SELECT_SETTING       210   //in message          Select Setting Number (0-2)
+
+#define MSP_OSD_READ             220   //in message          starts epprom send to OSD GUI
+#define MSP_OSD_WRITE            221   //in message          write OSD GUI setting to eeprom 
+
 #define MSP_SPEK_BIND            240   //in message          no param
 #define MSP_EEPROM_WRITE         250   //in message          no param
 #define MSP_DEBUGMSG             253   //out message         debug string buffer

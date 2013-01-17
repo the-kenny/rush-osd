@@ -25,6 +25,25 @@ uint8_t read8()  {
 void serialMSPCheck()
 {
   p=0;
+  
+  if (cmdMSP == MSP_OSD_READ){                           // for GUI communication
+    serialWait = 1;
+    for(int en=0;en<EEPROM_SETTINGS;en++){
+      Serial.write("*");  
+      Serial.write(en);
+      Serial.write(',');
+      Serial.write(EEPROM.read(en));
+    }
+    serialWait = 0;
+  }
+  if (cmdMSP == MSP_OSD_WRITE){                          // for GUI communication
+    serialWait = 1; 
+    for(int en=0;en<EEPROM_SETTINGS;en++){
+      EEPROM.write(en,read8());
+    }
+  readEEPROM();
+  serialWait = 0;
+  }
 
   if (cmdMSP==MSP_IDENT)
   {
