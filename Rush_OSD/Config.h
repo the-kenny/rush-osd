@@ -22,15 +22,6 @@ const char videoSignalType=1;
 
 #define SERIAL_SPEED 115200
 
-/*************************      Mode Active (you MUST define according your MWC options)      *****************************/
-/*
-Only MWii version newer than 2.1 (including dev versions)
-How to config correctly the Mode active in order to show sensors and Arm/Disarm indication:
--) Take a look at "MultiWii.ino" file of MWii sketch in "enum box...."
--) Assign a power of 2 for each sensor/device defined in MWii "config.h" skipping sensor/devices not defined.
--) These found numbers are to be defined here....
-*/
-
 //moved active modes to eeprom, default values are in GlobalVariables
 
 
