@@ -210,7 +210,7 @@ void displayVoltage(void)
 #if defined VIDVOLTAGE_VBAT
   vidvoltage=MwVBat;
 #endif
-if (MAINVOLTAGE_VBAT ==1){
+if (MAINVOLTAGE_VBAT){
   voltage=MwVBat;
 }
 
@@ -411,11 +411,11 @@ void displayIntro(void)
   else{
     MAX7456_WriteString_P((char*)pgm_read_word(&(introMessages[4])), RushduinoVersionPosition+60);
   }
-
+#if defined MULTIWIILOGO
   MAX7456_WriteString_P(MultiWiiLogoL1Add, RushduinoVersionPosition+120);
   MAX7456_WriteString_P(MultiWiiLogoL2Add, RushduinoVersionPosition+120+LINE);
   MAX7456_WriteString_P(MultiWiiLogoL3Add, RushduinoVersionPosition+120+LINE+LINE);
-
+#endif
 
   MAX7456_WriteString_P((char*)pgm_read_word(&(introMessages[5])), RushduinoVersionPosition+120+LINE+LINE+LINE);
   MAX7456_WriteString(itoa(MwVersion,screenBuffer,10),RushduinoVersionPosition+128+LINE+LINE+LINE);

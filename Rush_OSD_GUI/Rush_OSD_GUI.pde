@@ -198,7 +198,7 @@ String MwHeadingUnitAdd="0xbd";
 
 
 String[] ConfigNames = {
-  "",
+  "EEPROM Loaded:",
   "RSSI Min:",
   "RSSI Max:",
   "Display RSSI:",
@@ -209,9 +209,40 @@ String[] ConfigNames = {
   "Display GPS:",
   "Screen Type:",
   "Unit System:",
+  "Stable Mode:",
+  "Baro Mode:",
+  "Mag Mode:",
+  "Armed Mode:",
+  "GPS Home Mode:",
+  "GPS Hold Mode:",
   "Main Voltage MW:"
 };
 
+
+static int CHECKBOXITEMS=0;
+int CONFIGITEMS=ConfigNames.length;
+static int SIMITEMS=10;
+  
+int[] ConfigRanges = {
+  1,   // 0 address checkeeprom
+ 255,   // EEPROM_RSSIMIN
+  255, // EEPROM_RSSIMAX
+  1,   // EEPROM_DISPLAYRSSI
+  1,   // EEPROM_DISPLAYVOLTAGE
+  255,   // EEPROM_VOLTAGEMIN
+  1,   // EEPROM_DISPLAYTEMPERATURE
+  255, // EEPROM_TEMPERATUREMAX
+  1,   // EEPROM_DISPLAYGPS
+  1,   // EEPROM_SCREENTYPE
+  1,   // EEPROM_UNITSYSTEM
+  255,   // EEPROM_STABLEMODE                   
+  255,   // EEPROM_BAROMODE                      
+  255,   // EEPROM_MAGMODE                       
+  255,  // EEPROM_ARMEDMODE                   
+  255,  // EEPROM_GPSHOMEMODE                 
+  255,  // EEPROM_GPSHOLDMODE                 
+  1,  // EEPROM_MAINVOLTAGE_VBAT    
+};
 String[] SimNames= {
   "Armed:",
   "Acro/Stable:",
@@ -225,24 +256,7 @@ String[] SimNames= {
   "Sim 9:",
   "Sim 10:"
 };
-static int CHECKBOXITEMS=0;
-int CONFIGITEMS=ConfigNames.length;
-static int SIMITEMS=10;
   
-int[] ConfigRanges = {
-  0,
-  255,
-  255,
-  1,
-  1,
-  255,
-  1,
-  255,
-  1,
-  1,
-  1,
-  1
-};
   
   int[] SimRanges = {
   1,
@@ -356,9 +370,9 @@ img.format = ARGB;
   
   buttonSAVE = controlP5.addButton("bSAVE",1,5,45,40,19); buttonSAVE.setLabel("SAVE"); buttonSAVE.setColorBackground(red_);
   buttonIMPORT = controlP5.addButton("bIMPORT",1,50,45,40,19); buttonIMPORT.setLabel("LOAD"); buttonIMPORT.setColorBackground(red_);   
-  buttonREAD = controlP5.addButton("READ",1,xParam+5,yParam+260,50,16);buttonREAD.setColorBackground(red_);
-  buttonRESET = controlP5.addButton("RESET",1,xParam+60,yParam+260,60,16);buttonRESET.setColorBackground(red_);
-  buttonWRITE = controlP5.addButton("WRITE",1,xParam+130,yParam+260,60,16);buttonWRITE.setColorBackground(red_);
+  buttonREAD = controlP5.addButton("READ",1,xParam+5,yParam+360,50,16);buttonREAD.setColorBackground(red_);
+  buttonRESET = controlP5.addButton("RESET",1,xParam+60,yParam+360,60,16);buttonRESET.setColorBackground(red_);
+  buttonWRITE = controlP5.addButton("WRITE",1,xParam+130,yParam+360,60,16);buttonWRITE.setColorBackground(red_);
   //buttonREQUEST = controlP5.addButton("REQUEST",1,xParam+150,yParam+260,60,16);buttonREQUEST.setColorBackground(red_);
  // buttonSETTING = controlP5.addButton("SETTING",1,xParam+405,yParam+260,110,16); buttonSETTING.setLabel("SELECT SETTING"); buttonSETTING.setColorBackground(red_);
  
@@ -377,7 +391,7 @@ txtlblSimItem[i] = controlP5.addTextlabel("txtlblSimItem"+i,SimNames[i],xParam+2
 
  for(int i=0;i<CONFIGITEMS;i++) {
     confItem[i] = (controlP5.Numberbox) hideLabel(controlP5.addNumberbox("configItem"+i,0,xParam,yParam+20+i*17,35,14));
-    confItem[i].setColorBackground(red_);confItem[i].setMin(0);confItem[i].setDirection(Controller.HORIZONTAL);confItem[i].setMax(ConfigRanges[i]);confItem[i].setDecimalPrecision(0); //confItem[i].setMultiplier(1);confItem[i].setDecimalPrecision(1);
+    confItem[i].setColorBackground(red_);confItem[i].setMin(0);confItem[i].setDirection(Controller.HORIZONTAL);confItem[i].setMax(ConfigRanges[i]);confItem[i].setDecimalPrecision(0); //confItem[i].setMultiplier(4); //confItem[i].setDecimalPrecision(1);
  }
  for(int i=0;i<SIMITEMS;i++) {
     SimItem[i] = (controlP5.Numberbox) hideLabel(controlP5.addNumberbox("SimItem"+i,0,xParam+250,yParam+20+i*17,35,14));
@@ -416,7 +430,7 @@ txtlblSimItem[i] = controlP5.addTextlabel("txtlblSimItem"+i,SimNames[i],xParam+2
    
   }
   
-  ReadMultiWii = controlP5.addCheckBox("ReadMultiWii",xParam+200,yParam+260);
+  ReadMultiWii = controlP5.addCheckBox("ReadMultiWii",xParam+200,yParam+360);
       ReadMultiWii.setColorActive(color(255));ReadMultiWii.setColorBackground(color(120));
         ReadMultiWii.setItemsPerRow(1);ReadMultiWii.setSpacingColumn(10);
        ReadMultiWii.setLabel("Read MultiWii");
@@ -553,7 +567,7 @@ void draw() {
   fill(0, 0, 0);
   strokeWeight(3);stroke(0);
   rectMode(CORNERS);
-  rect(xParam,yParam, xParam+400, yParam+280);
+  rect(xParam,yParam, xParam+400, yParam+380);
   fill(40, 40, 40);
   strokeWeight(3);stroke(0);
   rectMode(CORNERS);
@@ -729,7 +743,11 @@ void serialEvent(Serial g_serial) {
 
 
 public void READ(){
+   for(int i=0;i<CONFIGITEMS;i++) {
+     confItem[i].setValue(0);
+     checkboxConfItem[i].deactivateAll();
   
+   }
     g_serial.write('$');
     g_serial.write('M');
     g_serial.write('>');
@@ -737,24 +755,7 @@ public void READ(){
     g_serial.write(MSP_OSD_READ);
     g_serial.write(MSP_OSD_READ);
     buttonWRITE.setColorBackground(green_);
-  }
-  
-
-
-public void WRITEOLD() {
-  disableSerial = true;
-  for(int i=0;i<CONFIGITEMS;i++) {
-   println(checkboxConfItem[i].arrayValue()[0]);
-    //checkbox[i].arrayValue()[aa]
-  SendCommand = "*+";
-  SendCommand += str(i);
-  SendCommand += ",";
-  SendCommand += str(int(confItem[i].value()));
-   g_serial.write(SendCommand);
-   g_serial.write("\n");
-  // println(i);
-  }
-  g_serial.clear();   
+    SetMode();
 }
 
 public void WRITE(){
@@ -774,13 +775,6 @@ public void WRITE(){
     g_serial.write((byte)checksum);
 
 }
-
-//void keyPressed() {
-  // Send the keystroke out:
- // g_serial.write(key);
-  //whichKey = key;
-//}
-
 
 // coded by Eberhard Rensch
 // Truncates a long port name for better (readable) display in the GUI
@@ -1131,7 +1125,286 @@ void SimulateTimer(){
    FlyTimerString = "0:00";
   } 
    ShowFlyTime(FlyTimerString);
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// BEGIN MW SERIAL////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+int STABLEMODE =  1;            // OK
+int BAROMODE=     4;            // OK
+int MAGMODE=      8;            // OK
+//int BOXCAMSTAB 16;         // not used
+int ARMEDMODE=    16;           // OK
+int GPSHOMEMODE=  128;          // OK
+int GPSHOLDMODE=  64;          // OK
+//int BOXCAMTRIG     256;        // not used
+
+void SetMode(){
+STABLEMODE =  int(confItem[11].value());          
+BAROMODE=     int(confItem[12].value());         // OK
+MAGMODE=      int(confItem[13].value());
+//int BOXCAMSTAB 16;         // not used
+ARMEDMODE=    int(confItem[14].value());
+GPSHOMEMODE=  int(confItem[15].value());
+GPSHOLDMODE=  int(confItem[16].value());
+}
+//int BOXCAMTRIG     256;        // not used
+
+
+int time,time2,time3,time4;
+
+int version,versionMisMatch;
+int multiType;
+
+int[] MwAngle={0,0};           // Those will hold Accelerator Angle
+int[] MwRcData={   // This hold receiver pulse signal
+  1500,1500,1500,1500,1500,1500,1500,1500} ;
+
+int  MwSensorPresent=0;
+int  MwSensorActive=0;
+int MwVersion=0;
+int MwVBat=0;
+int MwVario=0;
+int armed=0;
+int previousarmedstatus=0;  // NEB for statistics after disarming
+int armedTimer=0;
+int GPS_distanceToHome=0;
+int GPSPresent=0;
+int GPS_fix=0;
+int GPS_latitude;
+int GPS_longitude;
+int GPS_altitude;
+int GPS_speed=0;
+int GPS_ground_course;
+int GPS_update=0;
+int GPS_directionToHome=0;
+int GPS_numSat=0;
+int I2CError=0;
+int cycleTime=0;
+int pMeterSum=0;
+
+/******************************* Multiwii Serial Protocol **********************/
+private static final String MSP_HEADER = "$M<";
+
+private static final int
+  MSP_IDENT                =100,
+  MSP_STATUS               =101,
+  MSP_RAW_IMU              =102,
+  MSP_SERVO                =103,
+  MSP_MOTOR                =104,
+  MSP_RC                   =105,
+  MSP_RAW_GPS              =106,
+  MSP_COMP_GPS             =107,
+  MSP_ATTITUDE             =108,
+  MSP_ALTITUDE             =109,
+  MSP_BAT                  =110,
+  MSP_RC_TUNING            =111,
+  MSP_PID                  =112,
+  MSP_BOX                  =113,
+  MSP_MISC                 =114,
+  MSP_MOTOR_PINS           =115,
+  MSP_BOXNAMES             =116,
+  MSP_PIDNAMES             =117,
+
+  MSP_SET_RAW_RC           =200,
+  MSP_SET_RAW_GPS          =201,
+  MSP_SET_PID              =202,
+  MSP_SET_BOX              =203,
+  MSP_SET_RC_TUNING        =204,
+  MSP_ACC_CALIBRATION      =205,
+  MSP_MAG_CALIBRATION      =206,
+  MSP_SET_MISC             =207,
+  MSP_RESET_CONF           =208,
+  MSP_SELECT_SETTING       =210,
+  MSP_OSD_READ             =220,
+  MSP_OSD_WRITE            =221,
+  MSP_SPEK_BIND            =240,
+
+  MSP_EEPROM_WRITE         =250,
   
+  MSP_DEBUGMSG             =253,
+  MSP_DEBUG                =254
+;
+
+public static final int
+  IDLE = 0,
+  HEADER_START = 1,
+  HEADER_M = 2,
+  HEADER_ARROW = 3,
+  HEADER_SIZE = 4,
+  HEADER_CMD = 5,
+  HEADER_ERR = 6
+;
+
+int c_state = IDLE;
+boolean err_rcvd = false;
+
+byte checksum=0;
+byte cmd;
+int offset=0, dataSize=0;
+byte[] inBuf = new byte[256];
+
+
+int p;
+int read32() {return (inBuf[p++]&0xff) + ((inBuf[p++]&0xff)<<8) + ((inBuf[p++]&0xff)<<16) + ((inBuf[p++]&0xff)<<24); }
+int read16() {return (inBuf[p++]&0xff) + ((inBuf[p++])<<8); }
+int read8()  {return inBuf[p++]&0xff;}
+
+int mode;
+boolean toggleRead = false,toggleReset = false,toggleCalibAcc = false,toggleCalibMag = false,toggleWrite = false,toggleSpekBind = false,toggleSetSetting = false;
+
+//send msp without payload
+private List<Byte> requestMSP(int msp) {
+  return  requestMSP( msp, null);
+}
+
+//send multiple msp without payload
+private List<Byte> requestMSP (int[] msps) {
+  List<Byte> s = new LinkedList<Byte>();
+  for (int m : msps) {
+    s.addAll(requestMSP(m, null));
+  }
+  return s;
+}
+
+//send msp with payload
+private List<Byte> requestMSP (int msp, Character[] payload) {
+  if(msp < 0) {
+   return null;
+  }
+  List<Byte> bf = new LinkedList<Byte>();
+  for (byte c : MSP_HEADER.getBytes()) {
+    bf.add( c );
+  }
+  
+  byte checksum=0;
+  byte pl_size = (byte)((payload != null ? int(payload.length) : 0)&0xFF);
+  bf.add(pl_size);
+  checksum ^= (pl_size&0xFF);
+  
+  bf.add((byte)(msp & 0xFF));
+  checksum ^= (msp&0xFF);
+  
+  if (payload != null) {
+    for (char c :payload){
+      bf.add((byte)(c&0xFF));
+      checksum ^= (c&0xFF);
+    }
+  }
+  bf.add(checksum);
+  return (bf);
+}
+
+void sendRequestMSP(List<Byte> msp) {
+  byte[] arr = new byte[msp.size()];
+  int i = 0;
+  for (byte b: msp) {
+    arr[i++] = b;
+  }
+  g_serial.write(arr); // send the complete byte sequence in one go
+}
+
+public void evaluateCommand(byte cmd, int dataSize) {
+  int i;
+  int icmd = (int)(cmd&0xFF);
+  switch(icmd) {
+    case MSP_STATUS:
+      cycleTime=read16();
+      I2CError=read16();
+      MwSensorPresent = read16();
+      MwSensorActive = read32();
+      read8(); //   
+      break;
+        
+    case MSP_ATTITUDE:
+        
+    for(i=0;i<2;i++) MwAngle[i] = read16();
+    MwHeading = read16();
+    read16();
+    break;
+  }
+}
+
+
+void GetMWData(){
+  List<Character> payload;
+  int i,aa;
+  float val,inter,a,b,h;
+  int c;
+  if ((init_com==1) && (ReadMW ==1)) {
+    time=millis();
+    if ((time-time4)>40 ) {
+      time4=time;
+      //accROLL.addVal(ax);accPITCH.addVal(ay); //accYAW.addVal(az);gyroROLL.addVal(gx);gyroPITCH.addVal(gy);gyroYAW.addVal(gz);
+      
+      //magxData.addVal(magx);magyData.addVal(magy);magzData.addVal(magz);
+      //altData.addVal(alt);headData.addVal(head);
+      //debug1Data.addVal(debug1);debug2Data.addVal(debug2);debug3Data.addVal(debug3);debug4Data.addVal(debug4);
+    }
+    if ((time-time2)>40 && ! toggleRead && ! toggleWrite && ! toggleSetSetting) {
+      time2=time;
+      int[] requests = {MSP_STATUS, MSP_RAW_IMU, MSP_SERVO, MSP_MOTOR, MSP_RC, MSP_RAW_GPS, MSP_COMP_GPS, MSP_ALTITUDE, MSP_BAT, MSP_DEBUGMSG, MSP_DEBUG};
+      sendRequestMSP(requestMSP(requests));
+    }
+    if ((time-time3)>20 && ! toggleRead && ! toggleWrite && ! toggleSetSetting) {
+      sendRequestMSP(requestMSP(MSP_ATTITUDE));
+      time3=time;
+    }
+     while (g_serial.available()>0) {
+      c = (g_serial.read());
+
+      if (c_state == IDLE) {
+        c_state = (c=='$') ? HEADER_START : IDLE;
+      } else if (c_state == HEADER_START) {
+        c_state = (c=='M') ? HEADER_M : IDLE;
+      } else if (c_state == HEADER_M) {
+        if (c == '>') {
+          c_state = HEADER_ARROW;
+        } else if (c == '!') {
+          c_state = HEADER_ERR;
+        } else {
+          c_state = IDLE;
+        }
+      } else if (c_state == HEADER_ARROW || c_state == HEADER_ERR) {
+        /* is this an error message? */
+        err_rcvd = (c_state == HEADER_ERR);        /* now we are expecting the payload size */
+        dataSize = (c&0xFF);
+        /* reset index variables */
+        p = 0;
+        offset = 0;
+        checksum = 0;
+        checksum ^= (c&0xFF);
+        /* the command is to follow */
+        c_state = HEADER_SIZE;
+      } else if (c_state == HEADER_SIZE) {
+        cmd = (byte)(c&0xFF);
+        checksum ^= (c&0xFF);
+        c_state = HEADER_CMD;
+      } else if (c_state == HEADER_CMD && offset < dataSize) {
+          checksum ^= (c&0xFF);
+          inBuf[offset++] = (byte)(c&0xFF);
+      } else if (c_state == HEADER_CMD && offset >= dataSize) {
+        /* compare calculated and transferred checksum */
+        if ((checksum&0xFF) == (c&0xFF)) {
+          if (err_rcvd) {
+            //System.err.println("Copter did not understand request type "+c);
+          } else {
+            /* we got a valid response packet, evaluate it */
+            evaluateCommand(cmd, (int)dataSize);
+          }
+        } else {
+          System.out.println("invalid checksum for command "+((int)(cmd&0xFF))+": "+(checksum&0xFF)+" expected, got "+(int)(c&0xFF));
+          System.out.print("<"+(cmd&0xFF)+" "+(dataSize&0xFF)+"> {");
+          for (i=0; i<dataSize; i++) {
+            if (i!=0) { System.err.print(' '); }
+            System.out.print((inBuf[i] & 0xFF));
+          }
+          System.out.println("} ["+c+"]");
+          System.out.println(new String(inBuf, 0, dataSize));
+        }
+        c_state = IDLE;
+      }
+    }
+  }
 }
 
 
