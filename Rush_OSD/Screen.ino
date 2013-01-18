@@ -240,7 +240,7 @@ if (MAINVOLTAGE_VBAT){
   screenBuffer[5]=0;
   MAX7456_WriteString(screenBuffer,getPosition(vidvoltagePosition));
 
-  screenBuffer[0]=0x97;
+  screenBuffer[0]=0xbf;
   screenBuffer[1]=0;
   MAX7456_WriteString(screenBuffer,getPosition(vidvoltagePosition)-1);
 #endif

@@ -30,13 +30,12 @@ const char videoSignalType=1;
 #define CALIBRATION_DELAY 10
 #define EEPROM_WRITE_DELAY 5
 
-/***************************************        Voltage and Amperage        ********************************************/
+/***************************************         Amperage        ********************************************/
  /*                                                                                                                     */
   /************** Voltage match multimeter (you can change this options to match your setup/requirements) ****************/
 
 #define DIVIDERRATIO 25             // Main voltage ratio
 #define VIDDIVIDERRATIO 25          // Video voltage ratio
-//#define VIDVOLTAGE_VBAT           // Uncomment to change from VIDEO VLOTAGE Analog Pin to MwVbat (must be defined on MWcode)
 
 // moved MAINVOLTAGE_VBAT to eeprom, default values are in GlobalVariables
 
@@ -61,7 +60,7 @@ const char videoSignalType=1;
 #define HEADING360                  // Heading shows as 0..359; Comment for -179..180
 //#define SHOWBATLEVELEVOLUTION     // Uncomment to display battery evolution
 //#define VIDVOLTAGE                // Uncomment if you want to display video voltage
-
+//#define VIDVOLTAGE_VBAT           // Uncomment to change from VIDEO VLOTAGE Analog Pin to MwVbat (must be defined on MWcode)
 
 /********************       For Sensors presence      *********************/
 
