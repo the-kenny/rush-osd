@@ -157,24 +157,28 @@ void serialMSPCheck()
   {
     waitStick =1;
     COL++;
+    if(COL>3) COL=3;
   }
 
   if(configMode&&!waitStick&&(MwRcData[ROLLSTICK]<MINSTICK)) // MOVE LEFT
   {
     waitStick =1;
     COL--;
+    if(COL<1) COL=1;  
   }
 
   if(configMode&&!waitStick&&(MwRcData[PITCHSTICK]>MAXSTICK)) // MOVE UP
   {
     waitStick =1;
     ROW--;
+    if(ROW<1) ROW=1;
   }
 
   if(configMode&&!waitStick&&(MwRcData[PITCHSTICK]<MINSTICK)) // MOVE DOWN
   {
     waitStick =1;
     ROW++;
+    if(ROW>10) ROW=10;
   }
 
   if(configMode&&!waitStick&&(MwRcData[YAWSTICK]<MINSTICK)&&!previousarmedstatus) // DECREASE

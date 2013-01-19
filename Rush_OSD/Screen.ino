@@ -541,9 +541,62 @@ void displayDirectionToHome(void)
   MAX7456_WriteString(screenBuffer,getPosition(GPS_directionToHomePosition));
 }
 
+void displayCursor(void)
+{
+int cursorpos;
+char CURSOR[]="*";
+
+if(ROW==10){
+  if(COL==3) cursorpos=SAVEP+16-1;    // page
+  if(COL==1) cursorpos=SAVEP-1;       // exit
+  if(COL==2) cursorpos=SAVEP+6-1;     // save/exit
+  }
+  if(ROW<10){  
+    if(configPage==1){
+      if (ROW==9) ROW=7;
+      if (ROW==8) ROW=10;
+      if(COL==1) cursorpos=(ROW+2)*30+10;
+      if(COL==2) cursorpos=(ROW+2)*30+10+6;  
+      if(COL==3) cursorpos=(ROW+2)*30+10+6+6;
+      }  
+    if(configPage==2){
+      COL=3;
+      if (ROW==7) ROW=5;
+      if (ROW==6) ROW=10;
+      if (ROW==9) ROW=5;
+      cursorpos=(ROW+2)*30+10+6+6;
+      }      
+    if(configPage==3){
+      COL=3;
+      if (ROW==1) ROW=2;
+      if (ROW==9) ROW=6;
+      if (ROW==7) ROW=10;
+      cursorpos=(ROW+2)*30+10+6+6;
+      }  
+    if(configPage==4){
+      COL=3;
+      if (ROW==2) ROW=3;
+      if (ROW==9) ROW=7;
+      if (ROW==8) ROW=10;
+      if ((ROW==6)||(ROW==7)) cursorpos=(ROW+2)*30+10+6+6-2;  // Narrow/Imperial strings longer
+      else cursorpos=(ROW+2)*30+10+6+6;
+      }  
+    if(configPage==5){
+      COL=3;
+      if (ROW==9) ROW=7;
+      if (ROW==8) ROW=10;   
+      cursorpos=(ROW+2)*30+10+6+6;
+      }
+    if(configPage==6){
+      ROW=10;
+      }
+  } 
+  if(Blink10hz) MAX7456_WriteString(CURSOR,cursorpos);
+}
+
+
 void displayPIDConfigScreen(void)
 {
-  char CURSOR[]="*";
 
   MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[0])), SAVEP);		//EXIT
   MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[1])), SAVEP+6);	//SaveExit
@@ -746,428 +799,5 @@ void displayPIDConfigScreen(void)
     MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[58])), MAGT);
     MAX7456_WriteString(itoa(temperMAX,screenBuffer,10),MAGD);
   }
-
-  if(ROW>10) ROW=10;
-  if(ROW<1) ROW=1;
-  if(COL>3) COL=3;
-  if(COL<1) COL=1;
-
-  cursorPostion=configPage*100+ROW*10+COL;
-
-  if(Blink10hz) switch(cursorPostion)
-  {
-
-  case 111:
-    MAX7456_WriteString(CURSOR,ROLLP-1);
-    break;
-  case 112:
-    MAX7456_WriteString(CURSOR,ROLLI-1);
-    break;
-  case 113:
-    MAX7456_WriteString(CURSOR,ROLLD-1);
-    break;
-  case 121:
-    MAX7456_WriteString(CURSOR,PITCHP-1);
-    break;
-  case 122:
-    MAX7456_WriteString(CURSOR,PITCHI-1);
-    break;
-  case 123:
-    MAX7456_WriteString(CURSOR,PITCHD-1);
-    break;
-  case 131:
-    MAX7456_WriteString(CURSOR,YAWP-1);
-    break;
-  case 132:
-    MAX7456_WriteString(CURSOR,YAWI-1);
-    break;
-  case 133:
-    MAX7456_WriteString(CURSOR,YAWD-1);
-    break;
-  case 141:
-    MAX7456_WriteString(CURSOR,ALTP-1);
-    break;
-  case 142:
-    MAX7456_WriteString(CURSOR,ALTI-1);
-    break;
-  case 143:
-    MAX7456_WriteString(CURSOR,ALTD-1);
-    break;
-  case 151:
-    MAX7456_WriteString(CURSOR,VELP-1);
-    break;
-  case 152:
-    MAX7456_WriteString(CURSOR,VELI-1);
-    break;
-  case 153:
-    MAX7456_WriteString(CURSOR,VELD-1);
-    break;
-  case 161:
-    MAX7456_WriteString(CURSOR,LEVP-1);
-    break;
-  case 162:
-    MAX7456_WriteString(CURSOR,LEVI-1);
-    break;
-  case 163:
-    MAX7456_WriteString(CURSOR,LEVD-1);
-    break;
-  case 171:
-    MAX7456_WriteString(CURSOR,MAGP-1);
-    break;
-  case 172:
-    COL=1;
-    break;
-  case 173:
-    COL=1;
-    break;
-  case 181:
-    ROW=10;
-    break;
-  case 191:
-    ROW=7;
-    break;
-  case 192:
-    ROW=7;
-    break;
-  case 193:
-    ROW=7;
-    break;
-  case 201:
-    MAX7456_WriteString(CURSOR,SAVEP-1);
-    break;  // exit
-  case 202:
-    MAX7456_WriteString(CURSOR,SAVEP+6-1);
-    break; // saveexit
-  case 203:
-    MAX7456_WriteString(CURSOR,SAVEP+16-1);
-    break; // PAGE
-
-  case 211:
-    COL=3;
-    break;
-  case 212:
-    COL=3;
-    break;
-  case 213:
-    MAX7456_WriteString(CURSOR,ROLLD-1);
-    break;
-  case 221:
-    COL=3;
-    break;
-  case 222:
-    COL=3;
-    break;
-  case 223:
-    MAX7456_WriteString(CURSOR,PITCHD-1);
-    break;
-  case 231:
-    COL=3;
-    break;
-  case 232:
-    COL=3;
-    break;
-  case 233:
-    MAX7456_WriteString(CURSOR,YAWD-1);
-    break;
-  case 241:
-    COL=3;
-    break;
-  case 242:
-    COL=3;
-    break;
-  case 243:
-    MAX7456_WriteString(CURSOR,ALTD-1);
-    break;
-  case 251:
-    COL=3;
-    break;
-  case 252:
-    COL=3;
-    break;
-  case 253:
-    MAX7456_WriteString(CURSOR,VELD-1);
-    break;
-  case 263:
-    ROW=9;
-    break;
-  case 291:
-    ROW=5;
-    break;
-  case 292:
-    ROW=5;
-    break;
-  case 293:
-    ROW=5;
-    break;
-  case 301:
-    MAX7456_WriteString(CURSOR,SAVEP-1);
-    break;  // exit
-  case 302:
-    MAX7456_WriteString(CURSOR,SAVEP+6-1);
-    break; // saveexit
-  case 303:
-    MAX7456_WriteString(CURSOR,SAVEP+16-1);
-    break; // PAGE
-
-
-
-  case 311:
-    COL=3;
-    break;
-  case 312:
-    COL=3;
-    break;
-  case 313:
-    MAX7456_WriteString(CURSOR,ROLLD-1);
-    break;
-  case 321:
-    COL=3;
-    break;
-  case 322:
-    COL=3;
-    break;
-  case 323:
-    MAX7456_WriteString(CURSOR,PITCHD-1);
-    break;
-  case 331:
-    COL=3;
-    break;
-  case 332:
-    COL=3;
-    break;
-  case 333:
-    MAX7456_WriteString(CURSOR,YAWD-1);
-    break;
-  case 341:
-    COL=3;
-    break;
-  case 342:
-    COL=3;
-    break;
-  case 343:
-    MAX7456_WriteString(CURSOR,ALTD-1);
-    break;
-  case 351:
-    COL=3;
-    break;
-  case 352:
-    COL=3;
-    break;
-  case 353:
-    MAX7456_WriteString(CURSOR,VELD-1);
-    break;
-  case 361:
-    COL=3;
-    break;
-  case 362:
-    COL=3;
-    break;
-  case 363:
-    MAX7456_WriteString(CURSOR,LEVD-1);
-    break;
-  case 371:
-    COL=3;
-    break;
-  case 372:
-    COL=3;
-    break;
-  case 373:
-    MAX7456_WriteString(CURSOR,MAGD-1);
-    break;
-  case 383:
-    ROW=10;
-    break;
- case 391:
-    ROW=7;
-    break;
-  case 392:
-    ROW=7;
-    break;
-  case 393:
-    ROW=7;
-    break;
-  case 401:
-    MAX7456_WriteString(CURSOR,SAVEP-1);
-    break;  // exit
-  case 402:
-    MAX7456_WriteString(CURSOR,SAVEP+6-1);
-    break; // saveexit
-  case 403:
-    MAX7456_WriteString(CURSOR,SAVEP+16-1);
-    break; // PAGE
-
-
-  case 421:
-    COL=3;
-    ROW=3;
-    break;
-  case 422:
-    COL=3;
-    ROW=3;
-    break;
-  case 423:
-    COL=3;
-    ROW=3;
-    break;
-  case 431:
-    COL=3;
-    break;
-  case 432:
-    COL=3;
-    break;
-  case 433:
-    MAX7456_WriteString(CURSOR,YAWD-1);
-    break;
-  case 441:
-    COL=3;
-    break;
-  case 442:
-    COL=3;
-    break;
-  case 443:
-    MAX7456_WriteString(CURSOR,ALTD-1);
-    break;
-  case 451:
-    COL=3;
-    break;
-  case 452:
-    COL=3;
-    break;
-  case 453:
-    MAX7456_WriteString(CURSOR,VELD-1);
-    break;
-  case 461:
-    COL=3;
-    break;
-  case 462:
-    COL=3;
-    break;
-  case 463:
-    MAX7456_WriteString(CURSOR,LEVD-3);
-    break;
-  case 471:
-    COL=3;
-    break;
-  case 472:
-    COL=3;
-    break;
-  case 473:
-    MAX7456_WriteString(CURSOR,MAGD-3);
-    break;
- case 483:
-    ROW=10;
-    break;
-case 491:
-    ROW=7;
-    break;
-  case 492:
-    ROW=7;
-    break;
-  case 493:
-    ROW=7;
-    break;
-  case 501:
-    MAX7456_WriteString(CURSOR,SAVEP-1);
-    break;  // exit
-  case 502:
-    MAX7456_WriteString(CURSOR,SAVEP+6-1);
-    break; // save
-  case 503:
-    MAX7456_WriteString(CURSOR,SAVEP+16-1);
-    break; // PAGE
-
-  case 511:
-    COL=3;
-    break;
-  case 512:
-    COL=3;
-    break;
-  case 513:
-    MAX7456_WriteString(CURSOR,ROLLD-1);
-    break;
-  case 521:
-    COL=3;
-    ROW=5;
-    break;
-  case 522:
-    COL=3;
-    ROW=5;
-    break;
-  case 523:
-    COL=3;
-    ROW=5;
-    break;
-  case 541:
-    COL=3;
-    ROW=1;
-    break;
-  case 542:
-    COL=3;
-    ROW=1;
-    break;
-  case 543:
-    COL=3;
-    ROW=1;
-    break;
-  case 551:
-    COL=3;
-    break;
-  case 552:
-    COL=3;
-    break;
-  case 553:
-    MAX7456_WriteString(CURSOR,VELD-1);
-    break;
-  case 571:
-    COL=3;
-    break;
-  case 572:
-    COL=3;
-    break;
-  case 573:
-    MAX7456_WriteString(CURSOR,MAGD-1);
-    break;
-  case 583:
-    ROW=10;
-    break;
-  case 591:
-    ROW=7;
-    break;
-  case 592:
-    ROW=7;
-    break;
-  case 593:
-    ROW=7;
-    break;
-  case 601:
-    MAX7456_WriteString(CURSOR,SAVEP-1);
-    break;  // exit
-  case 602:
-    MAX7456_WriteString(CURSOR,SAVEP+6-1);
-    break; // saveexit
-  case 603:
-    MAX7456_WriteString(CURSOR,SAVEP+16-1);
-    break; // PAGE
-
-
-  case 691:
-    ROW=10;
-    break;  // exit
-  case 692:
-    ROW=10;
-    break;  // exit
-  case 693:
-    ROW=10;
-    break;  // exit
-
-  case 701:
-    MAX7456_WriteString(CURSOR,SAVEP-1);
-    break;  // exit
-  case 702:
-    MAX7456_WriteString(CURSOR,SAVEP+6-1);
-    break; // save
-  case 703:
-    MAX7456_WriteString(CURSOR,SAVEP+16-1);
-    break; // PAGE
-  }
+    displayCursor();  // NEB mod cursor display
 }
