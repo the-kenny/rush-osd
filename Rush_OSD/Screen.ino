@@ -59,20 +59,6 @@ void FindNull(void)
   for(xx=0;screenBuffer[xx]!=0;xx++);
 }
 
-void displaySensors(void)
-{
-  if(MwSensorPresent&ACCELEROMETER) screenBuffer[0]=0xa0;
-  else screenBuffer[0]=' ';
-  if(MwSensorPresent&BAROMETER)     screenBuffer[1]=0xa2;
-  else screenBuffer[1]=' ';
-  if(MwSensorPresent&MAGNETOMETER)  screenBuffer[2]=0xa1;
-  else screenBuffer[2]=' ';
-  if(MwSensorPresent&GPSSENSOR)     screenBuffer[3]=0xa3;
-  else screenBuffer[3]=' ';
-  screenBuffer[4]=0;
-  MAX7456_WriteString(screenBuffer,getPosition(sensorPosition));
-}
-
 void displayTemperature(void)                           // WILL WORK ONLY WITH V1.2
 {
   if (unitSystem) temperature=temperature*1.8+32;       //Fahrenheit conversion for imperial system.
@@ -86,35 +72,41 @@ void displayTemperature(void)                           // WILL WORK ONLY WITH V
 
 void displayMode(void)
 {
-  if(MwSensorActive&STABLEMODE)   screenBuffer[0]=0xBE;
-  else screenBuffer[0]=' ';
-  if(MwSensorActive&BAROMODE)     screenBuffer[1]=0xBE;
-  else screenBuffer[1]=' ';
-  if(MwSensorActive&MAGMODE)      screenBuffer[2]=0xBE;
-  else screenBuffer[2]=' ';
-  if(MwSensorActive&GPSHOMEMODE)  screenBuffer[3]=0xBE;
-  else {
-    if(MwSensorActive&GPSHOLDMODE)  screenBuffer[3]=0xBE;
-    else screenBuffer[3]=' ';
-  }
-  MAX7456_WriteString(screenBuffer,getPosition(sensorPosition)+LINE);
+  // Put sensor symbold (was displaySensors)
+  screenBuffer[0] = (MwSensorPresent&ACCELEROMETER) ? 0xa0 : ' ';
+  screenBuffer[1] = (MwSensorPresent&BAROMETER) ? 0xa2 : ' ';
+  screenBuffer[2] = (MwSensorPresent&MAGNETOMETER) ? 0xa1 : ' ';
+  screenBuffer[3] = (MwSensorPresent&GPSSENSOR) ? 0xa3 : ' ';
+
   if(MwSensorActive&STABLEMODE)
   {
-    screenBuffer[0]=0xac;
-    screenBuffer[1]=0xad;
+    screenBuffer[4]=0xac;
+    screenBuffer[5]=0xad;
   }
   else
   {
-    screenBuffer[0]=0xae;
-    screenBuffer[1]=0xaf;
+    screenBuffer[4]=0xae;
+    screenBuffer[5]=0xaf;
   }
-  screenBuffer[2]=' ';
-  screenBuffer[3]=' ';
-  if(GPS_fix)                    screenBuffer[3]=0xdf;
-  if(MwSensorActive&GPSHOMEMODE) screenBuffer[3]=0xff;
-  if(MwSensorActive&GPSHOLDMODE) screenBuffer[3]=0xef;
-  screenBuffer[4]=0;
+  screenBuffer[6]=' ';
+  if(MwSensorActive&GPSHOMEMODE)
+    screenBuffer[7]=0xff;
+  else if(MwSensorActive&GPSHOLDMODE)
+    screenBuffer[7]=0xef;
+  else if(GPS_fix)
+    screenBuffer[7]=0xdf;
+  else
+    screenBuffer[7]=' ';
+  screenBuffer[8]=0;
   MAX7456_WriteString(screenBuffer,getPosition(sensorPosition)+4);
+
+  // Put ON indicator under sensor symbol
+  screenBuffer[0] = (MwSensorActive&STABLEMODE) ? 0xBE : ' ';
+  screenBuffer[1] = (MwSensorActive&BAROMODE) ? 0xBE : ' ';
+  screenBuffer[2] = (MwSensorActive&MAGMODE) ? 0xBE : ' ';
+  screenBuffer[3] = (MwSensorActive&(GPSHOMEMODE|GPSHOLDMODE)) ? 0xBE : ' ';
+  screenBuffer[4] = 0;
+  MAX7456_WriteString(screenBuffer,getPosition(sensorPosition)+LINE);
 }
 
 void displayArmed(void)
@@ -248,8 +240,8 @@ if (MAINVOLTAGE_VBAT){
 
 void displayCurrentThrottle(void)
 {                                                                           // CurentThrottlePosition is set in Config.h to line 11 above flyTimePosition
-  
-  if (MwRcData[THROTTLESTICK] > HighT) HighT = MwRcData[THROTTLESTICK] -5;         
+
+  if (MwRcData[THROTTLESTICK] > HighT) HighT = MwRcData[THROTTLESTICK] -5;
   if (MwRcData[THROTTLESTICK] < LowT) LowT = MwRcData[THROTTLESTICK];      // Calibrate high and low throttle settings  --defaults set in GlobalVariables.h 1100-1900
   screenBuffer[0]=0xC8;
   screenBuffer[1]=0;
@@ -411,7 +403,7 @@ void displayIntro(void)
   else{
     MAX7456_WriteString_P((char*)pgm_read_word(&(introMessages[4])), RushduinoVersionPosition+60);
   }
-  
+
   MAX7456_WriteString_P(MultiWiiLogoL1Add, RushduinoVersionPosition+120);
   MAX7456_WriteString_P(MultiWiiLogoL2Add, RushduinoVersionPosition+120+LINE);
   MAX7456_WriteString_P(MultiWiiLogoL3Add, RushduinoVersionPosition+120+LINE+LINE);
@@ -428,7 +420,7 @@ void displayGPSPosition(void)
 {
   if(!GPS_fix)
     return;
-    
+
 #if defined COORDINATES
   screenBuffer[0]=0xCA;
   screenBuffer[1]=0;
@@ -446,7 +438,7 @@ void displayGPSPosition(void)
   int xx=0;
   int pos;
   screenBuffer[0]=MwGPSAltPositionAdd[unitSystem];
-  screenBuffer[1]=0;  
+  screenBuffer[1]=0;
   MAX7456_WriteString(screenBuffer,getPosition(MwGPSAltPosition));
   itoa(GPS_altitude,screenBuffer,10);
   FindNull();
@@ -475,10 +467,10 @@ void displayGPS_speed(void)
   screenBuffer[0]=speedUnitAdd[unitSystem];
   screenBuffer[1]=0;
   MAX7456_WriteString(screenBuffer,getPosition(speedPosition));
- 
+
   if(!unitSystem) xx= GPS_speed * 0.036;           // From MWii cm/sec to Km/h
   if(unitSystem) xx= GPS_speed * 0.02236932;       // (0.036*0.62137)  From MWii cm/sec to mph
-  
+
   itoa(xx,screenBuffer,10);
   if (xx > speedMAX) speedMAX = xx;
   MAX7456_WriteString(screenBuffer,getPosition(speedPosition)+1);
@@ -497,11 +489,11 @@ void displayAltitude(void)
   }
   if(!unitSystem) altitude = MwAltitude/100;       // cm to mt
   if(unitSystem)  altitude = MwAltitude/100*3.2808;  // cm to feet
- 
+
   screenBuffer[0]=MwAltitudeAdd[unitSystem];
   screenBuffer[1]=0;
   MAX7456_WriteString(screenBuffer,getPosition(MwAltitudePosition));
-  
+
   if(altitudeOk && (altitude > altitudeMAX)) altitudeMAX = altitude;
   itoa(altitude,screenBuffer,10);
   MAX7456_WriteString(screenBuffer,getPosition(MwAltitudePosition)+1);
@@ -518,19 +510,19 @@ void displayClimbRate(void)
 
   if(!unitSystem) xx= climbRate / 100;              // cm/sec ----> mt/sec
   if(unitSystem)  xx= climbRate / 100*3.2808;       // cm/sec ----> ft/sec
-  
+
   itoa(xx,screenBuffer,10);
   MAX7456_WriteString(screenBuffer,getPosition(MwClimbRatePosition)+1);
 
-   if (climbRate > 70)   screenBuffer[0]=0xB3;  
+   if (climbRate > 70)   screenBuffer[0]=0xB3;
   else
-    if (climbRate > 50)    screenBuffer[0]=0xB2; 
+    if (climbRate > 50)    screenBuffer[0]=0xB2;
     else
-      if (climbRate > 30)    screenBuffer[0]=0xB1;  
+      if (climbRate > 30)    screenBuffer[0]=0xB1;
       else
-        if (climbRate > 20)  screenBuffer[0]=0xB0; 
+        if (climbRate > 20)  screenBuffer[0]=0xB0;
         else screenBuffer[0]=0xBC;
- 
+
   if (climbRate < -70)  screenBuffer[0]=0xB4;
   else
     if (climbRate < -50)   screenBuffer[0]=0xB5;
@@ -539,7 +531,7 @@ void displayClimbRate(void)
       else
         if (climbRate < -20) screenBuffer[0]=0xB7;
   screenBuffer[1]=0;
-  if (climbRate>= -20) pos = getPosition(MwClimbRatePosition)-2; 
+  if (climbRate>= -20) pos = getPosition(MwClimbRatePosition)-2;
   else pos = getPosition(MwClimbRatePosition)-2+LINE;
   MAX7456_WriteString(screenBuffer,pos);
 }
@@ -548,13 +540,13 @@ void displayDistanceToHome(void)
 {
    if(!GPS_fix)
     return;
-  
+
   int xx=0;
   int pos;
   screenBuffer[0]=GPS_distanceToHomeAdd[unitSystem];
   screenBuffer[1]=0;
   MAX7456_WriteString(screenBuffer,getPosition(GPS_distanceToHomePosition));
-  
+
   if(!unitSystem) GPS_distanceToHome = GPS_distanceToHome;                    // Mt
   if(unitSystem) GPS_distanceToHome = GPS_distanceToHome * 3.2808;            // mt to feet
 

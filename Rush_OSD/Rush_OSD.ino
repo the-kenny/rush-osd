@@ -4,7 +4,7 @@
 
 // This software is a copy of the original Rushduino-OSD project was written by Jean-Gabriel Maurice. http://code.google.com/p/rushduino-osd/
 // For more information if you have a original Rushduino OSD <Multiwii forum>  http://www.multiwii.com/forum/viewtopic.php?f=8&t=922
-// For more information if you have a Minim OSD <Multiwii forum>  http://www.multiwii.com/forum/viewtopic.php?f=8&t=2918 
+// For more information if you have a Minim OSD <Multiwii forum>  http://www.multiwii.com/forum/viewtopic.php?f=8&t=2918
 // For new code releases http://code.google.com/p/rush-osd-development/
 // Thanks to all developers that coded this software before us, and all users that also help us to improve.
 // This team wish you great flights.
@@ -24,9 +24,9 @@
               /*                                                                                                                                             */
               /*                                                                                                                                             */
               /***********************************************************************************************************************************************/
-                                                                                                                                                              
-                                                                                                                                                              
-                                                                                                                                                              
+
+
+
 
               /************************************************************************************************************************************************/
               /*                         Created for Multiwii r1240 or higher and using the KV_OSD_Team_1.0.mcm Chararter map file.                            */
@@ -199,7 +199,6 @@ void loop()
         if(enableRSSI&&((rssi>lowrssiAlarm)||(Blink2hz))) displayRSSI();
 
         displayTime();
-        displaySensors();
         displayMode();
 
         if(enableTemperature&&((temperature<highTemperature)||(Blink2hz))) displayTemperature();
@@ -335,12 +334,12 @@ void writeEEPROM(void)
   EEPROM.write(EEPROM_DISPLAYGPS,displayGPS);
   EEPROM.write(EEPROM_SCREENTYPE,screenType);
   EEPROM.write(EEPROM_UNITSYSTEM,unitSystem);
-  EEPROM.write(EEPROM_STABLEMODE,STABLEMODE);                 
-  EEPROM.write(EEPROM_BAROMODE,BAROMODE);            
-  EEPROM.write(EEPROM_MAGMODE,MAGMODE);          
-  EEPROM.write(EEPROM_ARMEDMODE,ARMEDMODE);           
-  EEPROM.write(EEPROM_GPSHOMEMODE,GPSHOMEMODE);           
-  EEPROM.write(EEPROM_GPSHOLDMODE,GPSHOLDMODE);        
+  EEPROM.write(EEPROM_STABLEMODE,STABLEMODE);
+  EEPROM.write(EEPROM_BAROMODE,BAROMODE);
+  EEPROM.write(EEPROM_MAGMODE,MAGMODE);
+  EEPROM.write(EEPROM_ARMEDMODE,ARMEDMODE);
+  EEPROM.write(EEPROM_GPSHOMEMODE,GPSHOMEMODE);
+  EEPROM.write(EEPROM_GPSHOLDMODE,GPSHOLDMODE);
   EEPROM.write(EEPROM_MAINVOLTAGE_VBAT,MAINVOLTAGE_VBAT);
 }
 
@@ -356,14 +355,14 @@ void readEEPROM(void)
   displayGPS= EEPROM.read(EEPROM_DISPLAYGPS);
   screenType= !!EEPROM.read(EEPROM_SCREENTYPE);
   unitSystem= !!EEPROM.read(EEPROM_UNITSYSTEM);
-  STABLEMODE = EEPROM.read(EEPROM_STABLEMODE);                 
-  BAROMODE = EEPROM.read(EEPROM_BAROMODE);            
-  MAGMODE = EEPROM.read(EEPROM_MAGMODE);          
-  ARMEDMODE = EEPROM.read(EEPROM_ARMEDMODE);           
-  GPSHOMEMODE = EEPROM.read(EEPROM_GPSHOMEMODE);           
-  GPSHOLDMODE = EEPROM.read(EEPROM_GPSHOLDMODE);        
+  STABLEMODE = EEPROM.read(EEPROM_STABLEMODE);
+  BAROMODE = EEPROM.read(EEPROM_BAROMODE);
+  MAGMODE = EEPROM.read(EEPROM_MAGMODE);
+  ARMEDMODE = EEPROM.read(EEPROM_ARMEDMODE);
+  GPSHOMEMODE = EEPROM.read(EEPROM_GPSHOMEMODE);
+  GPSHOLDMODE = EEPROM.read(EEPROM_GPSHOLDMODE);
   MAINVOLTAGE_VBAT = EEPROM.read(EEPROM_MAINVOLTAGE_VBAT);
-  
+
 }
 
 // for first run to ini
