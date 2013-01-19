@@ -85,8 +85,12 @@ uint8_t FindNull(void)
 
 void displayTemperature(void)                           // WILL WORK ONLY WITH V1.2
 {
-  if (unitSystem) temperature=temperature*1.8+32;       //Fahrenheit conversion for imperial system.
-  if(temperature > temperMAX) temperMAX = temperature;
+  if (unitSystem)
+    temperature = temperature*1.8+32;       //Fahrenheit conversion for imperial system.
+
+  if(temperature > temperMAX)
+    temperMAX = temperature;
+
   itoa(temperature,screenBuffer,10);
   uint8_t xx = FindNull();   // find the NULL
   screenBuffer[xx++]=temperatureUnitAdd[unitSystem];
@@ -311,23 +315,19 @@ void displaypMeterSum(void)
   pMeterSum = amperagesum;
 #endif
   screenBuffer[0]=0xa4;
-  screenBuffer[1]=0;
-  MAX7456_WriteString(screenBuffer,getPosition(pMeterSumPosition));
   int xx = pMeterSum / EST_PMSum;
-  itoa(xx,screenBuffer,10);
-  MAX7456_WriteString(screenBuffer,getPosition(pMeterSumPosition)+1);
+  itoa(xx,screenBuffer+1,10);
+  MAX7456_WriteString(screenBuffer,getPosition(pMeterSumPosition));
 }
 
 void displayRSSI(void)
 {
-  // Calcul et affichage du Rssi
-  itoa(rssi,screenBuffer,10);
-  uint8_t xx = FindNull();   // Trouve le NULL
-  screenBuffer[xx++]='%';
-  screenBuffer[xx++]=0;
-  MAX7456_WriteString(screenBuffer,getPosition(rssiPosition));
   screenBuffer[0]=rssiUnitAdd;
-  screenBuffer[1]=0;
+  // Calcul et affichage du Rssi
+  itoa(rssi,screenBuffer+1,10);
+  uint8_t xx = FindNull();
+  screenBuffer[xx++]='%';
+  screenBuffer[xx]=0;
   MAX7456_WriteString(screenBuffer,getPosition(rssiPosition)-1);
 }
 
@@ -449,25 +449,19 @@ void displayGPS_speed(void)
 
 void displayAltitude(void)
 {
-  MwAltitude=MwAltitude;
-  if(!altitudeOk&&(allSec>5)&&armed)
-  {
-    altitudeOk=MwAltitude;
-    altitudeMAX=MwAltitude;
-  }
-  if(!armed) {
-    altitudeOk=MwAltitude;
-  }
-  if(!unitSystem) altitude = MwAltitude/100;       // cm to mt
-  if(unitSystem)  altitude = MwAltitude/100*3.2808;  // cm to feet
+  int altitude;
+
+  if(armed && allSec>5 && altitude > altitudeMAX)
+    altitudeMAX = altitude;
+
+  if(unitSystem)
+    altitude = MwAltitude/100*3.2808;  // cm to feet
+  else
+    altitude = MwAltitude/100;         // cm to mt
 
   screenBuffer[0]=MwAltitudeAdd[unitSystem];
-  screenBuffer[1]=0;
+  itoa(altitude,screenBuffer+1,10);
   MAX7456_WriteString(screenBuffer,getPosition(MwAltitudePosition));
-
-  if(altitudeOk && (altitude > altitudeMAX)) altitudeMAX = altitude;
-  itoa(altitude,screenBuffer,10);
-  MAX7456_WriteString(screenBuffer,getPosition(MwAltitudePosition)+1);
 }
 
 void displayClimbRate(void)

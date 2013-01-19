@@ -160,8 +160,6 @@ uint8_t highTemperature=50;           // Celcius or Fahrenheit
 uint8_t displayGPS=1;
 
 // For Altitude
-char altitudeOk=0;
-int altitude =1;
 float climbRate = 0;
 
 // For Statistics
