@@ -159,9 +159,6 @@ uint8_t highTemperature=50;           // Celcius or Fahrenheit
 
 uint8_t displayGPS=1;
 
-// For Altitude
-float climbRate = 0;
-
 // For Statistics
 int16_t speedMAX=GPS_speed;
 int8_t temperMAX=0;

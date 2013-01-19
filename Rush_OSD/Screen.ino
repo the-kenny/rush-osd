@@ -466,38 +466,29 @@ void displayAltitude(void)
 
 void displayClimbRate(void)
 {
-  climbRate=MwVario;
-  int xx=0;
-  int pos;
-  screenBuffer[0]=MwClimbRateAdd[unitSystem];
-  screenBuffer[1]=0;
+  screenBuffer[0] = MwClimbRateAdd[unitSystem];
+  int xx;
+  if(unitSystem)
+    xx = MwVario * 0.032808;       // cm/sec ----> ft/sec
+  else
+    xx = MwVario / 100;            // cm/sec ----> mt/sec
+  itoa(xx,screenBuffer+1,10);
   MAX7456_WriteString(screenBuffer,getPosition(MwClimbRatePosition));
 
-  if(!unitSystem) xx= climbRate / 100;              // cm/sec ----> mt/sec
-  if(unitSystem)  xx= climbRate / 100*3.2808;       // cm/sec ----> ft/sec
-
-  itoa(xx,screenBuffer,10);
-  MAX7456_WriteString(screenBuffer,getPosition(MwClimbRatePosition)+1);
-
-   if (climbRate > 70)   screenBuffer[0]=0xB3;
-  else
-    if (climbRate > 50)    screenBuffer[0]=0xB2;
-    else
-      if (climbRate > 30)    screenBuffer[0]=0xB1;
-      else
-        if (climbRate > 20)  screenBuffer[0]=0xB0;
-        else screenBuffer[0]=0xBC;
-
-  if (climbRate < -70)  screenBuffer[0]=0xB4;
-  else
-    if (climbRate < -50)   screenBuffer[0]=0xB5;
-    else
-      if (climbRate < -30)   screenBuffer[0]=0xB6;
-      else
-        if (climbRate < -20) screenBuffer[0]=0xB7;
+  if(MwVario > 70)       screenBuffer[0]=0xB3;
+  else if(MwVario > 50)  screenBuffer[0]=0xB2;
+  else if(MwVario > 30)  screenBuffer[0]=0xB1;
+  else if(MwVario > 20)  screenBuffer[0]=0xB0;
+  else if(MwVario < -70) screenBuffer[0]=0xB4;
+  else if(MwVario < -50) screenBuffer[0]=0xB5;
+  else if(MwVario < -30) screenBuffer[0]=0xB6;
+  else if(MwVario < -20) screenBuffer[0]=0xB7;
+  else                   screenBuffer[0]=0xBC;
   screenBuffer[1]=0;
-  if (climbRate>= -20) pos = getPosition(MwClimbRatePosition)-2;
-  else pos = getPosition(MwClimbRatePosition)-2+LINE;
+
+  int pos = getPosition(MwClimbRatePosition)-2;
+  if(MwVario < -20)
+    pos += LINE;
   MAX7456_WriteString(screenBuffer,pos);
 }
 
