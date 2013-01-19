@@ -444,12 +444,9 @@ void displayGPSPosition(void)
 
 void displayNumberOfSat(void)
 {
-  screenBuffer[0]=GPS_numSatAdd[0];    // Remplace le NULL par le/les symboles d'unité
-  screenBuffer[1]=GPS_numSatAdd[1];    // Restore le NULL
-  screenBuffer[2]=0;
-  MAX7456_WriteString(screenBuffer,getPosition(GPS_numSatPosition));
-
-  itoa(GPS_numSat,screenBuffer,10);
+  screenBuffer[0] = 0x1e;
+  screenBuffer[1] = 0x1f;
+  itoa(GPS_numSat,screenBuffer+2,10);
 
   MAX7456_WriteString(screenBuffer,getPosition(GPS_numSatPosition)+2);
 }

@@ -205,8 +205,6 @@ const unsigned char onTimeUnitAdd=0x9b;
 const unsigned char amperageUnitAdd = 0x9a;
 
 const unsigned char rssiUnitAdd = 0xba;
-const unsigned char sensorAdd[4] = {
-  0xa0,0xa1,0xa2,0xa4}; //acc,mag,bar,GPS
 
 const char MultiWiiLogoL1Add[17] PROGMEM = {
   0xd0,0xd1,0xd2,0xd3,0xd4,0xd5,0xd6,0xd7,0xd8,0xd9,0xda,0xdb,0xdc,0xdd,0xde,0};
@@ -219,8 +217,6 @@ const char disarmed_text[] PROGMEM = "DISARMED";
 const char armed_text[] PROGMEM = " ARMED";
 
 const unsigned char MwHeadingUnitAdd=0xbd;
-const unsigned char GPS_numSatAdd[2]={
-  0x1e,0x1f};
 const unsigned char MwAltitudeAdd[2]={
   0xa7,0xa8};
 const unsigned char MwClimbRateAdd[2]={
