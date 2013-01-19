@@ -75,9 +75,12 @@ char *formatTime(uint16_t val, char *str) {
   return str;
 }
 
-void FindNull(void)
+uint8_t FindNull(void)
 {
-  for(xx=0;screenBuffer[xx]!=0;xx++);
+  uint8_t xx;
+  for(xx=0;screenBuffer[xx]!=0;xx++)
+    ;
+  return xx;
 }
 
 void displayTemperature(void)                           // WILL WORK ONLY WITH V1.2
@@ -85,7 +88,7 @@ void displayTemperature(void)                           // WILL WORK ONLY WITH V
   if (unitSystem) temperature=temperature*1.8+32;       //Fahrenheit conversion for imperial system.
   if(temperature > temperMAX) temperMAX = temperature;
   itoa(temperature,screenBuffer,10);
-  FindNull();   // find the NULL
+  uint8_t xx = FindNull();   // find the NULL
   screenBuffer[xx++]=temperatureUnitAdd[unitSystem];
   screenBuffer[xx]=0;                                   // Restore the NULL
   MAX7456_WriteString(screenBuffer,getPosition(temperaturePosition));
@@ -146,7 +149,7 @@ void displayHorizonPart(int X,int Y,int roll)
   if(X>56) X=56;
   if(X<0) X=0;
   // 7 row, 8 lines per row, mean 56 different case per segment, 2 segment now
-  xx=X/8;
+  int xx=X/8;
   switch (xx)
   {
   case 0:
@@ -307,12 +310,10 @@ void displaypMeterSum(void)
 #if defined (HARDSENSOR)
   pMeterSum = amperagesum;
 #endif
-  int xx=0;
-  int pos;
   screenBuffer[0]=0xa4;
   screenBuffer[1]=0;
   MAX7456_WriteString(screenBuffer,getPosition(pMeterSumPosition));
-  if(!unitSystem) xx= pMeterSum / EST_PMSum;
+  int xx = pMeterSum / EST_PMSum;
   itoa(xx,screenBuffer,10);
   MAX7456_WriteString(screenBuffer,getPosition(pMeterSumPosition)+1);
 }
@@ -321,7 +322,7 @@ void displayRSSI(void)
 {
   // Calcul et affichage du Rssi
   itoa(rssi,screenBuffer,10);
-  FindNull();   // Trouve le NULL
+  uint8_t xx = FindNull();   // Trouve le NULL
   screenBuffer[xx++]='%';
   screenBuffer[xx++]=0;
   MAX7456_WriteString(screenBuffer,getPosition(rssiPosition));
@@ -508,11 +509,9 @@ void displayClimbRate(void)
 
 void displayDistanceToHome(void)
 {
-   if(!GPS_fix)
+  if(!GPS_fix)
     return;
 
-  int xx=0;
-  int pos;
   screenBuffer[0]=GPS_distanceToHomeAdd[unitSystem];
   screenBuffer[1]=0;
   MAX7456_WriteString(screenBuffer,getPosition(GPS_distanceToHomePosition));
@@ -533,7 +532,7 @@ void displayAngleToHome(void)
     return;
 
   itoa(GPS_directionToHome,screenBuffer,10);
-  FindNull();
+  uint8_t xx = FindNull();
   screenBuffer[xx++]=0xBD;
   screenBuffer[xx]=0;
   MAX7456_WriteString(screenBuffer,getPosition(GPS_angleToHomePosition));
@@ -756,7 +755,7 @@ void displayPIDConfigScreen(void)
     MAX7456_WriteString(screenBuffer,VELD-4);
 
     MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[57])), LEVT);
-    if(!unitSystem) xx= pMeterSum / EST_PMSum;
+    int xx= pMeterSum / EST_PMSum;
     MAX7456_WriteString(itoa(xx,screenBuffer,10),LEVD);
 
     MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[58])), MAGT);
