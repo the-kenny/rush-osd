@@ -254,11 +254,11 @@ void loop()
 
     if(!armed) {
       armedTimer=0;
-      flyMinute=0;
       flySecond=0;
     }
     else {
       flySecond++;
+      flyingSecond++;
       configMode=0;
     }
     allSec++;
@@ -292,16 +292,6 @@ void loop()
     if(rssiTimer>0) rssiTimer--;
   }
 
-  if(onSecond>=60)    // this execute each minute
-  {
-    onMinute++;
-    onSecond=0;
-  }
-  if(flySecond>=60)    // this execute each minute
-  {
-    flyMinute++;
-    flySecond=0;
-  }
   serialMSPreceive();
 }
 

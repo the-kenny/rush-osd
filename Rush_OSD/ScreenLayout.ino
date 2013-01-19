@@ -15,8 +15,8 @@ const unsigned screenPosition[][2][2] PROGMEM = {
   { { LINE07+2,    LINE07+4,    }, { LINE07+2,       LINE07+4       } },   // MwAltitudePosition
   { { LINE07+26,   LINE07+26,   }, { LINE07+25,      LINE07+26      } },   // MwClimbRatePosition
   { { LINE11+23,   LINE11+21,   }, { LINE11+23+60,   LINE11+21+60   } },   // CurrentThrottlePosition
-  { { LINE12+23,   LINE12+21,   }, { LINE12+23+60,   LINE12+21+60   } },   // flyTimePosition
-  { { LINE13+23,   LINE13+21,   }, { LINE13+23+60,   LINE13+21+60   } },   // onTimePosition
+  { { LINE12+22,   LINE12+21,   }, { LINE12+22+60,   LINE12+21+60   } },   // flyTimePosition
+  { { LINE13+22,   LINE13+21,   }, { LINE13+22+60,   LINE13+21+60   } },   // onTimePosition
   { { LINE12+11,   LINE12+11,   }, { LINE11+11+60,   LINE11+11+60   } },   // motorArmedPosition
   { { LINE10+2,    LINE10+4,    }, { LINE10+2+60,    LINE10+4+60    } },   // MwGPSLatPosition
   { { LINE10+13+2, LINE10+13+4, }, { LINE10+2+13+60, LINE10+13+4+60 } },   // MwGPSLonPosition

@@ -54,6 +54,27 @@ char *FormatGPSCoord(int32_t val, char *str, uint8_t p, char pos, char neg) {
    return str;
 }
 
+// Take time in Seconds and format it as 'SMM:SS' or ' SM:SS',
+// Return pointer to minute digit,
+char *formatTime(uint16_t val, char *str) {
+  int8_t bytes = 5;
+  str[bytes] = 0;
+  str[--bytes] = '0' + (val % 10);
+  val = val / 10;
+  str[--bytes] = '0' + (val % 6);
+  val = val / 6;
+  str[--bytes] = ':';
+  do {
+    str[--bytes] = '0' + (val % 10);
+    val = val / 10;
+  } while(val != 0 && bytes != 0);
+
+  while(bytes != 0)
+     str[--bytes] = ' ';
+
+  return str;
+}
+
 void FindNull(void)
 {
   for(xx=0;screenBuffer[xx]!=0;xx++);
@@ -199,9 +220,9 @@ void displayVoltage(void)
 #if defined VIDVOLTAGE_VBAT
   vidvoltage=MwVBat;
 #endif
-if (MAINVOLTAGE_VBAT){
-  voltage=MwVBat;
-}
+  if (MAINVOLTAGE_VBAT){
+    voltage=MwVBat;
+  }
 
 
   ItoaPadded(voltage, screenBuffer, 4, 3);
@@ -263,48 +284,13 @@ void displayCurrentThrottle(void)
 
 void displayTime(void)
 {
-  if(flyMinute>0) flyingMinute=flyMinute;
-  if(flySecond>0) flyingSecond=flySecond;
-  screenBuffer[0]=flyTimeUnitAdd;
-  screenBuffer[1]=0;
+  screenBuffer[0] = flyTimeUnitAdd;
+  formatTime(flySecond, screenBuffer+1);
   MAX7456_WriteString(screenBuffer,getPosition(flyTimePosition));
-  itoa(flyMinute,screenBuffer,10);
-  FindNull();
-  screenBuffer[xx++]=0x3a;
-  screenBuffer[xx]=0;    // find the NULL
-  if(flyMinute<10) xx=2;
-  if(flyMinute>=10) xx=3;
-  if(flyMinute>=100) xx=4;
-  MAX7456_WriteString(screenBuffer,getPosition(flyTimePosition)+1);
 
-
-  itoa(flySecond,screenBuffer,10);
-  if(flySecond<10)
-  {
-    screenBuffer[1]=screenBuffer[0];
-    screenBuffer[0]='0';
-  }
-
-  MAX7456_WriteString(screenBuffer,getPosition(flyTimePosition)+1+xx);
-  screenBuffer[0]=onTimeUnitAdd;
-  screenBuffer[1]=0;
+  screenBuffer[0] = onTimeUnitAdd;
+  formatTime(onSecond, screenBuffer+1);
   MAX7456_WriteString(screenBuffer,getPosition(onTimePosition));
-  itoa(onMinute,screenBuffer,10);
-  FindNull();
-  screenBuffer[xx++]=0x3a;
-  screenBuffer[xx]=0;                          // Find the NULL
-  if(onMinute<10) xx=2;
-  if(onMinute>=10) xx=3;
-  if(onMinute>=100) xx=4;
-  MAX7456_WriteString(screenBuffer,getPosition(onTimePosition)+1);
-  itoa(onSecond,screenBuffer,10);
-  if(onSecond<10)
-  {
-    screenBuffer[1]=screenBuffer[0];
-    screenBuffer[0]='0';
-    screenBuffer[2]=0;
-  }
-  MAX7456_WriteString(screenBuffer,getPosition(onTimePosition)+1+xx);
 }
 
 void displayAmperage(void)
@@ -766,25 +752,8 @@ void displayPIDConfigScreen(void)
 
     MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[56])), VELT);
 
-    strcpy_P(screenBuffer, (char*)pgm_read_word(&(configMsgs[30]))); //screenBuffer cleaning.
-    itoa(flyingMinute,screenBuffer,10);
-    if(flyingMinute<10) {
-      screenBuffer[1]=0x3a;
-      xx=2;
-    }
-    else {
-      screenBuffer[2]=0x3a;
-      xx=3;
-    }
-    MAX7456_WriteString(screenBuffer,VELD);
-
-    itoa(flyingSecond,screenBuffer,10);
-    if(flyingSecond<10)
-    {
-      screenBuffer[1]=screenBuffer[0];
-      screenBuffer[0]='0';
-    }
-    MAX7456_WriteString(screenBuffer,VELD+xx);
+    formatTime(flyingSecond, screenBuffer);
+    MAX7456_WriteString(screenBuffer,VELD-4);
 
     MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[57])), LEVT);
     if(!unitSystem) xx= pMeterSum / EST_PMSum;
