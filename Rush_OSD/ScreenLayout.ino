@@ -20,7 +20,7 @@ const unsigned screenPosition[][2][2] PROGMEM = {
   { { LINE12+11,   LINE12+11,   }, { LINE11+11+60,   LINE11+11+60   } },   // motorArmedPosition
   { { LINE10+2,    LINE10+4,    }, { LINE10+2+60,    LINE10+4+60    } },   // MwGPSLatPosition
   { { LINE10+13+2, LINE10+13+4, }, { LINE10+2+13+60, LINE10+13+4+60 } },   // MwGPSLonPosition
-  { { LINE12+3,    LINE12+5,    }, { LINE12+3+60,    LINE12+5+60    } },   // rssiPosition
+  { { LINE12+2,    LINE12+4,    }, { LINE12+2+60,    LINE12+4+60    } },   // rssiPosition
   { { LINE11+2,    LINE11+4,    }, { LINE11+2,       LINE11+4       } },   // temperaturePosition
   { { LINE13+3,    LINE13+5,    }, { LINE13+3+60,    LINE13+5+60    } },   // voltagePosition
   { { LINE11+3,    LINE11+5,    }, { LINE11+3+60,    LINE11+5+60    } },   // vidvoltagePosition

@@ -328,7 +328,7 @@ void displayRSSI(void)
   uint8_t xx = FindNull();
   screenBuffer[xx++]='%';
   screenBuffer[xx]=0;
-  MAX7456_WriteString(screenBuffer,getPosition(rssiPosition)-1);
+  MAX7456_WriteString(screenBuffer,getPosition(rssiPosition));
 }
 
 void displayHeading(void)
