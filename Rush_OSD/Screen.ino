@@ -111,14 +111,11 @@ void displayMode(void)
 
 void displayArmed(void)
 {
-  static const char _disarmed[] PROGMEM = "DISARMED";
-  static const char _armed[] PROGMEM = " ARMED";
-
   armed = (MwSensorActive&ARMEDMODE);
   if(armedTimer==0)
-    MAX7456_WriteString_P(_disarmed, getPosition(motorArmedPosition));
+    MAX7456_WriteString_P(disarmed_text, getPosition(motorArmedPosition));
   else if((armedTimer>1) && (armedTimer<9) && (Blink10hz))
-    MAX7456_WriteString_P(_armed, getPosition(motorArmedPosition));
+    MAX7456_WriteString_P(armed_text, getPosition(motorArmedPosition));
 }
 
 void displayHorizonPart(int X,int Y,int roll)
