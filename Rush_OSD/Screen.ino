@@ -406,7 +406,7 @@ void displayIntro(void)
   MAX7456_WriteString_P(MultiWiiLogoL3Add, RushduinoVersionPosition+120+LINE+LINE);
 
   MAX7456_WriteString_P((char*)pgm_read_word(&(introMessages[5])), RushduinoVersionPosition+120+LINE+LINE+LINE);
-  MAX7456_WriteString(itoa(MwVersion,screenBuffer,10),RushduinoVersionPosition+128+LINE+LINE+LINE);
+  MAX7456_WriteString(itoa(MwVersion,screenBuffer,10),RushduinoVersionPosition+131+LINE+LINE+LINE);
 
   MAX7456_WriteString_P((char*)pgm_read_word(&(introMessages[6])), RushduinoVersionPosition+120+LINE+LINE+LINE+LINE+LINE);
   MAX7456_WriteString_P((char*)pgm_read_word(&(introMessages[7])), RushduinoVersionPosition+125+LINE+LINE+LINE+LINE+LINE+LINE);
