@@ -419,27 +419,18 @@ void displayGPSPosition(void)
     return;
 
 #if defined COORDINATES
-  screenBuffer[0]=0xCA;
-  screenBuffer[1]=0;
+  screenBuffer[0] = 0xCA;
+  FormatGPSCoord(GPS_latitude,screenBuffer+1,3,'N','S');
   MAX7456_WriteString(screenBuffer,getPosition(MwGPSLatPosition));
-  FormatGPSCoord(GPS_latitude,screenBuffer,3,'N','S');
-  MAX7456_WriteString(screenBuffer,getPosition(MwGPSLatPosition)+1);
 
-  screenBuffer[0]=0xCB;
-  screenBuffer[1]=0;
+  screenBuffer[0] = 0xCB;
+  FormatGPSCoord(GPS_longitude,screenBuffer+1,4,'E','W');
   MAX7456_WriteString(screenBuffer,getPosition(MwGPSLonPosition));
-  FormatGPSCoord(GPS_longitude,screenBuffer,4,'E','W');
-  MAX7456_WriteString(screenBuffer,getPosition(MwGPSLonPosition)+1);
 #endif
 
-  int xx=0;
-  int pos;
-  screenBuffer[0]=MwGPSAltPositionAdd[unitSystem];
-  screenBuffer[1]=0;
+  screenBuffer[0] = MwGPSAltPositionAdd[unitSystem];
+  itoa(GPS_altitude,screenBuffer+1,10);
   MAX7456_WriteString(screenBuffer,getPosition(MwGPSAltPosition));
-  itoa(GPS_altitude,screenBuffer,10);
-  FindNull();
-  MAX7456_WriteString(screenBuffer,getPosition(MwGPSAltPosition)+1);
 }
 
 void displayNumberOfSat(void)
@@ -447,8 +438,7 @@ void displayNumberOfSat(void)
   screenBuffer[0] = 0x1e;
   screenBuffer[1] = 0x1f;
   itoa(GPS_numSat,screenBuffer+2,10);
-
-  MAX7456_WriteString(screenBuffer,getPosition(GPS_numSatPosition)+2);
+  MAX7456_WriteString(screenBuffer,getPosition(GPS_numSatPosition));
 }
 
 void displayGPS_speed(void)
@@ -456,18 +446,18 @@ void displayGPS_speed(void)
   if(!GPS_fix)
     return;
 
-  int xx=0;
-  int pos;
+  int xx;
+  if(!unitSystem)
+    xx = GPS_speed * 0.036;           // From MWii cm/sec to Km/h
+  else
+    xx = GPS_speed * 0.02236932;       // (0.036*0.62137)  From MWii cm/sec to mph
+
+  if(xx > speedMAX)
+    speedMAX = xx;
+
   screenBuffer[0]=speedUnitAdd[unitSystem];
-  screenBuffer[1]=0;
+  itoa(xx,screenBuffer+1,10);
   MAX7456_WriteString(screenBuffer,getPosition(speedPosition));
-
-  if(!unitSystem) xx= GPS_speed * 0.036;           // From MWii cm/sec to Km/h
-  if(unitSystem) xx= GPS_speed * 0.02236932;       // (0.036*0.62137)  From MWii cm/sec to mph
-
-  itoa(xx,screenBuffer,10);
-  if (xx > speedMAX) speedMAX = xx;
-  MAX7456_WriteString(screenBuffer,getPosition(speedPosition)+1);
 }
 
 void displayAltitude(void)
