@@ -98,7 +98,7 @@ void displayMode(void)
   else
     screenBuffer[7]=' ';
   screenBuffer[8]=0;
-  MAX7456_WriteString(screenBuffer,getPosition(sensorPosition)+4);
+  MAX7456_WriteString(screenBuffer,getPosition(sensorPosition));
 
   // Put ON indicator under sensor symbol
   screenBuffer[0] = (MwSensorActive&STABLEMODE) ? 0xBE : ' ';
