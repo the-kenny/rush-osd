@@ -33,31 +33,36 @@ uint8_t configMode=0;
 
 
 
-
 // For EEPROM Defaults
-uint8_t EEPROM_DEFAULT[18] = {
-  1,   // 0 address checkeeprom
-  0,   // EEPROM_RSSIMIN
-  255, // EEPROM_RSSIMAX
-  0,   // EEPROM_DISPLAYRSSI
-  1,   // EEPROM_DISPLAYVOLTAGE
-  0,   // EEPROM_VOLTAGEMIN
-  0,   // EEPROM_DISPLAYTEMPERATURE
-  255, // EEPROM_TEMPERATUREMAX
-  1,   // EEPROM_DISPLAYGPS
-  0,   // EEPROM_SCREENTYPE
-  0,   // EEPROM_UNITSYSTEM
-  1,   // EEPROM_STABLEMODE                   
-  4,   // EEPROM_BAROMODE                      
-  8,   // EEPROM_MAGMODE                       
-  32,  // EEPROM_ARMEDMODE                   
-  64,  // EEPROM_GPSHOMEMODE                 
-  128,  // EEPROM_GPSHOLDMODE                 
-  0  // EEPROM_MAINVOLTAGE_VBAT    
+uint8_t EEPROM_DEFAULT[22] = {
+1,   // used for check             0
+1,   // EEPROM_STABLEMODE          1           
+4,   // EEPROM_BAROMODE            2            
+8,   // EEPROM_MAGMODE             3            
+32,  // EEPROM_ARMEDMODE           4           
+64,  // EEPROM_GPSHOMEMODE         5           
+128, // EEPROM_GPSHOLDMODE         6     
+0, // EEPROM_RSSIMIN             7
+255,   // EEPROM_RSSIMAX             8
+1,   // EEPROM_DISPLAYRSSI         9
+1,   // EEPROM_DISPLAYVOLTAGE      10
+0,   // EEPROM_VOLTAGEMIN          11
+25,  // EEPROM_DIVIDERRATIO        12
+0,   // EEPROM_MAINVOLTAGE_VBAT    13
+0,   // EEPROM_VIDVOLTAGE          14
+25,  // EEPROM_VIDDIVIDERRATIO     15    
+0,   // EEPROM_VIDVOLTAGE_VBAT     16
+0,   // EEPROM_DISPLAYTEMPERATURE  17
+255, // EEPROM_TEMPERATUREMAX      18
+1,   // EEPROM_DISPLAYGPS          19
+0,   // EEPROM_UNITSYSTEM          20
+0    // EEPROM_SCREENTYPE          21
 };
 
 // For active mode now from eeprom
-uint8_t STABLEMODE,BAROMODE,MAGMODE,ARMEDMODE,GPSHOMEMODE,GPSHOLDMODE,MAINVOLTAGE_VBAT;
+uint8_t STABLEMODE,BAROMODE,MAGMODE,ARMEDMODE,GPSHOMEMODE,GPSHOLDMODE;
+// for Voltages now from eeprom
+uint8_t DIVIDERRATIO,MAINVOLTAGE_VBAT,VIDVOLTAGE,VIDDIVIDERRATIO,VIDVOLTAGE_VBAT;
 
 
 

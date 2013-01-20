@@ -33,10 +33,9 @@ const char videoSignalType=1;
 /***************************************         Amperage        ********************************************/
  /*                                                                                                                     */
   /************** Voltage match multimeter (you can change this options to match your setup/requirements) ****************/
-
-#define DIVIDERRATIO 25             // Main voltage ratio
-#define VIDDIVIDERRATIO 25          // Video voltage ratio
-
+// moved DIVIDERRATIO to eeprom, default values are in GlobalVariables
+// moved VIDDIVIDERRATIO to eeprom, default values are in GlobalVariables
+// moved  VIDVOLTAGE_VBAT to eeprom, default values are in GlobalVariables
 // moved MAINVOLTAGE_VBAT to eeprom, default values are in GlobalVariables
 
 #define EST_PMSum 2.6                 /****  NOTE  **** If you use hardware CURRENT sensor on OSD use (#define EST_PMSum 1) BEFORE ANY ADJUSTMENT OR CALIBRATION
@@ -59,8 +58,10 @@ const char videoSignalType=1;
 #define SHOWHEADING
 #define HEADING360                  // Heading shows as 0..359; Comment for -179..180
 //#define SHOWBATLEVELEVOLUTION     // Uncomment to display battery evolution
-//#define VIDVOLTAGE                // Uncomment if you want to display video voltage
-//#define VIDVOLTAGE_VBAT           // Uncomment to change from VIDEO VLOTAGE Analog Pin to MwVbat (must be defined on MWcode)
+
+// moved VIDVOLTAGE  to eeprom, default values are in GlobalVariables
+
+
 
 /********************       For Sensors presence      *********************/
 
@@ -168,28 +169,33 @@ const uint8_t lowrssiAlarm=75;     // This will make blink the Rssi if lower the
 #define MAXPAGE 6
 
 //Current # of setting available
-#define EEPROM_SETTINGS            18
+#define EEPROM_SETTINGS            22
 
 
 // EEPROM LOCATION IN ARDUINO EEPROM MAP
 //  EEPROM(0) used for check       0
-#define EEPROM_RSSIMIN             1
-#define EEPROM_RSSIMAX             2
-#define EEPROM_DISPLAYRSSI         3
-#define EEPROM_DISPLAYVOLTAGE      4
-#define EEPROM_VOLTAGEMIN          5
-#define EEPROM_DISPLAYTEMPERATURE  6
-#define EEPROM_TEMPERATUREMAX      7
-#define EEPROM_DISPLAYGPS          8
-#define EEPROM_SCREENTYPE         9
-#define EEPROM_UNITSYSTEM         10
-#define EEPROM_STABLEMODE          11           
-#define EEPROM_BAROMODE            12            
-#define EEPROM_MAGMODE             13            
-#define EEPROM_ARMEDMODE           14           
-#define EEPROM_GPSHOMEMODE         15           
-#define EEPROM_GPSHOLDMODE         16          
-#define EEPROM_MAINVOLTAGE_VBAT    17
+#define EEPROM_STABLEMODE          1           
+#define EEPROM_BAROMODE            2            
+#define EEPROM_MAGMODE             3            
+#define EEPROM_ARMEDMODE           4           
+#define EEPROM_GPSHOMEMODE         5           
+#define EEPROM_GPSHOLDMODE         6     
+#define EEPROM_RSSIMIN             7
+#define EEPROM_RSSIMAX             8
+#define EEPROM_DISPLAYRSSI         9
+#define EEPROM_DISPLAYVOLTAGE      10
+#define EEPROM_VOLTAGEMIN          11
+#define EEPROM_DIVIDERRATIO        12
+#define EEPROM_MAINVOLTAGE_VBAT    13
+#define EEPROM_VIDVOLTAGE          14
+#define EEPROM_VIDDIVIDERRATIO     15    
+#define EEPROM_VIDVOLTAGE_VBAT     16
+#define EEPROM_DISPLAYTEMPERATURE  17
+#define EEPROM_TEMPERATUREMAX      18
+#define EEPROM_DISPLAYGPS          19
+#define EEPROM_UNITSYSTEM          20
+#define EEPROM_SCREENTYPE          21     
+
 
 
 // POSITION OF EACH CHARACTER OR LOGO IN THE MAX7456

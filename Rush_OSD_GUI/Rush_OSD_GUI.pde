@@ -162,9 +162,26 @@ int xRC         = 690;        int yRC         = 10; //850,10
 int xMot        = 690;        int yMot        = 155; //850,155
 int xButton     = 845;        int yButton     = 231; //685,222
 int xBox        = 415;        int yBox        = 10;
-int xGPS        = 853;        int yGPS        = 438; //693,438
-int xx=0;
+//int xGPS        = 853;        int yGPS        = 438; //693,438
+int XSim        = DisplayWindowX+WindowAdjX;        int YSim        = 288-WindowShrinkY + 20;
 
+//DisplayWindowX+WindowAdjX, DisplayWindowY+WindowAdjY, 360-WindowShrinkX, 288-WindowShrinkY);
+// Box locations -------------------------------------------------------------------------
+int XEEPROM    = 120;        int YEEPROM    = 5;
+int XModeBox   = 120;        int YModeBox    = 50;
+int XRSSI      = 120;        int YRSSI    = 180;
+int XVolts      = 120;        int YVolts    = 260;
+int XTemp      = 120;        int YTemp    = 410;
+int XGPS       = 310;        int YGPS    = 50;
+int XOther     = 310;        int YOther   = 95;
+
+int XControlBox     = 120;        int YControlBox   = 480;
+
+
+
+
+int xx=0;
+int YLocation = 0;
 int Roll = 0;
 int Pitch = 0;
 
@@ -182,40 +199,54 @@ static int MwHeading=0;
 String MwHeadingUnitAdd="0xbd";
 //int MwHeading = 0;
 
-
- // EEPROM LOCATION IN ARDUINO EEPROM MAP
-//  EEPROM_RSSIMIN             1
-//  EEPROM_RSSIMAX             2
-//  EEPROM_DISPLAYRSSI         3
-//  EEPROM_DISPLAYVOLTAGE      4
-//  EEPROM_VOLTAGEMIN          5
-//  EEPROM_DISPLAYTEMPERATURE  6
-//  EEPROM_TEMPERATUREMAX      7
-//  EEPROM_DISPLAYGPS          8
-//  EEPROM_SCREENTYPE         9
-//  EEPROM_UNITSYSTEM         10
-
-
+int[] EEPROM_DEFAULTS = {
+1,   // used for check             0
+1,   // EEPROM_STABLEMODE          1           
+4,   // EEPROM_BAROMODE            2            
+8,   // EEPROM_MAGMODE             3            
+32,  // EEPROM_ARMEDMODE           4           
+64,  // EEPROM_GPSHOMEMODE         5           
+128, // EEPROM_GPSHOLDMODE         6     
+255, // EEPROM_RSSIMIN             7
+0,   // EEPROM_RSSIMAX             8
+1,   // EEPROM_DISPLAYRSSI         9
+1,   // EEPROM_DISPLAYVOLTAGE      10
+0,   // EEPROM_VOLTAGEMIN          11
+25,  // EEPROM_DIVIDERRATIO        12
+0,   // EEPROM_MAINVOLTAGE_VBAT    13
+0,   // EEPROM_VIDVOLTAGE          14
+25,  // EEPROM_VIDDIVIDERRATIO     15    
+0,   // EEPROM_VIDVOLTAGE_VBAT     16
+0,   // EEPROM_DISPLAYTEMPERATURE  17
+255, // EEPROM_TEMPERATUREMAX      18
+1,   // EEPROM_DISPLAYGPS          19
+0,   // EEPROM_UNITSYSTEM          20
+0    // EEPROM_SCREENTYPE          21
+};
 
 String[] ConfigNames = {
   "EEPROM Loaded:",
-  "RSSI Min:",
-  "RSSI Max:",
-  "Display RSSI:",
-  "Display Voltage:",
-  "Voltage Min:",
-  "Display Temperature:",
-  "Temperature Max:",
-  "Display GPS:",
-  "Screen Type:",
-  "Unit System:",
   "Stable Mode:",
   "Baro Mode:",
   "Mag Mode:",
   "Armed Mode:",
   "GPS Home Mode:",
   "GPS Hold Mode:",
-  "Main Voltage MW:"
+  "RSSI Min:",
+  "RSSI Max:",
+  "Display RSSI:",
+  "Display Voltage:",
+  "Voltage Min:",
+  "Main Voltage Devider:",
+  "Main Voltage MW:",
+  "Display Video Voltage:",
+  "Video Voltage Devider:",
+  "Video Voltage MW:",
+  "Display Temperature:",
+  "Temperature Max:",
+  "Display GPS:",
+  "Unit System:",
+  "Screen Type:"
 };
 
 
@@ -224,24 +255,28 @@ int CONFIGITEMS=ConfigNames.length;
 static int SIMITEMS=10;
   
 int[] ConfigRanges = {
-  1,   // 0 address checkeeprom
- 255,   // EEPROM_RSSIMIN
-  255, // EEPROM_RSSIMAX
-  1,   // EEPROM_DISPLAYRSSI
-  1,   // EEPROM_DISPLAYVOLTAGE
-  255,   // EEPROM_VOLTAGEMIN
-  1,   // EEPROM_DISPLAYTEMPERATURE
-  255, // EEPROM_TEMPERATUREMAX
-  1,   // EEPROM_DISPLAYGPS
-  1,   // EEPROM_SCREENTYPE
-  1,   // EEPROM_UNITSYSTEM
-  255,   // EEPROM_STABLEMODE                   
-  255,   // EEPROM_BAROMODE                      
-  255,   // EEPROM_MAGMODE                       
-  255,  // EEPROM_ARMEDMODE                   
-  255,  // EEPROM_GPSHOMEMODE                 
-  255,  // EEPROM_GPSHOLDMODE                 
-  1,  // EEPROM_MAINVOLTAGE_VBAT    
+1,   // used for check             0
+255,   // EEPROM_STABLEMODE          1           
+255,   // EEPROM_BAROMODE            2            
+255,   // EEPROM_MAGMODE             3            
+255,  // EEPROM_ARMEDMODE           4           
+255,  // EEPROM_GPSHOMEMODE         5           
+255, // EEPROM_GPSHOLDMODE         6     
+255, // EEPROM_RSSIMIN             7
+255,   // EEPROM_RSSIMAX             8
+1,   // EEPROM_DISPLAYRSSI         9
+1,   // EEPROM_DISPLAYVOLTAGE      10
+255,   // EEPROM_VOLTAGEMIN          11
+255,  // EEPROM_DIVIDERRATIO        12
+1,   // EEPROM_MAINVOLTAGE_VBAT    13
+1,   // EEPROM_VIDVOLTAGE          14
+255,  // EEPROM_VIDDIVIDERRATIO     15    
+1,   // EEPROM_VIDVOLTAGE_VBAT     16
+1,   // EEPROM_DISPLAYTEMPERATURE  17
+255, // EEPROM_TEMPERATUREMAX      18
+1,   // EEPROM_DISPLAYGPS          19
+1,   // EEPROM_UNITSYSTEM          20
+1    // EEPROM_SCREENTYPE          21
 };
 String[] SimNames= {
   "Armed:",
@@ -370,56 +405,73 @@ img.format = ARGB;
   
   buttonSAVE = controlP5.addButton("bSAVE",1,5,45,40,19); buttonSAVE.setLabel("SAVE"); buttonSAVE.setColorBackground(red_);
   buttonIMPORT = controlP5.addButton("bIMPORT",1,50,45,40,19); buttonIMPORT.setLabel("LOAD"); buttonIMPORT.setColorBackground(red_);   
-  buttonREAD = controlP5.addButton("READ",1,xParam+5,yParam+360,50,16);buttonREAD.setColorBackground(red_);
-  buttonRESET = controlP5.addButton("RESET",1,xParam+60,yParam+360,60,16);buttonRESET.setColorBackground(red_);
-  buttonWRITE = controlP5.addButton("WRITE",1,xParam+130,yParam+360,60,16);buttonWRITE.setColorBackground(red_);
+  
+  buttonREAD = controlP5.addButton("READ",1,XControlBox+5,YControlBox+7,45,16);buttonREAD.setColorBackground(red_);
+  buttonRESET = controlP5.addButton("RESET",1,XControlBox+67,YControlBox+7,45,16);buttonRESET.setColorBackground(red_);
+  buttonWRITE = controlP5.addButton("WRITE",1,XControlBox+130,YControlBox+7,45,16);buttonWRITE.setColorBackground(red_);
   //buttonREQUEST = controlP5.addButton("REQUEST",1,xParam+150,yParam+260,60,16);buttonREQUEST.setColorBackground(red_);
  // buttonSETTING = controlP5.addButton("SETTING",1,xParam+405,yParam+260,110,16); buttonSETTING.setLabel("SELECT SETTING"); buttonSETTING.setColorBackground(red_);
  
 
 // test labels------------------------------------------------------------------
-for(int i=0;i<CONFIGITEMS;i++) {
-txtlblconfItem[i] = controlP5.addTextlabel("txtlblconfItem"+i,ConfigNames[i],xParam+40,yParam+20+i*17);
-}
+
+
+
+
+// EEPROM----------------------------------------------------------------
+BuildTextLabels(0, 1, XEEPROM+5, YEEPROM);
+BuildNumberBoxes(0, 1, XEEPROM+5, YEEPROM);
+BuildCheckBoxes(0, 1, XEEPROM+5, YEEPROM+3);
+
+// mode  ---------------------------------------------------------------------------
+BuildTextLabels(1, 7, XModeBox+5, YModeBox);
+BuildNumberBoxes(1, 7,XModeBox+5, YModeBox);
+BuildCheckBoxes(1, 7, XModeBox+5, YModeBox+3);
+
+// RSSI  ---------------------------------------------------------------------------
+BuildTextLabels(7, 10, XRSSI+5, YRSSI);
+BuildNumberBoxes(7, 10, XRSSI+5, YRSSI);
+BuildCheckBoxes(7, 10, XRSSI+5, YRSSI+3);
+
+// Voltage  ------------------------------------------------------------------------
+BuildTextLabels(10, 17, XVolts+5, YVolts);
+BuildNumberBoxes(10, 17, XVolts+5, YVolts);
+BuildCheckBoxes(10, 17, XVolts+5, YVolts+3);
+
+//  Temperature  --------------------------------------------------------------------
+BuildTextLabels(17, 19, XTemp+5, YTemp);
+BuildNumberBoxes(17, 19, XTemp+5, YTemp);
+BuildCheckBoxes(17, 19, XTemp+5, YTemp+3);
+
+//  GPS  ----------------------------------------------------------------------------
+BuildTextLabels(19, 20, XGPS+5, YGPS);
+BuildNumberBoxes(19, 20, XGPS+5, YGPS);
+BuildCheckBoxes(19, 20, XGPS+5, YGPS+3);
+
+//  Other ---------------------------------------------------------------------------
+BuildTextLabels(20, 22, XOther+5, YOther);
+BuildNumberBoxes(20, 22, XOther+5, YOther);
+BuildCheckBoxes(20, 22, XOther+5, YOther+3);
+
+
+
+
+
+
 for(int i=0;i<SIMITEMS;i++) {
-txtlblSimItem[i] = controlP5.addTextlabel("txtlblSimItem"+i,SimNames[i],xParam+290,yParam+20+i*17);
-}
-
-// test labels------------------------------------------------------------------
-
-//  number boxes----------------------------------------------------------------
-
- for(int i=0;i<CONFIGITEMS;i++) {
-    confItem[i] = (controlP5.Numberbox) hideLabel(controlP5.addNumberbox("configItem"+i,0,xParam,yParam+20+i*17,35,14));
-    confItem[i].setColorBackground(red_);confItem[i].setMin(0);confItem[i].setDirection(Controller.HORIZONTAL);confItem[i].setMax(ConfigRanges[i]);confItem[i].setDecimalPrecision(0); //confItem[i].setMultiplier(4); //confItem[i].setDecimalPrecision(1);
- }
+txtlblSimItem[i] = controlP5.addTextlabel("txtlblSimItem"+i,SimNames[i],XSim+40,YSim+i*17);
+} 
+ 
  for(int i=0;i<SIMITEMS;i++) {
-    SimItem[i] = (controlP5.Numberbox) hideLabel(controlP5.addNumberbox("SimItem"+i,0,xParam+250,yParam+20+i*17,35,14));
+    SimItem[i] = (controlP5.Numberbox) hideLabel(controlP5.addNumberbox("SimItem"+i,0,XSim,YSim+i*17,35,14));
     SimItem[i].setColorBackground(red_);confItem[i].setMin(0);confItem[i].setDirection(Controller.HORIZONTAL);confItem[i].setMax(ConfigRanges[i]);confItem[i].setDecimalPrecision(0); //confItem[i].setMultiplier(1);confItem[i].setDecimalPrecision(1);
  }
  
-//  number boxes----------------------------------------------------------------
-
-// checkboxes -----------------------------------------------------------------------
-
-  for(int i=0;i<CONFIGITEMS;i++) {
-    //buttonCheckbox[i] = controlP5.addButton("bcb"+i,1,xBox-30,yBox+20+13*i,68,12);
-   // buttonCheckbox[i].setColorBackground(red_);buttonCheckbox[i].setLabel(name);
-    checkboxConfItem[i] =  controlP5.addCheckBox("checkboxConfItem"+i,xParam+25,yParam+20+i*17);
-       checkboxConfItem[i].setColorActive(color(255));checkboxConfItem[i].setColorBackground(color(120));
-        checkboxConfItem[i].setItemsPerRow(1);checkboxConfItem[i].setSpacingColumn(10);
-        checkboxConfItem[i].setLabel(ConfigNames[i]);
-        //if (ConfigRanges[i] == 1){
-        checkboxConfItem[i].addItem("cbox"+i,1);
-        //}
-        checkboxConfItem[i].hideLabels();
-   
-  }
   
   for(int i=0;i<SIMITEMS;i++) {
     //buttonCheckbox[i] = controlP5.addButton("bcb"+i,1,xBox-30,yBox+20+13*i,68,12);
    // buttonCheckbox[i].setColorBackground(red_);buttonCheckbox[i].setLabel(name);
-    checkboxSimItem[i] =  controlP5.addCheckBox("checkboxSimItem"+i,xParam+275,yParam+20+i*17);
+    checkboxSimItem[i] =  controlP5.addCheckBox("checkboxSimItem"+i,XSim+25,YSim+3+i*17);
        checkboxSimItem[i].setColorActive(color(255));checkboxSimItem[i].setColorBackground(color(120));
         checkboxSimItem[i].setItemsPerRow(1);checkboxSimItem[i].setSpacingColumn(10);
         checkboxSimItem[i].setLabel(SimNames[i]);
@@ -430,7 +482,7 @@ txtlblSimItem[i] = controlP5.addTextlabel("txtlblSimItem"+i,SimNames[i],xParam+2
    
   }
   
-  ReadMultiWii = controlP5.addCheckBox("ReadMultiWii",xParam+200,yParam+360);
+  ReadMultiWii = controlP5.addCheckBox("ReadMultiWii",XSim+200,YSim+3);
       ReadMultiWii.setColorActive(color(255));ReadMultiWii.setColorBackground(color(120));
         ReadMultiWii.setItemsPerRow(1);ReadMultiWii.setSpacingColumn(10);
        ReadMultiWii.setLabel("Read MultiWii");
@@ -476,36 +528,7 @@ txtlblSimItem[i] = controlP5.addTextlabel("txtlblSimItem"+i,SimNames[i],xParam+2
     }
   }
   
-//Slider -----------------------------
-//
-/*sPitch =  controlP5.addSlider("Pitch")
-     .setPosition(DisplayWindowX+WindowAdjX - 50,DisplayWindowY+WindowAdjY)
-     .setWidth(360-WindowShrinkX/2)
-     .setSize(10,180)
-     .setRange(-45,45) // values can range from big to small as well
-     .setValue(0)
-     .setScrollSensitivity(1) 
 
-     //.setNumberOfTickMarks(180)
-     .setSliderMode(Slider.FLEXIBLE)
-     ;
-     
-     
-  // add a vertical slider
-sRoll =  controlP5.addSlider("Roll")
-     .setPosition(DisplayWindowX+WindowAdjX,DisplayWindowY+WindowAdjY+288-WindowShrinkY +10)
-     .setWidth(360-WindowShrinkX/2)
-     .setSize(180,10)
-     .setRange(-45,45) // values can range from big to small as well
-     .setValue(0)
-     .setScrollSensitivity(1) 
-
-     //.setNumberOfTickMarks(180)
-     .setSliderMode(Slider.FLEXIBLE)
-     ;
-  // use Slider.FIX or Slider.FLEXIBLE to change the slider handle
-  // by default it is Slider.FIX
- */ 
   s = controlP5.addSlider2D("Pitch/Roll")
          .setPosition(DisplayWindowX+WindowAdjX-90,DisplayWindowY+WindowAdjY+288-WindowShrinkY-90)
          .setSize(70,70)
@@ -555,6 +578,36 @@ controlP5.Controller CheckboxVisable(controlP5.Controller c) {
   return c;
 }
 
+void BuildCheckBoxes(int starter, int ender, int StartXLoction, int StartYLocation){
+  YLocation = StartYLocation;
+  for(int i=starter;i<ender;i++) {
+     YLocation+=17;
+     checkboxConfItem[i] =  controlP5.addCheckBox("checkboxConfItem"+i,StartXLoction+25,YLocation);
+     checkboxConfItem[i].setColorActive(color(255));checkboxConfItem[i].setColorBackground(color(120));
+     checkboxConfItem[i].setItemsPerRow(1);checkboxConfItem[i].setSpacingColumn(10);
+     checkboxConfItem[i].setLabel(ConfigNames[i]);
+     checkboxConfItem[i].addItem("cbox"+i,1);
+     checkboxConfItem[i].hideLabels();
+  }
+}
+
+void BuildNumberBoxes(int starter, int ender, int StartXLoction, int StartYLocation){
+ YLocation = StartYLocation; 
+ for(int i=starter;i<ender;i++) {
+    YLocation+=17;
+    confItem[i] = (controlP5.Numberbox) hideLabel(controlP5.addNumberbox("configItem"+i,0,StartXLoction,YLocation,35,14));
+    confItem[i].setColorBackground(red_);confItem[i].setMin(0);confItem[i].setDirection(Controller.HORIZONTAL);confItem[i].setMax(ConfigRanges[i]);confItem[i].setDecimalPrecision(0); //confItem[i].setMultiplier(4); //confItem[i].setDecimalPrecision(1);
+ } 
+}
+
+void BuildTextLabels(int starter, int ender, int StartXLoction, int StartYLocation){
+  YLocation = StartYLocation; 
+  for(int i=starter;i<ender;i++) {
+    YLocation+=17;
+    txtlblconfItem[i] = controlP5.addTextlabel("txtlblconfItem"+i,ConfigNames[i],StartXLoction+40,YLocation);
+  }
+}
+
 void draw() {
   hint(ENABLE_DEPTH_TEST);
   pushMatrix();
@@ -564,10 +617,32 @@ void draw() {
    // ------------------------------------------------------------------------
   // Draw background control boxes
   // ------------------------------------------------------------------------
-  fill(0, 0, 0);
-  strokeWeight(3);stroke(0);
-  rectMode(CORNERS);
-  rect(xParam,yParam, xParam+400, yParam+380);
+     // Coltrol Box
+  fill(100); strokeWeight(3);stroke(200); rectMode(CORNERS); rect(XControlBox,YControlBox, XControlBox+180 , YControlBox+30);
+  //textFont(font12); fill(0, 110, 220); text("Other",XControlBox + 75,YControlBox + 10);
+  
+  // EEPROM Box
+  fill(30, 30,30); strokeWeight(3);stroke(1); rectMode(CORNERS); rect(XEEPROM,YEEPROM, XEEPROM+180, YEEPROM+35);
+  textFont(font12); fill(0, 110, 220); text("EEPROM STATUS", XEEPROM + 45,YEEPROM + 10);
+  // Modes Box
+  fill(30, 30,30); strokeWeight(3);stroke(1); rectMode(CORNERS); rect(XModeBox,YModeBox, XModeBox+180, YModeBox+120);
+  textFont(font12); fill(0, 110, 220); text("Flight Modes",XModeBox + 45,YModeBox + 10);
+  // RSSI Box
+  fill(30, 30,30); strokeWeight(3);stroke(1); rectMode(CORNERS); rect(XRSSI,YRSSI, XRSSI+180 , YRSSI+70);
+  textFont(font12); fill(0, 110, 220); text("RSSI",XRSSI + 70,YRSSI + 10);
+   // Volts Box
+  fill(30, 30,30); strokeWeight(3);stroke(1); rectMode(CORNERS); rect(XVolts,YVolts, XVolts+180 , YVolts+140);
+  textFont(font12); fill(0, 110, 220); text("Voltage",XVolts + 65,YVolts + 10);
+   // Temp Box
+  fill(30, 30,30); strokeWeight(3);stroke(1); rectMode(CORNERS); rect(XTemp,YTemp, XTemp+180 , YTemp+55);
+  textFont(font12); fill(0, 110, 220); text("Temperature",XTemp + 50,YTemp + 10);
+   // GPS Box
+  fill(30, 30,30); strokeWeight(3);stroke(1); rectMode(CORNERS); rect(XGPS,YGPS, XGPS+180 , YGPS+35);
+  textFont(font12); fill(0, 110, 220); text("GPS / Nav",XGPS + 60,YGPS + 10);
+    // Other Box
+  fill(30, 30,30); strokeWeight(3);stroke(1); rectMode(CORNERS); rect(XOther,YOther, XOther+180 , YOther+60);
+  textFont(font12); fill(0, 110, 220); text("Other",XOther + 75,YOther + 10);
+  
   fill(40, 40, 40);
   strokeWeight(3);stroke(0);
   rectMode(CORNERS);
@@ -590,7 +665,7 @@ void draw() {
   //MakeRectangle();
 //image(DisplayScreen,DisplayWindowX, DisplayWindowY, DisplayWindowX+360, DisplayWindowY+288);
 
-ReadMW = int(ReadMultiWii.arrayValue()[0]);
+//ReadMW = int(ReadMultiWii.arrayValue()[0]);
   MatchConfigs();
   if (int(confItem[4].value()) > 0){
   ShowVolts(12.8);
@@ -624,6 +699,16 @@ ReadMW = int(ReadMultiWii.arrayValue()[0]);
 
 }
 
+void ReadMultiWii(float[] a) {
+  if (a[0] > 0){
+    ReadMW = 1;
+  }
+  else{
+     ReadMW = 0;
+     s.arrayValue()[0] =0;
+     s.arrayValue()[1] =0;
+  }
+}
 
 
 void MatchConfigs(){
@@ -676,11 +761,15 @@ void MatchConfigs(){
 // controls comport list click
 public void controlEvent(ControlEvent theEvent) {
   if (theEvent.isGroup()) if (theEvent.name()=="portComList") InitSerial(theEvent.group().value()); // initialize the serial port selected
+  
+    
+
 }
 
 // initialize the serial port selected in the listBox
 void InitSerial(float portValue) {
   if (portValue < commListMax) {
+    if(init_com == 0){ 
     String portPos = Serial.list()[int(portValue)];
     txtlblWhichcom.setValue("COM = " + shortifyPortName(portPos, 8));
     g_serial = new Serial(this, portPos, 115200);
@@ -690,13 +779,16 @@ void InitSerial(float portValue) {
     g_serial.buffer(256);
     System.out.println(int(checkboxConfItem[0].getArrayValue()[0]));
     System.out.println("Port Turned On " );//+((int)(cmd&0xFF))+": "+(checksum&0xFF)+" expected, got "+(int)(c&0xFF));
-    
+    }
   } else {
+    if(init_com == 1){ 
     txtlblWhichcom.setValue("Comm Closed");
     init_com=0;
-    commListbox.setColorBackground(red_);buttonREAD.setColorBackground(red_);buttonRESET.setColorBackground(red_); 
+      commListbox.setColorBackground(red_);buttonREAD.setColorBackground(red_);buttonRESET.setColorBackground(red_); buttonWRITE.setColorBackground(red_);
     init_com=0;
     g_serial.stop();
+      ReadMultiWii.deactivateAll();
+    }
    
 
     
@@ -730,6 +822,7 @@ void serialEvent(Serial g_serial) {
       //byteCi[ConfigEEPROM] = ConfigVALUE;
       
       confItem[ConfigEEPROM].setValue(ConfigVALUE);
+      if (ConfigEEPROM == CONFIGITEMS-1)  buttonWRITE.setColorBackground(green_);
       if (ConfigVALUE>0) checkboxConfItem[ConfigEEPROM].activate(0); else checkboxConfItem[ConfigEEPROM].deactivate(0);
      // print the values (for debugging purposes only):
       //println(ConfigEEPROM + "\t" + ConfigVALUE );
@@ -737,16 +830,17 @@ void serialEvent(Serial g_serial) {
       // Reset serialCount:
       serialCount = 0;
     }
+      
   }
  }
 }
 
 
 public void READ(){
+  if(init_com ==1){
    for(int i=0;i<CONFIGITEMS;i++) {
      confItem[i].setValue(0);
      checkboxConfItem[i].deactivateAll();
-  
    }
     g_serial.write('$');
     g_serial.write('M');
@@ -754,11 +848,13 @@ public void READ(){
     g_serial.write((byte)0x00);
     g_serial.write(MSP_OSD_READ);
     g_serial.write(MSP_OSD_READ);
-    buttonWRITE.setColorBackground(green_);
     SetMode();
+}
 }
 
 public void WRITE(){
+  if(init_com == 1){ 
+   for(int j=0;j<2;j++) {
    g_serial.write('$');
     g_serial.write('M');
     g_serial.write('>');
@@ -773,6 +869,8 @@ public void WRITE(){
       checksum ^= int(confItem[i].value());
     }
     g_serial.write((byte)checksum);
+   }
+  }
 
 }
 
@@ -1139,13 +1237,13 @@ int GPSHOLDMODE=  64;          // OK
 //int BOXCAMTRIG     256;        // not used
 
 void SetMode(){
-STABLEMODE =  int(confItem[11].value());          
-BAROMODE=     int(confItem[12].value());         // OK
-MAGMODE=      int(confItem[13].value());
+STABLEMODE =  int(confItem[1].value());          
+BAROMODE=     int(confItem[2].value());         // OK
+MAGMODE=      int(confItem[3].value());
 //int BOXCAMSTAB 16;         // not used
-ARMEDMODE=    int(confItem[14].value());
-GPSHOMEMODE=  int(confItem[15].value());
-GPSHOLDMODE=  int(confItem[16].value());
+ARMEDMODE=    int(confItem[4].value());
+GPSHOMEMODE=  int(confItem[5].value());
+GPSHOLDMODE=  int(confItem[6].value());
 }
 //int BOXCAMTRIG     256;        // not used
 

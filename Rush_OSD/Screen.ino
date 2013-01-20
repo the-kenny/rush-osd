@@ -224,9 +224,10 @@ void displayHorizon(short rollAngle, short pitchAngle)
 
 void displayVoltage(void)
 {
-#if defined VIDVOLTAGE_VBAT
+if (VIDVOLTAGE_VBAT){
   vidvoltage=MwVBat;
-#endif
+}
+
   if (MAINVOLTAGE_VBAT){
     voltage=MwVBat;
   }
@@ -251,7 +252,7 @@ void displayVoltage(void)
   screenBuffer[1]=0;
   MAX7456_WriteString(screenBuffer,getPosition(voltagePosition)-1);
 
-#if defined VIDVOLTAGE
+if (VIDVOLTAGE){
   ItoaPadded(vidvoltage, screenBuffer, 4, 3);
   screenBuffer[4]=voltageUnitAdd;
   screenBuffer[5]=0;
@@ -260,7 +261,7 @@ void displayVoltage(void)
   screenBuffer[0]=0xbf;
   screenBuffer[1]=0;
   MAX7456_WriteString(screenBuffer,getPosition(vidvoltagePosition)-1);
-#endif
+}
 }
 
 void displayCurrentThrottle(void)
