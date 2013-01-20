@@ -83,15 +83,18 @@ uint8_t FindNull(void)
   return xx;
 }
 
-void displayTemperature(void)                           // WILL WORK ONLY WITH V1.2
+void displayTemperature(void)        // WILL WORK ONLY WITH V1.2
 {
+  int xxx;
   if (unitSystem)
-    temperature = temperature*1.8+32;       //Fahrenheit conversion for imperial system.
+    xxx = temperature*1.8+32;       //Fahrenheit conversion for imperial system.
+  else
+    xxx = temperature;
 
-  if(temperature > temperMAX)
-    temperMAX = temperature;
+  if(xxx > temperMAX)
+    temperMAX = xxx;
 
-  itoa(temperature,screenBuffer,10);
+  itoa(xxx,screenBuffer,10);
   uint8_t xx = FindNull();   // find the NULL
   screenBuffer[xx++]=temperatureUnitAdd[unitSystem];
   screenBuffer[xx]=0;                                   // Restore the NULL
