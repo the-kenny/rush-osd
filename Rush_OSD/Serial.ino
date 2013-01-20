@@ -184,53 +184,52 @@ void serialMSPCheck()
   if(configMode&&!waitStick&&(MwRcData[YAWSTICK]<MINSTICK)&&!previousarmedstatus) // DECREASE
   {
     waitStick =1;
-    if((ROW==1)&&(COL==1)&&(configPage==1)) P8[0]--;
-    if((ROW==1)&&(COL==2)&&(configPage==1)) I8[0]--;
-    if((ROW==1)&&(COL==3)&&(configPage==1)) D8[0]--;
 
-    if((ROW==2)&&(COL==1)&&(configPage==1)) P8[1]--;
-    if((ROW==2)&&(COL==2)&&(configPage==1)) I8[1]--;
-    if((ROW==2)&&(COL==3)&&(configPage==1)) D8[1]--;
+    if(configPage == 1) {
+      if(ROW >= 1 && ROW <= 5) {
+        if(COL==1) P8[ROW-1]--;
+        if(COL==2) I8[ROW-1]--;
+        if(COL==3) D8[ROW-1]--;
+      }
 
-    if((ROW==3)&&(COL==1)&&(configPage==1)) P8[2]--;
-    if((ROW==3)&&(COL==2)&&(configPage==1)) I8[2]--;
-    if((ROW==3)&&(COL==3)&&(configPage==1)) D8[2]--;
+      if(ROW == 6) {
+        if(COL==1) P8[7]--;
+        if(COL==2) I8[7]--;
+        if(COL==3) D8[7]--;
+      }
 
-    if((ROW==4)&&(COL==1)&&(configPage==1)) P8[3]--;
-    if((ROW==4)&&(COL==2)&&(configPage==1)) I8[3]--;
-    if((ROW==4)&&(COL==3)&&(configPage==1)) D8[3]--;
+      if((ROW==7)&&(COL==1)) P8[8]--;
+    }
 
-    if((ROW==5)&&(COL==1)&&(configPage==1)) P8[4]--;
-    if((ROW==5)&&(COL==2)&&(configPage==1)) I8[4]--;
-    if((ROW==5)&&(COL==3)&&(configPage==1)) D8[4]--;
+    if(configPage == 2 && COL == 3) {
+      if(ROW==1) rcRate8--;
+      if(ROW==2) rcExpo8--;
+      if(ROW==3) rollPitchRate--;
+      if(ROW==4) yawRate--;
+      if(ROW==5) dynThrPID--;
+    }
 
-    if((ROW==6)&&(COL==1)&&(configPage==1)) P8[7]--;
-    if((ROW==6)&&(COL==2)&&(configPage==1)) I8[7]--;
-    if((ROW==6)&&(COL==3)&&(configPage==1)) D8[7]--;
+    if(configPage == 3 && COL == 3) {
+      if(ROW==2) enableVoltage=!enableVoltage;
+      if(ROW==3) lowVoltage--;
+      if(ROW==4) enableTemperature=!enableTemperature;
+      if(ROW==5) highTemperature--;
+      if(ROW==6) displayGPS=!displayGPS;
+    }
 
-    if((ROW==7)&&(COL==1)&&(configPage==1)) P8[8]--;
+    if(configPage == 4 && COL == 3) {
+      if(ROW==3) rssiTimer=15;
+      if(ROW==4) rssiMax=rssiADC;
+      if(ROW==5) enableRSSI=!enableRSSI;
+      if(ROW==6) unitSystem=!unitSystem;
+      if(ROW==7) screenType=!screenType;
+    }
 
-    if((ROW==1)&&(COL==3)&&(configPage==2)) rcRate8--;
-    if((ROW==2)&&(COL==3)&&(configPage==2)) rcExpo8--;
-    if((ROW==3)&&(COL==3)&&(configPage==2)) rollPitchRate--;
-    if((ROW==4)&&(COL==3)&&(configPage==2)) yawRate--;
-    if((ROW==5)&&(COL==3)&&(configPage==2)) dynThrPID--;
-
-    if((ROW==2)&&(COL==3)&&(configPage==3)) enableVoltage=!enableVoltage;
-    if((ROW==3)&&(COL==3)&&(configPage==3)) lowVoltage--;
-    if((ROW==4)&&(COL==3)&&(configPage==3)) enableTemperature=!enableTemperature;
-    if((ROW==5)&&(COL==3)&&(configPage==3)) highTemperature--;
-    if((ROW==6)&&(COL==3)&&(configPage==3)) displayGPS=!displayGPS;
-
-    if((ROW==3)&&(COL==3)&&(configPage==4)) rssiTimer=15;
-    if((ROW==4)&&(COL==3)&&(configPage==4)) rssiMax=rssiADC;
-    if((ROW==5)&&(COL==3)&&(configPage==4)) enableRSSI=!enableRSSI;
-    if((ROW==6)&&(COL==3)&&(configPage==4)) unitSystem=!unitSystem;
-    if((ROW==7)&&(COL==3)&&(configPage==4)) screenType=!screenType;
-
-    if((ROW==1)&&(COL==3)&&(configPage==5)) accCalibrationTimer=0;
-    if((ROW==5)&&(COL==3)&&(configPage==5)) magCalibrationTimer=0;
-    if((ROW==7)&&(COL==3)&&(configPage==5)) eepromWriteTimer=0;
+    if(configPage == 5 && COL == 3) {
+      if(ROW==1) accCalibrationTimer=0;
+      if(ROW==5) magCalibrationTimer=0;
+      if(ROW==7) eepromWriteTimer=0;
+    }
 
     if((ROW==10)&&(COL==3)) configPage--;
     if(configPage<MINPAGE) configPage = MAXPAGE;
@@ -241,56 +240,52 @@ void serialMSPCheck()
   if(configMode&&!waitStick&&(MwRcData[YAWSTICK]>MAXSTICK)) // INCREASE
   {
     waitStick =1;
-    if((ROW==1)&&(COL==1)&&(configPage==1)) P8[0]++;
-    if((ROW==1)&&(COL==2)&&(configPage==1)) I8[0]++;
-    if((ROW==1)&&(COL==3)&&(configPage==1)) D8[0]++;
 
-    if((ROW==2)&&(COL==1)&&(configPage==1)) P8[1]++;
-    if((ROW==2)&&(COL==2)&&(configPage==1)) I8[1]++;
-    if((ROW==2)&&(COL==3)&&(configPage==1)) D8[1]++;
+    if(configPage == 1) {
+      if(ROW >= 1 && ROW <= 5) {
+        if(COL==1) P8[ROW-1]++;
+        if(COL==2) I8[ROW-1]++;
+        if(COL==3) D8[ROW-1]++;
+      }
 
-    if((ROW==3)&&(COL==1)&&(configPage==1)) P8[2]++;
-    if((ROW==3)&&(COL==2)&&(configPage==1)) I8[2]++;
-    if((ROW==3)&&(COL==3)&&(configPage==1)) D8[2]++;
+      if(ROW == 6) {
+        if(COL==1) P8[7]++;
+        if(COL==2) I8[7]++;
+        if(COL==3) D8[7]++;
+      }
 
-    if((ROW==4)&&(COL==1)&&(configPage==1)) P8[3]++;
-    if((ROW==4)&&(COL==2)&&(configPage==1)) I8[3]++;
-    if((ROW==4)&&(COL==3)&&(configPage==1)) D8[3]++;
+      if((ROW==7)&&(COL==1)) P8[8]++;
+    }
 
-    if((ROW==5)&&(COL==1)&&(configPage==1)) P8[4]++;
-    if((ROW==5)&&(COL==2)&&(configPage==1)) I8[4]++;
-    if((ROW==5)&&(COL==3)&&(configPage==1)) D8[4]++;
+    if(configPage == 2 && COL == 3) {
+      if(ROW==1) rcRate8++;
+      if(ROW==2) rcExpo8++;
+      if(ROW==3) rollPitchRate++;
+      if(ROW==4) yawRate++;
+      if(ROW==5) dynThrPID++;
+    }
 
-    if((ROW==6)&&(COL==1)&&(configPage==1)) P8[7]++;
-    if((ROW==6)&&(COL==2)&&(configPage==1)) I8[7]++;
-    if((ROW==6)&&(COL==3)&&(configPage==1)) D8[7]++;
+    if(configPage == 3 && COL == 3) {
+      if(ROW==2) enableVoltage=!enableVoltage;
+      if(ROW==3) lowVoltage++;
+      if(ROW==4) enableTemperature=!enableTemperature;
+      if(ROW==5) highTemperature++;
+      if(ROW==6) displayGPS=!displayGPS;
+    }
 
-    if((ROW==7)&&(COL==1)&&(configPage==1)) P8[8]++;
+    if(configPage == 4 && COL == 3) {
+      if(ROW==3) rssiTimer=15;
+      if(ROW==4) rssiMax=rssiADC;
+      if(ROW==5) enableRSSI=!enableRSSI;
+      if(ROW==6) unitSystem=!unitSystem;
+      if(ROW==7) screenType=!screenType;
+    }
 
-    if((ROW==1)&&(COL==3)&&(configPage==2)) rcRate8++;
-    if((ROW==2)&&(COL==3)&&(configPage==2)) rcExpo8++;
-    if((ROW==3)&&(COL==3)&&(configPage==2)) rollPitchRate++;
-    if((ROW==4)&&(COL==3)&&(configPage==2)) yawRate++;
-    if((ROW==5)&&(COL==3)&&(configPage==2)) dynThrPID++;
-
-
-    if((ROW==2)&&(COL==3)&&(configPage==3)) enableVoltage=!enableVoltage;
-    if((ROW==3)&&(COL==3)&&(configPage==3)) lowVoltage++;
-    if((ROW==4)&&(COL==3)&&(configPage==3)) enableTemperature=!enableTemperature;
-    if((ROW==5)&&(COL==3)&&(configPage==3)) highTemperature++;
-    if((ROW==6)&&(COL==3)&&(configPage==3)) displayGPS=!displayGPS;
-
-
-
-    if((ROW==3)&&(COL==3)&&(configPage==4)) rssiTimer=15;
-    if((ROW==4)&&(COL==3)&&(configPage==4)) rssiMax=rssiADC;
-    if((ROW==5)&&(COL==3)&&(configPage==4)) enableRSSI=!enableRSSI;
-    if((ROW==6)&&(COL==3)&&(configPage==4)) unitSystem=!unitSystem;
-    if((ROW==7)&&(COL==3)&&(configPage==4)) screenType=!screenType;
-
-    if((ROW==1)&&(COL==3)&&(configPage==5)) accCalibrationTimer=CALIBRATION_DELAY;
-    if((ROW==5)&&(COL==3)&&(configPage==5)) magCalibrationTimer=CALIBRATION_DELAY;
-    if((ROW==7)&&(COL==3)&&(configPage==5)) eepromWriteTimer=EEPROM_WRITE_DELAY;
+    if(configPage == 5 && COL == 3) {
+      if(ROW==1) accCalibrationTimer=CALIBRATION_DELAY;
+      if(ROW==5) magCalibrationTimer=CALIBRATION_DELAY;
+      if(ROW==7) eepromWriteTimer=EEPROM_WRITE_DELAY;
+    }
 
     if((ROW==10)&&(COL==3)) configPage++;
     if(configPage>MAXPAGE) configPage = MINPAGE;
