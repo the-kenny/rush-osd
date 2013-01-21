@@ -71,8 +71,16 @@ const char videoSignalType=1;
 #define GPSSENSOR      8//0b00001000
 //#define SONAR         16//0b00010000
 
-/*********************      Led output      *******************************/
+// For battery evolution display
+#define BATCELLS 	3
+#define BATTEV1 ((BATCELLS)*(35))
+#define BATTEV2 ((BATCELLS)*(36))
+#define BATTEV3 ((BATCELLS)*(37))
+#define BATTEV4 ((BATCELLS)*(38))
+#define BATTEV5 ((BATCELLS)*(40))
+#define BATTEV6 ((BATCELLS)*(41))
 
+/*********************      Led output      *******************************/
 #define BST 7                        // pin 7 for original Rushduino Board
 #define BST_OFF digitalWrite(BST,LOW);
 #define BST_ON digitalWrite(BST,HIGH);

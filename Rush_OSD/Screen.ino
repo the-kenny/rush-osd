@@ -242,12 +242,12 @@ if (VIDVOLTAGE_VBAT){
   MAX7456_WriteString(screenBuffer,getPosition(voltagePosition));
 
 #if defined SHOWBATLEVELEVOLUTION
-  if (voltage < 105) screenBuffer[0]=0x96;
-  else if (voltage < 108) screenBuffer[0]=0x95;
-  else if (voltage < 110) screenBuffer[0]=0x94;
-  else if (voltage < 115) screenBuffer[0]=0x93;
-  else if (voltage < 120) screenBuffer[0]=0x92;
-  else if (voltage < 122) screenBuffer[0]=0x91;
+  if (voltage < BATTEV1) screenBuffer[0]=0x96;
+  else if (voltage < BATTEV2) screenBuffer[0]=0x95;
+  else if (voltage < BATTEV3) screenBuffer[0]=0x94;
+  else if (voltage < BATTEV4) screenBuffer[0]=0x93;
+  else if (voltage < BATTEV5) screenBuffer[0]=0x92;
+  else if (voltage < BATTEV6) screenBuffer[0]=0x91;
   else screenBuffer[0]=0x90;                              // Max charge icon
 #else
   screenBuffer[0]=0x97;
