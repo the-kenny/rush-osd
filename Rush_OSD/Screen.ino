@@ -391,33 +391,33 @@ void displayHeadingGraph(void)
 void displayIntro(void)
 {
 
-  MAX7456_WriteString_P((char*)pgm_read_word(&(introMessages[0])), RushduinoVersionPosition);
+  MAX7456_WriteString_P(message0, RushduinoVersionPosition);
 
 #if defined VideoSignalType_NTSC
-  MAX7456_WriteString_P((char*)pgm_read_word(&(introMessages[1])), RushduinoVersionPosition+30);
+  MAX7456_WriteString_P(message1, RushduinoVersionPosition+30);
 #endif
 
 #if defined VideoSignalType_PAL
-  MAX7456_WriteString_P((char*)pgm_read_word(&(introMessages[2])), RushduinoVersionPosition+30);
+  MAX7456_WriteString_P(message2, RushduinoVersionPosition+30);
 #endif
 
   if(screenType==WIDE){
-    MAX7456_WriteString_P((char*)pgm_read_word(&(introMessages[3])), RushduinoVersionPosition+60);
+    MAX7456_WriteString_P(message3, RushduinoVersionPosition+60);
   }
   else{
-    MAX7456_WriteString_P((char*)pgm_read_word(&(introMessages[4])), RushduinoVersionPosition+60);
+    MAX7456_WriteString_P(message4, RushduinoVersionPosition+60);
   }
 
   MAX7456_WriteString_P(MultiWiiLogoL1Add, RushduinoVersionPosition+120);
   MAX7456_WriteString_P(MultiWiiLogoL2Add, RushduinoVersionPosition+120+LINE);
   MAX7456_WriteString_P(MultiWiiLogoL3Add, RushduinoVersionPosition+120+LINE+LINE);
 
-  MAX7456_WriteString_P((char*)pgm_read_word(&(introMessages[5])), RushduinoVersionPosition+120+LINE+LINE+LINE);
+  MAX7456_WriteString_P(message5, RushduinoVersionPosition+120+LINE+LINE+LINE);
   MAX7456_WriteString(itoa(MwVersion,screenBuffer,10),RushduinoVersionPosition+131+LINE+LINE+LINE);
 
-  MAX7456_WriteString_P((char*)pgm_read_word(&(introMessages[6])), RushduinoVersionPosition+120+LINE+LINE+LINE+LINE+LINE);
-  MAX7456_WriteString_P((char*)pgm_read_word(&(introMessages[7])), RushduinoVersionPosition+125+LINE+LINE+LINE+LINE+LINE+LINE);
-  MAX7456_WriteString_P((char*)pgm_read_word(&(introMessages[8])), RushduinoVersionPosition+125+LINE+LINE+LINE+LINE+LINE+LINE+LINE);
+  MAX7456_WriteString_P(message6, RushduinoVersionPosition+120+LINE+LINE+LINE+LINE+LINE);
+  MAX7456_WriteString_P(message7, RushduinoVersionPosition+125+LINE+LINE+LINE+LINE+LINE+LINE);
+  MAX7456_WriteString_P(message8, RushduinoVersionPosition+125+LINE+LINE+LINE+LINE+LINE+LINE+LINE);
 }
 
 void displayGPSPosition(void)

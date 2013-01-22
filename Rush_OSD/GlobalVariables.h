@@ -230,9 +230,6 @@ const char message6[] PROGMEM = "MENU:THRT MIDDLE";
 const char message7[] PROGMEM = "YAW RIGHT";
 const char message8[] PROGMEM = "PITCH FULL";
 
-const char* introMessages[] PROGMEM = {
-  message0, message1, message2, message3, message4, message5, message6, message7, message8};
-
 // For Config
 const char configMsg0[] PROGMEM = "EXIT";
 const char configMsg1[] PROGMEM = "SAVE-EXIT";
