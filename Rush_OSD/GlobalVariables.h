@@ -29,21 +29,21 @@ uint8_t configMode=0;
 // For EEPROM Defaults
 uint8_t EEPROM_DEFAULT[21] = {
 1,   // used for check             0
-1,   // EEPROM_STABLEMODE          1           
+3,   // EEPROM_STABLEMODE          1           
 4,   // EEPROM_BAROMODE            2            
 8,   // EEPROM_MAGMODE             3            
-32,  // EEPROM_ARMEDMODE           4           
-64,  // EEPROM_GPSHOMEMODE         5           
-128, // EEPROM_GPSHOLDMODE         6     
+16,  // EEPROM_ARMEDMODE           4           
+32,  // EEPROM_GPSHOMEMODE         5           
+64, // EEPROM_GPSHOLDMODE         6     
 0, // EEPROM_RSSIMIN             7
 255,   // EEPROM_RSSIMAX             8
 1,   // EEPROM_DISPLAYRSSI         9
 1,   // EEPROM_DISPLAYVOLTAGE      10
 0,   // EEPROM_VOLTAGEMIN          11
-25,  // EEPROM_DIVIDERRATIO        12
+22.04,  // EEPROM_DIVIDERRATIO        12
 0,   // EEPROM_MAINVOLTAGE_VBAT    13
 0,   // EEPROM_VIDVOLTAGE          14
-25,  // EEPROM_VIDDIVIDERRATIO     15    
+22.04,  // EEPROM_VIDDIVIDERRATIO     15    
 0,   // EEPROM_VIDVOLTAGE_VBAT     16
 0,   // EEPROM_DISPLAYTEMPERATURE  17
 255, // EEPROM_TEMPERATUREMAX      18

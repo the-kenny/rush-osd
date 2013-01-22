@@ -56,18 +56,19 @@ char *FormatGPSCoord(int32_t val, char *str, uint8_t p, char pos, char neg) {
 
 // Take time in Seconds and format it as 'MM:SS'
 // Alternately Take time in Minutes and format it as 'HH:MM'
+// If hhmmss is 1, display as HH:MM:SS
 char *formatTime(uint16_t val, char *str, uint8_t hhmmss) {
   int8_t bytes = 5;
   if(hhmmss)
     bytes = 8;
   str[bytes] = 0;
-  while(hhmmss-- != 0) {
+  do {
     str[--bytes] = '0' + (val % 10);
     val = val / 10;
     str[--bytes] = '0' + (val % 6);
     val = val / 6;
     str[--bytes] = ':';
-  }
+  } while(hhmmss-- != 0);
   do {
     str[--bytes] = '0' + (val % 10);
     val = val / 10;
