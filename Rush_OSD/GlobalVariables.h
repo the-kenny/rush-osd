@@ -128,8 +128,8 @@ int LowT = 1100;
 int HighT = 1900;
 
 // For Time
-uint16_t onSecond=0;
-uint16_t flySecond=0;
+uint16_t onTime=0;
+uint16_t flyTime=0;
 
 // For Heading
 const char headGraph[]={
@@ -170,7 +170,7 @@ int8_t temperMAX=0;
 int16_t altitudeMAX=0;
 int16_t distanceMAX=0;
 float trip=0;
-uint16_t flyingSecond=0;
+uint16_t flyingTime=0;
 
 // ---------------------------------------------------------------------------------------
 // Defines imported from Multiwii Serial Protocol 0 MultiWii_release_candidate_2_1_r949

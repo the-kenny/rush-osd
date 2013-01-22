@@ -54,16 +54,20 @@ char *FormatGPSCoord(int32_t val, char *str, uint8_t p, char pos, char neg) {
    return str;
 }
 
-// Take time in Seconds and format it as 'SMM:SS' or ' SM:SS',
-// Return pointer to minute digit,
-char *formatTime(uint16_t val, char *str) {
+// Take time in Seconds and format it as 'MM:SS'
+// Alternately Take time in Minutes and format it as 'HH:MM'
+char *formatTime(uint16_t val, char *str, uint8_t hhmmss) {
   int8_t bytes = 5;
+  if(hhmmss)
+    bytes = 8;
   str[bytes] = 0;
-  str[--bytes] = '0' + (val % 10);
-  val = val / 10;
-  str[--bytes] = '0' + (val % 6);
-  val = val / 6;
-  str[--bytes] = ':';
+  while(hhmmss-- != 0) {
+    str[--bytes] = '0' + (val % 10);
+    val = val / 10;
+    str[--bytes] = '0' + (val % 6);
+    val = val / 6;
+    str[--bytes] = ':';
+  }
   do {
     str[--bytes] = '0' + (val % 10);
     val = val / 10;
@@ -295,12 +299,24 @@ void displayCurrentThrottle(void)
 
 void displayTime(void)
 {
-  screenBuffer[0] = flyTimeUnitAdd;
-  formatTime(flySecond, screenBuffer+1);
+  if(flyTime < 3600) {
+    screenBuffer[0] = flyTimeUnitAdd;
+    formatTime(flyTime, screenBuffer+1, 0);
+  }
+  else {
+    screenBuffer[0] = flyTimeUnitAdd;	// XXX
+    formatTime(flyTime/60, screenBuffer+1, 0);
+  }
   MAX7456_WriteString(screenBuffer,getPosition(flyTimePosition));
 
-  screenBuffer[0] = onTimeUnitAdd;
-  formatTime(onSecond, screenBuffer+1);
+  if(onTime < 3600) {
+    screenBuffer[0] = onTimeUnitAdd;
+    formatTime(onTime, screenBuffer+1, 0);
+  }
+  else {
+    screenBuffer[0] = onTimeUnitAdd;	// XXX
+    formatTime(onTime/60, screenBuffer+1, 0);
+  }
   MAX7456_WriteString(screenBuffer,getPosition(onTimePosition));
 }
 
@@ -793,8 +809,8 @@ void displayPIDConfigScreen(void)
 
     MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[56])), VELT);
 
-    formatTime(flyingSecond, screenBuffer);
-    MAX7456_WriteString(screenBuffer,VELD-4);
+    formatTime(flyingTime, screenBuffer, 1);
+    MAX7456_WriteString(screenBuffer,VELD-7);
 
     MAX7456_WriteString_P((char*)pgm_read_word(&(configMsgs[57])), LEVT);
     int xx= pMeterSum / EST_PMSum;

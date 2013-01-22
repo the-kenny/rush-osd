@@ -243,7 +243,7 @@ void loop()
 
   if(tenthSec>=20)     // this execute 1 time a second
   {
-    onSecond++;
+    onTime++;
 
 #if defined HARDSENSOR
     amperagesum += amperage / AMPDIVISION; //(mAh)
@@ -254,11 +254,11 @@ void loop()
 
     if(!armed) {
       armedTimer=0;
-      flySecond=0;
+      flyTime=0;
     }
     else {
-      flySecond++;
-      flyingSecond++;
+      flyTime++;
+      flyingTime++;
       configMode=0;
     }
     allSec++;

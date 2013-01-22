@@ -371,7 +371,7 @@ void configExit()
   distanceMAX=0;
   altitudeMAX=0;
   speedMAX=0;
-  flyingSecond=0;
+  flyingTime=0;
 #endif
 }
 
