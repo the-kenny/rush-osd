@@ -49,8 +49,6 @@
 #define SYM_3DFIX 0XDF 
 #define SYM_HOLD 0XEF
 #define SYM_G_HOME 0XFF
-#define SYM_
-
 
 // Sensor´s Presence
 #define SYM_ACC 0XA0
@@ -58,7 +56,6 @@
 #define SYM_BAR 0XA2
 #define SYM_GPS 0XA3
 #define SYM_CHECK 0XBE
-
 
 // AH Center screen Graphics
 #define SYM_AH_CENTER 0X01
@@ -118,7 +115,6 @@
 #define SYM_ALTFT 0XA8
 #define SYM_DISTHOME_FT 0XB9
 
-
 // Voltage and amperage 
 #define SYM_VOLT 0XA9
 #define SYM_AMP 0X9A
@@ -144,21 +140,5 @@
 
 // RSSI
 #define SYM_RSSI 0XBA
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
