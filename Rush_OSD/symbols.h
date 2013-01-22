@@ -2,13 +2,11 @@
  *  symbols.h
  *  
  *
- *  Created by Katawentos on 1/22/13.
- *  Copyright 2013 __MyCompanyName__. All rights reserved.
  *
  */
 
 
-// Satellite Graphics
+// Satelite Graphics
 #define SYM_SAT_L 0X1E
 #define SYM_SAT_R 0X1F
 //#define SYM_SAT 0X0F  // Not used
@@ -16,7 +14,7 @@
 // Degrres Icon for HEADING/DIRECTION HOME
 #define SYM_DEGREES 0XBD
 
-// Direction Arrows 
+// Direction arrows 
 #define SYM_ARROW_SOUTH 0X60
 #define SYM_ARROW_2 0X61
 #define SYM_ARROW_3 0X62
