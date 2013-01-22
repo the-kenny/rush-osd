@@ -213,9 +213,6 @@ const unsigned char AHUnitAdd[8] = {
 const unsigned char voltageUnitAdd = 0xa9;
 const unsigned char temperatureUnitAdd[2] = {
   0x0e,0x0d};
-const unsigned char flyTimeUnitAdd=0x9c;
-const unsigned char onTimeUnitAdd=0x9b;
-const unsigned char amperageUnitAdd = 0x9a;
 
 const unsigned char rssiUnitAdd = 0xba;
 

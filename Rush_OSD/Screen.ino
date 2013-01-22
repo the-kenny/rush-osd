@@ -301,21 +301,21 @@ void displayCurrentThrottle(void)
 void displayTime(void)
 {
   if(flyTime < 3600) {
-    screenBuffer[0] = flyTimeUnitAdd;
+    screenBuffer[0] = SYM_FLY_M;
     formatTime(flyTime, screenBuffer+1, 0);
   }
   else {
-    screenBuffer[0] = flyTimeUnitAdd;	// XXX
+    screenBuffer[0] = SYM_FLY_H;
     formatTime(flyTime/60, screenBuffer+1, 0);
   }
   MAX7456_WriteString(screenBuffer,getPosition(flyTimePosition));
 
   if(onTime < 3600) {
-    screenBuffer[0] = onTimeUnitAdd;
+    screenBuffer[0] = SYM_ON_M;
     formatTime(onTime, screenBuffer+1, 0);
   }
   else {
-    screenBuffer[0] = onTimeUnitAdd;	// XXX
+    screenBuffer[0] = SYM_ON_H;
     formatTime(onTime/60, screenBuffer+1, 0);
   }
   MAX7456_WriteString(screenBuffer,getPosition(onTimePosition));
@@ -325,8 +325,8 @@ void displayAmperage(void)
 {
   // Real Ampere is ampere / 10
   ItoaPadded(amperage, screenBuffer, 4, 3);     // 99.9 ampere max!
-  screenBuffer[4]=amperageUnitAdd;
-  screenBuffer[5]=0;
+  screenBuffer[4] = SYM_AMP;
+  screenBuffer[5] = 0;
   MAX7456_WriteString(screenBuffer,getPosition(amperagePosition));
 }
 

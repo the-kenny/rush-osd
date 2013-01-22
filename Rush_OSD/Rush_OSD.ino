@@ -50,6 +50,7 @@
 #include <avr/pgmspace.h>
 #include <EEPROM.h> //Needed to access eeprom read/write functions
 #include <Metro.h>
+#include "symbols.h"
 #include "Config.h"
 #include "GlobalVariables.h"
 
