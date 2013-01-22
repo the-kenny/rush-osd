@@ -202,7 +202,6 @@ const uint8_t lowrssiAlarm=75;     // This will make blink the Rssi if lower the
 #define EEPROM_TEMPERATUREMAX      18
 #define EEPROM_DISPLAYGPS          19
 #define EEPROM_UNITSYSTEM          20
-#define EEPROM_SCREENTYPE          21     
 
 
 

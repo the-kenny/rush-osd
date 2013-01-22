@@ -4,13 +4,6 @@
 #define METRIC 0
 #define IMPERIAL 1
 
-
-#define NARROW 1
-#define WIDE 0
-
-//#define ON 1
-//#define OFF 0
-
 //General use variables
 Metro MetroTimer = Metro(100);
 int tenthSec=0;
@@ -34,7 +27,7 @@ uint8_t configMode=0;
 
 
 // For EEPROM Defaults
-uint8_t EEPROM_DEFAULT[22] = {
+uint8_t EEPROM_DEFAULT[21] = {
 1,   // used for check             0
 1,   // EEPROM_STABLEMODE          1           
 4,   // EEPROM_BAROMODE            2            
@@ -56,7 +49,6 @@ uint8_t EEPROM_DEFAULT[22] = {
 255, // EEPROM_TEMPERATUREMAX      18
 1,   // EEPROM_DISPLAYGPS          19
 0,   // EEPROM_UNITSYSTEM          20
-0    // EEPROM_SCREENTYPE          21
 };
 
 // For active mode now from eeprom
@@ -75,7 +67,6 @@ int8_t waitStick=0;
 
 uint8_t askPID=0;
 uint8_t serialWait=0;
-short screenType=WIDE;
 short unitSystem=METRIC;
 
 static uint8_t P8[PIDITEMS], I8[PIDITEMS], D8[PIDITEMS];
@@ -223,8 +214,6 @@ uint16_t flyingTime=0;
 const char message0[] PROGMEM = "KV_OSD_TEAM_2.2";
 const char message1[] PROGMEM = "VIDEO SIGNAL: NTSC";
 const char message2[] PROGMEM = "VIDEO SIGNAL: PAL";
-const char message3[] PROGMEM = "SCREEN TYPE: WIDE";
-const char message4[] PROGMEM = "SCREEN TYPE: NARROW";
 const char message5[] PROGMEM = "MW VERSION:";
 const char message6[] PROGMEM = "MENU:THRT MIDDLE";
 const char message7[] PROGMEM = "YAW RIGHT";
@@ -275,9 +264,6 @@ const char configMsg36[] PROGMEM = "DISPLAY RSSI";
 const char configMsg37[] PROGMEM = "UNIT SYSTEM";
 const char configMsg38[] PROGMEM = "METRIC";
 const char configMsg39[] PROGMEM = "IMPERL";
-const char configMsg40[] PROGMEM = "SCREEN TYPE";
-const char configMsg41[] PROGMEM = "NARROW";
-const char configMsg42[] PROGMEM = "WIDE";
 //-----------------------------------------------------------Page5
 const char configMsg43[] PROGMEM = "5/6 CALIBRATION";
 const char configMsg44[] PROGMEM = "ACC CALIBRATION";

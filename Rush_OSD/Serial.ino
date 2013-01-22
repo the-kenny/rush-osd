@@ -222,7 +222,6 @@ void serialMSPCheck()
       if(ROW==4) rssiMax=rssiADC;
       if(ROW==5) enableRSSI=!enableRSSI;
       if(ROW==6) unitSystem=!unitSystem;
-      if(ROW==7) screenType=!screenType;
     }
 
     if(configPage == 5 && COL == 3) {
@@ -278,7 +277,6 @@ void serialMSPCheck()
       if(ROW==4) rssiMax=rssiADC;
       if(ROW==5) enableRSSI=!enableRSSI;
       if(ROW==6) unitSystem=!unitSystem;
-      if(ROW==7) screenType=!screenType;
     }
 
     if(configPage == 5 && COL == 3) {

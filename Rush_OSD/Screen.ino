@@ -401,13 +401,6 @@ void displayIntro(void)
   MAX7456_WriteString_P(message2, RushduinoVersionPosition+30);
 #endif
 
-  if(screenType==WIDE){
-    MAX7456_WriteString_P(message3, RushduinoVersionPosition+60);
-  }
-  else{
-    MAX7456_WriteString_P(message4, RushduinoVersionPosition+60);
-  }
-
   MAX7456_WriteString_P(MultiWiiLogoL1Add, RushduinoVersionPosition+120);
   MAX7456_WriteString_P(MultiWiiLogoL2Add, RushduinoVersionPosition+120+LINE);
   MAX7456_WriteString_P(MultiWiiLogoL3Add, RushduinoVersionPosition+120+LINE+LINE);
@@ -745,14 +738,6 @@ void displayPIDConfigScreen(void)
     }
     else {
       MAX7456_WriteString_P(configMsg39, LEVD-2);
-    }
-
-    MAX7456_WriteString_P(configMsg40, MAGT);
-    if(screenType==NARROW){
-      MAX7456_WriteString_P(configMsg41, MAGD-2);
-    }
-    else {
-      MAX7456_WriteString_P(configMsg42, MAGD-1);
     }
   }
 

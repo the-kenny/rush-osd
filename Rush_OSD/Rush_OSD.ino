@@ -338,8 +338,6 @@ void writeEEPROM(void)
   EEPROM.write(EEPROM_DISPLAYGPS,displayGPS);
   
   EEPROM.write(EEPROM_UNITSYSTEM,unitSystem);
-  
-  EEPROM.write(EEPROM_SCREENTYPE,screenType);
 }
 
 void readEEPROM(void)
@@ -369,8 +367,6 @@ void readEEPROM(void)
   displayGPS= EEPROM.read(EEPROM_DISPLAYGPS);
  
   unitSystem= !!EEPROM.read(EEPROM_UNITSYSTEM);
-  
-  screenType= !!EEPROM.read(EEPROM_SCREENTYPE);
 }
 
 // for first run to ini
