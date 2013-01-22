@@ -300,14 +300,6 @@ const char configMsg56[] PROGMEM = "FLYING TIME:";
 const char configMsg57[] PROGMEM = "DRAINED AMPS:";
 const char configMsg58[] PROGMEM = "MAX TEMP:";
 
-const char *configMsgs[] PROGMEM = {
-  configMsg0, configMsg1, configMsg2, configMsg3, configMsg4, configMsg5, configMsg6, configMsg7, configMsg8, configMsg9, configMsg10,
-  configMsg11, configMsg12, configMsg13, configMsg14, configMsg15, configMsg16, configMsg17,   configMsg18, configMsg19,configMsg20,
-  configMsg21, configMsg22, configMsg23, configMsg24, configMsg25, configMsg26, configMsg27, configMsg28, configMsg29, configMsg30,
-  configMsg31, configMsg32, configMsg33, configMsg34, configMsg35, configMsg36, configMsg37, configMsg38, configMsg39, configMsg40,
-  configMsg41, configMsg42, configMsg43, configMsg44, configMsg45, configMsg46, configMsg47, configMsg48, configMsg49, configMsg50,
-  configMsg51, configMsg52, configMsg53, configMsg54, configMsg55, configMsg56, configMsg57, configMsg58};
-
 // All screen locations defines in ScreenLayout.ino
 enum Positions {
   GPS_numSatPosition,
