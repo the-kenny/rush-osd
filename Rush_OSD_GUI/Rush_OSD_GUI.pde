@@ -18,13 +18,13 @@ import java.lang.StringBuffer; // for efficient String concatemation
 import javax.swing.SwingUtilities; // required for swing and EDT
 import javax.swing.JFileChooser; // Saving dialogue
 import javax.swing.filechooser.FileFilter; // for our configuration file filter "*.mwi"
-//import javax.swing.JOptionPane; // for message dialogue
+import javax.swing.JOptionPane; // for message dialogue
 
 
 String Rush_OSD_GUI_Version = "2.01a";
 
 
-PImage img,OSDBackground,RadioPot;
+PImage img_Clear,img_Full,OSDBackground,RadioPot;
 //PGraphics pg;
 int x = 0;
 int y = 0;
@@ -171,15 +171,15 @@ int XEEPROM    = 120;        int YEEPROM    = 5;
 int XModeBox   = 120;        int YModeBox    = 50;
 int XRSSI      = 120;        int YRSSI    = 180;
 int XVolts      = 120;        int YVolts    = 260;
-int XTemp      = 120;        int YTemp    = 410;
+int XTemp      = 120;        int YTemp    = 430;
 int XGPS       = 310;        int YGPS    = 50;
-int XOther     = 310;        int YOther   = 95;
-
-int XControlBox     = 120;        int YControlBox   = 480;
-
-
+int XBoard     = 310;        int YBoard   = 150;
+int XOther     = 310;        int YOther   = 200;
+int XControlBox     = 120;        int YControlBox   = 500;
 
 
+
+int activeTab = 1;
 int xx=0;
 int YLocation = 0;
 int Roll = 0;
@@ -189,41 +189,55 @@ int OnTimer = 0;
 int FlyTimer = 0;
 float SimItem0= 0;
 int Armed = 0;
+int Showback = 1;
 //int ReadMultiWii = 0;
 // int variables
 
 // For Heading
-String[] headGraph={
-  "0x1a","0x1d","0x1c","0x1d","0x19","0x1d","0x1c","0x1d","0x1b","0x1d","0x1c","0x1d","0x18","0x1d","0x1c","0x1d","0x1a","0x1d","0x1c","0x1d","0x19","0x1d","0x1c","0x1d","0x1b"};
+//char[] headGraph={
+  //"0x1a","0x1d","0x1c","0x1d","0x19","0x1d","0x1c","0x1d","0x1b","0x1d","0x1c","0x1d","0x18","0x1d","0x1c","0x1d","0x1a","0x1d","0x1c","0x1d","0x19","0x1d","0x1c","0x1d","0x1b"};
+char[] headGraph={
+  0x1a,0x1d,0x1c,0x1d,0x19,0x1d,0x1c,0x1d,0x1b,0x1d,0x1c,0x1d,0x18,0x1d,0x1c,0x1d,0x1a,0x1d,0x1c,0x1d,0x19,0x1d,0x1c,0x1d,0x1b};
+
 static int MwHeading=0;
-String MwHeadingUnitAdd="0xbd";
+char MwHeadingUnitAdd=0xbd;
 //int MwHeading = 0;
 
-int[] EEPROM_DEFAULTS = {
-1,   // used for check             0
-1,   // EEPROM_STABLEMODE          1           
-4,   // EEPROM_BAROMODE            2            
-8,   // EEPROM_MAGMODE             3            
-32,  // EEPROM_ARMEDMODE           4           
-64,  // EEPROM_GPSHOMEMODE         5           
-128, // EEPROM_GPSHOLDMODE         6     
-255, // EEPROM_RSSIMIN             7
-0,   // EEPROM_RSSIMAX             8
-1,   // EEPROM_DISPLAYRSSI         9
-1,   // EEPROM_DISPLAYVOLTAGE      10
-0,   // EEPROM_VOLTAGEMIN          11
-25,  // EEPROM_DIVIDERRATIO        12
-0,   // EEPROM_MAINVOLTAGE_VBAT    13
-0,   // EEPROM_VIDVOLTAGE          14
-25,  // EEPROM_VIDDIVIDERRATIO     15    
-0,   // EEPROM_VIDVOLTAGE_VBAT     16
-0,   // EEPROM_DISPLAYTEMPERATURE  17
-255, // EEPROM_TEMPERATUREMAX      18
-1,   // EEPROM_DISPLAYGPS          19
-0,   // EEPROM_UNITSYSTEM          20
-0    // EEPROM_SCREENTYPE          21
-};
+int[] EEPROM_DEFAULT = {
+1,   // used for check                0
+1,   // EEPROM_STABLEMODE             1           
+4,   // EEPROM_BAROMODE               2            
+8,   // EEPROM_MAGMODE                3            
+32,  // EEPROM_ARMEDMODE              4           
+64,  // EEPROM_GPSHOMEMODE            5           
+128, // EEPROM_GPSHOLDMODE            6     
+0,   // EEPROM_RSSIMIN                7
+255, // EEPROM_RSSIMAX                8
+1,   // EEPROM_DISPLAYRSSI            9
+1,   // EEPROM_DISPLAYVOLTAGE         10
+0,   // EEPROM_VOLTAGEMIN             11
+3,   // EEPROM_BATCELLS               12
+25,  // EEPROM_DIVIDERRATIO           13
+0,   // EEPROM_MAINVOLTAGE_VBAT       14
+0,   // EEPROM_VIDVOLTAGE             15
+25,  // EEPROM_VIDDIVIDERRATIO        16    
+0,   // EEPROM_VIDVOLTAGE_VBAT        17
+0,   // EEPROM_DISPLAYTEMPERATURE     18
+255, // EEPROM_TEMPERATUREMAX         19
+1,   // EEPROM_BOARDTYPE              20
+1,   // EEPROM_DISPLAYGPS             21
+0,   // EEPROM_COORDINATES            22
+1,   // EEPROM_SHOWHEADING            23 
+1,   // EEPROM_HEADING360             24      
+0,   // EEPROM_UNITSYSTEM             25
+0,   // EEPROM_SCREENTYPE             26
+1,   // EEPROM_THROTTLEPOSITION       27
+1,   // EEPROM_DISPLAY_HORIZON_BR     28
+1,   // EEPROM_WITHDECORATION         29
+0,   // EEPROM_SHOWBATLEVELEVOLUTION  30 
+1    // EEPROM_RESETSTATISTICS        31
 
+};
 String[] ConfigNames = {
   "EEPROM Loaded:",
   "Stable Mode:",
@@ -237,6 +251,7 @@ String[] ConfigNames = {
   "Display RSSI:",
   "Display Voltage:",
   "Voltage Min:",
+  "Battery Cells",
   "Main Voltage Devider:",
   "Main Voltage MW:",
   "Display Video Voltage:",
@@ -244,10 +259,60 @@ String[] ConfigNames = {
   "Video Voltage MW:",
   "Display Temperature:",
   "Temperature Max:",
+  "Board Type:",
   "Display GPS:",
+  "Display GPS Coords:",
+  "Display Heading:",
+  "Display Heading 360:",
   "Unit System:",
-  "Screen Type:"
+  "Screen Type NTSC / PAL:",
+  "Display Thottle Position",
+  "Display Hoizon Bar:",
+  "Display Horizon Side Bars:",
+  
+  "Display Battery Evo:",
+  "Reset Stats After Arm:",
+  "Enable OSD Read ADC:"
+  
+
 };
+String[] ConfigHelp = {
+  "Shows if EEPROM is Loaded, uncheck to reset to defaults",
+  "Stable Mode:",
+  "Baro Mode:",
+  "Mag Mode:",
+  "16,32, or 64 check MW configuration",
+  "GPS Home Mode:",
+  "GPS Hold Mode:",
+  "RSSI Min:",
+  "RSSI Max:",
+  "checked ON, unchecked OFF",
+  "checked ON, unchecked OFF",
+  "Voltage Min:",
+  "# of Battery Cells",
+  "Main Voltage Devider:",
+  "Main Voltage MW:",
+  "checked ON, unchecked OFF",
+  "Video Voltage Devider:",
+  "Video Voltage MW:",
+  "checked ON, unchecked OFF",
+  "Temperature Max:",
+  "checked MinimOSD, unchecked RUSHDUINO --reboot OSD Required after change, close comm, open comm, read--",
+  "checked ON, unchecked OFF",
+  "checked ON, unchecked OFF",
+  "checked metric, unchecked Imperial",
+  "checked narrow, unchecked wide",
+  "checked ON, unchecked OFF",
+  "checked ON, unchecked OFF",
+  "checked ON, unchecked OFF",
+  "checked ON, unchecked OFF",
+  "checked ON, unchecked OFF",
+  "checked ON, unchecked OFF",
+  "checked Reset, unchecked Don't reset",
+  "checked ON, unchecked OFF"
+  };
+
+
 
 
 static int CHECKBOXITEMS=0;
@@ -256,27 +321,38 @@ static int SIMITEMS=10;
   
 int[] ConfigRanges = {
 1,   // used for check             0
-255,   // EEPROM_STABLEMODE          1           
-255,   // EEPROM_BAROMODE            2            
-255,   // EEPROM_MAGMODE             3            
-255,  // EEPROM_ARMEDMODE           4           
-255,  // EEPROM_GPSHOMEMODE         5           
-255, // EEPROM_GPSHOLDMODE         6     
-255, // EEPROM_RSSIMIN             7
-255,   // EEPROM_RSSIMAX             8
-1,   // EEPROM_DISPLAYRSSI         9
-1,   // EEPROM_DISPLAYVOLTAGE      10
-255,   // EEPROM_VOLTAGEMIN          11
-255,  // EEPROM_DIVIDERRATIO        12
-1,   // EEPROM_MAINVOLTAGE_VBAT    13
-1,   // EEPROM_VIDVOLTAGE          14
-255,  // EEPROM_VIDDIVIDERRATIO     15    
-1,   // EEPROM_VIDVOLTAGE_VBAT     16
-1,   // EEPROM_DISPLAYTEMPERATURE  17
-255, // EEPROM_TEMPERATUREMAX      18
-1,   // EEPROM_DISPLAYGPS          19
-1,   // EEPROM_UNITSYSTEM          20
-1    // EEPROM_SCREENTYPE          21
+255,   // S_STABLEMODE             1           
+255,   // S_BAROMODE               2            
+255,   // S_MAGMODE                3            
+255,   // S_ARMEDMODE              4           
+255,   // S_GPSHOMEMODE            5           
+255,   // S_GPSHOLDMODE            6     
+255,   // S_RSSIMIN                7
+255,   // S_RSSIMAX                8
+1,     // S_DISPLAYRSSI            9
+1,     // S_DISPLAYVOLTAGE         10
+255,   // S_VOLTAGEMIN             11
+6,     // S_BATCELLS               12
+255,   // S_DIVIDERRATIO           13
+1,     // S_MAINVOLTAGE_VBAT       14
+1,     // S_VIDVOLTAGE             15
+255,   // S_VIDDIVIDERRATIO        16    
+1,     // S_VIDVOLTAGE_VBAT        17
+1,     // S_DISPLAYTEMPERATURE     18
+255,   // S_TEMPERATUREMAX         19
+1,     // S_BOARDTYPE              20
+1,     // S_DISPLAYGPS             21
+1,     // S_COORDINATES            22
+1,     // S_UNITSYSTEM             23
+1,     // S_SCREENTYPE             24
+1,     // S_THROTTLEPOSITION       25
+1,     // S_DISPLAY_HORIZON_BR     26
+1,     // S_WITHDECORATION         27
+1,     // S_SHOWHEADING            28 
+1,     // S_HEADING360             29             
+1,     // S_SHOWBATLEVELEVOLUTION  30 
+1,     // S_RESETSTATISTICS        31
+1,     // S_ENABLEADC              32
 };
 String[] SimNames= {
   "Armed:",
@@ -330,7 +406,8 @@ Toggle toggleConfItem[] = new Toggle[CONFIGITEMS] ;
 // checkboxes------------------------------------------------------------------------------------------------------------------
 CheckBox checkboxConfItem[] = new CheckBox[CONFIGITEMS] ;
 CheckBox checkboxSimItem[] = new CheckBox[SIMITEMS] ;
-CheckBox ReadMultiWii; 
+CheckBox ReadMultiWii,ShowSimBackground; 
+
 // Toggles------------------------------------------------------------------------------------------------------------------    
 
 //  number boxes--------------------------------------------------------------------------------------------------------------
@@ -375,9 +452,10 @@ OnTimer = millis();
 OSDBackground = loadImage("Background1.jpg");
 RadioPot = loadImage("Radio_Pot.png");
 //image(OSDBackground,DisplayWindowX+WindowAdjX, DisplayWindowY+WindowAdjY, DisplayWindowX+360-WindowShrinkX, DisplayWindowY+288-WindowShrinkY);
-img = loadImage("MW_OSD_Team_Clear.png");
-img.format = ARGB;
-
+img_Full = loadImage("MW_OSD_Team.png");
+img_Clear = loadImage("MW_OSD_Team_Clear.png");
+img_Full.format = ARGB;
+img_Clear.format = ARGB;
 
   font8 = createFont("Arial bold",8,false);
   font9 = createFont("Arial bold",9,false);
@@ -387,6 +465,11 @@ img.format = ARGB;
   controlP5 = new ControlP5(this); // initialize the GUI controls
   controlP5.setControlFont(font12);
 
+
+ 
+ 
+ 
+ 
  
   commListbox = controlP5.addListBox("portComList",5,100,110,260); // make a listbox and populate it with the available comm ports
   commListbox.setItemHeight(15);
@@ -404,7 +487,7 @@ img.format = ARGB;
   txtlblWhichcom = controlP5.addTextlabel("txtlblWhichcom","No Port Selected",5,65); // textlabel(name,text,x,y)
   
   buttonSAVE = controlP5.addButton("bSAVE",1,5,45,40,19); buttonSAVE.setLabel("SAVE"); buttonSAVE.setColorBackground(red_);
-  buttonIMPORT = controlP5.addButton("bIMPORT",1,50,45,40,19); buttonIMPORT.setLabel("LOAD"); buttonIMPORT.setColorBackground(red_);   
+  buttonIMPORT = controlP5.addButton("bIMPORT",1,50,45,40,19); buttonIMPORT.setLabel("LOAD"); buttonIMPORT.setColorBackground(red_); 
   
   buttonREAD = controlP5.addButton("READ",1,XControlBox+5,YControlBox+7,45,16);buttonREAD.setColorBackground(red_);
   buttonRESET = controlP5.addButton("RESET",1,XControlBox+67,YControlBox+7,45,16);buttonRESET.setColorBackground(red_);
@@ -434,24 +517,29 @@ BuildNumberBoxes(7, 10, XRSSI+5, YRSSI);
 BuildCheckBoxes(7, 10, XRSSI+5, YRSSI+3);
 
 // Voltage  ------------------------------------------------------------------------
-BuildTextLabels(10, 17, XVolts+5, YVolts);
-BuildNumberBoxes(10, 17, XVolts+5, YVolts);
-BuildCheckBoxes(10, 17, XVolts+5, YVolts+3);
+BuildTextLabels(10, 18, XVolts+5, YVolts);
+BuildNumberBoxes(10, 18, XVolts+5, YVolts);
+BuildCheckBoxes(10, 18, XVolts+5, YVolts+3);
 
 //  Temperature  --------------------------------------------------------------------
-BuildTextLabels(17, 19, XTemp+5, YTemp);
-BuildNumberBoxes(17, 19, XTemp+5, YTemp);
-BuildCheckBoxes(17, 19, XTemp+5, YTemp+3);
+BuildTextLabels(18, 20, XTemp+5, YTemp);
+BuildNumberBoxes(18, 20, XTemp+5, YTemp);
+BuildCheckBoxes(18, 20, XTemp+5, YTemp+3);
+
+//  Board ---------------------------------------------------------------------------
+BuildTextLabels(20, 21, XBoard+5, YBoard);
+BuildNumberBoxes(20, 21, XBoard+5, YBoard);
+BuildCheckBoxes(20, 21, XBoard+5, YBoard+3);
 
 //  GPS  ----------------------------------------------------------------------------
-BuildTextLabels(19, 20, XGPS+5, YGPS);
-BuildNumberBoxes(19, 20, XGPS+5, YGPS);
-BuildCheckBoxes(19, 20, XGPS+5, YGPS+3);
+BuildTextLabels(21, 25, XGPS+5, YGPS);
+BuildNumberBoxes(21, 25, XGPS+5, YGPS);
+BuildCheckBoxes(21, 25, XGPS+5, YGPS+3);
 
 //  Other ---------------------------------------------------------------------------
-BuildTextLabels(20, 22, XOther+5, YOther);
-BuildNumberBoxes(20, 22, XOther+5, YOther);
-BuildCheckBoxes(20, 22, XOther+5, YOther+3);
+BuildTextLabels(25, 33, XOther+5, YOther);
+BuildNumberBoxes(25, 33, XOther+5, YOther);
+BuildCheckBoxes(25, 33, XOther+5, YOther+3);
 
 
 
@@ -462,7 +550,7 @@ for(int i=0;i<SIMITEMS;i++) {
 txtlblSimItem[i] = controlP5.addTextlabel("txtlblSimItem"+i,SimNames[i],XSim+40,YSim+i*17);
 } 
  
- for(int i=0;i<SIMITEMS;i++) {
+  for(int i=0;i<SIMITEMS;i++) {
     SimItem[i] = (controlP5.Numberbox) hideLabel(controlP5.addNumberbox("SimItem"+i,0,XSim,YSim+i*17,35,14));
     SimItem[i].setColorBackground(red_);confItem[i].setMin(0);confItem[i].setDirection(Controller.HORIZONTAL);confItem[i].setMax(ConfigRanges[i]);confItem[i].setDecimalPrecision(0); //confItem[i].setMultiplier(1);confItem[i].setDecimalPrecision(1);
  }
@@ -488,15 +576,13 @@ txtlblSimItem[i] = controlP5.addTextlabel("txtlblSimItem"+i,SimNames[i],XSim+40,
        ReadMultiWii.setLabel("Read MultiWii");
         //if (ConfigRanges[i] == 1){
        ReadMultiWii.addItem("Read MultiWii",1);
-        //}
-        //ReadMultiWii.hideLabels();
-  // End Checkboxes----------------------------------------------------------------------------
-  
-  // Timers --------------------------------------------------------------------------------
-  
-  //OnTimer = new ControlTimer();
-  //t = new Textlabel(cp5,"--",100,100);
-  //OnTimer.setSpeedOfTime(1);
+       
+ ShowSimBackground = controlP5.addCheckBox("ShowSimBackground",XSim+200,YSim+40);
+      ShowSimBackground.setColorActive(color(255));ShowSimBackground.setColorBackground(color(120));
+        ShowSimBackground.setItemsPerRow(1);ShowSimBackground.setSpacingColumn(10);
+       ShowSimBackground.setLabel("Hide Background");
+        //if (ConfigRanges[i] == 1){
+       ShowSimBackground.addItem("Hide Background",1);
   
   
   
@@ -526,7 +612,7 @@ txtlblSimItem[i] = controlP5.addTextlabel("txtlblSimItem"+i,SimNames[i],XSim+40,
     if (SimRanges[i] == 1){
       SimItem[i].hide();  
     }
-  }
+   }
   
 
   s = controlP5.addSlider2D("Pitch/Roll")
@@ -551,6 +637,7 @@ HeadingKnob = controlP5.addKnob("MwHeading")
                .setPosition(DisplayWindowX+WindowAdjX-90,DisplayWindowY+WindowAdjY+288-WindowShrinkY-220)
                .setRadius(35)
                .setLabel("Heading")
+               
                //.setNumberOfTickMarks(36)
                //.setTickMarkLength(4)
                //.snapToTickMarks(true)
@@ -560,7 +647,7 @@ HeadingKnob = controlP5.addKnob("MwHeading")
                .setDragDirection(Knob.HORIZONTAL)
                ;
 
-
+BuildToolHelp();
 
 }
 
@@ -588,6 +675,8 @@ void BuildCheckBoxes(int starter, int ender, int StartXLoction, int StartYLocati
      checkboxConfItem[i].setLabel(ConfigNames[i]);
      checkboxConfItem[i].addItem("cbox"+i,1);
      checkboxConfItem[i].hideLabels();
+     
+  
   }
 }
 
@@ -605,7 +694,17 @@ void BuildTextLabels(int starter, int ender, int StartXLoction, int StartYLocati
   for(int i=starter;i<ender;i++) {
     YLocation+=17;
     txtlblconfItem[i] = controlP5.addTextlabel("txtlblconfItem"+i,ConfigNames[i],StartXLoction+40,YLocation);
+    controlP5.getTooltip().register("txtlblconfItem"+i,ConfigHelp[i]);
   }
+}
+void BuildToolHelp(){
+  controlP5.getTooltip().setDelay(200);
+  //confItem[1].setMultiplier(confItem[1].value);
+  //controlP5.getTooltip().register("txtlblconfItem"+0,"Changes the size of the ellipse.");
+  //controlP5.getTooltip().register("s2","Changes the Background");
+
+
+  
 }
 
 void draw() {
@@ -620,7 +719,7 @@ void draw() {
      // Coltrol Box
   fill(100); strokeWeight(3);stroke(200); rectMode(CORNERS); rect(XControlBox,YControlBox, XControlBox+180 , YControlBox+30);
   //textFont(font12); fill(0, 110, 220); text("Other",XControlBox + 75,YControlBox + 10);
-  
+  if (activeTab == 1) {
   // EEPROM Box
   fill(30, 30,30); strokeWeight(3);stroke(1); rectMode(CORNERS); rect(XEEPROM,YEEPROM, XEEPROM+180, YEEPROM+35);
   textFont(font12); fill(0, 110, 220); text("EEPROM STATUS", XEEPROM + 45,YEEPROM + 10);
@@ -631,17 +730,21 @@ void draw() {
   fill(30, 30,30); strokeWeight(3);stroke(1); rectMode(CORNERS); rect(XRSSI,YRSSI, XRSSI+180 , YRSSI+70);
   textFont(font12); fill(0, 110, 220); text("RSSI",XRSSI + 70,YRSSI + 10);
    // Volts Box
-  fill(30, 30,30); strokeWeight(3);stroke(1); rectMode(CORNERS); rect(XVolts,YVolts, XVolts+180 , YVolts+140);
+  fill(30, 30,30); strokeWeight(3);stroke(1); rectMode(CORNERS); rect(XVolts,YVolts, XVolts+180 , YVolts+160);
   textFont(font12); fill(0, 110, 220); text("Voltage",XVolts + 65,YVolts + 10);
    // Temp Box
   fill(30, 30,30); strokeWeight(3);stroke(1); rectMode(CORNERS); rect(XTemp,YTemp, XTemp+180 , YTemp+55);
   textFont(font12); fill(0, 110, 220); text("Temperature",XTemp + 50,YTemp + 10);
    // GPS Box
-  fill(30, 30,30); strokeWeight(3);stroke(1); rectMode(CORNERS); rect(XGPS,YGPS, XGPS+180 , YGPS+35);
+  fill(30, 30,30); strokeWeight(3);stroke(1); rectMode(CORNERS); rect(XGPS,YGPS, XGPS+200 , YGPS+90);
   textFont(font12); fill(0, 110, 220); text("GPS / Nav",XGPS + 60,YGPS + 10);
-    // Other Box
-  fill(30, 30,30); strokeWeight(3);stroke(1); rectMode(CORNERS); rect(XOther,YOther, XOther+180 , YOther+60);
+       // Board Box
+  fill(30, 30,30); strokeWeight(3);stroke(1); rectMode(CORNERS); rect(XBoard,YBoard, XBoard+200 , YBoard+40);
+  textFont(font12); fill(0, 110, 220); text("Board Type",XBoard + 65,YBoard + 10);
+      // Other Box
+  fill(30, 30,30); strokeWeight(3);stroke(1); rectMode(CORNERS); rect(XOther,YOther, XOther+200 , YOther+165);
   textFont(font12); fill(0, 110, 220); text("Other",XOther + 75,YOther + 10);
+  }
   
   fill(40, 40, 40);
   strokeWeight(3);stroke(0);
@@ -656,7 +759,12 @@ void draw() {
   fill(0, 0, 0);
   strokeWeight(3);stroke(0);
   rectMode(CORNERS);
-  image(OSDBackground,DisplayWindowX+WindowAdjX, DisplayWindowY+WindowAdjY, 360-WindowShrinkX, 288-WindowShrinkY);
+   if (int(ShowSimBackground.arrayValue()[0]) < 1){
+    image(OSDBackground,DisplayWindowX+WindowAdjX, DisplayWindowY+WindowAdjY, 360-WindowShrinkX, 288-WindowShrinkY);
+   }
+   else{
+     fill(80, 80,80); strokeWeight(3);stroke(1); rectMode(CORNER); rect(DisplayWindowX+WindowAdjX, DisplayWindowY+WindowAdjY, 360-WindowShrinkX, 288-WindowShrinkY);
+   }
 
     //pushMatrix();
   //rect(DisplayWindowX+WindowAdjX, DisplayWindowY+WindowAdjY, DisplayWindowX+360-WindowShrinkX, DisplayWindowY+288-WindowShrinkY);
@@ -667,11 +775,8 @@ void draw() {
 
 //ReadMW = int(ReadMultiWii.arrayValue()[0]);
   MatchConfigs();
-  if (int(confItem[4].value()) > 0){
-  ShowVolts(12.8);
-  }
-  displaySensors();
-  displayMode();
+  
+ 
   if (ReadMW >0){
     s.arrayValue()[0] =MwAngle[0];
     s.arrayValue()[1] =MwAngle[1];
@@ -681,15 +786,22 @@ void draw() {
   {
     displayHorizon(int(s.arrayValue()[0])*10,int(s.arrayValue()[1])*10*-1);
   }
-  //int(Roll)*-1
   SimulateTimer();
-  //ShowOnTime();
-  //ShowFlyTime();
   ShowCurrentThrottlePosition();
-  if (int(confItem[3].value()) > 0){
-   ShowRSSI(); 
+  if (int(confItem[9].value()) > 0) ShowRSSI(); 
+  if (int(confItem[10].value()) > 0) {
+      if (int(confItem[13].value()) > 0){
+         float voltage=MwVBat / 10.0;
+         ShowVolts(voltage);
+      }
+      else{
+        ShowVolts(12.8);    
+      }
   }
-   ShowAmperage();
+   
+  displaySensors();
+  displayMode();
+  ShowAmperage();
   displayArmed();
   displayHeadingGraph();
   displayHeading();
@@ -697,6 +809,11 @@ void draw() {
   hint(DISABLE_DEPTH_TEST);
 
 
+}
+
+void ShowSimBackground(float[] a){
+
+  Showback = int(a[0]);
 }
 
 void ReadMultiWii(float[] a) {
@@ -762,6 +879,7 @@ void MatchConfigs(){
 public void controlEvent(ControlEvent theEvent) {
   if (theEvent.isGroup()) if (theEvent.name()=="portComList") InitSerial(theEvent.group().value()); // initialize the serial port selected
   
+
     
 
 }
@@ -770,23 +888,23 @@ public void controlEvent(ControlEvent theEvent) {
 void InitSerial(float portValue) {
   if (portValue < commListMax) {
     if(init_com == 0){ 
-    String portPos = Serial.list()[int(portValue)];
-    txtlblWhichcom.setValue("COM = " + shortifyPortName(portPos, 8));
-    g_serial = new Serial(this, portPos, 115200);
-    init_com=1;
-    buttonREAD.setColorBackground(green_);
-    buttonRESET.setColorBackground(green_);commListbox.setColorBackground(green_);
-    g_serial.buffer(256);
-    System.out.println(int(checkboxConfItem[0].getArrayValue()[0]));
-    System.out.println("Port Turned On " );//+((int)(cmd&0xFF))+": "+(checksum&0xFF)+" expected, got "+(int)(c&0xFF));
+      String portPos = Serial.list()[int(portValue)];
+      txtlblWhichcom.setValue("COM = " + shortifyPortName(portPos, 8));
+      g_serial = new Serial(this, portPos, 115200);
+      init_com=1;
+      buttonREAD.setColorBackground(green_);
+      buttonRESET.setColorBackground(green_);commListbox.setColorBackground(green_);
+      g_serial.buffer(256);
+      System.out.println(int(checkboxConfItem[0].getArrayValue()[0]));
+      System.out.println("Port Turned On " );//+((int)(cmd&0xFF))+": "+(checksum&0xFF)+" expected, got "+(int)(c&0xFF));
     }
   } else {
     if(init_com == 1){ 
-    txtlblWhichcom.setValue("Comm Closed");
-    init_com=0;
+      txtlblWhichcom.setValue("Comm Closed");
+      init_com=0;
       commListbox.setColorBackground(red_);buttonREAD.setColorBackground(red_);buttonRESET.setColorBackground(red_); buttonWRITE.setColorBackground(red_);
-    init_com=0;
-    g_serial.stop();
+      init_com=0;
+      g_serial.stop();
       ReadMultiWii.deactivateAll();
     }
    
@@ -829,7 +947,7 @@ void serialEvent(Serial g_serial) {
       firstContact = false;
       // Reset serialCount:
       serialCount = 0;
-    }
+      }
       
   }
  }
@@ -842,20 +960,20 @@ public void READ(){
      confItem[i].setValue(0);
      checkboxConfItem[i].deactivateAll();
    }
-    g_serial.write('$');
-    g_serial.write('M');
-    g_serial.write('>');
-    g_serial.write((byte)0x00);
-    g_serial.write(MSP_OSD_READ);
-    g_serial.write(MSP_OSD_READ);
-    SetMode();
-}
+   g_serial.write('$');
+   g_serial.write('M');
+   g_serial.write('>');
+   g_serial.write((byte)0x00);
+   g_serial.write(MSP_OSD_READ);
+   g_serial.write(MSP_OSD_READ);
+   SetMode();
+  }
 }
 
 public void WRITE(){
   if(init_com == 1){ 
    for(int j=0;j<2;j++) {
-   g_serial.write('$');
+    g_serial.write('$');
     g_serial.write('M');
     g_serial.write('>');
     checksum=0;
@@ -871,7 +989,7 @@ public void WRITE(){
     g_serial.write((byte)checksum);
    }
   }
-
+    
 }
 
 // coded by Eberhard Rensch
@@ -887,27 +1005,31 @@ String shortifyPortName(String portName, int maxlen)  {
 
 
 
-void mapchar(String address, int screenAddress){
+
+
+void mapchar(int address, int screenAddress){
   int placeX = (screenAddress % 30) * 12;
   int placeY = (screenAddress / 30) * 18;
-  //currentCol = placeX;
-  //currentRow = placeY;
-  String ss2 = address.substring(2,3);     // Returns "bit"
-  String ss3 = address.substring(3, 4);  // Returns "CC"
-  int charCol = unhex(ss3);
-  int charRow = unhex(ss2);
+  //String ss2 = address.substring(2,3);     // Returns "bit"
+  //String ss3 = address.substring(3, 4);  // Returns "CC"
+  //(value/16) = row
+//(value%16) = column in the glyphs image.
+  
+  int charCol = (address%16);
+  //int charRow = unhex(ss2);
+ int charRow = (address/16);
  
-  //s.copy(img,col[charCol], row[charRow], 12, 18, DisplayWindowX + placeX, DisplayWindowY + placeY, 12, 18);
- //s.background(0, 0, 0);
-copy(img,col[charCol], row[charRow], 12, 18, placeX+DisplayWindowX, placeY+DisplayWindowY, 12, 18);
- 
-  //s.copy(img,col[charCol], row[charRow], 12, 18, placeX+WindowAdjX, placeY+WindowAdjY, 12, 18);
-  //backgroundImage.updatePixels();
+ if (int(ShowSimBackground.arrayValue()[0]) < 1){
+ copy(img_Clear,col[charCol], row[charRow], 12, 18, placeX+DisplayWindowX, placeY+DisplayWindowY, 12, 18);
+ }
+ else{
+  copy(img_Full,col[charCol], row[charRow], 12, 18, placeX+DisplayWindowX, placeY+DisplayWindowY, 12, 18); 
+ }
 }
 
 void makeText(String inString, int inStartAddress ){
   for (int i = 0; i < inString.length(); i++){
-    mapchar(hex(inString.charAt(i)), inStartAddress +i); 
+    mapchar(int(inString.charAt(i)), inStartAddress +i); 
   }   
 }
 
@@ -934,23 +1056,23 @@ void displayHorizon(int rollAngle, int pitchAngle)
 
 //if (DISPLAY_HORIZON_BR){
   //Draw center screen
-  mapchar("0x03", 219-30);
-  mapchar("0x1D",224-30-1);
-  mapchar("0x1D",224-30+1);
-  mapchar("0x01",224-30);
-  mapchar("0x02",229-30);
+  mapchar(0x03, 219-30);
+  mapchar(0x1D,224-30-1);
+  mapchar(0x1D,224-30+1);
+  mapchar(0x01,224-30);
+  mapchar(0x02,229-30);
   
   //if (WITHDECORATION){
-     mapchar("0xC7",128);
-     mapchar("0xC7",128+30);
-     mapchar("0xC7",128+60);
-     mapchar("0xC7",128+90);
-     mapchar("0xC7",128+120);
-     mapchar("0xC6",128+12);
-     mapchar("0xC6",128+12+30);
-     mapchar("0xC6",128+12+60);
-     mapchar("0xC6",128+12+90);
-     mapchar("0xC6",128+12+120);
+     mapchar(0xC7,128);
+     mapchar(0xC7,128+30);
+     mapchar(0xC7,128+60);
+     mapchar(0xC7,128+90);
+     mapchar(0xC7,128+120);
+     mapchar(0xC6,128+12);
+     mapchar(0xC6,128+12+30);
+     mapchar(0xC6,128+12+60);
+     mapchar(0xC6,128+12+90);
+     mapchar(0xC6,128+12+120);
     //}
   //}
   //mapchar("0x10"+ 00,(rollAngle*30)+100+0);
@@ -965,44 +1087,44 @@ void displayHorizonPart(float X,float Y,int roll)
   if(X<0) X=0;
   // 7 row, 8 lines per row, mean 56 different case per segment, 2 segment now
   xx=int(X/8);
-  String charString = "0x1";
+  int charString = 0x1;
   switch (xx)
    {
     
   case 0:
-   charString+=X;
-   mapchar(charString,(roll*30)+100 + int(Y));
+   //charString+=X;
+   mapchar(0x10+int(X),(roll*30)+100 + int(Y));
    
     //screen[(roll*30)+100+Y]=0x10+(X);
     break;
   case 1:
   charString+=X-8;
-   mapchar(charString,(roll*30)+130+int(Y));
+   mapchar(0x10+int(X-8),(roll*30)+130+int(Y));
     //screen[(roll*30)+130+Y]=0x10+(X-8);
     break;
   case 2:
   charString+=X-16;
-   mapchar(charString,(roll*30)+160+int(Y));
+   mapchar(0x10+int(X-16),(roll*30)+160+int(Y));
    // screen[(roll*30)+160+Y]=0x10+(X-16);
     break;
   case 3:
   charString+=X-24;
-   mapchar(charString,(roll*30)+190+int(Y));
+   mapchar(0x10+int(X-24),(roll*30)+190+int(Y));
    // screen[(roll*30)+190+Y]=0x10+(X-24);
     break;
   case 4:
    charString+=X-32;
-   mapchar(charString,(roll*30)+220+int(Y));
+   mapchar(0x10+int(X-32),(roll*30)+220+int(Y));
    // screen[(roll*30)+220+Y]=0x10+(X-32);
     break;
   case 5:
    charString+=X-40;
-   mapchar(charString,(roll*30)+250+int(Y));
+   mapchar(0x10+int(X-40),(roll*30)+250+int(Y));
    // screen[(roll*30)+250+Y]=0x10+(X-40);
     break;
   case 6:
  charString+=X-48;
-   mapchar(charString,(roll*30)+280+int(Y));
+   mapchar(0x10+int(X-48),(roll*30)+280+int(Y));
     //screen[(roll*30)+280+Y]=0x10+(X-48);
     break;
   }
@@ -1011,7 +1133,7 @@ void displayHorizonPart(float X,float Y,int roll)
 void displayHeadingGraph()
 {
   int xx;
-  String headString = "";
+  
   xx = MwHeading * 4;
   xx = xx + 720 + 45;
   xx = xx / 90;
@@ -1035,8 +1157,8 @@ void displayHeading()
   if(heading < 0)
     heading += 360;
     
-    switch (str(heading).length())
-   {
+  switch (str(heading).length())
+  {
     
   case 1:
    makeText(str(heading), MwHeadingPosition[0]+2);
@@ -1057,10 +1179,10 @@ void displayHeading()
 
 void displaySensors()
 {
-   mapchar("0xa0",sensorPosition[0]);
-   mapchar("0xa2",sensorPosition[0]+1);
-   mapchar("0xa1",sensorPosition[0]+2);
-   mapchar("0xa3",sensorPosition[0]+3);
+   mapchar(0xa0,sensorPosition[0]);
+   mapchar(0xa2,sensorPosition[0]+1);
+   mapchar(0xa1,sensorPosition[0]+2);
+   mapchar(0xa3,sensorPosition[0]+3);
  /* 
   if(MwSensorPresent&ACCELEROMETER) mapchar("0xa0",sensorPosition[0]);
   else ;
@@ -1079,16 +1201,16 @@ void displayMode()
 {
   if (ReadMW < 1){  
   if (int(SimItem[1].value()) > 0){
-    mapchar("0xac",sensorPosition[0]+4);
-    mapchar("0xad",sensorPosition[0]+5);
+    mapchar(0xac,sensorPosition[0]+4);
+    mapchar(0xad,sensorPosition[0]+5);
   }
   else
   {
-    mapchar("0xae",sensorPosition[0]+4);
-    mapchar("0xaf",sensorPosition[0]+5);
+    mapchar(0xae,sensorPosition[0]+4);
+    mapchar(0xaf,sensorPosition[0]+5);
   }
    if (int(SimItem[1].value()) > 0){
-    mapchar("0xbe",sensorPosition[0]+LINE);
+    mapchar(0xbe,sensorPosition[0]+LINE);
     //mapchar("0xad",sensorPosition[0]+5);
   }
   }
@@ -1097,52 +1219,22 @@ void displayMode()
     if((MwSensorActive&ARMEDMODE) >0) checkboxSimItem[0].activate(0); else checkboxSimItem[0].deactivate(0);
       
       
-  if((MwSensorActive&STABLEMODE) >0)   mapchar("0xbe",sensorPosition[0]+LINE);
+  if((MwSensorActive&STABLEMODE) >0)   mapchar(0xbe,sensorPosition[0]+LINE);
   else ;
-  if((MwSensorActive&BAROMODE) >0)     mapchar("0xbe",sensorPosition[0]+1+LINE);
+  if((MwSensorActive&BAROMODE) >0)     mapchar(0xbe,sensorPosition[0]+1+LINE);
   else ;
-  if((MwSensorActive&MAGMODE) >0)      mapchar("0xbe",sensorPosition[0]+2+LINE);
+  if((MwSensorActive&MAGMODE) >0)      mapchar(0xbe,sensorPosition[0]+2+LINE);
   else ;
-  if((MwSensorActive&GPSHOMEMODE) >0)  mapchar("0xbe",sensorPosition[0]+3+LINE);
-  if((MwSensorActive&GPSHOLDMODE) >0)  mapchar("0xbe",sensorPosition[0]+3+LINE);
+  if((MwSensorActive&GPSHOMEMODE) >0)  mapchar(0xbe,sensorPosition[0]+3+LINE);
+  if((MwSensorActive&GPSHOLDMODE) >0)  mapchar(0xbe,sensorPosition[0]+3+LINE);
    //println(MwSensorActive);
   }
-  /*
-  if ((present&1) >0) {buttonAcc.setColorBackground(green_);} else {buttonAcc.setColorBackground(red_);tACC_ROLL.setState(false); tACC_PITCH.setState(false); tACC_Z.setState(false);}
-        if ((present&2) >0) {buttonBaro.setColorBackground(green_);} else {buttonBaro.setColorBackground(red_); tBARO.setState(false); }
-        if ((present&4) >0) {buttonMag.setColorBackground(green_);} else {buttonMag.setColorBackground(red_); tMAGX.setState(false); tMAGY.setState(false); tMAGZ.setState(false); }
-        if ((present&8) >0) {buttonGPS.setColorBackground(green_);} else {buttonGPS.setColorBackground(red_); tHEAD.setState(false);}
-        if ((present&16)>0) {buttonSonar.setColorBackground(green_);} else {buttonSonar.setColorBackground(red_);}
-  
-  MAX7456_WriteString(screenBuffer,sensorPosition[videoSignalType][screenType]+LINE);
-  if(MwSensorActive&STABLEMODE)
-  {
-    screenBuffer[0]=0xac;
-    screenBuffer[1]=0xad;
-  }
-  else
-  {
-    screenBuffer[0]=0xae;
-    screenBuffer[1]=0xaf;
-  }
-  screenBuffer[2]=' ';
-  screenBuffer[3]=' ';
-  if(GPS_fix)                    screenBuffer[3]=0xdf;
-  if(MwSensorActive&GPSHOMEMODE) screenBuffer[3]=0xff;
-  if(MwSensorActive&GPSHOLDMODE) screenBuffer[3]=0xef;
-  screenBuffer[4]=0;
-  MAX7456_WriteString(screenBuffer,sensorPosition[videoSignalType][screenType]+4);
-  */
+ 
  
 }
 
 void displayArmed()
 {
-  //static const char _disarmed[] PROGMEM = "DISARMED";
-  //static const char _armed[] PROGMEM = " ARMED";
-
-  //armed = (MwSensorActive&ARMEDMODE);
-  //if(armedTimer==0)
   if (int(SimItem[0].value()) > 0){
     makeText("ARMED", motorArmedPosition[0]);
   }
@@ -1150,38 +1242,36 @@ void displayArmed()
   {
   makeText("DISARMED", motorArmedPosition[0]);
   }
-   // MAX7456_WriteString_P(_disarmed, motorArmedPosition[videoSignalType][screenType]);
-  //else if((armedTimer>1) && (armedTimer<9) && (Blink10hz))
-    //MAX7456_WriteString_P(_armed, motorArmedPosition[videoSignalType][screenType]);
+
 }
 
 
 
 void ShowVolts(float voltage){
-mapchar("0x97", voltagePosition[ScreenType]);
+mapchar(0x97, voltagePosition[ScreenType]);
 makeText(str(voltage), voltagePosition[ScreenType]+2);
 }
 void ShowFlyTime(String FMinutes_Seconds){
-mapchar("0x9c", flyTimePosition[ScreenType]);
+mapchar(0x9c, flyTimePosition[ScreenType]);
 makeText(FMinutes_Seconds, flyTimePosition[ScreenType]+1);
 }
 void ShowOnTime(String Minutes_Seconds){
-mapchar("0x9b", onTimePosition[ScreenType]);
+mapchar(0x9b, onTimePosition[ScreenType]);
 makeText(Minutes_Seconds, onTimePosition[ScreenType]+1);
 }
 
 void ShowCurrentThrottlePosition(){
-mapchar("0xc8", CurrentThrottlePosition[ScreenType]);
+mapchar(0xc8, CurrentThrottlePosition[ScreenType]);
 makeText(" 40%", CurrentThrottlePosition[ScreenType]+1);
 }
 
 void ShowRSSI(){
-mapchar("0xba", rssiPosition[ScreenType]);
+mapchar(0xba, rssiPosition[ScreenType]);
 makeText("93%", rssiPosition[ScreenType]+1);
 }
 
 void ShowAmperage(){
-mapchar("0xa4", amperagePosition[ScreenType]);
+mapchar(0xa4, amperagePosition[ScreenType]);
 makeText("2306", amperagePosition[ScreenType]+1);
 }
 
@@ -1224,6 +1314,210 @@ void SimulateTimer(){
   } 
    ShowFlyTime(FlyTimerString);
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////// BEGIN FILE OPS//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//save the content of the model to a file
+public void bSAVE() {
+  updateModel();
+  SwingUtilities.invokeLater(new Runnable(){
+    public void run() {
+     final JFileChooser fc = new JFileChooser() {
+
+        private static final long serialVersionUID = 7919427933588163126L;
+
+        public void approveSelection() {
+            File f = getSelectedFile();
+            if (f.exists() && getDialogType() == SAVE_DIALOG) {
+                int result = JOptionPane.showConfirmDialog(this,
+                        "The file exists, overwrite?", "Existing file",
+                        JOptionPane.YES_NO_CANCEL_OPTION);
+                switch (result) {
+                case JOptionPane.YES_OPTION:
+                    super.approveSelection();
+                    return;
+                case JOptionPane.CANCEL_OPTION:
+                    cancelSelection();
+                    return;
+                default:
+                    return;
+                }
+            }
+            super.approveSelection();
+        }
+    };
+
+      fc.setDialogType(JFileChooser.SAVE_DIALOG);
+      fc.setFileFilter(new MwiFileFilter());
+      int returnVal = fc.showSaveDialog(null);
+      if (returnVal == JFileChooser.APPROVE_OPTION) {
+        File file = fc.getSelectedFile();
+        String filePath = file.getPath();
+        if(!filePath.toLowerCase().endsWith(".osd")){
+          file = new File(filePath + ".osd");
+        }
+
+        
+        FileOutputStream out =null;
+        String error = null;
+        try{
+          out = new FileOutputStream(file) ;
+          MWI.conf.storeToXML(out, "RUSH_OSD Configuration File  " + new  Date().toString());
+          JOptionPane.showMessageDialog(null,new StringBuffer().append("configuration saved : ").append(file.toURI()) );
+        }catch(FileNotFoundException e){
+         
+          error = e.getCause().toString();
+        }catch( IOException ioe){
+                /*failed to write the file*/
+                ioe.printStackTrace();
+                error = ioe.getCause().toString();
+        }finally{
+                
+          if (out!=null){
+            try{
+              out.close();
+            }catch( IOException ioe){/*failed to close the file*/error = ioe.getCause().toString();}
+          }
+          if (error !=null){
+                  JOptionPane.showMessageDialog(null, new StringBuffer().append("error : ").append(error) );
+          }
+        }
+    }
+    }
+  }
+  );
+}
+
+
+public void updateModel(){
+  for(int j=0;j<ConfigNames.length;j++) {
+         MWI.setProperty(ConfigNames[j],String.valueOf(confItem[j].value()));
+  }
+        
+}
+public void updateView(){
+  for(int j=0;j<ConfigNames.length;j++) {
+         confItem[j].setValue(int(MWI.getProperty(ConfigNames[j])));
+         if  (confItem[j].value() >0){
+           checkboxConfItem[j].activateAll();
+         }
+         else {
+           checkboxConfItem[j].deactivateAll();
+         }
+           
+  }
+        
+}
+
+
+
+public class MwiFileFilter extends FileFilter {
+ public boolean accept(File f) {
+   if(f != null) {
+     if(f.isDirectory()) {
+       return true;
+     }
+     String extension = getExtension(f);
+     if("osd".equals(extension)) {
+       return true;
+     };
+   }
+   return false;
+ }
+ public String getExtension(File f) {
+   if(f != null) {
+      String filename = f.getName();
+      int i = filename.lastIndexOf('.');
+      if(i>0 && i<filename.length()-1) {
+        return filename.substring(i+1).toLowerCase();
+      };
+    }
+    return null;
+  } 
+  public String getDescription() {return "*.osd Rush_OSD configuration file";}   
+}
+
+
+// import the content of a file into the model
+public void bIMPORT(){
+  SwingUtilities.invokeLater(new Runnable(){
+    public void run(){
+      final JFileChooser fc = new JFileChooser();
+      fc.setDialogType(JFileChooser.SAVE_DIALOG);
+      fc.setFileFilter(new MwiFileFilter());
+      int returnVal = fc.showOpenDialog(null);
+      if (returnVal == JFileChooser.APPROVE_OPTION) {
+        File file = fc.getSelectedFile();
+        FileInputStream in = null;
+        boolean completed = false;
+        String error = null;
+        try{
+          in = new FileInputStream(file) ;
+          MWI.conf.loadFromXML(in); 
+          JOptionPane.showMessageDialog(null,new StringBuffer().append("configuration loaded : ").append(file.toURI()) );
+          completed  = true;
+          
+        }catch(FileNotFoundException e){
+                error = e.getCause().toString();
+
+        }catch( IOException ioe){/*failed to read the file*/
+                ioe.printStackTrace();
+                error = ioe.getCause().toString();
+        }finally{
+          if (!completed){
+                 // MWI.conf.clear();
+                 // or we can set the properties with view values, sort of 'nothing happens'
+                 updateModel();
+          }
+          updateView();
+          if (in!=null){
+            try{
+              in.close();
+            }catch( IOException ioe){/*failed to close the file*/}
+          }
+          
+          if (error !=null){
+                  JOptionPane.showMessageDialog(null, new StringBuffer().append("error : ").append(error) );
+          }
+        }
+      }
+    }
+  }
+  );
+}
+
+
+//  our model 
+static class MWI{
+private static Properties conf = new Properties();
+
+public static void setProperty(String key ,String value ){
+conf.setProperty( key,value );
+}
+
+public static String getProperty(String key ){
+ return conf.getProperty( key,"0");
+}
+
+public static void clear(){
+        conf= null; // help gc
+        conf = new Properties();
+}
+
+}
+
+//********************************************************
+//********************************************************
+//********************************************************
+
+
+
+
+
+
+
+
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// BEGIN MW SERIAL////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1419,7 +1713,15 @@ public void evaluateCommand(byte cmd, int dataSize) {
     MwHeading = read16();
     read16();
     break;
+   
+   
+   case MSP_BAT:
+   
+   MwVBat=read8();
+   pMeterSum=read16();
+   break;
   }
+   
 }
 
 
