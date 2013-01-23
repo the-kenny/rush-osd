@@ -26,7 +26,7 @@ void serialMSPCheck()
 {
   p=0;
   
-  if (cmdMSP == MSP_OSD_READ){                           // for GUI communication
+  if ((cmdMSP == MSP_OSD_READ) && (MwVersion == 0)){                           // for GUI communication
     serialWait = 1;
     for(int en=0;en<EEPROM_SETTINGS;en++){
       Serial.write("*");  
@@ -36,7 +36,7 @@ void serialMSPCheck()
     }
     serialWait = 0;
   }
-  if (cmdMSP == MSP_OSD_WRITE){                          // for GUI communication
+  if ((cmdMSP == MSP_OSD_WRITE)&& (MwVersion == 0)){                          // for GUI communication
     serialWait = 1; 
     for(int en=0;en<EEPROM_SETTINGS;en++){
       uint8_t inSetting = read8();
