@@ -2,6 +2,8 @@
 
 
 
+
+
 // This software is a copy of the original Rushduino-OSD project was written by Jean-Gabriel Maurice. http://code.google.com/p/rushduino-osd/
 // For more information if you have a original Rushduino OSD <Multiwii forum>  http://www.multiwii.com/forum/viewtopic.php?f=8&t=922
 // For more information if you have a Minim OSD <Multiwii forum>  http://www.multiwii.com/forum/viewtopic.php?f=8&t=2918
@@ -66,22 +68,27 @@ void setup()
   Serial.begin(SERIAL_SPEED);
   Serial.flush();
   pinMode(BST,OUTPUT);
-  MAX7456Setup();
   checkEEPROM();
   readEEPROM();
+  MAX7456Setup();
+  
   analogReference(INTERNAL);
 }
 
 void loop()
 {
   // Process AI
-  #if defined RUSHDUINO
+  if (Settings[S_ENABLEADC]){
   temperature=(analogRead(temperaturePin)*1.1)/10.23;
-  voltage=(analogRead(voltagePin)*1.1*DIVIDERRATIO)/102.3;
-  vidvoltage=(analogRead(vidvoltagePin)*1.1*VIDDIVIDERRATIO)/102.3;
+    if (!Settings[S_MAINVOLTAGE_VBAT]){
+      voltage=(analogRead(voltagePin)*1.1*Settings[S_DIVIDERRATIO])/102.3;
+    }
+    if (!Settings[S_VIDVOLTAGE_VBAT]){
+      vidvoltage=(analogRead(vidvoltagePin)*1.1*Settings[S_VIDDIVIDERRATIO])/102.3;
+    }
   rssiADC = (analogRead(rssiPin)*1.1)/1023;
   amperage = (AMPRERAGE_OFFSET - (analogRead(amperagePin)*AMPERAGE_CAL))/10.23;
-  #endif
+  }
 
   // Blink Basic Sanity Test Led at 1hz
   if(tenthSec>10) BST_ON else BST_OFF
@@ -196,22 +203,21 @@ void loop()
       }
       else
       {
-        if(enableVoltage&&((voltage>lowVoltage)||(Blink2hz))) displayVoltage();
-        if(enableRSSI&&((rssi>lowrssiAlarm)||(Blink2hz))) displayRSSI();
+        if(Settings[S_DISPLAYVOLTAGE]&&((voltage>Settings[S_VOLTAGEMIN])||(Blink2hz))) displayVoltage();
+        if(Settings[S_DISPLAYRSSI]&&((rssi>lowrssiAlarm)||(Blink2hz))) displayRSSI();
 
         displayTime();
         displayMode();
 
-        if(enableTemperature&&((temperature<highTemperature)||(Blink2hz))) displayTemperature();
+        if(Settings[S_DISPLAYTEMPERATURE]&&((temperature<Settings[S_TEMPERATUREMAX])||(Blink2hz))) displayTemperature();
 
 #if defined HARDSENSOR
         displayAmperage();
 #endif
         displaypMeterSum();
         displayArmed();
-#if defined THROTTLEPOSITION
-        displayCurrentThrottle();
-#endif
+        if (Settings[S_THROTTLEPOSITION]) displayCurrentThrottle();
+
 
         if(MwSensorPresent&ACCELEROMETER) displayHorizon(MwAngle[0],MwAngle[1]*-1);
         if(MwSensorPresent&MAGNETOMETER)  {
@@ -229,7 +235,7 @@ void loop()
           displayAngleToHome();
           displayGPS_speed();
 
-          if (displayGPS)
+          if (Settings[S_DISPLAYGPS])
             displayGPSPosition();
         }
       }
@@ -287,7 +293,7 @@ void loop()
     if(eepromWriteTimer>0) eepromWriteTimer--;
 
     if((rssiTimer==1)&&(configMode)) {
-      rssiMin=rssiADC;
+      Settings[S_RSSIMIN]=rssiADC;
       rssiTimer=0;
     }
     if(rssiTimer>0) rssiTimer--;
@@ -306,7 +312,7 @@ void calculateRssi(void)
 {
   float aa=0;
   aa =  analogRead(rssiPin)/4;
-  aa = ((aa-rssiMin) *101)/(rssiMax-rssiMin) ;
+  aa = ((aa-Settings[S_RSSIMIN]) *101)/(Settings[S_RSSIMAX]-Settings[S_RSSIMIN]) ;
   rssi_Int += ( ( (signed int)((aa*rssiSample) - rssi_Int )) / rssiSample );
   rssi = rssi_Int / rssiSample ;
   if(rssi<0) rssi=0;
@@ -315,68 +321,25 @@ void calculateRssi(void)
 
 void writeEEPROM(void)
 {
-  EEPROM.write(EEPROM_STABLEMODE,STABLEMODE);
-  EEPROM.write(EEPROM_BAROMODE,BAROMODE);
-  EEPROM.write(EEPROM_MAGMODE,MAGMODE);
-  EEPROM.write(EEPROM_ARMEDMODE,ARMEDMODE);
-  EEPROM.write(EEPROM_GPSHOMEMODE,GPSHOMEMODE);
-  EEPROM.write(EEPROM_GPSHOLDMODE,GPSHOLDMODE);
-  EEPROM.write(EEPROM_RSSIMIN,rssiMin);
-  EEPROM.write(EEPROM_RSSIMAX,rssiMax);
-  EEPROM.write(EEPROM_DISPLAYRSSI,enableRSSI);
- 
-  EEPROM.write(EEPROM_DISPLAYVOLTAGE,enableVoltage);
-  EEPROM.write(EEPROM_VOLTAGEMIN,lowVoltage);
-  EEPROM.write(EEPROM_DIVIDERRATIO,DIVIDERRATIO);
-  EEPROM.write(EEPROM_MAINVOLTAGE_VBAT,MAINVOLTAGE_VBAT);
-  EEPROM.write(EEPROM_VIDVOLTAGE,VIDVOLTAGE);
-  EEPROM.write(EEPROM_VIDDIVIDERRATIO,VIDDIVIDERRATIO);
-  EEPROM.write(EEPROM_VIDVOLTAGE_VBAT,VIDVOLTAGE_VBAT);
-  
-  EEPROM.write(EEPROM_DISPLAYTEMPERATURE,enableTemperature);
-  EEPROM.write(EEPROM_TEMPERATUREMAX,highTemperature);
-  
-  EEPROM.write(EEPROM_DISPLAYGPS,displayGPS);
-  
-  EEPROM.write(EEPROM_UNITSYSTEM,unitSystem);
+ for(int en=0;en<EEPROM_SETTINGS;en++){
+  if (EEPROM.read(en) != Settings[en]) EEPROM.write(en,Settings[en]);
+ } 
 }
 
 void readEEPROM(void)
 {
-  STABLEMODE = EEPROM.read(EEPROM_STABLEMODE);
-  BAROMODE = EEPROM.read(EEPROM_BAROMODE);
-  MAGMODE = EEPROM.read(EEPROM_MAGMODE);
-  ARMEDMODE = EEPROM.read(EEPROM_ARMEDMODE);
-  GPSHOMEMODE = EEPROM.read(EEPROM_GPSHOMEMODE);
-  GPSHOLDMODE = EEPROM.read(EEPROM_GPSHOLDMODE);
-  
-  rssiMin= EEPROM.read(EEPROM_RSSIMIN);
-  rssiMax= EEPROM.read(EEPROM_RSSIMAX);
-  enableRSSI= EEPROM.read(EEPROM_DISPLAYRSSI);
-  
-  enableVoltage= EEPROM.read(EEPROM_DISPLAYVOLTAGE);
-  lowVoltage= EEPROM.read(EEPROM_VOLTAGEMIN);
-  DIVIDERRATIO = EEPROM.read(EEPROM_DIVIDERRATIO);
-  MAINVOLTAGE_VBAT = EEPROM.read(EEPROM_MAINVOLTAGE_VBAT);
-  VIDVOLTAGE = EEPROM.read(EEPROM_VIDVOLTAGE);
-  VIDDIVIDERRATIO = EEPROM.read(EEPROM_VIDDIVIDERRATIO);
-  VIDVOLTAGE_VBAT = EEPROM.read(EEPROM_VIDVOLTAGE_VBAT);
-  
-  enableTemperature= EEPROM.read(EEPROM_DISPLAYTEMPERATURE);
-  highTemperature= EEPROM.read(EEPROM_TEMPERATUREMAX);
-  
-  displayGPS= EEPROM.read(EEPROM_DISPLAYGPS);
- 
-  unitSystem= !!EEPROM.read(EEPROM_UNITSYSTEM);
+ for(int en=0;en<EEPROM_SETTINGS;en++){
+   Settings[en] = EEPROM.read(en);
+ } 
 }
 
 // for first run to ini
 void checkEEPROM(void)
 {
   int EEPROM_Loaded = EEPROM.read(0);
-  if (EEPROM_Loaded == 0){
+  if (!EEPROM_Loaded){
     for(int en=0;en<EEPROM_SETTINGS;en++){
-      EEPROM.write(en,EEPROM_DEFAULT[en]);
+     if (EEPROM.read(en) != EEPROM_DEFAULT[en]) EEPROM.write(en,EEPROM_DEFAULT[en]);
     }
   }
 }

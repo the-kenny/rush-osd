@@ -6,17 +6,11 @@
 
 
 //*************************************   Define your OSD Board   ****************************************/
-
-//#define MINIMOSD
-#define RUSHDUINO
+// moved MINIMOSD to eeprom, default values are in GlobalVariables
+// moved RUSHDUINO to eeprom, default values are in GlobalVariables
 
 /*******************************************  Video System  ***********************************/
-
-#define VideoSignalType_PAL
-const char videoSignalType=1;
-
-//#define VideoSignalType_NTSC
-//const char videoSignalType=0;
+//moved VideoSignalType to eeprom, default values are in GlobalVariables
 
 /**********************       Serial speed      ************************/
 
@@ -51,14 +45,14 @@ const char videoSignalType=1;
 /**********************************         Display Settings         ************************/
 
 #define DECIMAL '.'                 // Decimal point character, change to what suits you best (.) (,)
-#define THROTTLEPOSITION            // Comment to suppress throttle position
-#define DISPLAY_HORIZON_BR
-//#define COORDINATES               // Uncomment to display coordinates (use with display GPS ON, on OSD page 3)
-#define WITHDECORATION
-#define SHOWHEADING
-#define HEADING360                  // Heading shows as 0..359; Comment for -179..180
-//#define SHOWBATLEVELEVOLUTION     // Uncomment to display battery evolution
 
+// moved THROTTLEPOSITION to eeprom, default values are in GlobalVariables
+// moved DISPLAY_HORIZON_BR to eeprom, default values are in GlobalVariables
+// moved COORDINATES to eeprom, default values are in GlobalVariables
+// moved WITHDECORATION to eeprom, default values are in GlobalVariables
+// moved SHOWHEADING to eeprom, default values are in GlobalVariables
+// moved HEADING360 to eeprom, default values are in GlobalVariables
+// moved HEADING360 to eeprom, default values are in GlobalVariables
 // moved VIDVOLTAGE  to eeprom, default values are in GlobalVariables
 
 
@@ -71,14 +65,8 @@ const char videoSignalType=1;
 #define GPSSENSOR      8//0b00001000
 //#define SONAR         16//0b00010000
 
-// For battery evolution display
-#define BATCELLS 	3
-#define BATTEV1 ((BATCELLS)*(35))
-#define BATTEV2 ((BATCELLS)*(36))
-#define BATTEV3 ((BATCELLS)*(37))
-#define BATTEV4 ((BATCELLS)*(38))
-#define BATTEV5 ((BATCELLS)*(40))
-#define BATTEV6 ((BATCELLS)*(41))
+//moved BATCELLS to EEPROM
+// moved BATEVs to DisplayVoltage
 
 /*********************      Led output      *******************************/
 #define BST 7                        // pin 7 for original Rushduino Board
@@ -86,7 +74,7 @@ const char videoSignalType=1;
 #define BST_ON digitalWrite(BST,HIGH);
 
 /*********************      Statistics      *******************************/
-#define RESETSTATISTICS              // Uncomment if you want to reset statistics after each arming - NEB implemented
+// moved RESETSTATISTICS to eeprom, default values are in GlobalVariables
 
 /********************      Analog input defines     ***********************/
 
@@ -176,32 +164,8 @@ const uint8_t lowrssiAlarm=75;     // This will make blink the Rssi if lower the
 #define MINPAGE 1
 #define MAXPAGE 6
 
-//Current # of setting available
-#define EEPROM_SETTINGS            22
 
 
-// EEPROM LOCATION IN ARDUINO EEPROM MAP
-//  EEPROM(0) used for check       0
-#define EEPROM_STABLEMODE          1           
-#define EEPROM_BAROMODE            2            
-#define EEPROM_MAGMODE             3            
-#define EEPROM_ARMEDMODE           4           
-#define EEPROM_GPSHOMEMODE         5           
-#define EEPROM_GPSHOLDMODE         6     
-#define EEPROM_RSSIMIN             7
-#define EEPROM_RSSIMAX             8
-#define EEPROM_DISPLAYRSSI         9
-#define EEPROM_DISPLAYVOLTAGE      10
-#define EEPROM_VOLTAGEMIN          11
-#define EEPROM_DIVIDERRATIO        12
-#define EEPROM_MAINVOLTAGE_VBAT    13
-#define EEPROM_VIDVOLTAGE          14
-#define EEPROM_VIDDIVIDERRATIO     15    
-#define EEPROM_VIDVOLTAGE_VBAT     16
-#define EEPROM_DISPLAYTEMPERATURE  17
-#define EEPROM_TEMPERATUREMAX      18
-#define EEPROM_DISPLAYGPS          19
-#define EEPROM_UNITSYSTEM          20
 
 
 

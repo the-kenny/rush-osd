@@ -2,15 +2,8 @@
 #define DATAIN  12              // MISO
 #define SPICLOCK  13            // sck
 
-#if defined MINIMOSD
-  #define MAX7456SELECT 6       // ss
-  #define MAX7456RESET 10       // RESET
-#endif
 
-#if defined RUSHDUINO
-  #define MAX7456SELECT 10      // ss 
-  #define MAX7456RESET 9        // RESET
-#endif
+
 
 #define VSYNC 2                 // INT0
 
@@ -24,7 +17,7 @@
 
 // video mode register 0 bits
 #define VIDEO_BUFFER_DISABLE 0x01
-#define MAX7456_RESET 0x02
+//#define MAX7456_RESET 0x02
 #define VERTICAL_SYNC_NEXT_VSYNC 0x04
 #define OSD_ENABLE 0x08
 #define SYNC_MODE_AUTO 0x00
@@ -71,23 +64,23 @@
 #define WHITE_level_120 0x00
 
 
-#if defined(VideoSignalType_PAL)
-#define ENABLE_display 0x48
-#define ENABLE_display_vert 0x4c
-#define MAX7456_reset 0x42
-#define DISABLE_display 0x40
-#define MAX_screen_size 480
-#define MAX_screen_rows 16
-#endif
+//#if defined(VideoSignalType_PAL)
+//#define ENABLE_display 0x48
+//#define ENABLE_display_vert 0x4c
+//#define MAX7456_reset 0x42
+//#define DISABLE_display 0x40
+//#define MAX_screen_size 480
+//#define MAX_screen_rows 16
+//#endif
 
-#if defined(VideoSignalType_NTSC)
-#define ENABLE_display 0x08
-#define ENABLE_display_vert 0x0c
-#define MAX7456_reset 0x02
-#define DISABLE_display 0x00
-#define MAX_screen_size 390
-#define MAX_screen_rows 13
-#endif
+//#if defined(VideoSignalType_NTSC)
+//#define ENABLE_display 0x08
+//#define ENABLE_display_vert 0x0c
+//#define MAX7456_reset 0x02
+//#define DISABLE_display 0x00
+//#define MAX_screen_size 390
+//#define MAX_screen_rows 13
+//#endif
 
 
 
@@ -128,6 +121,9 @@ volatile byte save_screen;
 volatile int  incomingByte;
 volatile int  count;
 
+int MAX7456SELECT,MAX7456RESET,MAX7456_reset, ENABLE_display,ENABLE_display_vert,DISABLE_display,MAX_screen_size,MAX_screen_rows;
+
+
 //////////////////////////////////////////////////////////////
 byte spi_transfer(volatile byte data)
 {
@@ -144,6 +140,37 @@ byte spi_transfer(volatile byte data)
 
 void MAX7456Setup(void)
 {
+ 
+  if(Settings[S_VIDEOSIGNALTYPE] == 1){
+    ENABLE_display = 0x48;
+    ENABLE_display_vert = 0x4c;
+    MAX7456_reset = 0x42;
+    DISABLE_display = 0x40;
+    MAX_screen_size = 480;
+    MAX_screen_rows = 16;
+ }
+ else{
+    ENABLE_display = 0x08;
+    ENABLE_display_vert = 0x0c;
+    MAX7456_reset = 0x02;
+    DISABLE_display = 0x00;
+    MAX_screen_size = 390;
+    MAX_screen_rows = 13;
+ }
+  
+  
+  
+  
+  
+  if (Settings[S_BOARDTYPE] == 1){
+    MAX7456SELECT = 6;       // ss
+    MAX7456RESET = 10;       // RESET
+  }
+  else{
+    MAX7456SELECT = 10;      // ss 
+    MAX7456RESET  = 9;        // RESET
+  }
+  
   byte spi_junk, eeprom_junk;
   int x;
   pinMode(MAX7456RESET,OUTPUT);
@@ -187,13 +214,12 @@ void MAX7456Setup(void)
   spi_transfer(VM0_reg);
 
 
-#if defined VideoSignalType_NTSC
-  spi_transfer(OSD_ENABLE|VIDEO_MODE_NTSC);
-#endif
-
-#if defined VideoSignalType_PAL
+  if (Settings[S_VIDEOSIGNALTYPE]){
   spi_transfer(OSD_ENABLE|VIDEO_MODE_PAL);
-#endif
+  }
+  else{
+    spi_transfer(OSD_ENABLE|VIDEO_MODE_NTSC);
+  }
   digitalWrite(MAX7456SELECT,HIGH);
   delay(100);
 

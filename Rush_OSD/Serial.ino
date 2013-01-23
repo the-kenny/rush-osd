@@ -39,7 +39,11 @@ void serialMSPCheck()
   if (cmdMSP == MSP_OSD_WRITE){                          // for GUI communication
     serialWait = 1; 
     for(int en=0;en<EEPROM_SETTINGS;en++){
-      EEPROM.write(en,read8());
+      uint8_t inSetting = read8();
+      if (inSetting != Settings[en]) EEPROM.write(en,inSetting);
+      
+      
+      
     }
   readEEPROM();
   serialWait = 0;
@@ -210,18 +214,19 @@ void serialMSPCheck()
     }
 
     if(configPage == 3 && COL == 3) {
-      if(ROW==2) enableVoltage=!enableVoltage;
-      if(ROW==3) lowVoltage--;
-      if(ROW==4) enableTemperature=!enableTemperature;
-      if(ROW==5) highTemperature--;
-      if(ROW==6) displayGPS=!displayGPS;
+      if(ROW==2) Settings[S_DISPLAYVOLTAGE]=!Settings[S_DISPLAYVOLTAGE];
+      if(ROW==3) Settings[S_VOLTAGEMIN]--;
+      if(ROW==4) Settings[S_DISPLAYTEMPERATURE]=!Settings[S_DISPLAYTEMPERATURE];
+      if(ROW==5) Settings[S_TEMPERATUREMAX]--;
+      if(ROW==6) Settings[S_DISPLAYGPS]=!Settings[S_DISPLAYGPS];
     }
 
     if(configPage == 4 && COL == 3) {
       if(ROW==3) rssiTimer=15;
       if(ROW==4) rssiMax=rssiADC;
-      if(ROW==5) enableRSSI=!enableRSSI;
-      if(ROW==6) unitSystem=!unitSystem;
+      if(ROW==5) Settings[S_DISPLAYRSSI]=!Settings[S_DISPLAYRSSI];
+      if(ROW==6) Settings[S_UNITSYSTEM]=!Settings[S_UNITSYSTEM];
+
     }
 
     if(configPage == 5 && COL == 3) {
@@ -265,18 +270,19 @@ void serialMSPCheck()
     }
 
     if(configPage == 3 && COL == 3) {
-      if(ROW==2) enableVoltage=!enableVoltage;
-      if(ROW==3) lowVoltage++;
-      if(ROW==4) enableTemperature=!enableTemperature;
-      if(ROW==5) highTemperature++;
-      if(ROW==6) displayGPS=!displayGPS;
+      if(ROW==2) Settings[S_DISPLAYVOLTAGE]=!Settings[S_DISPLAYVOLTAGE];
+      if(ROW==3) Settings[S_VOLTAGEMIN]++;
+      if(ROW==4) Settings[S_DISPLAYTEMPERATURE]=!Settings[S_DISPLAYTEMPERATURE];
+      if(ROW==5) Settings[S_TEMPERATUREMAX]++;
+      if(ROW==6) Settings[S_DISPLAYGPS]=!Settings[S_DISPLAYGPS];
     }
 
     if(configPage == 4 && COL == 3) {
       if(ROW==3) rssiTimer=15;
       if(ROW==4) rssiMax=rssiADC;
-      if(ROW==5) enableRSSI=!enableRSSI;
-      if(ROW==6) unitSystem=!unitSystem;
+      if(ROW==5) Settings[S_DISPLAYRSSI]=!Settings[S_DISPLAYRSSI];
+      if(ROW==6) Settings[S_UNITSYSTEM]=!Settings[S_UNITSYSTEM];
+
     }
 
     if(configPage == 5 && COL == 3) {
@@ -364,13 +370,13 @@ void configExit()
   askPID=0;
   waitStick=3;
   previousarmedstatus = 0;
-#if defined RESETSTATISTICS  // NEB added for reset statistics if defined
+  if (Settings[S_RESETSTATISTICS]){  // NEB added for reset statistics if defined
   trip=0;
   distanceMAX=0;
   altitudeMAX=0;
   speedMAX=0;
   flyingTime=0;
-#endif
+}
 }
 
 void saveExit()

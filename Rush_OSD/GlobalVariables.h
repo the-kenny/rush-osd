@@ -23,38 +23,87 @@ uint8_t configPage=MINPAGE;
 uint8_t configMode=0;
 
 
+//Current # of setting available
+#define EEPROM_SETTINGS            33
+
+uint8_t Settings[EEPROM_SETTINGS]; 
+
+// Settings Locations
+// used for check               0
+#define S_STABLEMODE            1           
+#define S_BAROMODE              2            
+#define S_MAGMODE               3            
+#define S_ARMEDMODE             4           
+#define S_GPSHOMEMODE           5           
+#define S_GPSHOLDMODE           6     
+#define S_RSSIMIN               7
+#define S_RSSIMAX               8
+#define S_DISPLAYRSSI           9
+#define S_DISPLAYVOLTAGE        10
+#define S_VOLTAGEMIN            11
+#define S_BATCELLS              12     
+#define S_DIVIDERRATIO          13
+#define S_MAINVOLTAGE_VBAT      14
+#define S_VIDVOLTAGE            15
+#define S_VIDDIVIDERRATIO       16    
+#define S_VIDVOLTAGE_VBAT       17
+#define S_DISPLAYTEMPERATURE    18
+#define S_TEMPERATUREMAX        19
+#define S_BOARDTYPE             20
+#define S_DISPLAYGPS            21
+#define S_COORDINATES           22
+#define S_SHOWHEADING           23
+#define S_HEADING360            24     
+#define S_UNITSYSTEM            25
+#define S_VIDEOSIGNALTYPE       26 
+#define S_THROTTLEPOSITION      27
+#define S_DISPLAY_HORIZON_BR    28
+#define S_WITHDECORATION        29
+#define S_SHOWBATLEVELEVOLUTION 30 
+#define S_RESETSTATISTICS       31
+#define S_ENABLEADC             32 
 
 
-
-// For EEPROM Defaults
-uint8_t EEPROM_DEFAULT[21] = {
+// For Settings Defaults
+uint8_t EEPROM_DEFAULT[EEPROM_SETTINGS] = {
 1,   // used for check             0
-3,   // EEPROM_STABLEMODE          1           
-4,   // EEPROM_BAROMODE            2            
-8,   // EEPROM_MAGMODE             3            
-16,  // EEPROM_ARMEDMODE           4           
-32,  // EEPROM_GPSHOMEMODE         5           
-64, // EEPROM_GPSHOLDMODE         6     
-0, // EEPROM_RSSIMIN             7
-255,   // EEPROM_RSSIMAX             8
-1,   // EEPROM_DISPLAYRSSI         9
-1,   // EEPROM_DISPLAYVOLTAGE      10
-0,   // EEPROM_VOLTAGEMIN          11
-22.04,  // EEPROM_DIVIDERRATIO        12
-0,   // EEPROM_MAINVOLTAGE_VBAT    13
-0,   // EEPROM_VIDVOLTAGE          14
-22.04,  // EEPROM_VIDDIVIDERRATIO     15    
-0,   // EEPROM_VIDVOLTAGE_VBAT     16
-0,   // EEPROM_DISPLAYTEMPERATURE  17
-255, // EEPROM_TEMPERATUREMAX      18
-1,   // EEPROM_DISPLAYGPS          19
-0,   // EEPROM_UNITSYSTEM          20
+1,   // S_STABLEMODE             1           
+4,   // S_BAROMODE               2            
+8,   // S_MAGMODE                3            
+32,  // S_ARMEDMODE              4           
+64,  // S_GPSHOMEMODE            5           
+128, // S_GPSHOLDMODE            6     
+0,   // S_RSSIMIN                7
+255, // S_RSSIMAX                8
+1,   // S_DISPLAYRSSI            9
+1,   // S_DISPLAYVOLTAGE         10
+105, // S_VOLTAGEMIN             11
+3,   // S_BATCELLS               12
+25,  // S_DIVIDERRATIO           13
+0,   // S_MAINVOLTAGE_VBAT       14
+0,   // S_VIDVOLTAGE             15
+25,  // S_VIDDIVIDERRATIO        16    
+0,   // S_VIDVOLTAGE_VBAT        17
+0,   // S_DISPLAYTEMPERATURE     18
+255, // S_TEMPERATUREMAX         19
+0,   // S_BOARDTYPE              20
+1,   // S_DISPLAYGPS             21
+0,   // S_COORDINATES            22
+1,   // S_SHOWHEADING            23 
+1,   // S_HEADING360             24      
+0,   // S_UNITSYSTEM             25
+1,   // S_VIDEOSIGNALTYPE        26
+1,   // S_THROTTLEPOSITION       27
+1,   // S_DISPLAY_HORIZON_BR     28
+1,   // S_WITHDECORATION         29
+0,   // S_SHOWBATLEVELEVOLUTION  30 
+1,   // S_RESETSTATISTICS        31
+0,   // S_ENABLEADC              32
 };
 
-// For active mode now from eeprom
-uint8_t STABLEMODE,BAROMODE,MAGMODE,ARMEDMODE,GPSHOMEMODE,GPSHOLDMODE;
-// for Voltages now from eeprom
-uint8_t DIVIDERRATIO,MAINVOLTAGE_VBAT,VIDVOLTAGE,VIDDIVIDERRATIO,VIDVOLTAGE_VBAT;
+
+
+
 
 
 
@@ -67,7 +116,8 @@ int8_t waitStick=0;
 
 uint8_t askPID=0;
 uint8_t serialWait=0;
-short unitSystem=METRIC;
+
+
 
 static uint8_t P8[PIDITEMS], I8[PIDITEMS], D8[PIDITEMS];
 
@@ -139,21 +189,16 @@ int rssiADC=0;
 int rssiMin;
 int rssiMax;
 int rssi_Int=0;
-uint8_t enableRSSI=1;
+
 
 // For Voltage
 float voltage=0;                      // its the real value x10
 float vidvoltage=0;                   // its the real value x10
-uint8_t enableVoltage=1;
-uint8_t enableVidvoltage=1;
-uint8_t lowVoltage=105;
 
 // For temprature
 float temperature=0;                  // its the real value x10
-uint8_t enableTemperature=1;
-uint8_t highTemperature=50;           // Celcius or Fahrenheit
 
-uint8_t displayGPS=1;
+
 
 // For Statistics
 int16_t speedMAX=GPS_speed;

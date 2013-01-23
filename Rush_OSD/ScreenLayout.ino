@@ -27,6 +27,6 @@ const unsigned screenPosition[][2] PROGMEM = {
 };
 
 unsigned int getPosition(uint8_t pos) {
-  return (unsigned int)pgm_read_word(&screenPosition[pos][videoSignalType]);
+  return (unsigned int)pgm_read_word(&screenPosition[pos][Settings[S_VIDEOSIGNALTYPE]]);
 }
 

@@ -23,7 +23,6 @@ char *ItoaPadded(int val, char *str, uint8_t bytes, uint8_t decimalpos)  {
 
   while(bytes != 0)
     str[--bytes] = ' ';
-
   return str;
 }
 
@@ -91,7 +90,7 @@ uint8_t FindNull(void)
 void displayTemperature(void)        // WILL WORK ONLY WITH V1.2
 {
   int xxx;
-  if (unitSystem)
+  if (Settings[S_UNITSYSTEM])
     xxx = temperature*1.8+32;       //Fahrenheit conversion for imperial system.
   else
     xxx = temperature;
@@ -101,7 +100,7 @@ void displayTemperature(void)        // WILL WORK ONLY WITH V1.2
 
   itoa(xxx,screenBuffer,10);
   uint8_t xx = FindNull();   // find the NULL
-  screenBuffer[xx++]=temperatureUnitAdd[unitSystem];
+  screenBuffer[xx++]=temperatureUnitAdd[Settings[S_UNITSYSTEM]];
   screenBuffer[xx]=0;                                   // Restore the NULL
   MAX7456_WriteString(screenBuffer,getPosition(temperaturePosition));
 }
@@ -114,7 +113,7 @@ void displayMode(void)
   screenBuffer[2] = (MwSensorPresent&MAGNETOMETER) ? 0xa1 : ' ';
   screenBuffer[3] = (MwSensorPresent&GPSSENSOR) ? 0xa3 : ' ';
 
-  if(MwSensorActive&STABLEMODE)
+  if(MwSensorActive&Settings[S_STABLEMODE])
   {
     screenBuffer[4]=0xac;
     screenBuffer[5]=0xad;
@@ -125,9 +124,9 @@ void displayMode(void)
     screenBuffer[5]=0xaf;
   }
   screenBuffer[6]=' ';
-  if(MwSensorActive&GPSHOMEMODE)
+  if(MwSensorActive&Settings[S_GPSHOMEMODE])
     screenBuffer[7]=0xff;
-  else if(MwSensorActive&GPSHOLDMODE)
+  else if(MwSensorActive&Settings[S_GPSHOLDMODE])
     screenBuffer[7]=0xef;
   else if(GPS_fix)
     screenBuffer[7]=0xdf;
@@ -137,17 +136,17 @@ void displayMode(void)
   MAX7456_WriteString(screenBuffer,getPosition(sensorPosition));
 
   // Put ON indicator under sensor symbol
-  screenBuffer[0] = (MwSensorActive&STABLEMODE) ? 0xBE : ' ';
-  screenBuffer[1] = (MwSensorActive&BAROMODE) ? 0xBE : ' ';
-  screenBuffer[2] = (MwSensorActive&MAGMODE) ? 0xBE : ' ';
-  screenBuffer[3] = (MwSensorActive&(GPSHOMEMODE|GPSHOLDMODE)) ? 0xBE : ' ';
+  screenBuffer[0] = (MwSensorActive&Settings[S_STABLEMODE]) ? 0xBE : ' ';
+  screenBuffer[1] = (MwSensorActive&Settings[S_BAROMODE]) ? 0xBE : ' ';
+  screenBuffer[2] = (MwSensorActive&Settings[S_MAGMODE]) ? 0xBE : ' ';
+  screenBuffer[3] = (MwSensorActive&(Settings[S_GPSHOMEMODE]|Settings[S_GPSHOLDMODE])) ? 0xBE : ' ';
   screenBuffer[4] = 0;
   MAX7456_WriteString(screenBuffer,getPosition(sensorPosition)+LINE);
 }
 
 void displayArmed(void)
 {
-  armed = (MwSensorActive&ARMEDMODE);
+  armed = (MwSensorActive&Settings[S_ARMEDMODE]);
   if(armedTimer==0)
     MAX7456_WriteString_P(disarmed_text, getPosition(motorArmedPosition));
   else if((armedTimer>1) && (armedTimer<9) && (Blink10hz))
@@ -208,14 +207,14 @@ void displayHorizon(short rollAngle, short pitchAngle)
   displayHorizonPart(-1*rollAngle*0.75,7,pitchAngle );
   displayHorizonPart(-1*rollAngle,8,pitchAngle );
 
-#if defined(DISPLAY_HORIZON_BR)
+  if(Settings[S_DISPLAY_HORIZON_BR]){
   //Draw center screen
   screen[219-30]=0x03;
   screen[224-30-1]=0x1D;
   screen[224-30+1]=0x1D;
   screen[224-30]=0x01;
   screen[229-30]=0x02;
-#if defined WITHDECORATION
+    if (Settings[S_WITHDECORATION]){
   screen[128]=0xC7;
   screen[128+30]=0xC7;
   screen[128+60]=0xC7;
@@ -226,27 +225,35 @@ void displayHorizon(short rollAngle, short pitchAngle)
   screen[128+12+60]=0xC6;
   screen[128+12+90]=0xC6;
   screen[128+12+120]=0xC6;
-#endif
-#endif
+    }
+  }
 }
 
 void displayVoltage(void)
 {
-if (VIDVOLTAGE_VBAT){
+  if (Settings[S_VIDVOLTAGE_VBAT]){
   vidvoltage=MwVBat;
 }
-
-  if (MAINVOLTAGE_VBAT){
+  if (Settings[S_MAINVOLTAGE_VBAT]){
     voltage=MwVBat;
   }
-
-
   ItoaPadded(voltage, screenBuffer, 4, 3);
   screenBuffer[4] = voltageUnitAdd;
   screenBuffer[5] = 0;
   MAX7456_WriteString(screenBuffer,getPosition(voltagePosition));
 
-#if defined SHOWBATLEVELEVOLUTION
+if (Settings[S_SHOWBATLEVELEVOLUTION]){
+  // For battery evolution display
+int BATTEV1 =Settings[S_BATCELLS] * 35;
+int BATTEV2 =Settings[S_BATCELLS] * 36;
+int BATTEV3 =Settings[S_BATCELLS] * 37;
+int BATTEV4 =Settings[S_BATCELLS] * 38;
+int BATTEV5 =Settings[S_BATCELLS] * 40;
+int BATTEV6 = Settings[S_BATCELLS] * 41;
+  
+  
+  
+  
   if (voltage < BATTEV1) screenBuffer[0]=0x96;
   else if (voltage < BATTEV2) screenBuffer[0]=0x95;
   else if (voltage < BATTEV3) screenBuffer[0]=0x94;
@@ -254,18 +261,18 @@ if (VIDVOLTAGE_VBAT){
   else if (voltage < BATTEV5) screenBuffer[0]=0x92;
   else if (voltage < BATTEV6) screenBuffer[0]=0x91;
   else screenBuffer[0]=0x90;                              // Max charge icon
-#else
+}
+else {
   screenBuffer[0]=0x97;
-#endif
+  }
   screenBuffer[1]=0;
   MAX7456_WriteString(screenBuffer,getPosition(voltagePosition)-1);
 
-if (VIDVOLTAGE){
+  if (Settings[S_VIDVOLTAGE]){
   ItoaPadded(vidvoltage, screenBuffer, 4, 3);
   screenBuffer[4]=voltageUnitAdd;
   screenBuffer[5]=0;
   MAX7456_WriteString(screenBuffer,getPosition(vidvoltagePosition));
-
   screenBuffer[0]=0xbf;
   screenBuffer[1]=0;
   MAX7456_WriteString(screenBuffer,getPosition(vidvoltagePosition)-1);
@@ -355,17 +362,18 @@ void displayRSSI(void)
 void displayHeading(void)
 {
   int16_t heading = MwHeading;
-#if defined HEADING360
+  if (Settings[S_HEADING360]){
   if(heading < 0)
     heading += 360;
   ItoaPadded(heading,screenBuffer,3,0);
   screenBuffer[3]=MwHeadingUnitAdd;                 // Restore the NULL by the unit Symbols
   screenBuffer[4]=0;
-#else
+  }
+  else{
   ItoaPadded(heading,screenBuffer,4,0);
   screenBuffer[4]=MwHeadingUnitAdd;                 // Restore the NULL by the unit Symbols
   screenBuffer[5]=0;
-#endif
+  }
   MAX7456_WriteString(screenBuffer,getPosition(MwHeadingPosition));
 }
 
@@ -394,13 +402,11 @@ void displayIntro(void)
 
   MAX7456_WriteString_P(message0, RushduinoVersionPosition);
 
-#if defined VideoSignalType_NTSC
-  MAX7456_WriteString_P(message1, RushduinoVersionPosition+30);
-#endif
+if (Settings[S_VIDEOSIGNALTYPE == 0]) MAX7456_WriteString_P(message1, RushduinoVersionPosition+30);
 
-#if defined VideoSignalType_PAL
-  MAX7456_WriteString_P(message2, RushduinoVersionPosition+30);
-#endif
+
+if (Settings[S_VIDEOSIGNALTYPE] == 1)  MAX7456_WriteString_P(message2, RushduinoVersionPosition+30);
+
 
   MAX7456_WriteString_P(MultiWiiLogoL1Add, RushduinoVersionPosition+120);
   MAX7456_WriteString_P(MultiWiiLogoL2Add, RushduinoVersionPosition+120+LINE);
@@ -419,7 +425,7 @@ void displayGPSPosition(void)
   if(!GPS_fix)
     return;
 
-#if defined COORDINATES
+  if(Settings[S_COORDINATES]){
   screenBuffer[0] = 0xCA;
   FormatGPSCoord(GPS_latitude,screenBuffer+1,3,'N','S');
   MAX7456_WriteString(screenBuffer,getPosition(MwGPSLatPosition));
@@ -427,9 +433,9 @@ void displayGPSPosition(void)
   screenBuffer[0] = 0xCB;
   FormatGPSCoord(GPS_longitude,screenBuffer+1,4,'E','W');
   MAX7456_WriteString(screenBuffer,getPosition(MwGPSLonPosition));
-#endif
+  }
 
-  screenBuffer[0] = MwGPSAltPositionAdd[unitSystem];
+  screenBuffer[0] = MwGPSAltPositionAdd[Settings[S_UNITSYSTEM]];
   itoa(GPS_altitude,screenBuffer+1,10);
   MAX7456_WriteString(screenBuffer,getPosition(MwGPSAltPosition));
 }
@@ -448,7 +454,7 @@ void displayGPS_speed(void)
     return;
 
   int xx;
-  if(!unitSystem)
+  if(!Settings[S_UNITSYSTEM])
     xx = GPS_speed * 0.036;           // From MWii cm/sec to Km/h
   else
     xx = GPS_speed * 0.02236932;       // (0.036*0.62137)  From MWii cm/sec to mph
@@ -456,7 +462,7 @@ void displayGPS_speed(void)
   if(xx > speedMAX)
     speedMAX = xx;
 
-  screenBuffer[0]=speedUnitAdd[unitSystem];
+  screenBuffer[0]=speedUnitAdd[Settings[S_UNITSYSTEM]];
   itoa(xx,screenBuffer+1,10);
   MAX7456_WriteString(screenBuffer,getPosition(speedPosition));
 }
@@ -468,21 +474,21 @@ void displayAltitude(void)
   if(armed && allSec>5 && altitude > altitudeMAX)
     altitudeMAX = altitude;
 
-  if(unitSystem)
+  if(Settings[S_UNITSYSTEM])
     altitude = MwAltitude/100*3.2808;  // cm to feet
   else
     altitude = MwAltitude/100;         // cm to mt
 
-  screenBuffer[0]=MwAltitudeAdd[unitSystem];
+  screenBuffer[0]=MwAltitudeAdd[Settings[S_UNITSYSTEM]];
   itoa(altitude,screenBuffer+1,10);
   MAX7456_WriteString(screenBuffer,getPosition(MwAltitudePosition));
 }
 
 void displayClimbRate(void)
 {
-  screenBuffer[0] = MwClimbRateAdd[unitSystem];
+  screenBuffer[0] = MwClimbRateAdd[Settings[S_UNITSYSTEM]];
   int xx;
-  if(unitSystem)
+  if(Settings[S_UNITSYSTEM])
     xx = MwVario * 0.032808;       // cm/sec ----> ft/sec
   else
     xx = MwVario / 100;            // cm/sec ----> mt/sec
@@ -511,12 +517,12 @@ void displayDistanceToHome(void)
   if(!GPS_fix)
     return;
 
-  screenBuffer[0]=GPS_distanceToHomeAdd[unitSystem];
+  screenBuffer[0]=GPS_distanceToHomeAdd[Settings[S_UNITSYSTEM]];
   screenBuffer[1]=0;
   MAX7456_WriteString(screenBuffer,getPosition(GPS_distanceToHomePosition));
 
-  if(!unitSystem) GPS_distanceToHome = GPS_distanceToHome;                    // Mt
-  if(unitSystem) GPS_distanceToHome = GPS_distanceToHome * 3.2808;            // mt to feet
+  if(!Settings[S_UNITSYSTEM]) GPS_distanceToHome = GPS_distanceToHome;                    // Mt
+  if(Settings[S_UNITSYSTEM]) GPS_distanceToHome = GPS_distanceToHome * 3.2808;            // mt to feet
 
   if(GPS_distanceToHome > distanceMAX) distanceMAX = GPS_distanceToHome;
   itoa(GPS_distanceToHome,screenBuffer,10);
@@ -680,27 +686,27 @@ void displayPIDConfigScreen(void)
   {
     MAX7456_WriteString_P(configMsg19, 35);
     MAX7456_WriteString_P(configMsg23, PITCHT);
-    if(enableVoltage){
+    if(Settings[S_DISPLAYVOLTAGE]){
       MAX7456_WriteString_P(configMsg21, PITCHD);
     }
     else {
       MAX7456_WriteString_P(configMsg22, PITCHD);
     }
     MAX7456_WriteString_P(configMsg24, YAWT);
-    MAX7456_WriteString(itoa(lowVoltage,screenBuffer,10),YAWD);
+    MAX7456_WriteString(itoa(Settings[S_VOLTAGEMIN],screenBuffer,10),YAWD);
     MAX7456_WriteString_P(configMsg25, ALTT);
 
-    if(enableTemperature){
+    if(Settings[S_DISPLAYTEMPERATURE] ){
       MAX7456_WriteString_P(configMsg21, ALTD);
     }
     else {
       MAX7456_WriteString_P(configMsg22, ALTD);
     }
     MAX7456_WriteString_P(configMsg26, VELT);
-    MAX7456_WriteString(itoa(highTemperature,screenBuffer,10),VELD);
+    MAX7456_WriteString(itoa(Settings[S_TEMPERATUREMAX],screenBuffer,10),VELD);
     MAX7456_WriteString_P(configMsg27, LEVT);
 
-    if(displayGPS){
+    if(Settings[S_DISPLAYGPS]){
       MAX7456_WriteString_P(configMsg21, LEVD);
      }
      else {
@@ -720,13 +726,13 @@ void displayPIDConfigScreen(void)
 
     MAX7456_WriteString_P(configMsg34, YAWT);
     if(rssiTimer>0) MAX7456_WriteString(itoa(rssiTimer,screenBuffer,10),YAWD-5);
-    MAX7456_WriteString(itoa(rssiMin,screenBuffer,10),YAWD);
+    MAX7456_WriteString(itoa(Settings[S_RSSIMIN],screenBuffer,10),YAWD);
 
     MAX7456_WriteString_P(configMsg35, ALTT);
-    MAX7456_WriteString(itoa(rssiMax,screenBuffer,10),ALTD);
+    MAX7456_WriteString(itoa(Settings[S_RSSIMAX],screenBuffer,10),ALTD);
 
     MAX7456_WriteString_P(configMsg36, VELT);
-    if(enableRSSI){
+    if(Settings[S_DISPLAYRSSI]){
       MAX7456_WriteString_P(configMsg21, VELD);
     }
     else{
@@ -734,7 +740,7 @@ void displayPIDConfigScreen(void)
     }
 
     MAX7456_WriteString_P(configMsg37, LEVT);
-    if(unitSystem==METRIC){
+    if(Settings[S_UNITSYSTEM]==METRIC){
       MAX7456_WriteString_P(configMsg38, LEVD-2);
     }
     else {
