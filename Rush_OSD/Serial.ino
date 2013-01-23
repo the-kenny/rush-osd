@@ -223,7 +223,7 @@ void serialMSPCheck()
 
     if(configPage == 4 && COL == 3) {
       if(ROW==3) rssiTimer=15;
-      if(ROW==4) rssiMax=rssiADC;
+      if(ROW==4) Settings[S_RSSIMAX]=rssiADC;
       if(ROW==5) Settings[S_DISPLAYRSSI]=!Settings[S_DISPLAYRSSI];
       if(ROW==6) Settings[S_UNITSYSTEM]=!Settings[S_UNITSYSTEM];
 
@@ -279,7 +279,7 @@ void serialMSPCheck()
 
     if(configPage == 4 && COL == 3) {
       if(ROW==3) rssiTimer=15;
-      if(ROW==4) rssiMax=rssiADC;
+      if(ROW==4) Settings[S_RSSIMAX]=rssiADC;
       if(ROW==5) Settings[S_DISPLAYRSSI]=!Settings[S_DISPLAYRSSI];
       if(ROW==6) Settings[S_UNITSYSTEM]=!Settings[S_UNITSYSTEM];
 
