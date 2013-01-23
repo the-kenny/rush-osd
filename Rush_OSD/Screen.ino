@@ -293,7 +293,7 @@ void displayCurrentThrottle(void)
     screenBuffer[2]='-';
     screenBuffer[3]='-';
     screenBuffer[4]=0;
-    MAX7456_WriteString(screenBuffer,getPosition(CurrentThrottlePosition)+1);
+    MAX7456_WriteString(screenBuffer,getPosition(CurrentThrottlePosition)+2);
   }
   else
   {
@@ -301,7 +301,7 @@ void displayCurrentThrottle(void)
     ItoaPadded(CurThrottle,screenBuffer,3,0);
     screenBuffer[3]='%';
     screenBuffer[4]=0;
-    MAX7456_WriteString(screenBuffer,getPosition(CurrentThrottlePosition)+1);
+    MAX7456_WriteString(screenBuffer,getPosition(CurrentThrottlePosition)+2);
   }
 }
 
