@@ -258,7 +258,7 @@ uint16_t flyingTime=0;
 // For Intro
 const char message0[] PROGMEM = "KV_OSD_TEAM_2.2";
 const char message1[] PROGMEM = "VIDEO SIGNAL: NTSC";
-const char message2[] PROGMEM = "VIDEO SIGNAL: PAL";
+const char message2[] PROGMEM = "VIDEO SIGNAL: PAL ";
 const char message5[] PROGMEM = "MW VERSION:";
 const char message6[] PROGMEM = "MENU:THRT MIDDLE";
 const char message7[] PROGMEM = "YAW RIGHT";
