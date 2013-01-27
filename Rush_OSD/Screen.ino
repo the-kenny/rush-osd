@@ -232,8 +232,8 @@ void displayHorizon(short rollAngle, short pitchAngle)
 void displayVoltage(void)
 {
   if (Settings[S_VIDVOLTAGE_VBAT]){
-  vidvoltage=MwVBat;
-}
+    vidvoltage=MwVBat;
+  }
   if (Settings[S_MAINVOLTAGE_VBAT]){
     voltage=MwVBat;
   }
@@ -242,41 +242,38 @@ void displayVoltage(void)
   screenBuffer[5] = 0;
   MAX7456_WriteString(screenBuffer,getPosition(voltagePosition));
 
-if (Settings[S_SHOWBATLEVELEVOLUTION]){
-  // For battery evolution display
-int BATTEV1 =Settings[S_BATCELLS] * 35;
-int BATTEV2 =Settings[S_BATCELLS] * 36;
-int BATTEV3 =Settings[S_BATCELLS] * 37;
-int BATTEV4 =Settings[S_BATCELLS] * 38;
-int BATTEV5 =Settings[S_BATCELLS] * 40;
-int BATTEV6 = Settings[S_BATCELLS] * 41;
-  
-  
-  
-  
-  if (voltage < BATTEV1) screenBuffer[0]=0x96;
-  else if (voltage < BATTEV2) screenBuffer[0]=0x95;
-  else if (voltage < BATTEV3) screenBuffer[0]=0x94;
-  else if (voltage < BATTEV4) screenBuffer[0]=0x93;
-  else if (voltage < BATTEV5) screenBuffer[0]=0x92;
-  else if (voltage < BATTEV6) screenBuffer[0]=0x91;
-  else screenBuffer[0]=0x90;                              // Max charge icon
-}
-else {
-  screenBuffer[0]=0x97;
+  if (Settings[S_SHOWBATLEVELEVOLUTION]){
+    // For battery evolution display
+    int BATTEV1 =Settings[S_BATCELLS] * 35;
+    int BATTEV2 =Settings[S_BATCELLS] * 36;
+    int BATTEV3 =Settings[S_BATCELLS] * 37;
+    int BATTEV4 =Settings[S_BATCELLS] * 38;
+    int BATTEV5 =Settings[S_BATCELLS] * 40;
+    int BATTEV6 = Settings[S_BATCELLS] * 41;
+
+    if (voltage < BATTEV1) screenBuffer[0]=0x96;
+    else if (voltage < BATTEV2) screenBuffer[0]=0x95;
+    else if (voltage < BATTEV3) screenBuffer[0]=0x94;
+    else if (voltage < BATTEV4) screenBuffer[0]=0x93;
+    else if (voltage < BATTEV5) screenBuffer[0]=0x92;
+    else if (voltage < BATTEV6) screenBuffer[0]=0x91;
+    else screenBuffer[0]=0x90;                              // Max charge icon
+  }
+  else {
+    screenBuffer[0]=0x97;
   }
   screenBuffer[1]=0;
   MAX7456_WriteString(screenBuffer,getPosition(voltagePosition)-1);
 
   if (Settings[S_VIDVOLTAGE]){
-  ItoaPadded(vidvoltage, screenBuffer, 4, 3);
-  screenBuffer[4]=voltageUnitAdd;
-  screenBuffer[5]=0;
-  MAX7456_WriteString(screenBuffer,getPosition(vidvoltagePosition));
-  screenBuffer[0]=0xbf;
-  screenBuffer[1]=0;
-  MAX7456_WriteString(screenBuffer,getPosition(vidvoltagePosition)-1);
-}
+    ItoaPadded(vidvoltage, screenBuffer, 4, 3);
+    screenBuffer[4]=voltageUnitAdd;
+    screenBuffer[5]=0;
+    MAX7456_WriteString(screenBuffer,getPosition(vidvoltagePosition));
+    screenBuffer[0]=0xbf;
+    screenBuffer[1]=0;
+    MAX7456_WriteString(screenBuffer,getPosition(vidvoltagePosition)-1);
+  }
 }
 
 void displayCurrentThrottle(void)
@@ -363,16 +360,16 @@ void displayHeading(void)
 {
   int16_t heading = MwHeading;
   if (Settings[S_HEADING360]){
-  if(heading < 0)
-    heading += 360;
-  ItoaPadded(heading,screenBuffer,3,0);
-  screenBuffer[3]=MwHeadingUnitAdd;                 // Restore the NULL by the unit Symbols
-  screenBuffer[4]=0;
+    if(heading < 0)
+      heading += 360;
+    ItoaPadded(heading,screenBuffer,3,0);
+    screenBuffer[3]=MwHeadingUnitAdd;                 // Restore the NULL by the unit Symbols
+    screenBuffer[4]=0;
   }
   else{
-  ItoaPadded(heading,screenBuffer,4,0);
-  screenBuffer[4]=MwHeadingUnitAdd;                 // Restore the NULL by the unit Symbols
-  screenBuffer[5]=0;
+    ItoaPadded(heading,screenBuffer,4,0);
+    screenBuffer[4]=MwHeadingUnitAdd;                 // Restore the NULL by the unit Symbols
+    screenBuffer[5]=0;
   }
   MAX7456_WriteString(screenBuffer,getPosition(MwHeadingPosition));
 }
@@ -402,10 +399,10 @@ void displayIntro(void)
 
   MAX7456_WriteString_P(message0, RushduinoVersionPosition);
 
-if (Settings[S_VIDEOSIGNALTYPE == 0]) MAX7456_WriteString_P(message1, RushduinoVersionPosition+30);
+  if (Settings[S_VIDEOSIGNALTYPE == 0]) MAX7456_WriteString_P(message1, RushduinoVersionPosition+30);
 
 
-if (Settings[S_VIDEOSIGNALTYPE] == 1)  MAX7456_WriteString_P(message2, RushduinoVersionPosition+30);
+  if (Settings[S_VIDEOSIGNALTYPE] == 1)  MAX7456_WriteString_P(message2, RushduinoVersionPosition+30);
 
 
   MAX7456_WriteString_P(MultiWiiLogoL1Add, RushduinoVersionPosition+120);
@@ -571,28 +568,28 @@ if(ROW==10){
   if(COL==1) cursorpos=SAVEP-1;       // exit
   if(COL==2) cursorpos=SAVEP+6-1;     // save/exit
   }
-  if(ROW<10){  
+  if(ROW<10){
     if(configPage==1){
       if (ROW==9) ROW=7;
       if (ROW==8) ROW=10;
       if(COL==1) cursorpos=(ROW+2)*30+10;
-      if(COL==2) cursorpos=(ROW+2)*30+10+6;  
+      if(COL==2) cursorpos=(ROW+2)*30+10+6;
       if(COL==3) cursorpos=(ROW+2)*30+10+6+6;
-      }  
+      }
     if(configPage==2){
       COL=3;
       if (ROW==7) ROW=5;
       if (ROW==6) ROW=10;
       if (ROW==9) ROW=5;
       cursorpos=(ROW+2)*30+10+6+6;
-      }      
+      }
     if(configPage==3){
       COL=3;
       if (ROW==1) ROW=2;
       if (ROW==9) ROW=6;
       if (ROW==7) ROW=10;
       cursorpos=(ROW+2)*30+10+6+6;
-      }  
+      }
     if(configPage==4){
       COL=3;
       if (ROW==2) ROW=3;
@@ -600,17 +597,17 @@ if(ROW==10){
       if (ROW==8) ROW=10;
       if ((ROW==6)||(ROW==7)) cursorpos=(ROW+2)*30+10+6+6-2;  // Narrow/Imperial strings longer
       else cursorpos=(ROW+2)*30+10+6+6;
-      }  
+      }
     if(configPage==5){
       COL=3;
       if (ROW==9) ROW=7;
-      if (ROW==8) ROW=10;   
+      if (ROW==8) ROW=10;
       cursorpos=(ROW+2)*30+10+6+6;
       }
     if(configPage==6){
       ROW=10;
       }
-  } 
+  }
   if(Blink10hz) MAX7456_WriteString_P(CURSOR,cursorpos);
 }
 
@@ -618,9 +615,9 @@ if(ROW==10){
 void displayPIDConfigScreen(void)
 {
 
-  MAX7456_WriteString_P(configMsg0, SAVEP);		//EXIT
-  MAX7456_WriteString_P(configMsg1, SAVEP+6);	//SaveExit
-  MAX7456_WriteString_P(configMsg2, SAVEP+16);	//<Page>
+  MAX7456_WriteString_P(configMsg0, SAVEP);    //EXIT
+  MAX7456_WriteString_P(configMsg1, SAVEP+6);  //SaveExit
+  MAX7456_WriteString_P(configMsg2, SAVEP+16); //<Page>
 
   if(configPage==1)
   {
