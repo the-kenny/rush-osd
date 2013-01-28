@@ -5,7 +5,6 @@
 #define IMPERIAL 1
 
 //General use variables
-Metro MetroTimer = Metro(100);
 int thisSec=0;
 int tenthSec=0;
 int halfSec=0;
@@ -205,6 +204,7 @@ float temperature=0;                  // its the real value x10
 // For Statistics
 int16_t speedMAX=GPS_speed;
 int8_t temperMAX=0;
+int16_t altitude;
 int16_t altitudeMAX=0;
 int16_t distanceMAX=0;
 float trip=0;

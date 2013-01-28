@@ -466,8 +466,6 @@ void displayGPS_speed(void)
 
 void displayAltitude(void)
 {
-  int altitude;
-
   if(armed && allSec>5 && altitude > altitudeMAX)
     altitudeMAX = altitude;
 

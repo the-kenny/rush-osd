@@ -51,7 +51,6 @@
 
 #include <avr/pgmspace.h>
 #include <EEPROM.h> //Needed to access eeprom read/write functions
-#include <Metro.h>
 #include "symbols.h"
 #include "Config.h"
 #include "GlobalVariables.h"
@@ -63,6 +62,16 @@ char screenBuffer[20];
 char nextMSPrequest=0;
 char MSPcmdsend=0;
 
+//-------------- Timed Service Routine vars (No more needed Metro.h library)
+
+// May be moved in GlobalVariables.h
+unsigned long previous_millis_low=0;
+unsigned long previous_millis_high =0;
+int hi_speed_cycle = 50;
+int lo_speed_cycle = 100;
+//----------------
+
+
 void setup()
 {
   Serial.begin(SERIAL_SPEED);
@@ -73,25 +82,19 @@ void setup()
   MAX7456Setup();
   
   analogReference(INTERNAL);
+  
+  MSPcmdsend=MSP_IDENT;            // Moved here from main loop as called once
+  blankserialRequest(MSPcmdsend);
 }
 
 void loop()
 {
- // Process AI
+  // Process AI
   if (Settings[S_ENABLEADC]){
   temperature=(analogRead(temperaturePin)*1.1)/10.23;
     if (!Settings[S_MAINVOLTAGE_VBAT]){
-    if ((thisSec+1) < onTime)
-    {
-      thisSec=onTime;
-      v_temp=0;
-      for ( int steps=0; steps < 3; steps++ )
-      {
-      v_temp += ((analogRead(voltagePin)*1.1*Settings[S_DIVIDERRATIO])/102.3);
-      }     
-      voltage=v_temp/3;                           //Noise Filter contribution of Neverlanded 
+      voltage=(analogRead(voltagePin)*1.1*Settings[S_DIVIDERRATIO])/102.3;
     }
-  }
     if (!Settings[S_VIDVOLTAGE_VBAT]){
       vidvoltage=(analogRead(vidvoltagePin)*1.1*Settings[S_VIDDIVIDERRATIO])/102.3;
     }
@@ -102,79 +105,66 @@ void loop()
   // Blink Basic Sanity Test Led at 1hz
   if(tenthSec>10) BST_ON else BST_OFF
 
-  if(MetroTimer.check()==1)  // this execute 20 times per second
+
+//---------------  Start Timed Service Routines  ---------------------------------------
+unsigned long currentMillis = millis();
+
+  if((currentMillis - previous_millis_low) >= lo_speed_cycle)  // 10 Hz (Executed every 100ms)
   {
+    previous_millis_low = currentMillis;    
+    if(!serialWait){
+      MSPcmdsend=MSP_ATTITUDE;
+      blankserialRequest(MSPcmdsend);
+      }
+  }  // End of slow Timed Service Routine (100ms loop)
+ 
+  
+  if((currentMillis - previous_millis_high) >= hi_speed_cycle)  // 20 Hz (Executed every 50ms)
+  {
+    previous_millis_high = currentMillis;   
+
     tenthSec++;
     halfSec++;
     Blink10hz=!Blink10hz;
     calculateTrip();
-    calculateRssi();
+    if(Settings[S_DISPLAYRSSI]) calculateRssi();
 
-    MetroTimer.interval(TIMEBASE);
-    if(!serialWait)
-    {
-                                //******************** Every second request faster AH Contribution of TrailBlazer ****************************//
+    if(!serialWait) {
       nextMSPrequest++;
       switch (nextMSPrequest) {
+//      case 1:
+//        MSPcmdsend=MSP_IDENT;
+//        break;
       case 1:
-        MSPcmdsend=MSP_IDENT;
+        MSPcmdsend=MSP_STATUS;    // Single serial data call every 450ms (50ms x 9 serial calls ----> 2.2 Hz)
         break;
       case 2:
-        MSPcmdsend=MSP_ATTITUDE;
-        break;
-      case 3:
-        MSPcmdsend=MSP_STATUS;
-        break;
-      case 4:
-        MSPcmdsend=MSP_ATTITUDE;
-        break;
-      case 5:
         MSPcmdsend=MSP_RAW_IMU;
         break;
-      case 6:
-        MSPcmdsend=MSP_ATTITUDE;
-        break;
-      case 7:
+      case 3:
         MSPcmdsend=MSP_RAW_GPS;
         break;
-      case 8:
-        MSPcmdsend=MSP_ATTITUDE;
-        break;
-      case 9:
+      case 4:
         MSPcmdsend=MSP_COMP_GPS;
         break;
-      case 10:
-        MSPcmdsend=MSP_ATTITUDE;
-        break;
-      case 11:
+      case 5:
         MSPcmdsend=MSP_ALTITUDE;
         break;
-      case 12:
-        MSPcmdsend=MSP_ATTITUDE;
-        break;
-      case 13:
+      case 6:
         MSPcmdsend=MSP_RC_TUNING;
         break;
-      case 14:
-        MSPcmdsend=MSP_ATTITUDE;
-        break;
-      case 15:
+      case 7:
         MSPcmdsend=MSP_PID;
         break;
-      case 16:
-        MSPcmdsend=MSP_ATTITUDE;
-        break;
-      case 17:
+      case 8:
         MSPcmdsend=MSP_BAT;
         break;
+        
       case 201:
         MSPcmdsend=MSP_STATUS;
         break;
       case 202:
         MSPcmdsend=MSP_RAW_IMU;
-        break;
-      case 203:
-        MSPcmdsend=MSP_ATTITUDE;
         break;
 
       default:
@@ -188,11 +178,11 @@ void loop()
           nextMSPrequest = 200;
         }
         break;
-      }
-
-      blankserialRequest(MSPcmdsend);
-    }
-
+      } // end of case
+      blankserialRequest(MSPcmdsend);      
+    } // End of serial wait
+    
+    
     MAX7456_DrawScreen();
     if( allSec < 9 ) displayIntro();
     else
@@ -248,8 +238,9 @@ void loop()
             displayGPSPosition();
         }
       }
-    }
-  }
+    }       
+  }  // End of fast Timed Service Routine (20ms loop)
+
 
   if(halfSec>=10){
     halfSec=0;
@@ -309,7 +300,10 @@ void loop()
   }
 
   serialMSPreceive();
-}
+
+  }  // End of main loop
+//---------------------  End of Timed Service Routine ---------------------------------------
+
 
 void calculateTrip(void)
 {
@@ -339,7 +333,7 @@ void readEEPROM(void)
 {
  for(int en=0;en<EEPROM_SETTINGS;en++){
    Settings[en] = EEPROM.read(en);
- } 
+ }
 }
 
 // for first run to ini
