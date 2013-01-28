@@ -77,12 +77,21 @@ void setup()
 
 void loop()
 {
-  // Process AI
+ // Process AI
   if (Settings[S_ENABLEADC]){
   temperature=(analogRead(temperaturePin)*1.1)/10.23;
     if (!Settings[S_MAINVOLTAGE_VBAT]){
-      voltage=(analogRead(voltagePin)*1.1*Settings[S_DIVIDERRATIO])/102.3;
+    if ((thisSec+1) < onTime)
+    {
+      thisSec=onTime;
+      v_temp=0;
+      for ( int steps=0; steps < 3; steps++ )
+      {
+      v_temp += ((analogRead(voltagePin)*1.1*Settings[S_DIVIDERRATIO])/102.3);
+      }     
+      voltage=v_temp/3;                           //Noise Filter contribution of Neverlanded 
     }
+  }
     if (!Settings[S_VIDVOLTAGE_VBAT]){
       vidvoltage=(analogRead(vidvoltagePin)*1.1*Settings[S_VIDDIVIDERRATIO])/102.3;
     }

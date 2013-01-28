@@ -6,6 +6,7 @@
 
 //General use variables
 Metro MetroTimer = Metro(100);
+int thisSec=0;
 int tenthSec=0;
 int halfSec=0;
 int Blink2hz=0;                               // This is turing on and off at 2hz
@@ -194,6 +195,7 @@ int rssi_Int=0;
 // For Voltage
 float voltage=0;                      // its the real value x10
 float vidvoltage=0;                   // its the real value x10
+float v_temp =0;
 
 // For temprature
 float temperature=0;                  // its the real value x10
