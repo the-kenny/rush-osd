@@ -89,11 +89,18 @@ void setup()
 
 void loop()
 {
-  // Process AI
+   // Process AI
   if (Settings[S_ENABLEADC]){
   temperature=(analogRead(temperaturePin)*1.1)/10.23;
     if (!Settings[S_MAINVOLTAGE_VBAT]){
-      voltage=(analogRead(voltagePin)*1.1*Settings[S_DIVIDERRATIO])/102.3;
+      static uint8_t voltageTimer = 0;
+      static uint8_t ind = 0;
+      uint16_t voltageRaw = 0;
+      static uint16_t voltageRawArray[8];
+      voltageRawArray[(ind++)%8] = analogRead(voltagePin);                  
+      for (uint8_t i=0;i<8;i++) voltageRaw += voltageRawArray[i];
+      voltage = ((voltageRaw *1.1*Settings[S_DIVIDERRATIO])/102.3) /8;  
+      
     }
     if (!Settings[S_VIDVOLTAGE_VBAT]){
       vidvoltage=(analogRead(vidvoltagePin)*1.1*Settings[S_VIDDIVIDERRATIO])/102.3;
