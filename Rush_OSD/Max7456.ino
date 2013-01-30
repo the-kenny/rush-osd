@@ -121,16 +121,22 @@ volatile byte save_screen;
 volatile int  incomingByte;
 volatile int  count;
 
-int MAX7456SELECT,MAX7456RESET,MAX7456_reset, ENABLE_display,ENABLE_display_vert,DISABLE_display,MAX_screen_size,MAX_screen_rows;
+// Selectable by board type
+uint8_t MAX7456SELECT;		// output pin
+uint8_t MAX7456RESET;		// output pin
 
+// Selectable by video mode
+//uint8_t ENABLE_display;
+//uint8_t ENABLE_display_vert;
+//uint8_t DISABLE_display;
+uint16_t MAX_screen_size;
 
 //////////////////////////////////////////////////////////////
 byte spi_transfer(volatile byte data)
 {
   SPDR = data;                    // Start the transmission
   while (!(SPSR & (1<<SPIF)))     // Wait the end of the transmission
-  {
-  };
+    ;
   return SPDR;                    // return the received byte
 }
 
@@ -140,39 +146,35 @@ byte spi_transfer(volatile byte data)
 
 void MAX7456Setup(void)
 {
- 
-  if(Settings[S_VIDEOSIGNALTYPE] == 1){
-    ENABLE_display = 0x48;
-    ENABLE_display_vert = 0x4c;
-    MAX7456_reset = 0x42;
-    DISABLE_display = 0x40;
-    MAX_screen_size = 480;
-    MAX_screen_rows = 16;
- }
- else{
-    ENABLE_display = 0x08;
-    ENABLE_display_vert = 0x0c;
-    MAX7456_reset = 0x02;
-    DISABLE_display = 0x00;
-    MAX_screen_size = 390;
-    MAX_screen_rows = 13;
- }
-  
-  
-  
-  
-  
-  if (Settings[S_BOARDTYPE] == 1){
+  uint8_t MAX7456_reset;
+  uint8_t MAX_screen_rows;
+
+  if(Settings[S_BOARDTYPE]){
     MAX7456SELECT = 6;       // ss
     MAX7456RESET = 10;       // RESET
   }
-  else{
+  else {
     MAX7456SELECT = 10;      // ss 
-    MAX7456RESET  = 9;        // RESET
+    MAX7456RESET  = 9;       // RESET
   }
-  
-  byte spi_junk, eeprom_junk;
-  int x;
+
+  if(Settings[S_VIDEOSIGNALTYPE]) {    // PAL
+    //ENABLE_display = 0x48;
+    //ENABLE_display_vert = 0x4c;
+    MAX7456_reset = 0x42;
+    //DISABLE_display = 0x40;
+    MAX_screen_size = 480;
+    MAX_screen_rows = 16;
+  }
+  else {                                // NTSC
+    //ENABLE_display = 0x08;
+    //ENABLE_display_vert = 0x0c;
+    MAX7456_reset = 0x02;
+    //DISABLE_display = 0x00;
+    MAX_screen_size = 390;
+    MAX_screen_rows = 13;
+  }
+
   pinMode(MAX7456RESET,OUTPUT);
   digitalWrite(MAX7456RESET,HIGH); //hard enable
 
@@ -191,6 +193,7 @@ void MAX7456Setup(void)
   //sample on leading edge of clk,system clock/4 rate (4 meg)
 
   SPCR = (1<<SPE)|(1<<MSTR);
+  uint8_t spi_junk;
   spi_junk=SPSR;
   spi_junk=SPDR;
   delay(250);
@@ -204,8 +207,9 @@ void MAX7456Setup(void)
 
   // set all rows to same charactor white level, 90%
   digitalWrite(MAX7456SELECT,LOW);
-  for (x = 0; x < MAX_screen_rows; x++)
-  {
+  
+  uint8_t x;
+  for(x = 0; x < MAX_screen_rows; x++) {
     spi_transfer(x + 0x10);
     spi_transfer(WHITE_level_120);
   }
@@ -213,24 +217,20 @@ void MAX7456Setup(void)
   // make sure the Max7456 is enabled
   spi_transfer(VM0_reg);
 
-
   if (Settings[S_VIDEOSIGNALTYPE]){
-  spi_transfer(OSD_ENABLE|VIDEO_MODE_PAL);
+    spi_transfer(OSD_ENABLE|VIDEO_MODE_PAL);
   }
   else{
     spi_transfer(OSD_ENABLE|VIDEO_MODE_NTSC);
   }
   digitalWrite(MAX7456SELECT,HIGH);
   delay(100);
-
-
 }
 
 // Copy string from ram into screen buffer
 void MAX7456_WriteString(const char *string, int Adresse)
 {
-  int xx;
-
+  uint8_t xx;
   for(xx=0;string[xx]!=0;)
   {
     screen[Adresse++] = string[xx++];
@@ -240,7 +240,7 @@ void MAX7456_WriteString(const char *string, int Adresse)
 // Copy string from progmem into the screen buffer
 void MAX7456_WriteString_P(const char *string, int Adresse)
 {
-  int xx = 0;
+  uint8_t xx = 0;
   char c;
   while((c = (char)pgm_read_byte(&string[xx++])) != 0)
   {
@@ -251,13 +251,6 @@ void MAX7456_WriteString_P(const char *string, int Adresse)
 void MAX7456_DrawScreen()
 {
   int xx;
-#if defined(DISPLAY_DEBUG_MODE)
-  for(xx=0;xx<MAX_screen_size;xx++)
-  {
-    Screen[xx]=0xff;
-  }
-  DisplayDebugScreen();
-#endif
 
   digitalWrite(MAX7456SELECT,LOW);
   for(xx=0;xx<MAX_screen_size;++xx)
@@ -275,4 +268,3 @@ void MAX7456_Send(int add, char data)
   spi_transfer(add);
   spi_transfer(data);
 }
-
