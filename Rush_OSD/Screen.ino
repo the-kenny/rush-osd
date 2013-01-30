@@ -399,11 +399,10 @@ void displayIntro(void)
 
   MAX7456_WriteString_P(message0, RushduinoVersionPosition);
 
-  if (Settings[S_VIDEOSIGNALTYPE == 0]) MAX7456_WriteString_P(message1, RushduinoVersionPosition+30);
-
-
-  if (Settings[S_VIDEOSIGNALTYPE] == 1)  MAX7456_WriteString_P(message2, RushduinoVersionPosition+30);
-
+  if (Settings[S_VIDEOSIGNALTYPE])
+    MAX7456_WriteString_P(message2, RushduinoVersionPosition+30);
+  else
+    MAX7456_WriteString_P(message1, RushduinoVersionPosition+30);
 
   MAX7456_WriteString_P(MultiWiiLogoL1Add, RushduinoVersionPosition+120);
   MAX7456_WriteString_P(MultiWiiLogoL2Add, RushduinoVersionPosition+120+LINE);
@@ -454,7 +453,7 @@ void displayGPS_speed(void)
   if(!Settings[S_UNITSYSTEM])
     xx = GPS_speed * 0.036;           // From MWii cm/sec to Km/h
   else
-    xx = GPS_speed * 0.02236932;       // (0.036*0.62137)  From MWii cm/sec to mph
+    xx = GPS_speed * 0.02236932;      // (0.036*0.62137)  From MWii cm/sec to mph
 
   if(xx > speedMAX)
     speedMAX = xx;
@@ -466,13 +465,14 @@ void displayGPS_speed(void)
 
 void displayAltitude(void)
 {
-  if(armed && allSec>5 && altitude > altitudeMAX)
-    altitudeMAX = altitude;
-
+  int16_t altitude;
   if(Settings[S_UNITSYSTEM])
-    altitude = MwAltitude/100*3.2808;  // cm to feet
+    altitude = MwAltitude*0.032808;    // cm to feet
   else
     altitude = MwAltitude/100;         // cm to mt
+
+  if(armed && allSec>5 && altitude > altitudeMAX)
+    altitudeMAX = altitude;
 
   screenBuffer[0]=MwAltitudeAdd[Settings[S_UNITSYSTEM]];
   itoa(altitude,screenBuffer+1,10);
@@ -482,23 +482,23 @@ void displayAltitude(void)
 void displayClimbRate(void)
 {
   screenBuffer[0] = MwClimbRateAdd[Settings[S_UNITSYSTEM]];
-  int xx;
+  int16_t vario;
   if(Settings[S_UNITSYSTEM])
-    xx = MwVario * 0.032808;       // cm/sec ----> ft/sec
+    vario = MwVario * 0.032808;       // cm/sec ----> ft/sec
   else
-    xx = MwVario / 100;            // cm/sec ----> mt/sec
-  itoa(xx,screenBuffer+1,10);
+    vario = MwVario / 100;            // cm/sec ----> mt/sec
+  itoa(vario, screenBuffer+1, 10);
   MAX7456_WriteString(screenBuffer,getPosition(MwClimbRatePosition));
 
-  if(MwVario > 70)       screenBuffer[0]=0xB3;
-  else if(MwVario > 50)  screenBuffer[0]=0xB2;
-  else if(MwVario > 30)  screenBuffer[0]=0xB1;
-  else if(MwVario > 20)  screenBuffer[0]=0xB0;
-  else if(MwVario < -70) screenBuffer[0]=0xB4;
-  else if(MwVario < -50) screenBuffer[0]=0xB5;
-  else if(MwVario < -30) screenBuffer[0]=0xB6;
-  else if(MwVario < -20) screenBuffer[0]=0xB7;
-  else                   screenBuffer[0]=0xBC;
+  if(MwVario > 70)       screenBuffer[0] = SYM_POS_CLIMB3;
+  else if(MwVario > 50)  screenBuffer[0] = SYM_POS_CLIMB2;
+  else if(MwVario > 30)  screenBuffer[0] = SYM_POS_CLIMB1;
+  else if(MwVario > 20)  screenBuffer[0] = SYM_POS_CLIMB;
+  else if(MwVario < -70) screenBuffer[0] = SYM_NEG_CLIMB3;
+  else if(MwVario < -50) screenBuffer[0] = SYM_NEG_CLIMB2;
+  else if(MwVario < -30) screenBuffer[0] = SYM_NEG_CLIMB1;
+  else if(MwVario < -20) screenBuffer[0] = SYM_NEG_CLIMB;
+  else                   screenBuffer[0] = SYM_UNDER_S;
   screenBuffer[1]=0;
 
   int pos = getPosition(MwClimbRatePosition)-2;
@@ -512,15 +512,17 @@ void displayDistanceToHome(void)
   if(!GPS_fix)
     return;
 
-  screenBuffer[0]=GPS_distanceToHomeAdd[Settings[S_UNITSYSTEM]];
-  screenBuffer[1]=0;
-  MAX7456_WriteString(screenBuffer,getPosition(GPS_distanceToHomePosition));
+  int16_t dist;
+  if(Settings[S_UNITSYSTEM])
+    dist = GPS_distanceToHome * 3.2808;           // mt to feet
+  else
+    dist = GPS_distanceToHome;                    // Mt
 
-  if(!Settings[S_UNITSYSTEM]) GPS_distanceToHome = GPS_distanceToHome;                    // Mt
-  if(Settings[S_UNITSYSTEM]) GPS_distanceToHome = GPS_distanceToHome * 3.2808;            // mt to feet
+  if(dist > distanceMAX)
+    distanceMAX = dist;
 
-  if(GPS_distanceToHome > distanceMAX) distanceMAX = GPS_distanceToHome;
-  itoa(GPS_distanceToHome,screenBuffer,10);
+  screenBuffer[0] = GPS_distanceToHomeAdd[Settings[S_UNITSYSTEM]];
+  itoa(dist, screenBuffer+1, 10);
   MAX7456_WriteString(screenBuffer,getPosition(GPS_distanceToHomePosition)+1);
 }
 
@@ -561,10 +563,10 @@ void displayCursor(void)
 int cursorpos;
 static const char CURSOR[] PROGMEM = "*";
 
-if(ROW==10){
-  if(COL==3) cursorpos=SAVEP+16-1;    // page
-  if(COL==1) cursorpos=SAVEP-1;       // exit
-  if(COL==2) cursorpos=SAVEP+6-1;     // save/exit
+  if(ROW==10){
+    if(COL==3) cursorpos=SAVEP+16-1;    // page
+    if(COL==1) cursorpos=SAVEP-1;       // exit
+    if(COL==2) cursorpos=SAVEP+6-1;     // save/exit
   }
   if(ROW<10){
     if(configPage==1){

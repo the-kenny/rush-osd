@@ -91,22 +91,21 @@ void loop()
 {
    // Process AI
   if (Settings[S_ENABLEADC]){
-  temperature=(analogRead(temperaturePin)*1.1)/10.23;
+    temperature=(analogRead(temperaturePin)*1.1)/10.23;
     if (!Settings[S_MAINVOLTAGE_VBAT]){
-      static uint8_t voltageTimer = 0;
       static uint8_t ind = 0;
-      uint16_t voltageRaw = 0;
       static uint16_t voltageRawArray[8];
       voltageRawArray[(ind++)%8] = analogRead(voltagePin);                  
-      for (uint8_t i=0;i<8;i++) voltageRaw += voltageRawArray[i];
+      uint16_t voltageRaw = 0;
+      for (uint8_t i=0;i<8;i++)
+        voltageRaw += voltageRawArray[i];
       voltage = ((voltageRaw *1.1*Settings[S_DIVIDERRATIO])/102.3) /8;  
-      
     }
     if (!Settings[S_VIDVOLTAGE_VBAT]){
       vidvoltage=(analogRead(vidvoltagePin)*1.1*Settings[S_VIDDIVIDERRATIO])/102.3;
     }
-  rssiADC = (analogRead(rssiPin)*1.1)/1023;
-  amperage = (AMPRERAGE_OFFSET - (analogRead(amperagePin)*AMPERAGE_CAL))/10.23;
+    rssiADC = (analogRead(rssiPin)*1.1)/1023;
+    amperage = (AMPRERAGE_OFFSET - (analogRead(amperagePin)*AMPERAGE_CAL))/10.23;
   }
 
   // Blink Basic Sanity Test Led at 1hz
@@ -122,7 +121,7 @@ unsigned long currentMillis = millis();
     if(!serialWait){
       MSPcmdsend=MSP_ATTITUDE;
       blankserialRequest(MSPcmdsend);
-      }
+    }
   }  // End of slow Timed Service Routine (100ms loop)
  
   
@@ -224,7 +223,6 @@ unsigned long currentMillis = millis();
         displayArmed();
         if (Settings[S_THROTTLEPOSITION]) displayCurrentThrottle();
 
-
         if(MwSensorPresent&ACCELEROMETER) displayHorizon(MwAngle[0],MwAngle[1]*-1);
         if(MwSensorPresent&MAGNETOMETER)  {
           displayHeadingGraph();
@@ -308,7 +306,7 @@ unsigned long currentMillis = millis();
 
   serialMSPreceive();
 
-  }  // End of main loop
+}  // End of main loop
 //---------------------  End of Timed Service Routine ---------------------------------------
 
 
@@ -353,5 +351,4 @@ void checkEEPROM(void)
     }
   }
 }
-
 

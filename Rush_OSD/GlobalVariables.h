@@ -194,7 +194,6 @@ int rssi_Int=0;
 // For Voltage
 float voltage=0;                      // its the real value x10
 float vidvoltage=0;                   // its the real value x10
-float v_temp =0;
 
 // For temprature
 float temperature=0;                  // its the real value x10
@@ -204,7 +203,6 @@ float temperature=0;                  // its the real value x10
 // For Statistics
 int16_t speedMAX=GPS_speed;
 int8_t temperMAX=0;
-int16_t altitude;
 int16_t altitudeMAX=0;
 int16_t distanceMAX=0;
 float trip=0;

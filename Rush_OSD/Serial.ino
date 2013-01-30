@@ -40,19 +40,16 @@ void serialMSPCheck()
     serialWait = 1; 
     for(int en=0;en<EEPROM_SETTINGS;en++){
       uint8_t inSetting = read8();
-      if (inSetting != Settings[en]) EEPROM.write(en,inSetting);
-      
-      
-      
+      if (inSetting != Settings[en])
+        EEPROM.write(en,inSetting);
     }
-  readEEPROM();
-  serialWait = 0;
+    readEEPROM();
+    serialWait = 0;
   }
 
   if (cmdMSP==MSP_IDENT)
   {
     MwVersion= read8();                             // MultiWii Firmware version
-
   }
 
   if (cmdMSP==MSP_STATUS)
@@ -71,7 +68,8 @@ void serialMSPCheck()
 
   if (cmdMSP==MSP_RC)
   {
-    for(i=0;i<8;i++) MwRcData[i] = read16();
+    for(i=0;i<8;i++)
+      MwRcData[i] = read16();
   }
 
   if (cmdMSP==MSP_RAW_GPS)
@@ -106,15 +104,13 @@ void serialMSPCheck()
   }
 
   if (cmdMSP==MSP_BAT)
-   {
-   MwVBat=read8();
-   pMeterSum=read16();
-   }
-
+  {
+    MwVBat=read8();
+    pMeterSum=read16();
+  }
 
   if (cmdMSP==MSP_RC_TUNING)
   {
-
     rcRate8 = read8();
     rcExpo8 = read8();
     rollPitchRate = read8();
@@ -131,12 +127,9 @@ void serialMSPCheck()
       I8[i] = read8();
       D8[i] = read8();
     }
-
-
   }
 
   serialMSPStringOK=0;
-
 
   if((MwRcData[PITCHSTICK]>MAXSTICK)&&(MwRcData[YAWSTICK]>MAXSTICK)&&(MwRcData[THROTTLESTICK]>MINSTICK)&&!configMode&&!waitStick&&(allSec>5)&&!armed)
   {
