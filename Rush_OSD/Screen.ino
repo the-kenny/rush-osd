@@ -153,81 +153,47 @@ void displayArmed(void)
     MAX7456_WriteString_P(armed_text, getPosition(motorArmedPosition));
 }
 
-void displayHorizonPart(int X,int Y,int roll)
+void displayHorizon(int rollAngle, int pitchAngle)
 {
-  // Roll Angle will be between -45 and 45 this is converted to 0-56 to fit with DisplayHorizonPart function
-  X=X*(0.6)+28;
-  if(X>56) X=56;
-  if(X<0) X=0;
-  // 7 row, 8 lines per row, mean 56 different case per segment, 2 segment now
-  int xx=X/8;
-  switch (xx)
-  {
-  case 0:
-    screen[(roll*30)+100+Y]=0x10+(X);
-    break;
-  case 1:
-    screen[(roll*30)+130+Y]=0x10+(X-8);
-    break;
-  case 2:
-    screen[(roll*30)+160+Y]=0x10+(X-16);
-    break;
-  case 3:
-    screen[(roll*30)+190+Y]=0x10+(X-24);
-    break;
-  case 4:
-    screen[(roll*30)+220+Y]=0x10+(X-32);
-    break;
-  case 5:
-    screen[(roll*30)+250+Y]=0x10+(X-40);
-    break;
-  case 6:
-    screen[(roll*30)+280+Y]=0x10+(X-48);
-    break;
+  if(pitchAngle>250) pitchAngle=250;
+  if(pitchAngle<-200) pitchAngle=-200;
+  if(rollAngle>400) rollAngle=400;
+  if(rollAngle<-400) rollAngle=-400;
+
+  for(int X=0; X<=8; X++) {
+    int Y = (rollAngle * (4-X)) / 64;
+    Y += pitchAngle / 8;
+    Y += 41;
+    if(Y >= 0 && Y <= 81) {
+      int pos = 30*(2+Y/9) + 10 + X;
+      screen[pos]=0x80+(Y%9);
+      if(Y>=9 && (Y%9) == 0)
+      screen[pos]=0x89-10;
+    }
   }
-}
-
-void displayHorizon(short rollAngle, short pitchAngle)
-{
-  rollAngle = rollAngle / 10;
-  pitchAngle = pitchAngle /10;
-  if(pitchAngle>25) pitchAngle=25;
-  if(pitchAngle<-20) pitchAngle=-20;
-  if(rollAngle>40) rollAngle=40;
-  if(rollAngle<-40) rollAngle=-40;
-  pitchAngle = pitchAngle /5;
-
-  displayHorizonPart(rollAngle,0,pitchAngle );
-  displayHorizonPart(rollAngle*0.75,1,pitchAngle );
-  displayHorizonPart(rollAngle*0.5,2,pitchAngle );
-  displayHorizonPart(rollAngle*0.25,3,pitchAngle );
-  displayHorizonPart(0,4,pitchAngle );
-  displayHorizonPart(-1*rollAngle*0.25,5,pitchAngle );
-  displayHorizonPart(-1*rollAngle*0.5,6,pitchAngle );
-  displayHorizonPart(-1*rollAngle*0.75,7,pitchAngle );
-  displayHorizonPart(-1*rollAngle,8,pitchAngle );
-
+  
   if(Settings[S_DISPLAY_HORIZON_BR]){
-    //Draw center screen
-    screen[219-30]=0x03;
-    screen[224-30-1]=0x1D;
-    screen[224-30+1]=0x1D;
-    screen[224-30]=0x01;
-    screen[229-30]=0x02;
+  //Draw center screen
+  screen[219-30]=0x03;
+  screen[224-30-1]=0x1D;
+  screen[224-30+1]=0x1D;
+  screen[224-30]=0x01;
+  screen[229-30]=0x02;
     if (Settings[S_WITHDECORATION]){
-      screen[128]=0xC7;
-      screen[128+30]=0xC7;
-      screen[128+60]=0xC7;
-      screen[128+90]=0xC7;
-      screen[128+120]=0xC7;
-      screen[128+12]=0xC6;
-      screen[128+12+30]=0xC6;
-      screen[128+12+60]=0xC6;
-      screen[128+12+90]=0xC6;
-      screen[128+12+120]=0xC6;
+  screen[128]=0xC7;
+  screen[128+30]=0xC7;
+  screen[128+60]=0xC7;
+  screen[128+90]=0xC7;
+  screen[128+120]=0xC7;
+  screen[128+12]=0xC6;
+  screen[128+12+30]=0xC6;
+  screen[128+12+60]=0xC6;
+  screen[128+12+90]=0xC6;
+  screen[128+12+120]=0xC6;
     }
   }
 }
+
 
 void displayVoltage(void)
 {
