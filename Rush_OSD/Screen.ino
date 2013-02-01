@@ -208,23 +208,23 @@ void displayHorizon(short rollAngle, short pitchAngle)
   displayHorizonPart(-1*rollAngle,8,pitchAngle );
 
   if(Settings[S_DISPLAY_HORIZON_BR]){
-  //Draw center screen
-  screen[219-30]=0x03;
-  screen[224-30-1]=0x1D;
-  screen[224-30+1]=0x1D;
-  screen[224-30]=0x01;
-  screen[229-30]=0x02;
+    //Draw center screen
+    screen[219-30]=0x03;
+    screen[224-30-1]=0x1D;
+    screen[224-30+1]=0x1D;
+    screen[224-30]=0x01;
+    screen[229-30]=0x02;
     if (Settings[S_WITHDECORATION]){
-  screen[128]=0xC7;
-  screen[128+30]=0xC7;
-  screen[128+60]=0xC7;
-  screen[128+90]=0xC7;
-  screen[128+120]=0xC7;
-  screen[128+12]=0xC6;
-  screen[128+12+30]=0xC6;
-  screen[128+12+60]=0xC6;
-  screen[128+12+90]=0xC6;
-  screen[128+12+120]=0xC6;
+      screen[128]=0xC7;
+      screen[128+30]=0xC7;
+      screen[128+60]=0xC7;
+      screen[128+90]=0xC7;
+      screen[128+120]=0xC7;
+      screen[128+12]=0xC6;
+      screen[128+12+30]=0xC6;
+      screen[128+12+60]=0xC6;
+      screen[128+12+90]=0xC6;
+      screen[128+12+120]=0xC6;
     }
   }
 }
