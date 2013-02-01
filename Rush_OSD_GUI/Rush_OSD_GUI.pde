@@ -24,18 +24,7 @@ import javax.swing.JOptionPane; // for message dialogue
 String Rush_OSD_GUI_Version = "2.01a";
 
 
-PImage img_Clear,img_Full,OSDBackground,RadioPot;
-//PGraphics pg;
-int x = 0;
-int y = 0;
-int sx = 0;
-int sy = 0;
-
-// charmap rows & cols --------------------------------------------------
-int[] col = {0,13,26,39,52,65,78,91,104,117,130,143,156,169,182,195};
-int[] row = {0,19,38,57,76,95,114,133,152,171,190,209,228,247,266,285};
-// charmap rows & cols --------------------------------------------------
-
+PImage img_Clear,OSDBackground,RadioPot;
 
 // ScreenType---------- NTSC = 0, PAL = 1 ---------------------------------
 int ScreenType = 0;
@@ -449,13 +438,10 @@ void setup() {
 
 OnTimer = millis();
   frameRate(20); 
-OSDBackground = loadImage("Background1.jpg");
+OSDBackground = loadImage("Background.jpg");
 RadioPot = loadImage("Radio_Pot.png");
 //image(OSDBackground,DisplayWindowX+WindowAdjX, DisplayWindowY+WindowAdjY, DisplayWindowX+360-WindowShrinkX, DisplayWindowY+288-WindowShrinkY);
-img_Full = loadImage("MW_OSD_Team.png");
-img_Clear = loadImage("MW_OSD_Team_Clear.png");
-img_Full.format = ARGB;
-img_Clear.format = ARGB;
+img_Clear = LoadFont("MW_OSD_Team.mcm");
 
   font8 = createFont("Arial bold",8,false);
   font9 = createFont("Arial bold",9,false);
@@ -1010,21 +996,8 @@ String shortifyPortName(String portName, int maxlen)  {
 void mapchar(int address, int screenAddress){
   int placeX = (screenAddress % 30) * 12;
   int placeY = (screenAddress / 30) * 18;
-  //String ss2 = address.substring(2,3);     // Returns "bit"
-  //String ss3 = address.substring(3, 4);  // Returns "CC"
-  //(value/16) = row
-//(value%16) = column in the glyphs image.
-  
-  int charCol = (address%16);
-  //int charRow = unhex(ss2);
- int charRow = (address/16);
- 
- if (int(ShowSimBackground.arrayValue()[0]) < 1){
- copy(img_Clear,col[charCol], row[charRow], 12, 18, placeX+DisplayWindowX, placeY+DisplayWindowY, 12, 18);
- }
- else{
-  copy(img_Full,col[charCol], row[charRow], 12, 18, placeX+DisplayWindowX, placeY+DisplayWindowY, 12, 18); 
- }
+
+  blend(img_Clear, 0,address*18, 12, 18, placeX+DisplayWindowX, placeY+DisplayWindowY, 12, 18, BLEND);
 }
 
 void makeText(String inString, int inStartAddress ){

@@ -1,5 +1,4 @@
 PImage LoadFont(String filename) {
-  colorMode(ARGB, 255);
   PImage img = createImage(12, 18*256, ARGB);
   InputStream in = null;
   byte[] header = { 'M','A','X','7','4','5','6' };
