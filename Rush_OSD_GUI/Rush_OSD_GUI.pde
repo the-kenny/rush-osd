@@ -1008,32 +1008,30 @@ void makeText(String inString, int inStartAddress ){
 
 void displayHorizon(int rollAngle, int pitchAngle)
 {
-  //println(rollAngle);
-  rollAngle = rollAngle / 10;
-  pitchAngle = pitchAngle /10;
-  if(pitchAngle>25) pitchAngle=25;
-  if(pitchAngle<-20) pitchAngle=-20;
-  if(rollAngle>40) rollAngle=40;
-  if(rollAngle<-40) rollAngle=-40;
-  pitchAngle = pitchAngle /5;
+  if(pitchAngle>250) pitchAngle=250;
+  if(pitchAngle<-200) pitchAngle=-200;
+  if(rollAngle>400) rollAngle=400;
+  if(rollAngle<-400) rollAngle=-400;
 
-  displayHorizonPart(rollAngle,0,pitchAngle );
-  displayHorizonPart(rollAngle*0.75,1,pitchAngle );
-  displayHorizonPart(rollAngle*0.5,2,pitchAngle );
-  displayHorizonPart(rollAngle*0.25,3,pitchAngle );
-  displayHorizonPart(0,4,pitchAngle );
-  displayHorizonPart(-1*rollAngle*0.25,5,pitchAngle );
-  displayHorizonPart(-1*rollAngle*0.5,6,pitchAngle );
-  displayHorizonPart(-1*rollAngle*0.75,7,pitchAngle );
-  displayHorizonPart(-1*rollAngle,8,pitchAngle );
+  for(int X=0; X<=8; X++) {
+    int Y = (rollAngle * (4-X)) / 64;
+    Y += pitchAngle / 8;
+    Y += 41;
+    if(Y >= 0 && Y <= 81) {
+      int pos = 30*(2+Y/9) + 10 + X;
+      mapchar(0x80+(Y%9), pos);
+      if(Y>=9 && (Y%9) == 0)
+        mapchar(0x89, pos-30);
+    }
+  }
 
 //if (DISPLAY_HORIZON_BR){
   //Draw center screen
   mapchar(0x03, 219-30);
-  mapchar(0x1D,224-30-1);
-  mapchar(0x1D,224-30+1);
-  mapchar(0x01,224-30);
-  mapchar(0x02,229-30);
+  mapchar(0x1D, 224-30-1);
+  mapchar(0x1D, 224-30+1);
+  mapchar(0x01, 224-30);
+  mapchar(0x02, 229-30);
   
   //if (WITHDECORATION){
      mapchar(0xC7,128);
@@ -1051,57 +1049,6 @@ void displayHorizon(int rollAngle, int pitchAngle)
   //mapchar("0x10"+ 00,(rollAngle*30)+100+0);
 }
 
-void displayHorizonPart(float X,float Y,int roll)
-{
- 
-  // Roll Angle will be between -45 and 45 this is converted to 0-56 to fit with DisplayHorizonPart function
-  X = X*(0.6)+28;
-  if(X>56) X=56;
-  if(X<0) X=0;
-  // 7 row, 8 lines per row, mean 56 different case per segment, 2 segment now
-  xx=int(X/8);
-  int charString = 0x1;
-  switch (xx)
-   {
-    
-  case 0:
-   //charString+=X;
-   mapchar(0x10+int(X),(roll*30)+100 + int(Y));
-   
-    //screen[(roll*30)+100+Y]=0x10+(X);
-    break;
-  case 1:
-  charString+=X-8;
-   mapchar(0x10+int(X-8),(roll*30)+130+int(Y));
-    //screen[(roll*30)+130+Y]=0x10+(X-8);
-    break;
-  case 2:
-  charString+=X-16;
-   mapchar(0x10+int(X-16),(roll*30)+160+int(Y));
-   // screen[(roll*30)+160+Y]=0x10+(X-16);
-    break;
-  case 3:
-  charString+=X-24;
-   mapchar(0x10+int(X-24),(roll*30)+190+int(Y));
-   // screen[(roll*30)+190+Y]=0x10+(X-24);
-    break;
-  case 4:
-   charString+=X-32;
-   mapchar(0x10+int(X-32),(roll*30)+220+int(Y));
-   // screen[(roll*30)+220+Y]=0x10+(X-32);
-    break;
-  case 5:
-   charString+=X-40;
-   mapchar(0x10+int(X-40),(roll*30)+250+int(Y));
-   // screen[(roll*30)+250+Y]=0x10+(X-40);
-    break;
-  case 6:
- charString+=X-48;
-   mapchar(0x10+int(X-48),(roll*30)+280+int(Y));
-    //screen[(roll*30)+280+Y]=0x10+(X-48);
-    break;
-  }
-}
 
 void displayHeadingGraph()
 {
