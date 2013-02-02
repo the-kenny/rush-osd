@@ -21,7 +21,7 @@ import javax.swing.filechooser.FileFilter; // for our configuration file filter 
 import javax.swing.JOptionPane; // for message dialogue
 
 
-String Rush_OSD_GUI_Version = "2.01a";
+String KV_OSD_GUI_Version = "2.01b";
 
 
 PImage img_Clear,OSDBackground,RadioPot;
@@ -124,6 +124,8 @@ String SendCommand = "";
 
 boolean firstContact = false;   
 boolean disableSerial = false;
+boolean Shiftkey = false;
+
 // Int variables
 
 
@@ -160,6 +162,7 @@ int XGPS       = 310;        int YGPS    = 50;
 int XBoard     = 310;        int YBoard   = 150;
 int XOther     = 310;        int YOther   = 200;
 int XControlBox     = 120;        int YControlBox   = 500;
+int XRCSim    =   XSim;      int YRCSim = 430;
 
 
 
@@ -252,7 +255,8 @@ String[] ConfigNames = {
   
   "Display Battery Evo:",
   "Reset Stats After Arm:",
-  "Enable OSD Read ADC:"
+  "Enable OSD Read ADC:",
+  "RSSI Over MW:"
   
 
 };
@@ -289,7 +293,8 @@ String[] ConfigHelp = {
   "checked ON, unchecked OFF",
   "checked ON, unchecked OFF",
   "checked Reset, unchecked Don't reset",
-  "checked ON, unchecked OFF"
+  "checked ON, unchecked OFF",
+  "checked RSSI from MW, unchecked Onboard RSSI"
   };
 
 
@@ -297,7 +302,7 @@ String[] ConfigHelp = {
 
 static int CHECKBOXITEMS=0;
 int CONFIGITEMS=ConfigNames.length;
-static int SIMITEMS=10;
+static int SIMITEMS=6;
   
 int[] ConfigRanges = {
 1,   // used for check             0
@@ -333,14 +338,15 @@ int[] ConfigRanges = {
 1,     // S_SHOWBATLEVELEVOLUTION  30 
 1,     // S_RESETSTATISTICS        31
 1,     // S_ENABLEADC              32
+1      // S_MWRSSI                 33
 };
 String[] SimNames= {
   "Armed:",
   "Acro/Stable:",
-  "Sim 2:",
-  "Sim 3:",
-  "Sim 4:",
-  "Sim 5:",
+  "Bar Mode:",
+  "Mag Mode:",
+  "GPS Home:",
+  "GPS Hold:",
   "Sim 6:",
   "Sim 7:",
   "Sim 8:",
@@ -355,7 +361,7 @@ String[] SimNames= {
   1,
   1,
   1,
-  255,
+  1,
   1,
   255,
   1,
@@ -398,7 +404,7 @@ Numberbox SimItem[] = new Numberbox[SIMITEMS] ;
 
 // Slider2d ------------------------------------------------------------------------------------------------------------------
 
-Slider2D s;
+Slider2D Pitch_Roll, Throttle_Yaw,MW_Pitch_Roll;
 
 Slider sRoll,sPitch;
 // Slider2d ------------------------------------------------------------------------------------------------------------------
@@ -514,9 +520,9 @@ BuildNumberBoxes(21, 25, XGPS+5, YGPS);
 BuildCheckBoxes(21, 25, XGPS+5, YGPS+3);
 
 //  Other ---------------------------------------------------------------------------
-BuildTextLabels(25, 33, XOther+5, YOther);
-BuildNumberBoxes(25, 33, XOther+5, YOther);
-BuildCheckBoxes(25, 33, XOther+5, YOther+3);
+BuildTextLabels(25, 34, XOther+5, YOther);
+BuildNumberBoxes(25, 34, XOther+5, YOther);
+BuildCheckBoxes(25, 34, XOther+5, YOther+3);
 
 
 
@@ -593,8 +599,8 @@ txtlblSimItem[i] = controlP5.addTextlabel("txtlblSimItem"+i,SimNames[i],XSim+40,
     }
   }
   
-  s = controlP5.addSlider2D("Pitch/Roll")
-         .setPosition(DisplayWindowX+WindowAdjX-90,DisplayWindowY+WindowAdjY+288-WindowShrinkY-90)
+MW_Pitch_Roll = controlP5.addSlider2D("MWPitch/Roll")
+         .setPosition(DisplayWindowX+WindowAdjX-100,DisplayWindowY+WindowAdjY+288-WindowShrinkY-90)
          .setSize(70,70)
          .setArrayValue(new float[] {50, 50})
          .setMaxX(45) 
@@ -602,12 +608,45 @@ txtlblSimItem[i] = controlP5.addTextlabel("txtlblSimItem"+i,SimNames[i],XSim+40,
          .setMinX(-45) 
          .setMinY(-25)
          .setValueLabel("") 
-         .setLabel("Roll/Pitch")
+         .setLabel("MW Roll/Pitch")
+        //.setImage(RadioPot) 
+        //.updateDisplayMode(1)
+         //.disableCrosshair()
+         ;
+ controlP5.getController("MWPitch/Roll").getValueLabel().hide();
+
+
+  Pitch_Roll = controlP5.addSlider2D("Pitch/Roll")
+         .setPosition(XRCSim + 200,YRCSim)
+         .setSize(70,70)
+         .setArrayValue(new float[] {50, 50})
+         .setMaxX(2000) 
+         .setMaxY(1000) 
+         .setMinX(1000) 
+         .setMinY(2000)
+         .setLabel("Pitch/Roll")
        //.setImage(RadioPot) 
        //.updateDisplayMode(1)
        //.disableCrosshair()
          ;
   controlP5.getController("Pitch/Roll").getValueLabel().hide();
+
+ Throttle_Yaw = controlP5.addSlider2D("Throttle/Yaw")
+         .setPosition(XRCSim + 60,YRCSim)
+         .setSize(70,70)
+         .setArrayValue(new float[] {50, 100})
+         .setMaxX(2000) 
+         .setMaxY(1000) 
+         .setMinX(1000) 
+         .setMinY(2000)
+         
+         .setValueLabel("") 
+        .setLabel("  Thr/Yaw")
+        ;
+ controlP5.getController("Throttle/Yaw").getValueLabel().hide();
+ controlP5.getTooltip().register("Throttle/Yaw","Sift Key to hold position");
+ 
+ 
 
   HeadingKnob = controlP5.addKnob("MwHeading")
                .setRange(-180,+180)
@@ -680,7 +719,7 @@ void BuildTextLabels(int starter, int ender, int StartXLoction, int StartYLocati
 }
 
 void BuildToolHelp(){
-  controlP5.getTooltip().setDelay(200);
+  controlP5.getTooltip().setDelay(100);
   //confItem[1].setMultiplier(confItem[1].value);
   //controlP5.getTooltip().register("txtlblconfItem"+0,"Changes the size of the ellipse.");
   //controlP5.getTooltip().register("s2","Changes the Background");
@@ -722,7 +761,7 @@ void draw() {
     fill(30, 30,30); strokeWeight(3);stroke(1); rectMode(CORNERS); rect(XBoard,YBoard, XBoard+200 , YBoard+40);
     textFont(font12); fill(0, 110, 220); text("Board Type",XBoard + 65,YBoard + 10);
     // Other Box
-    fill(30, 30,30); strokeWeight(3);stroke(1); rectMode(CORNERS); rect(XOther,YOther, XOther+200 , YOther+165);
+  fill(30, 30,30); strokeWeight(3);stroke(1); rectMode(CORNERS); rect(XOther,YOther, XOther+200 , YOther+175);
     textFont(font12); fill(0, 110, 220); text("Other",XOther + 75,YOther + 10);
   }
   
@@ -733,9 +772,9 @@ void draw() {
   textFont(font15);
   // version
   fill(255, 255, 255);
-  text("Rush OSD",18,19);
+  text("KV Team OSD",10,19);
   text("  GUI    V",10,35);
-  text(Rush_OSD_GUI_Version, 74, 35);
+  text(KV_OSD_GUI_Version, 74, 35);
   fill(0, 0, 0);
   strokeWeight(3);stroke(0);
   rectMode(CORNERS);
@@ -755,7 +794,7 @@ void draw() {
 
   MatchConfigs();
 
-  displayHorizon(int(s.arrayValue()[0])*10,int(s.arrayValue()[1])*10*-1);
+  displayHorizon(int(Pitch_Roll.arrayValue()[0])*10,int(Pitch_Roll.arrayValue()[1])*10*-1);
   SimulateTimer();
   ShowCurrentThrottlePosition();
   if (int(confItem[9].value()) > 0)
@@ -790,8 +829,9 @@ void SimulateMultiWii(float[] a) {
   }
   else{
      SimulateMW = false;
-     s.arrayValue()[0] =0;
-     s.arrayValue()[1] =0;
+     ResetVersion();
+     //s.arrayValue()[0] =0;
+     //s.arrayValue()[1] =0;
   }
 }
 
@@ -846,6 +886,38 @@ public void controlEvent(ControlEvent theEvent) {
   if (theEvent.isGroup())
     if (theEvent.name()=="portComList")
       InitSerial(theEvent.group().value()); // initialize the serial port selected
+}
+void mouseReleased() {
+//if ((Throttle_Yaw.getArrayValue()[0] < 1500) || (Throttle_Yaw.getArrayValue()[0] > 1500)){   
+Pitch_Roll.setArrayValue(new float[] {500, -500});
+   
+   if (!Shiftkey){
+    float A = (2000-Throttle_Yaw.getArrayValue()[1])*-1;
+    Throttle_Yaw.setArrayValue(new float[] {500, A});
+   
+   }   
+   
+  
+}
+
+
+void keyPressed()
+{ 
+  if (keyCode == 32){
+    Shiftkey = true;
+    //println(KeyEvent.getKeyText(keyCode));
+    //println(keyCode);
+  }
+  //println(keyCode);
+}
+
+
+
+void keyReleased()
+{ 
+  Shiftkey = false;
+  float A = (2000-Throttle_Yaw.getArrayValue()[1])*-1;
+    Throttle_Yaw.setArrayValue(new float[] {500, A}); 
 }
 
 void mapchar(int address, int screenAddress){
@@ -985,10 +1057,10 @@ void displayMode()
   }
   else 
   {
-    if((MwSensorActive&ARMEDMODE) >0)
-      checkboxSimItem[0].activate(0);
-    else
-      checkboxSimItem[0].deactivate(0);
+    //if((MwSensorActive&ARMEDMODE) >0)
+      //checkboxSimItem[0].activate(0);
+    //else
+      //checkboxSimItem[0].deactivate(0);
       
     if((MwSensorActive&STABLEMODE) >0)
       mapchar(0xbe,sensorPosition[0]+LINE);

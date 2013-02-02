@@ -170,9 +170,10 @@ public static final int
   HEADER_CMD = 5,
   HEADER_ERR = 6;
 
+private static final String MSP_SIM_HEADER = "$M>";
 int c_state = IDLE;
 boolean err_rcvd = false;
-
+List<Character> payload;
 byte checksum=0;
 byte cmd;
 int offset=0, dataSize=0;
@@ -183,7 +184,7 @@ int read32() {return (inBuf[p++]&0xff) + ((inBuf[p++]&0xff)<<8) + ((inBuf[p++]&0
 int read16() {return (inBuf[p++]&0xff) + ((inBuf[p++])<<8); }
 int read8()  {return inBuf[p++]&0xff;}
 
-/*
+
 //send msp without payload
 private List<Byte> requestMSP(int msp) {
   return  requestMSP( msp, null);
@@ -204,7 +205,7 @@ private List<Byte> requestMSP (int msp, Character[] payload) {
    return null;
   }
   List<Byte> bf = new LinkedList<Byte>();
-  for (byte c : MSP_HEADER.getBytes()) {
+  for (byte c : MSP_SIM_HEADER.getBytes()) {
     bf.add( c );
   }
   
@@ -234,7 +235,36 @@ void sendRequestMSP(List<Byte> msp) {
   }
   g_serial.write(arr); // send the complete byte sequence in one go
 }
-*/
+
+//send msp with payload
+private List<Byte> SendMSP (int msp, Character[] payload) {
+  if(msp < 0) {
+   return null;
+  }
+  List<Byte> bf = new LinkedList<Byte>();
+  //for (byte c : MSP_HEADER.getBytes()) {
+  for (byte c : MSP_SIM_HEADER.getBytes()) {
+    bf.add( c );
+  }
+  
+  byte checksum=0;
+  byte pl_size = (byte)((payload != null ? int(payload.length) : 0)&0xFF);
+  bf.add(pl_size);
+  checksum ^= (pl_size&0xFF);
+  
+  bf.add((byte)(msp & 0xFF));
+  checksum ^= (msp&0xFF);
+  
+  if (payload != null) {
+    for (char c :payload){
+      bf.add((byte)(c&0xFF));
+      checksum ^= (c&0xFF);
+    }
+  }
+  bf.add(checksum);
+  return (bf);
+}
+
 
 void serialize8(int val) {
    g_serial.write(val);
@@ -281,7 +311,7 @@ public void evaluateCommand(byte cmd, int dataSize) {
   switch(icmd) {
   case MSP_IDENT:
     headSerialReply(MSP_IDENT, 7);
-    serialize8(213);   // multiwii version
+    serialize8(101);   // multiwii version
     serialize8(0); // type of multicopter
     serialize8(0);         // MultiWii Serial Protocol Version
     serialize32(0);        // "capability"
@@ -292,19 +322,45 @@ public void evaluateCommand(byte cmd, int dataSize) {
     serialize16(0);
     serialize16(0);
     serialize16(1|1<<1|1<<2|1<<3|0<<4);
-    serialize32(0x32|0x01);
+    //serialize32(0x32|0x01);
+    serialize32(int(SimItem[1].value())<<GetBit(1)|0<<1|int(SimItem[2].value())<<GetBit(2)|int(SimItem[3].value())<<GetBit(3)|int(SimItem[0].value())<<GetBit(4)|0<<5|int(SimItem[4].value())<<GetBit(5)|int(SimItem[5].value())<<GetBit(6));
     serialize8(0);   // current setting
     break;
 
   case MSP_ATTITUDE:
     headSerialReply(MSP_ATTITUDE, 8);
-    serialize16(int(s.arrayValue()[0])*10);
-    serialize16(int(s.arrayValue()[1])*10);
+    serialize16(int(MW_Pitch_Roll.arrayValue()[0])*10);
+    serialize16(int(MW_Pitch_Roll.arrayValue()[1])*10);
     serialize16(MwHeading);
     serialize16(0);
     break;
 
   case MSP_RC:
+     
+      payload = new ArrayList<Character>();
+      //Roll 
+      payload.add(char(int(Pitch_Roll.arrayValue()[0])& 0xFF));
+      payload.add(char(int(Pitch_Roll.arrayValue()[0])  >>8 & 0xFF));
+      //pitch
+      payload.add(char(int(Pitch_Roll.arrayValue()[1]) & 0xFF));
+      payload.add(char(int(Pitch_Roll.arrayValue()[1])  >>8 & 0xFF));
+      //Yaw
+      payload.add(char(int(Throttle_Yaw.arrayValue()[0])& 0xFF));
+      payload.add(char(int(Throttle_Yaw.arrayValue()[0]) >>8 & 0xFF));
+      //Throttle
+      payload.add(char(int(Throttle_Yaw.arrayValue()[1]) & 0xFF));
+      payload.add(char(int(Throttle_Yaw.arrayValue()[1]) >>8 & 0xFF));
+      //payload.add(char(900 % 256));
+       // payload.add(char(900 / 256));
+      //System.out.print(Throttle_Yaw.arrayValue()[1]);
+      // 5-8 AUX 1-4
+      for (int i=5; i<8; i++) {
+        payload.add(char(1500  & 0xFF));
+        payload.add(char(1500  >>8 & 0xFF));
+      }
+      sendRequestMSP(SendMSP(MSP_RC,payload.toArray( new Character[payload.size()]) ));  
+    break;
+  
   case MSP_RAW_IMU:
   case MSP_RAW_GPS:
   case MSP_COMP_GPS:
@@ -418,3 +474,43 @@ void GetMWData() {
     }
   }
 }
+int GetBit(int Mode){
+  
+  int GetFromSettings = int(confItem[Mode].value());
+  int SendBit = 0;    
+  switch(GetFromSettings) {
+    case 1:
+      SendBit = 0;
+    break;
+    
+    case 2:
+     SendBit = 1;
+    break;
+    case 4:
+     SendBit = 2;
+    break;
+    case 8:
+     SendBit = 3;
+    break;
+    case 16:
+     SendBit = 4;
+    break;
+    case 32:
+     SendBit = 5;
+    break;
+    case 64:
+     SendBit = 6;
+    break;
+    case 128:
+     SendBit = 7;
+    break;
+  }
+  return SendBit;
+}
+void ResetVersion(){
+  int Sim_Version = 0;
+  payload = new ArrayList<Character>();
+  payload.add(char(Sim_Version));
+  sendRequestMSP(SendMSP(MSP_IDENT,payload.toArray( new Character[payload.size()]) ));
+}
+      
