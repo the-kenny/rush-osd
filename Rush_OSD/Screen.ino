@@ -165,35 +165,35 @@ void displayHorizon(int rollAngle, int pitchAngle)
     Y += pitchAngle / 8;
     Y += 41;
     if(Y >= 0 && Y <= 81) {
-      int pos = 30*(2+Y/9) + 10 + X;
-      screen[pos]=0x80+(Y%9);
+      int pos = LINE*(2+Y/9) + 10 + X;
+      screen[pos] = SYM_AH_BAR9_0+(Y%9);
       if(Y>=9 && (Y%9) == 0)
-      screen[pos]=0x89-10;
+        screen[pos-LINE] = SYM_AH_BAR9_9;
     }
   }
   
   if(Settings[S_DISPLAY_HORIZON_BR]){
-  //Draw center screen
-  screen[219-30]=0x03;
-  screen[224-30-1]=0x1D;
-  screen[224-30+1]=0x1D;
-  screen[224-30]=0x01;
-  screen[229-30]=0x02;
-    if (Settings[S_WITHDECORATION]){
-  screen[128]=0xC7;
-  screen[128+30]=0xC7;
-  screen[128+60]=0xC7;
-  screen[128+90]=0xC7;
-  screen[128+120]=0xC7;
-  screen[128+12]=0xC6;
-  screen[128+12+30]=0xC6;
-  screen[128+12+60]=0xC6;
-  screen[128+12+90]=0xC6;
-  screen[128+12+120]=0xC6;
-    }
+    //Draw center screen
+    screen[219-30] =   SYM_AH_CENTER_LEFT;
+    screen[224-30-1] = SYM_AH_CENTER_LINE;
+    screen[224-30+1] = SYM_AH_CENTER_LINE;
+    screen[224-30] =   SYM_AH_CENTER;
+    screen[229-30] =   SYM_AH_CENTER_RIGHT;
+  }
+  if (Settings[S_WITHDECORATION]){
+    // Draw AH sides
+    screen[128] =        SYM_AH_DECORATION_LEFT;
+    screen[128+30] =     SYM_AH_DECORATION_LEFT;
+    screen[128+60] =     SYM_AH_DECORATION_LEFT;
+    screen[128+90] =     SYM_AH_DECORATION_LEFT;
+    screen[128+120] =    SYM_AH_DECORATION_LEFT;
+    screen[128+12] =     SYM_AH_DECORATION_RIGHT;
+    screen[128+12+30] =  SYM_AH_DECORATION_RIGHT;
+    screen[128+12+60] =  SYM_AH_DECORATION_RIGHT;
+    screen[128+12+90] =  SYM_AH_DECORATION_RIGHT;
+    screen[128+12+120] = SYM_AH_DECORATION_RIGHT;
   }
 }
-
 
 void displayVoltage(void)
 {
@@ -501,8 +501,8 @@ void displayAngleToHome(void)
 
   itoa(GPS_directionToHome,screenBuffer,10);
   uint8_t xx = FindNull();
-  screenBuffer[xx++]=0xBD;
-  screenBuffer[xx]=0;
+  screenBuffer[xx++] = SYM_DEGREES;
+  screenBuffer[xx] = 0;
   MAX7456_WriteString(screenBuffer,getPosition(GPS_angleToHomePosition));
 }
 

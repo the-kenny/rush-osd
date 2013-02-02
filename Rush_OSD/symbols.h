@@ -6,12 +6,12 @@
  */
 
 
-// Satelite Graphics
+// Satellite Graphics
 #define SYM_SAT_L 0X1E
 #define SYM_SAT_R 0X1F
 //#define SYM_SAT 0X0F  // Not used
 
-// Degrres Icon for HEADING/DIRECTION HOME
+// Degrees Icon for HEADING/DIRECTION HOME
 #define SYM_DEGREES 0XBD
 
 // Direction arrows 
@@ -66,14 +66,19 @@
 #define SYM_AH_DECORATION_LEFT 0XC7
 
 // AH Steps
-#define SYM_AH_STEP_7 0X10 
-#define SYM_AH_STEP_6 0X11
-#define SYM_AH_STEP_5 0X12
-#define SYM_AH_STEP_4 0X13
-#define SYM_AH_STEP_3 0X14
-#define SYM_AH_STEP_2 0X15
-#define SYM_AH_STEP_1 0X16
-#define SYM_AH_STEP_0 0X17
+//#define SYM_AH_STEP_7 0X10 
+//#define SYM_AH_STEP_6 0X11
+//#define SYM_AH_STEP_5 0X12
+//#define SYM_AH_STEP_4 0X13
+//#define SYM_AH_STEP_3 0X14
+//#define SYM_AH_STEP_2 0X15
+//#define SYM_AH_STEP_1 0X16
+//#define SYM_AH_STEP_0 0X17
+
+// AH Bars
+#define SYM_AH_BAR9_0 0x80
+#define SYM_AH_BAR9_9 0x89
+
 
 // Climb Rate Arrows
 #define SYM_POS_CLIMB 0XB0
