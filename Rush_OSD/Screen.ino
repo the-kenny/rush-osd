@@ -460,15 +460,14 @@ void displayClimbRate(void)
   else if(MwVario < -30) screenBuffer[0] = SYM_NEG_CLIMB1;
   else if(MwVario < -20) screenBuffer[0] = SYM_NEG_CLIMB;
   else                   screenBuffer[0] = SYM_ZERO_CLIMB;
-  screenBuffer[1] = ' ';
 
-  screenBuffer[2] = MwClimbRateAdd[Settings[S_UNITSYSTEM]];
+  screenBuffer[1] = MwClimbRateAdd[Settings[S_UNITSYSTEM]];
   int16_t vario;
   if(Settings[S_UNITSYSTEM])
     vario = MwVario * 0.032808;       // cm/sec ----> ft/sec
   else
     vario = MwVario / 100;            // cm/sec ----> mt/sec
-  itoa(vario, screenBuffer+3, 10);
+  itoa(vario, screenBuffer+2, 10);
 
   MAX7456_WriteString(screenBuffer,getPosition(MwClimbRatePosition));
 }

@@ -11,7 +11,7 @@ const unsigned screenPosition[][2] PROGMEM = {
   { LINE02+19,   LINE02+19      },   // MwHeadingPosition
   { LINE02+10,   LINE02+10      },   // MwHeadingGraphPosition
   { LINE07+2,    LINE07+2       },   // MwAltitudePosition
-  { LINE07+23,   LINE07+23      },   // MwClimbRatePosition
+  { LINE07+24,   LINE07+24      },   // MwClimbRatePosition
   { LINE11+22,   LINE11+22+60   },   // CurrentThrottlePosition
   { LINE12+22,   LINE12+22+60   },   // flyTimePosition
   { LINE13+22,   LINE13+22+60   },   // onTimePosition
