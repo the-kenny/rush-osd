@@ -134,6 +134,57 @@ void serialMSPCheck()
     MwRssi = read8();
   }
 
+#ifdef AUTOCONFIGMODEBITS
+  if(cmdMSP==MSP_BOXNAMES) {
+    uint32_t bit = 1;
+    uint8_t remaining = dataSize;
+    uint8_t len;
+    char firstc, lastc;
+
+    Settings[S_STABLEMODE] = 0;
+    Settings[S_BAROMODE] = 0;
+    Settings[S_MAGMODE] = 0;
+    Settings[S_ARMEDMODE] = 0;
+    Settings[S_GPSHOMEMODE] = 0;
+    Settings[S_GPSHOLDMODE] = 0;
+
+    while(remaining > 0) {
+      char c = read8();
+      if(len == 0)
+        firstc = c;
+      len++;
+      if(c == ';') {
+        // Found end of name; set bit if first and last c matches.
+        if(firstc == 'A') {
+          if(lastc == 'M') // "ARM;"
+            Settings[S_ARMEDMODE] |= bit;
+          if(lastc == 'E') // "ANGLE;"
+            Settings[S_STABLEMODE] |= bit;
+        }
+        if(firstc == 'H' && lastc == 'N') // "HORIZON;"
+          Settings[S_STABLEMODE] |= bit;
+        if(firstc == 'M' && lastc == 'G') // "MAG;"
+           Settings[S_MAGMODE] |= bit;
+        if(firstc == 'B' && lastc == 'O') // "BARO;"
+          Settings[S_BAROMODE] |= bit;
+        //if(firstc == 'L' && lastc == 'S') // "LLIGHTS;"
+        //  lights |= bit;
+        if(firstc == 'G') {
+          if(lastc == 'E') // "GPS HOME;"
+            Settings[S_GPSHOMEMODE] |= bit;
+          if(lastc == 'D') // "GPS HOLD;"
+            Settings[S_GPSHOLDMODE] |= bit;
+        }
+
+        len = 0;
+        bit <<= 1;
+      }
+      lastc = c;
+      --remaining;
+    }
+  }
+#endif // AUTOCONFIGMODEBITS
+
   serialMSPStringOK=0;
 
   if((MwRcData[PITCHSTICK]>MAXSTICK)&&(MwRcData[YAWSTICK]>MAXSTICK)&&(MwRcData[THROTTLESTICK]>MINSTICK)&&!configMode&&!waitStick&&(allSec>5)&&!armed)
