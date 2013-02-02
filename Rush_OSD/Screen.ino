@@ -526,8 +526,7 @@ void displayDirectionToHome(void)
 
 void displayCursor(void)
 {
-int cursorpos;
-static const char CURSOR[] PROGMEM = "*";
+  int cursorpos;
 
   if(ROW==10){
     if(COL==3) cursorpos=SAVEP+16-1;    // page
@@ -574,7 +573,8 @@ static const char CURSOR[] PROGMEM = "*";
       ROW=10;
       }
   }
-  if(Blink10hz) MAX7456_WriteString_P(CURSOR,cursorpos);
+  if(Blink10hz)
+    screen[cursorpos] = SYM_CURSOR;
 }
 
 

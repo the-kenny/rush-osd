@@ -146,4 +146,5 @@
 // RSSI
 #define SYM_RSSI 0XBA
 
-
+// Menu cursor
+#define SYM_CURSOR SYM_AH_LEFT
