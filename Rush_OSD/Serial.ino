@@ -127,11 +127,11 @@ void serialMSPCheck()
       I8[i] = read8();
       D8[i] = read8();
     }
+  }
     
-     if (cmdMSP==MSP_MWRSSI)
+  if (cmdMSP==MSP_MWRSSI)
   {
-   MwRssi=read8();
-   } 
+    MwRssi = read8();
   }
 
   serialMSPStringOK=0;
