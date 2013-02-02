@@ -104,7 +104,9 @@ void loop()
     if (!Settings[S_VIDVOLTAGE_VBAT]){
       vidvoltage=(analogRead(vidvoltagePin)*1.1*Settings[S_VIDDIVIDERRATIO])/102.3;
     }
-    rssiADC = (analogRead(rssiPin)*1.1)/1023;
+     if (!Settings[S_MWRSSI]){
+  rssiADC = (analogRead(rssiPin)*1.1)/1023;
+  } 
     amperage = (AMPRERAGE_OFFSET - (analogRead(amperagePin)*AMPERAGE_CAL))/10.23;
   }
 

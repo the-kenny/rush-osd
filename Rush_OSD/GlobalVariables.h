@@ -24,7 +24,7 @@ uint8_t configMode=0;
 
 
 //Current # of setting available
-#define EEPROM_SETTINGS            33
+#define EEPROM_SETTINGS            34
 
 uint8_t Settings[EEPROM_SETTINGS]; 
 
@@ -61,7 +61,8 @@ uint8_t Settings[EEPROM_SETTINGS];
 #define S_WITHDECORATION        29
 #define S_SHOWBATLEVELEVOLUTION 30 
 #define S_RESETSTATISTICS       31
-#define S_ENABLEADC             32 
+#define S_ENABLEADC             32
+#define S_MWRSSI                33
 
 
 // For Settings Defaults
@@ -99,6 +100,7 @@ uint8_t EEPROM_DEFAULT[EEPROM_SETTINGS] = {
 0,   // S_SHOWBATLEVELEVOLUTION  30 
 1,   // S_RESETSTATISTICS        31
 0,   // S_ENABLEADC              32
+1,   // S_MWRSSI                 33
 };
 
 
@@ -163,6 +165,7 @@ uint8_t GPS_numSat=0;
 int16_t I2CError=0;
 int16_t cycleTime=0;
 uint16_t pMeterSum=0;
+uint8_t MwRssi=0;
 
 //For Current Throttle
 int LowT = 1100;
@@ -231,6 +234,7 @@ uint16_t flyingTime=0;
 #define MSP_BOXNAMES             116   //out message         the aux switch names
 #define MSP_PIDNAMES             117   //out message         the PID names
 #define MSP_WP                   118   //out message         get a WP, WP# is in the payload, returns (WP#, lat, lon, alt, flags) WP#0-home, WP#16-poshold
+#define MSP_MWRSSI               119   //out message         RSSI from Multiwii FC
 
 #define MSP_SET_RAW_RC           200   //in message          8 rc chan
 #define MSP_SET_RAW_GPS          201   //in message          fix, numsat, lat, lon, alt, speed

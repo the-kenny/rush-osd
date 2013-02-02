@@ -313,6 +313,9 @@ void displaypMeterSum(void)
 
 void displayRSSI(void)
 {
+  if (Settings[S_MWRSSI]){
+    rssi=MwRssi;
+    }
   screenBuffer[0]=rssiUnitAdd;
   // Calcul et affichage du Rssi
   itoa(rssi,screenBuffer+1,10);
@@ -320,7 +323,7 @@ void displayRSSI(void)
   screenBuffer[xx++]='%';
   screenBuffer[xx]=0;
   MAX7456_WriteString(screenBuffer,getPosition(rssiPosition));
-}
+  }
 
 void displayHeading(void)
 {
