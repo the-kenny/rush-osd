@@ -3,7 +3,7 @@
 const unsigned screenPosition[][2] PROGMEM = {
   { LINE02+2,    LINE02+2       },   // GPS_numSatPosition
   { LINE03+14,   LINE03+14      },   // GPS_directionToHomePosition
-  { LINE02+24,   LINE02+24      },   // GPS_distanceToHomePosition
+  { LINE02+23,   LINE02+23      },   // GPS_distanceToHomePosition
   { LINE03+24,   LINE03+24      },   // speedPosition
   { LINE04+14,   LINE04+14      },   // GPS_angleToHomePosition
   { LINE04+24,   LINE04+24      },   // MwGPSAltPosition
