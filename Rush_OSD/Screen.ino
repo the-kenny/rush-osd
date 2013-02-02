@@ -174,14 +174,14 @@ void displayHorizon(int rollAngle, int pitchAngle)
   
   if(Settings[S_DISPLAY_HORIZON_BR]){
     //Draw center screen
-    screen[219-30] =   SYM_AH_CENTER_LEFT;
     screen[224-30-1] = SYM_AH_CENTER_LINE;
     screen[224-30+1] = SYM_AH_CENTER_LINE;
     screen[224-30] =   SYM_AH_CENTER;
-    screen[229-30] =   SYM_AH_CENTER_RIGHT;
   }
   if (Settings[S_WITHDECORATION]){
     // Draw AH sides
+    screen[219-30] =     SYM_AH_LEFT;
+    screen[229-30] =     SYM_AH_RIGHT;
     screen[128] =        SYM_AH_DECORATION_LEFT;
     screen[128+30] =     SYM_AH_DECORATION_LEFT;
     screen[128+60] =     SYM_AH_DECORATION_LEFT;
