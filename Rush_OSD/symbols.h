@@ -89,7 +89,7 @@
 #define SYM_NEG_CLIMB2 0XB5
 #define SYM_NEG_CLIMB1 0XB6
 #define SYM_NEG_CLIMB 0XB7
-#define SYM_UNDER_S 0XBC
+#define SYM_ZERO_CLIMB 0XB8
 
 // Temperature
 #define SYM_TEMP_F 0X0D
@@ -146,4 +146,5 @@
 // RSSI
 #define SYM_RSSI 0XBA
 
-
+// Menu cursor
+#define SYM_CURSOR SYM_AH_LEFT

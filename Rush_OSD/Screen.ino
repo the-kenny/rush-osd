@@ -450,14 +450,6 @@ void displayAltitude(void)
 
 void displayClimbRate(void)
 {
-  screenBuffer[0] = MwClimbRateAdd[Settings[S_UNITSYSTEM]];
-  int16_t vario;
-  if(Settings[S_UNITSYSTEM])
-    vario = MwVario * 0.032808;       // cm/sec ----> ft/sec
-  else
-    vario = MwVario / 100;            // cm/sec ----> mt/sec
-  itoa(vario, screenBuffer+1, 10);
-  MAX7456_WriteString(screenBuffer,getPosition(MwClimbRatePosition));
 
   if(MwVario > 70)       screenBuffer[0] = SYM_POS_CLIMB3;
   else if(MwVario > 50)  screenBuffer[0] = SYM_POS_CLIMB2;
@@ -467,13 +459,18 @@ void displayClimbRate(void)
   else if(MwVario < -50) screenBuffer[0] = SYM_NEG_CLIMB2;
   else if(MwVario < -30) screenBuffer[0] = SYM_NEG_CLIMB1;
   else if(MwVario < -20) screenBuffer[0] = SYM_NEG_CLIMB;
-  else                   screenBuffer[0] = SYM_UNDER_S;
-  screenBuffer[1]=0;
+  else                   screenBuffer[0] = SYM_ZERO_CLIMB;
+  screenBuffer[1] = ' ';
 
-  int pos = getPosition(MwClimbRatePosition)-2;
-  if(MwVario < -20)
-    pos += LINE;
-  MAX7456_WriteString(screenBuffer,pos);
+  screenBuffer[2] = MwClimbRateAdd[Settings[S_UNITSYSTEM]];
+  int16_t vario;
+  if(Settings[S_UNITSYSTEM])
+    vario = MwVario * 0.032808;       // cm/sec ----> ft/sec
+  else
+    vario = MwVario / 100;            // cm/sec ----> mt/sec
+  itoa(vario, screenBuffer+3, 10);
+
+  MAX7456_WriteString(screenBuffer,getPosition(MwClimbRatePosition));
 }
 
 void displayDistanceToHome(void)
@@ -529,8 +526,7 @@ void displayDirectionToHome(void)
 
 void displayCursor(void)
 {
-int cursorpos;
-static const char CURSOR[] PROGMEM = "*";
+  int cursorpos;
 
   if(ROW==10){
     if(COL==3) cursorpos=SAVEP+16-1;    // page
@@ -577,7 +573,8 @@ static const char CURSOR[] PROGMEM = "*";
       ROW=10;
       }
   }
-  if(Blink10hz) MAX7456_WriteString_P(CURSOR,cursorpos);
+  if(Blink10hz)
+    screen[cursorpos] = SYM_CURSOR;
 }
 
 
