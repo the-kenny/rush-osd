@@ -204,7 +204,7 @@ float temperature=0;                  // its the real value x10
 
 
 // For Statistics
-int16_t speedMAX=GPS_speed;
+int16_t speedMAX=0;
 int8_t temperMAX=0;
 int16_t altitudeMAX=0;
 int16_t distanceMAX=0;

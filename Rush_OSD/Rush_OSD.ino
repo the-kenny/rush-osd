@@ -89,7 +89,7 @@ void setup()
 
 void loop()
 {
-   // Process AI
+  // Process AI
   if (Settings[S_ENABLEADC]){
     temperature=(analogRead(temperaturePin)*1.1)/10.23;
     if (!Settings[S_MAINVOLTAGE_VBAT]){
@@ -104,9 +104,9 @@ void loop()
     if (!Settings[S_VIDVOLTAGE_VBAT]){
       vidvoltage=(analogRead(vidvoltagePin)*1.1*Settings[S_VIDDIVIDERRATIO])/102.3;
     }
-     if (!Settings[S_MWRSSI]){
-  rssiADC = (analogRead(rssiPin)*1.1)/1023;
-  } 
+    if (!Settings[S_MWRSSI]){
+      rssiADC = (analogRead(rssiPin)*1.1)/1023;
+    } 
     amperage = (AMPRERAGE_OFFSET - (analogRead(amperagePin)*AMPERAGE_CAL))/10.23;
   }
 
@@ -210,6 +210,7 @@ unsigned long currentMillis = millis();
       }
       else
       {
+        CollectStatistics();
         if(Settings[S_DISPLAYVOLTAGE]&&((voltage>Settings[S_VOLTAGEMIN])||(Blink2hz))) displayVoltage();
         if(Settings[S_DISPLAYRSSI]&&((rssi>lowrssiAlarm)||(Blink2hz))) displayRSSI();
 
@@ -311,6 +312,11 @@ unsigned long currentMillis = millis();
 }  // End of main loop
 //---------------------  End of Timed Service Routine ---------------------------------------
 
+
+void CollectStatistics() {
+  if(GPS_fix && GPS_speed > speedMAX)
+    speedMAX = GPS_speed;
+}
 
 void calculateTrip(void)
 {

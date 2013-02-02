@@ -424,9 +424,6 @@ void displayGPS_speed(void)
   else
     xx = GPS_speed * 0.02236932;      // (0.036*0.62137)  From MWii cm/sec to mph
 
-  if(xx > speedMAX)
-    speedMAX = xx;
-
   screenBuffer[0]=speedUnitAdd[Settings[S_UNITSYSTEM]];
   itoa(xx,screenBuffer+1,10);
   MAX7456_WriteString(screenBuffer,getPosition(speedPosition));
@@ -747,6 +744,7 @@ void displayPIDConfigScreen(void)
 
   if(configPage==6)
   {
+    int xx;
     MAX7456_WriteString_P(configMsg51, 38);
 
     MAX7456_WriteString_P(configMsg52, ROLLT);
@@ -758,8 +756,12 @@ void displayPIDConfigScreen(void)
     MAX7456_WriteString_P(configMsg54, YAWT);
     MAX7456_WriteString(itoa(altitudeMAX,screenBuffer,10),YAWD);
 
+    if(!Settings[S_UNITSYSTEM])
+      xx = speedMAX * 0.036;           // From MWii cm/sec to Km/h
+    else
+      xx = speedMAX * 0.02236932;      // (0.036*0.62137)  From MWii cm/sec to mph
     MAX7456_WriteString_P(configMsg55, ALTT);
-    MAX7456_WriteString(itoa(speedMAX,screenBuffer,10),ALTD);
+    MAX7456_WriteString(itoa(xx,screenBuffer,10),ALTD);
 
     MAX7456_WriteString_P(configMsg56, VELT);
 
