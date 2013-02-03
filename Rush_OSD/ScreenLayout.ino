@@ -1,32 +1,46 @@
 
-//  NTSC         PAL
-const unsigned screenPosition[][2] PROGMEM = {
-  { LINE02+2,    LINE02+2             },   // GPS_numSatPosition
-  { LINE03+14,   LINE03+14            },   // GPS_directionToHomePosition
-  { LINE02+24,   LINE02+24            },   // GPS_distanceToHomePosition
-  { LINE03+24,   LINE03+24            },   // speedPosition
-  { LINE04+14,   LINE04+14            },   // GPS_angleToHomePosition
-  { LINE04+24,   LINE04+24            },   // MwGPSAltPosition
-  { LINE03+2,    LINE03+2             },   // sensorPosition
-  { LINE02+19,   LINE02+19            },   // MwHeadingPosition
-  { LINE02+10,   LINE02+10            },   // MwHeadingGraphPosition
-  { LINE07+2,    LINE07+2             },   // MwAltitudePosition
-  { LINE07+24,   LINE07+24            },   // MwClimbRatePosition
-  { LINE11+22,   LINE11+22+(2*LINE)   },   // CurrentThrottlePosition
-  { LINE12+22,   LINE12+22+(2*LINE)   },   // flyTimePosition
-  { LINE13+22,   LINE13+22+(2*LINE)   },   // onTimePosition
-  { LINE12+11,   LINE11+11+(2*LINE)   },   // motorArmedPosition
-  { LINE10+2,    LINE10+2+(2*LINE)    },   // MwGPSLatPosition
-  { LINE10+15,   LINE10+15+(2*LINE)   },   // MwGPSLonPosition
-  { LINE12+2,    LINE12+2+(2*LINE)    },   // rssiPosition
-  { LINE11+2,    LINE11+2             },   // temperaturePosition
-  { LINE13+3,    LINE13+3+(2*LINE)    },   // voltagePosition
-  { LINE11+3,    LINE11+3+(2*LINE)    },   // vidvoltagePosition
-  { LINE13+10,   LINE13+10+(2*LINE)   },   // amperagePosition
-  { LINE13+16,   LINE13+16+(2*LINE)   },   // pMeterSumPosition
+#define POS_MASK        0x01FF
+#define PAL_OFF         0x0200
+#define DISPLAY_ALWAYS  0x0C00
+#define DISPLAY_NEVER   0x0000
+#define DISPLAY_COND    0x0400
+#define DISPLAY_CONDR   0x0800
+
+#define POS(pos, pal_off, disp)  (((pos)&POS_MASK)|((pal_off)?PAL_OFF:0)|disp)
+
+const uint16_t screenPosition[] PROGMEM = {
+  POS(LINE02+2,  0, DISPLAY_ALWAYS), // GPS_numSatPosition
+  POS(LINE03+14, 0, DISPLAY_ALWAYS), // GPS_directionToHomePosition
+  POS(LINE02+24, 0, DISPLAY_ALWAYS), // GPS_distanceToHomePosition
+  POS(LINE03+24, 0, DISPLAY_ALWAYS), // speedPosition
+  POS(LINE04+14, 0, DISPLAY_ALWAYS), // GPS_angleToHomePosition
+  POS(LINE04+24, 0, DISPLAY_ALWAYS), // MwGPSAltPosition
+  POS(LINE03+2,  0, DISPLAY_ALWAYS), // sensorPosition
+  POS(LINE02+19, 0, DISPLAY_ALWAYS), // MwHeadingPosition
+  POS(LINE02+10, 0, DISPLAY_ALWAYS), // MwHeadingGraphPosition
+  POS(LINE07+2,  0, DISPLAY_ALWAYS), // MwAltitudePosition
+  POS(LINE07+24, 0, DISPLAY_ALWAYS), // MwClimbRatePosition
+  POS(LINE11+22, 1, DISPLAY_ALWAYS), // CurrentThrottlePosition
+  POS(LINE12+22, 1, DISPLAY_ALWAYS), // flyTimePosition
+  POS(LINE13+22, 1, DISPLAY_ALWAYS), // onTimePosition
+  POS(LINE12+11, 1, DISPLAY_ALWAYS), // motorArmedPosition
+  POS(LINE10+2,  1, DISPLAY_ALWAYS), // MwGPSLatPosition
+  POS(LINE10+15, 1, DISPLAY_ALWAYS), // MwGPSLonPosition
+  POS(LINE12+2,  1, DISPLAY_ALWAYS), // rssiPosition
+  POS(LINE11+2,  0, DISPLAY_ALWAYS), // temperaturePosition
+  POS(LINE13+3,  1, DISPLAY_ALWAYS), // voltagePosition
+  POS(LINE11+3,  1, DISPLAY_ALWAYS), // vidvoltagePosition
+  POS(LINE13+10, 1, DISPLAY_ALWAYS), // amperagePosition
+  POS(LINE13+16, 1, DISPLAY_ALWAYS), // pMeterSumPosition
+  POS(LINE05+8,  0, DISPLAY_ALWAYS), // horizonPosition
 };
 
-unsigned int getPosition(uint8_t pos) {
-  return (unsigned int)pgm_read_word(&screenPosition[pos][Settings[S_VIDEOSIGNALTYPE]]);
-}
+uint16_t getPosition(uint8_t pos) {
+  uint16_t val =  (uint16_t)pgm_read_word(&screenPosition[pos]);
+  uint16_t ret = val & POS_MASK;
 
+  if(Settings[S_VIDEOSIGNALTYPE] && (val & PAL_OFF)) {
+    ret += 2*LINE;
+  }
+  return ret;
+}

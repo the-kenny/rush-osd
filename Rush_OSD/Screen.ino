@@ -155,6 +155,8 @@ void displayArmed(void)
 
 void displayHorizon(int rollAngle, int pitchAngle)
 {
+  uint16_t position = getPosition(horizonPosition);
+
   if(pitchAngle>250) pitchAngle=250;
   if(pitchAngle<-200) pitchAngle=-200;
   if(rollAngle>400) rollAngle=400;
@@ -165,33 +167,33 @@ void displayHorizon(int rollAngle, int pitchAngle)
     Y += pitchAngle / 8;
     Y += 41;
     if(Y >= 0 && Y <= 81) {
-      int pos = LINE*(2+Y/9) + 10 + X;
+      uint16_t pos = position + LINE*(Y/9) + 2 - 2*LINE + X;
       screen[pos] = SYM_AH_BAR9_0+(Y%9);
       if(Y>=9 && (Y%9) == 0)
         screen[pos-LINE] = SYM_AH_BAR9_9;
     }
   }
-  
+
   if(Settings[S_DISPLAY_HORIZON_BR]){
     //Draw center screen
-    screen[224-30-1] = SYM_AH_CENTER_LINE;
-    screen[224-30+1] = SYM_AH_CENTER_LINE;
-    screen[224-30] =   SYM_AH_CENTER;
+    screen[position+2*LINE+6-1] = SYM_AH_CENTER_LINE;
+    screen[position+2*LINE+6+1] = SYM_AH_CENTER_LINE;
+    screen[position+2*LINE+6] =   SYM_AH_CENTER;
   }
   if (Settings[S_WITHDECORATION]){
     // Draw AH sides
-    screen[219-30] =     SYM_AH_LEFT;
-    screen[229-30] =     SYM_AH_RIGHT;
-    screen[128] =        SYM_AH_DECORATION_LEFT;
-    screen[128+30] =     SYM_AH_DECORATION_LEFT;
-    screen[128+60] =     SYM_AH_DECORATION_LEFT;
-    screen[128+90] =     SYM_AH_DECORATION_LEFT;
-    screen[128+120] =    SYM_AH_DECORATION_LEFT;
-    screen[128+12] =     SYM_AH_DECORATION_RIGHT;
-    screen[128+12+30] =  SYM_AH_DECORATION_RIGHT;
-    screen[128+12+60] =  SYM_AH_DECORATION_RIGHT;
-    screen[128+12+90] =  SYM_AH_DECORATION_RIGHT;
-    screen[128+12+120] = SYM_AH_DECORATION_RIGHT;
+    screen[position+2*LINE+1] =   SYM_AH_LEFT;
+    screen[position+2*LINE+11] =  SYM_AH_RIGHT;
+    screen[position+0*LINE] =     SYM_AH_DECORATION_LEFT;
+    screen[position+1*LINE] =     SYM_AH_DECORATION_LEFT;
+    screen[position+2*LINE] =     SYM_AH_DECORATION_LEFT;
+    screen[position+3*LINE] =     SYM_AH_DECORATION_LEFT;
+    screen[position+4*LINE] =     SYM_AH_DECORATION_LEFT;
+    screen[position+0*LINE+12] =  SYM_AH_DECORATION_RIGHT;
+    screen[position+1*LINE+12] =  SYM_AH_DECORATION_RIGHT;
+    screen[position+2*LINE+12] =  SYM_AH_DECORATION_RIGHT;
+    screen[position+3*LINE+12] =  SYM_AH_DECORATION_RIGHT;
+    screen[position+4*LINE+12] = SYM_AH_DECORATION_RIGHT;
   }
 }
 
