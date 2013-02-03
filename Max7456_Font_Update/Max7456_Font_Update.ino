@@ -11,8 +11,8 @@
 
 //******************************************   Define your OSD Board   ****************************************/
 // Added by Carlonb (NEB). Select the harware you have
-#define MINIMOSD
-//#define RUSHDUINO
+//#define MINIMOSD
+#define RUSHDUINO
 
 //*******************************************************************************************
 
