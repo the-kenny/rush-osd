@@ -357,5 +357,6 @@ enum Positions {
   vidvoltagePosition,
   amperagePosition,
   pMeterSumPosition,
+  horizonPosition,
 };
 
