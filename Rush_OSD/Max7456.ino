@@ -63,27 +63,6 @@
 #define WHITE_level_100 0x01
 #define WHITE_level_120 0x00
 
-
-//#if defined(VideoSignalType_PAL)
-//#define ENABLE_display 0x48
-//#define ENABLE_display_vert 0x4c
-//#define MAX7456_reset 0x42
-//#define DISABLE_display 0x40
-//#define MAX_screen_size 480
-//#define MAX_screen_rows 16
-//#endif
-
-//#if defined(VideoSignalType_NTSC)
-//#define ENABLE_display 0x08
-//#define ENABLE_display_vert 0x0c
-//#define MAX7456_reset 0x02
-//#define DISABLE_display 0x00
-//#define MAX_screen_size 390
-//#define MAX_screen_rows 13
-//#endif
-
-
-
 #define MAX7456ADD_VM0          0x00  //0b0011100// 00 // 00             ,0011100
 #define MAX7456ADD_VM1          0x01
 #define MAX7456ADD_HOS          0x02
@@ -115,12 +94,6 @@
 #define MAX7456ADD_RB15         0x1f
 #define MAX7456ADD_OSDBL        0x6c
 
-volatile byte writeOK;
-volatile byte valid_string;
-volatile byte save_screen;
-volatile int  incomingByte;
-volatile int  count;
-
 // Selectable by board type
 uint8_t MAX7456SELECT;		// output pin
 uint8_t MAX7456RESET;		// output pin
@@ -132,15 +105,13 @@ uint8_t MAX7456RESET;		// output pin
 uint16_t MAX_screen_size;
 
 //////////////////////////////////////////////////////////////
-byte spi_transfer(volatile byte data)
+uint8_t spi_transfer(uint8_t data)
 {
   SPDR = data;                    // Start the transmission
   while (!(SPSR & (1<<SPIF)))     // Wait the end of the transmission
     ;
   return SPDR;                    // return the received byte
 }
-
-
 
 // ============================================================   WRITE TO SCREEN
 
@@ -200,8 +171,7 @@ void MAX7456Setup(void)
 
   // force soft reset on Max7456
   digitalWrite(MAX7456SELECT,LOW);
-  spi_transfer(VM0_reg);
-  spi_transfer(MAX7456_reset);
+  MAX7456_Send(VM0_reg, MAX7456_reset);
   digitalWrite(MAX7456SELECT,HIGH);
   delay(500);
 
@@ -210,8 +180,7 @@ void MAX7456Setup(void)
   
   uint8_t x;
   for(x = 0; x < MAX_screen_rows; x++) {
-    spi_transfer(x + 0x10);
-    spi_transfer(WHITE_level_120);
+    MAX7456_Send(MAX7456ADD_RB0+x, WHITE_level_120);
   }
 
   // make sure the Max7456 is enabled
@@ -263,7 +232,7 @@ void MAX7456_DrawScreen()
   digitalWrite(MAX7456SELECT,HIGH);
 }
 
-void MAX7456_Send(int add, char data)
+void MAX7456_Send(uint8_t add, uint8_t data)
 {
   spi_transfer(add);
   spi_transfer(data);
