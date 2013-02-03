@@ -485,7 +485,7 @@ void displayDistanceToHome(void)
 
   screenBuffer[0] = GPS_distanceToHomeAdd[Settings[S_UNITSYSTEM]];
   itoa(dist, screenBuffer+1, 10);
-  MAX7456_WriteString(screenBuffer,getPosition(GPS_distanceToHomePosition)+1);
+  MAX7456_WriteString(screenBuffer,getPosition(GPS_distanceToHomePosition));
 }
 
 void displayAngleToHome(void)
@@ -769,7 +769,7 @@ void displayPIDConfigScreen(void)
     MAX7456_WriteString(screenBuffer,VELD-7);
 
     MAX7456_WriteString_P(configMsg57, LEVT);
-    int xx= pMeterSum / EST_PMSum;
+    xx = pMeterSum / EST_PMSum;
     MAX7456_WriteString(itoa(xx,screenBuffer,10),LEVD);
 
     MAX7456_WriteString_P(configMsg58, MAGT);
