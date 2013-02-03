@@ -172,13 +172,8 @@ const uint8_t lowrssiAlarm=75;     // This will make blink the Rssi if lower the
 // POSITION OF EACH CHARACTER OR LOGO IN THE MAX7456
 const unsigned char speedUnitAdd[2] ={
   0xa5,0xa6} ; // [0][0] and [0][1] = Km/h   [1][0] and [1][1] = Mph
-const unsigned char AHUnitAdd[8] = {
-  0x10,0x11,0x12,0x13,0x14,0x15,0x16,0x17};
-const unsigned char voltageUnitAdd = 0xa9;
 const unsigned char temperatureUnitAdd[2] = {
   0x0e,0x0d};
-
-const unsigned char rssiUnitAdd = 0xba;
 
 const char MultiWiiLogoL1Add[17] PROGMEM = {
   0xd0,0xd1,0xd2,0xd3,0xd4,0xd5,0xd6,0xd7,0xd8,0xd9,0xda,0xdb,0xdc,0xdd,0xde,0};
@@ -190,7 +185,6 @@ const char MultiWiiLogoL3Add[17] PROGMEM = {
 const char disarmed_text[] PROGMEM = "DISARMED";
 const char armed_text[] PROGMEM = " ARMED";
 
-const unsigned char MwHeadingUnitAdd=0xbd;
 const unsigned char MwAltitudeAdd[2]={
   0xa7,0xa8};
 const unsigned char MwClimbRateAdd[2]={
