@@ -323,7 +323,14 @@ public void evaluateCommand(byte cmd, int dataSize) {
     serialize16(0);
     serialize16(1|1<<1|1<<2|1<<3|0<<4);
     //serialize32(0x32|0x01);
-    serialize32(int(SimItem[1].value())<<GetBit(1)|0<<1|int(SimItem[2].value())<<GetBit(2)|int(SimItem[3].value())<<GetBit(3)|int(SimItem[0].value())<<GetBit(4)|0<<5|int(SimItem[4].value())<<GetBit(5)|int(SimItem[5].value())<<GetBit(6));
+    int modebits = 0;
+    if(SimItem[1].value() > 0) modebits |= int(confItem[1].value());
+    if(SimItem[2].value() > 0) modebits |= int(confItem[2].value());
+    if(SimItem[3].value() > 0) modebits |= int(confItem[3].value());
+    if(SimItem[0].value() > 0) modebits |= int(confItem[4].value());
+    if(SimItem[4].value() > 0) modebits |= int(confItem[5].value());
+    if(SimItem[5].value() > 0) modebits |= int(confItem[6].value());
+    serialize32(modebits);
     serialize8(0);   // current setting
     break;
 
@@ -474,6 +481,7 @@ void GetMWData() {
     }
   }
 }
+/*
 int GetBit(int Mode){
   
   int GetFromSettings = int(confItem[Mode].value());
@@ -507,6 +515,7 @@ int GetBit(int Mode){
   }
   return SendBit;
 }
+*/
 void ResetVersion(){
   int Sim_Version = 0;
   payload = new ArrayList<Character>();
