@@ -1,0 +1,50 @@
+diff -r -u3 MultiWii.r1317/config.h MultiWii.itai/config.h
+--- MultiWii.r1317/config.h	2013-01-20 18:24:44.000000000 +0200
++++ MultiWii.itai/config.h	2013-02-04 01:50:51.286182531 +0200
+@@ -607,6 +607,10 @@
+        (allready done if the option RCAUXPIN12 is selected) */
+     //#define DISABLE_POWER_PIN
+ 
++  /*******************************    OSD Switch    *************************************/
++    // This adds a box that can be used by Rushdiono OSD.
++  #define OSD_SWITCH
++
+ 
+   /**************************************************************************************/
+   /***********************                  TX-related         **************************/
+diff -r -u3 MultiWii.r1317/MultiWii.ino MultiWii.itai/MultiWii.ino
+--- MultiWii.r1317/MultiWii.ino	2013-01-15 21:16:30.000000000 +0200
++++ MultiWii.itai/MultiWii.ino	2013-02-04 01:48:17.349180790 +0200
+@@ -93,6 +93,9 @@
+   #ifdef GOVERNOR_P
+     BOXGOV,
+   #endif
++  #ifdef OSD_SWITCH
++    OSDSWITCH,
++  #endif
+   CHECKBOXITEMS
+ };
+ 
+@@ -146,6 +149,9 @@
+   #ifdef GOVERNOR_P
+     "GOVERNOR;"
+   #endif
++  #ifdef OSD_SWITCH
++    "OSD SW;"
++  #endif
+ ;
+ 
+ const char pidnames[] PROGMEM =
+diff -r -u3 MultiWii.r1317/Serial.ino MultiWii.itai/Serial.ino
+--- MultiWii.r1317/Serial.ino	2013-01-15 21:16:30.000000000 +0200
++++ MultiWii.itai/Serial.ino	2013-02-04 01:48:17.349180790 +0200
+@@ -310,6 +310,9 @@
+                  #if defined(GOVERNOR_P)
+                    rcOptions[BOXGOV]<<BOXGOV |
+                  #endif
++                 #if defined(OSD_SWITCH)
++                   rcOptions[OSDSWITCH]<<OSDSWITCH |
++                 #endif
+                  f.ARMED<<BOXARM);
+        serialize8(global_conf.currentSet);   // current setting
+      break;

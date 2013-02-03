@@ -134,19 +134,20 @@ void serialMSPCheck()
     MwRssi = read8();
   }
 
-#ifdef AUTOCONFIGMODEBITS
   if(cmdMSP==MSP_BOXNAMES) {
     uint32_t bit = 1;
     uint8_t remaining = dataSize;
-    uint8_t len;
+    uint8_t len = 0;
     char firstc, lastc;
 
-    Settings[S_STABLEMODE] = 0;
-    Settings[S_BAROMODE] = 0;
-    Settings[S_MAGMODE] = 0;
-    Settings[S_ARMEDMODE] = 0;
-    Settings[S_GPSHOMEMODE] = 0;
-    Settings[S_GPSHOLDMODE] = 0;
+    mode_armed = 0;
+    mode_stable = 0;
+    mode_baro = 0;
+    mode_mag = 0;
+    mode_gpshome = 0;
+    mode_gpshold = 0;
+    mode_llights = 0;
+    mode_osd_switch = 0;
 
     while(remaining > 0) {
       char c = read8();
@@ -157,33 +158,36 @@ void serialMSPCheck()
         // Found end of name; set bit if first and last c matches.
         if(firstc == 'A') {
           if(lastc == 'M') // "ARM;"
-            Settings[S_ARMEDMODE] |= bit;
+            mode_armed |= bit;
           if(lastc == 'E') // "ANGLE;"
-            Settings[S_STABLEMODE] |= bit;
+            mode_stable |= bit;
         }
         if(firstc == 'H' && lastc == 'N') // "HORIZON;"
-          Settings[S_STABLEMODE] |= bit;
+          mode_stable |= bit;
         if(firstc == 'M' && lastc == 'G') // "MAG;"
-           Settings[S_MAGMODE] |= bit;
+           mode_mag |= bit;
         if(firstc == 'B' && lastc == 'O') // "BARO;"
-          Settings[S_BAROMODE] |= bit;
-        //if(firstc == 'L' && lastc == 'S') // "LLIGHTS;"
-        //  lights |= bit;
+          mode_baro |= bit;
+        if(firstc == 'L' && lastc == 'S') // "LLIGHTS;"
+          mode_llights |= bit;
         if(firstc == 'G') {
           if(lastc == 'E') // "GPS HOME;"
-            Settings[S_GPSHOMEMODE] |= bit;
+            mode_gpshome |= bit;
           if(lastc == 'D') // "GPS HOLD;"
-            Settings[S_GPSHOLDMODE] |= bit;
+            mode_gpshold |= bit;
         }
+        if(firstc == 'O' && lastc == 'W') // "OSD SW;"
+          mode_osd_switch |= bit;
 
         len = 0;
-        bit <<= 1;
+        bit <<= 1L;
       }
       lastc = c;
       --remaining;
     }
+//  memcpy(tempBuffer, serialBuffer, dataSize);
+//  tempBuffer[dataSize] = 0;
   }
-#endif // AUTOCONFIGMODEBITS
 
   serialMSPStringOK=0;
 
@@ -191,7 +195,6 @@ void serialMSPCheck()
   {
     waitStick =1;
     configMode = 1;
-    askPID=2;
   }
 
   //******************** EXIT from SHOW STATISTICS (menu page 6) AFTER DISARM (push throttle up) (Carlonb) NEB
@@ -363,7 +366,7 @@ void serialMSPreceive()
   }
   c_state = IDLE;
 
-  if(Serial.available())
+  while(Serial.available())
   {
     c = Serial.read();
 
@@ -416,16 +419,16 @@ void configExit()
   ROW=10;
   COL=3;
   configMode=0;
-  askPID=0;
   waitStick=3;
   previousarmedstatus = 0;
   if (Settings[S_RESETSTATISTICS]){  // NEB added for reset statistics if defined
-  trip=0;
-  distanceMAX=0;
-  altitudeMAX=0;
-  speedMAX=0;
-  flyingTime=0;
-}
+    trip=0;
+    distanceMAX=0;
+    altitudeMAX=0;
+    speedMAX=0;
+    temperMAX = -128;
+    flyingTime=0;
+  }
 }
 
 void saveExit()

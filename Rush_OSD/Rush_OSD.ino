@@ -75,6 +75,11 @@ int lo_speed_cycle = 100;
 void setup()
 {
   Serial.begin(SERIAL_SPEED);
+//---- override UBRR with MWC settings
+  uint8_t h = ((F_CPU  / 4 / (SERIAL_SPEED) -1) / 2) >> 8;
+  uint8_t l = ((F_CPU  / 4 / (SERIAL_SPEED) -1) / 2);
+  UCSR0A  |= (1<<U2X0); UBRR0H = h; UBRR0L = l; 
+//---
   Serial.flush();
   pinMode(BST,OUTPUT);
   checkEEPROM();
@@ -144,10 +149,13 @@ unsigned long currentMillis = millis();
 //        MSPcmdsend=MSP_IDENT;
 //        break;
       case 1:
-        MSPcmdsend=MSP_STATUS;    // Single serial data call every 450ms (50ms x 9 serial calls ----> 2.2 Hz)
+        if(mode_armed != 0)
+          MSPcmdsend=MSP_STATUS;
+        else
+          MSPcmdsend=MSP_BOXNAMES;
         break;
       case 2:
-        MSPcmdsend=MSP_RAW_IMU;
+        MSPcmdsend=MSP_BAT;
         break;
       case 3:
         MSPcmdsend=MSP_RAW_GPS;
@@ -158,33 +166,29 @@ unsigned long currentMillis = millis();
       case 5:
         MSPcmdsend=MSP_ALTITUDE;
         break;
-      case 6:
-        MSPcmdsend=MSP_RC_TUNING;
-        break;
-      case 7:
-        MSPcmdsend=MSP_PID;
-        break;
-      case 8:
-        MSPcmdsend=MSP_BAT;
-        break;
-        
+ 
       case 201:
         MSPcmdsend=MSP_STATUS;
         break;
       case 202:
         MSPcmdsend=MSP_RAW_IMU;
+      case 203:
+        MSPcmdsend=MSP_PID;
+        break;
+      case 204:
+        MSPcmdsend=MSP_RAW_IMU;
+        break;
+      case 205:
+        MSPcmdsend=MSP_RC_TUNING;
         break;
 
       default:
         MSPcmdsend=MSP_RC;
-        if(askPID==0)
-        {
-          nextMSPrequest = 0;
-        }
-        else
-        {
+        if(configMode)
           nextMSPrequest = 200;
-        }
+        else
+          nextMSPrequest = 0;
+
         break;
       } // end of case
       blankserialRequest(MSPcmdsend);      

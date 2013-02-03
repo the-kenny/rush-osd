@@ -113,7 +113,7 @@ void displayMode(void)
   screenBuffer[2] = (MwSensorPresent&MAGNETOMETER) ? SYM_MAG : ' ';
   screenBuffer[3] = (MwSensorPresent&GPSSENSOR) ? SYM_GPS : ' ';
 
-  if(MwSensorActive&Settings[S_STABLEMODE])
+  if(MwSensorActive&mode_stable)
   {
     screenBuffer[4]=SYM_STABLE;
     screenBuffer[5]=SYM_STABLE1;
@@ -124,29 +124,57 @@ void displayMode(void)
     screenBuffer[5]=SYM_ACRO1;
   }
   screenBuffer[6]=' ';
-  if(MwSensorActive&Settings[S_GPSHOMEMODE])
+  if(MwSensorActive&mode_gpshome)
     screenBuffer[7]=SYM_G_HOME;
-  else if(MwSensorActive&Settings[S_GPSHOLDMODE])
+  else if(MwSensorActive&mode_gpshold)
     screenBuffer[7]=SYM_HOLD;
   else if(GPS_fix)
     screenBuffer[7]=SYM_3DFIX;
   else
     screenBuffer[7]=' ';
+
   screenBuffer[8]=0;
   MAX7456_WriteString(screenBuffer,getPosition(sensorPosition));
 
   // Put ON indicator under sensor symbol
-  screenBuffer[0] = (MwSensorActive&Settings[S_STABLEMODE]) ? SYM_CHECK : ' ';
-  screenBuffer[1] = (MwSensorActive&Settings[S_BAROMODE]) ? SYM_CHECK : ' ';
-  screenBuffer[2] = (MwSensorActive&Settings[S_MAGMODE]) ? SYM_CHECK : ' ';
-  screenBuffer[3] = (MwSensorActive&(Settings[S_GPSHOMEMODE]|Settings[S_GPSHOLDMODE])) ? SYM_CHECK : ' ';
+  screenBuffer[0] = (MwSensorActive&mode_stable) ? SYM_CHECK : ' ';
+  screenBuffer[1] = (MwSensorActive&mode_baro) ? SYM_CHECK : ' ';
+  screenBuffer[2] = (MwSensorActive&mode_mag) ? SYM_CHECK : ' ';
+  screenBuffer[3] = (MwSensorActive&(mode_gpshome|mode_gpshome)) ? SYM_CHECK : ' ';
   screenBuffer[4] = 0;
   MAX7456_WriteString(screenBuffer,getPosition(sensorPosition)+LINE);
+
+  if(MwSensorActive & mode_llights)
+    screenBuffer[0] = 0x04;
+  else
+    screenBuffer[0] = ' ';
+
+  if(MwSensorActive & mode_osd_switch)
+    screenBuffer[1] = 0x05;
+  else
+    screenBuffer[1] = ' ';
+  screenBuffer[2]=0;
+  MAX7456_WriteString(screenBuffer,getPosition(sensorPosition)+2*LINE);
+//  MAX7456_WriteString(tempBuffer,getPosition(sensorPosition)+2*LINE+4);
+
+  
+//  itoa(mode_armed, screenBuffer, 10);
+//  MAX7456_WriteString(screenBuffer,getPosition(sensorPosition)+3*LINE);
+//  itoa(mode_stable, screenBuffer, 10);
+//  MAX7456_WriteString(screenBuffer,getPosition(sensorPosition)+3*LINE+4);
+//  itoa(mode_baro, screenBuffer, 10);
+//  MAX7456_WriteString(screenBuffer,getPosition(sensorPosition)+3*LINE+8);
+//  itoa(mode_mag, screenBuffer, 10);
+//  MAX7456_WriteString(screenBuffer,getPosition(sensorPosition)+3*LINE+12);
+//  itoa(mode_gpshome, screenBuffer, 10);
+//  MAX7456_WriteString(screenBuffer,getPosition(sensorPosition)+3*LINE+16);
+//  itoa(mode_gpshold, screenBuffer, 10);
+//  MAX7456_WriteString(screenBuffer,getPosition(sensorPosition)+3*LINE+20);
 }
 
 void displayArmed(void)
 {
-  armed = (MwSensorActive&Settings[S_ARMEDMODE]);
+  armed = (MwSensorActive&mode_armed) != 0;
   if(armedTimer==0)
     MAX7456_WriteString_P(disarmed_text, getPosition(motorArmedPosition));
   else if((armedTimer>1) && (armedTimer<9) && (Blink10hz))

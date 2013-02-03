@@ -22,6 +22,16 @@ uint8_t COL=3;
 uint8_t configPage=MINPAGE;
 uint8_t configMode=0;
 
+// Mode bits
+uint32_t mode_armed;
+uint32_t mode_stable;
+uint32_t mode_baro;
+uint32_t mode_mag;
+uint32_t mode_gpshome;
+uint32_t mode_gpshold;
+uint32_t mode_llights;
+uint32_t mode_osd_switch;
+//char tempBuffer[256];
 
 //Current # of setting available
 #define EEPROM_SETTINGS            34
@@ -116,7 +126,6 @@ int cursorPostion;
 // For Serial communicatin
 int8_t waitStick=0;
 
-uint8_t askPID=0;
 uint8_t serialWait=0;
 
 
@@ -131,7 +140,7 @@ static uint8_t thrMid8;
 static uint8_t thrExpo8;
 
 
-#define SERIALBUFFERSIZE 128
+#define SERIALBUFFERSIZE 256
 static uint8_t serialBuffer[SERIALBUFFERSIZE]; // this hold the imcoming string from serial O string
 uint8_t serialMSPStringOK=0;
 uint8_t receiverIndex=0;
@@ -313,6 +322,9 @@ const char configMsg36[] PROGMEM = "DISPLAY RSSI";
 const char configMsg37[] PROGMEM = "UNIT SYSTEM";
 const char configMsg38[] PROGMEM = "METRIC";
 const char configMsg39[] PROGMEM = "IMPERL";
+const char configMsg40[] PROGMEM = "VIDEO SYSTEM";
+const char configMsg41[] PROGMEM = "NTSC";
+const char configMsg42[] PROGMEM = "PAL";
 //-----------------------------------------------------------Page5
 const char configMsg43[] PROGMEM = "5/6 CALIBRATION";
 const char configMsg44[] PROGMEM = "ACC CALIBRATION";
