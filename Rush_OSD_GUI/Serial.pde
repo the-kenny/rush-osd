@@ -54,7 +54,6 @@ void InitSerial(float portValue) {
       buttonRESET.setColorBackground(green_);
       commListbox.setColorBackground(green_);
       g_serial.buffer(256);
-      System.out.println(int(checkboxConfItem[0].getArrayValue()[0]));
       System.out.println("Port Turned On " );
       //+((int)(cmd&0xFF))+": "+(checksum&0xFF)+" expected, got "+(int)(c&0xFF));
     }
@@ -178,13 +177,13 @@ byte checksum=0;
 byte cmd;
 int offset=0, dataSize=0;
 byte[] inBuf = new byte[256];
-
+int Send_timer = 1;
 int p;
 int read32() {return (inBuf[p++]&0xff) + ((inBuf[p++]&0xff)<<8) + ((inBuf[p++]&0xff)<<16) + ((inBuf[p++]&0xff)<<24); }
 int read16() {return (inBuf[p++]&0xff) + ((inBuf[p++])<<8); }
 int read8()  {return inBuf[p++]&0xff;}
 
-
+/*
 //send msp without payload
 private List<Byte> requestMSP(int msp) {
   return  requestMSP( msp, null);
@@ -264,7 +263,7 @@ private List<Byte> SendMSP (int msp, Character[] payload) {
   bf.add(checksum);
   return (bf);
 }
-
+*/
 
 void serialize8(int val) {
    g_serial.write(val);
@@ -318,8 +317,9 @@ public void evaluateCommand(byte cmd, int dataSize) {
     break;
 
   case MSP_STATUS:
+    Send_timer+=1;
     headSerialReply(MSP_STATUS, 11);
-    serialize16(0);
+    serialize16(Send_timer);
     serialize16(0);
     serialize16(1|1<<1|1<<2|1<<3|0<<4);
     //serialize32(0x32|0x01);
@@ -343,38 +343,36 @@ public void evaluateCommand(byte cmd, int dataSize) {
     break;
 
   case MSP_RC:
-     
-      payload = new ArrayList<Character>();
+     headSerialReply(MSP_RC, 14);
       //Roll 
-      payload.add(char(int(Pitch_Roll.arrayValue()[0])& 0xFF));
-      payload.add(char(int(Pitch_Roll.arrayValue()[0])  >>8 & 0xFF));
+     serialize16(int(Pitch_Roll.arrayValue()[0]));
       //pitch
-      payload.add(char(int(Pitch_Roll.arrayValue()[1]) & 0xFF));
-      payload.add(char(int(Pitch_Roll.arrayValue()[1])  >>8 & 0xFF));
+     serialize16(int(Pitch_Roll.arrayValue()[1]));
       //Yaw
-      payload.add(char(int(Throttle_Yaw.arrayValue()[0])& 0xFF));
-      payload.add(char(int(Throttle_Yaw.arrayValue()[0]) >>8 & 0xFF));
+     serialize16(int(Throttle_Yaw.arrayValue()[0]));
       //Throttle
-      payload.add(char(int(Throttle_Yaw.arrayValue()[1]) & 0xFF));
-      payload.add(char(int(Throttle_Yaw.arrayValue()[1]) >>8 & 0xFF));
-      //payload.add(char(900 % 256));
-       // payload.add(char(900 / 256));
-      //System.out.print(Throttle_Yaw.arrayValue()[1]);
-      // 5-8 AUX 1-4
+     serialize16(int(Throttle_Yaw.arrayValue()[1]));
       for (int i=5; i<8; i++) {
-        payload.add(char(1500  & 0xFF));
-        payload.add(char(1500  >>8 & 0xFF));
+       serialize16(1500);
       }
-      sendRequestMSP(SendMSP(MSP_RC,payload.toArray( new Character[payload.size()]) ));  
     break;
   
   case MSP_RAW_IMU:
   case MSP_RAW_GPS:
   case MSP_COMP_GPS:
   case MSP_ALTITUDE:
+    headSerialReply(MSP_ALTITUDE, 6);
+    serialize32(int(sAltitude) *100);
+    
+    serialize16(int(sVario) *10);     
+    break;
+  
   case MSP_RC_TUNING:
   case MSP_PID:
   case MSP_BAT:
+    headSerialReply(MSP_BAT, 3);
+    serialize8(int(sVBat * 10));
+    serialize16(0);
     break;
 
   default:
@@ -517,9 +515,10 @@ int GetBit(int Mode){
 }
 */
 void ResetVersion(){
-  int Sim_Version = 0;
-  payload = new ArrayList<Character>();
-  payload.add(char(Sim_Version));
-  sendRequestMSP(SendMSP(MSP_IDENT,payload.toArray( new Character[payload.size()]) ));
+  headSerialReply(MSP_IDENT, 7);
+  serialize8(0);   // multiwii version
+  serialize8(0); // type of multicopter
+  serialize8(0);         // MultiWii Serial Protocol Version
+  serialize32(0);        
 }
       

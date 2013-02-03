@@ -406,7 +406,11 @@ Numberbox SimItem[] = new Numberbox[SIMITEMS] ;
 
 Slider2D Pitch_Roll, Throttle_Yaw,MW_Pitch_Roll;
 
-Slider sRoll,sPitch;
+Slider s_Altitude,s_Vario,s_VBat,s_RSSI;
+
+float sAltitude = 0;
+float sVario = 0;
+float sVBat = 0;
 // Slider2d ------------------------------------------------------------------------------------------------------------------
 
 // Knobs----------------------------------------------------------------------------------------------------------------------
@@ -664,6 +668,48 @@ MW_Pitch_Roll = controlP5.addSlider2D("MWPitch/Roll")
                .setDragDirection(Knob.HORIZONTAL)
                ;
 
+               
+s_Altitude = controlP5.addSlider("sAltitude")
+  .setPosition(XSim-130,YSim)
+  .setSize(8,75)
+  .setRange(-500,1000)
+  .setValue(0)
+  .setLabel("Alt");
+  controlP5.getController("sAltitude").getValueLabel()
+    .setFont(font9);
+  controlP5.getController("sAltitude").getCaptionLabel()
+    .setFont(font9)
+    .align(ControlP5.LEFT, ControlP5.BOTTOM_OUTSIDE).setPaddingX(0);
+
+s_Vario = controlP5.addSlider("sVario")
+  .setPosition(XSim-90,YSim)
+  .setSize(8,75)
+  .setRange(-20,20)
+  .setNumberOfTickMarks(41)
+  .showTickMarks(false)
+  .setValue(0)
+  .setLabel("Vario");
+  controlP5.getController("sVario").getValueLabel()
+    .setFont(font9);
+  controlP5.getController("sVario").getCaptionLabel()
+    .setFont(font9)
+    .align(ControlP5.LEFT, ControlP5.BOTTOM_OUTSIDE).setPaddingX(0);
+
+s_VBat = controlP5.addSlider("sVBat")
+  .setPosition(XSim-50,YSim)
+  .setSize(8,75)
+  .setRange(9,17)
+  .setValue(0)
+  .setLabel("VBat");
+  controlP5.getController("sVBat").getValueLabel()
+    .setFont(font9);
+  controlP5.getController("sVBat")
+    .getCaptionLabel()
+    .setFont(font9)
+    .align(ControlP5.LEFT, ControlP5.BOTTOM_OUTSIDE).setPaddingX(0);
+  
+  
+
   BuildToolHelp();
 }
 
@@ -726,6 +772,7 @@ void BuildToolHelp(){
 }
 
 void draw() {
+  time=millis();
   hint(ENABLE_DEPTH_TEST);
   pushMatrix();
   GetMWData();
@@ -808,7 +855,7 @@ void draw() {
       ShowVolts(12.8);    
     }
   }
-   
+  CalcAlt_Vario(); 
   displaySensors();
   displayMode();
   ShowAmperage();
@@ -817,6 +864,14 @@ void draw() {
   displayHeading();
   popMatrix();
   hint(DISABLE_DEPTH_TEST);
+}
+
+void CalcAlt_Vario(){
+  if (time2 < time - 1000){
+    sAltitude += sVario /10;
+     System.out.println(sVario);
+    time2 = time;
+  }
 }
 
 void ShowSimBackground(float[] a) {
@@ -894,7 +949,8 @@ Pitch_Roll.setArrayValue(new float[] {500, -500});
    if (!Shiftkey){
     float A = (2000-Throttle_Yaw.getArrayValue()[1])*-1;
     Throttle_Yaw.setArrayValue(new float[] {500, A});
-   
+    s_Vario.setValue(0);
+    sVario = 0;
    }   
    
   
@@ -918,6 +974,8 @@ void keyReleased()
   Shiftkey = false;
   float A = (2000-Throttle_Yaw.getArrayValue()[1])*-1;
     Throttle_Yaw.setArrayValue(new float[] {500, A}); 
+   s_Vario.setValue(0);
+   sVario = 0;
 }
 
 void mapchar(int address, int screenAddress){
@@ -1421,4 +1479,12 @@ boolean toggleRead = false,
         toggleWrite = false,
         toggleSpekBind = false,
         toggleSetSetting = false;
+        
+        
+void stop(){
+  if(init_com == 1){
+   SimulateMW = false; 
+  InitSerial(0);
+  }
+}         
 
