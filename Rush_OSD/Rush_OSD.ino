@@ -115,7 +115,7 @@ void loop()
     amperage = (AMPRERAGE_OFFSET - (analogRead(amperagePin)*AMPERAGE_CAL))/10.23;
   }
   if (Settings[S_MWRSSI]){
-      rssiADC = MwRssi;
+      rssiADC = MwVBat;
  }     
   // Blink Basic Sanity Test Led at 1hz
   if(tenthSec>10) BST_ON else BST_OFF
