@@ -343,9 +343,6 @@ void displaypMeterSum(void)
 
 void displayRSSI(void)
 {
-  if (Settings[S_MWRSSI]) {
-    rssi = MwRssi;
-  }
   screenBuffer[0] = SYM_RSSI;
   // Calcul et affichage du Rssi
   itoa(rssi,screenBuffer+1,10);

@@ -131,7 +131,7 @@ void serialMSPCheck()
     
   if (cmdMSP==MSP_MWRSSI)
   {
-    MwRssi = read8();
+    MwRssi = read16();
   }
 
   if(cmdMSP==MSP_BOXNAMES) {

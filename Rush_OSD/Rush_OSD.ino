@@ -114,7 +114,9 @@ void loop()
     } 
     amperage = (AMPRERAGE_OFFSET - (analogRead(amperagePin)*AMPERAGE_CAL))/10.23;
   }
-
+  if (Settings[S_MWRSSI]){
+      rssiADC = MwRssi;
+ }     
   // Blink Basic Sanity Test Led at 1hz
   if(tenthSec>10) BST_ON else BST_OFF
 
@@ -330,8 +332,14 @@ void calculateTrip(void)
 
 void calculateRssi(void)
 {
-  float aa=0;
-  aa =  analogRead(rssiPin)/4;
+  float aa=0; 
+  if (Settings[S_MWRSSI]) {
+    aa =  MwVBat;    //Temporary for calculation tests only
+  }
+  else
+  {
+    aa =analogRead(rssiPin)/4; 
+ }   
   aa = ((aa-Settings[S_RSSIMIN]) *101)/(Settings[S_RSSIMAX]-Settings[S_RSSIMIN]) ;
   rssi_Int += ( ( (signed int)((aa*rssiSample) - rssi_Int )) / rssiSample );
   rssi = rssi_Int / rssiSample ;
