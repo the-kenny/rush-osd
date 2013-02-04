@@ -297,7 +297,8 @@ void displayHorizon(int rollAngle, int pitchAngle)
     Y += 41;
     if(Y >= 0 && Y <= 81) {
       int pos = 30*(2+Y/9) + 10 + X;
-      mapchar(0x80+(Y%9), pos);
+      if(X < 3 || X >5 || (Y/9) != 4)
+      	mapchar(0x80+(Y%9), pos);
       if(Y>=9 && (Y%9) == 0)
         mapchar(0x89, pos-30);
     }
@@ -306,8 +307,8 @@ void displayHorizon(int rollAngle, int pitchAngle)
 //if (DISPLAY_HORIZON_BR){
   //Draw center screen
   mapchar(0x03, 219-30);
-  mapchar(0x1D, 224-30-1);
-  mapchar(0x1D, 224-30+1);
+  mapchar(0x00, 224-30-1);
+  mapchar(0x00, 224-30+1);
   mapchar(0x01, 224-30);
   mapchar(0x02, 229-30);
   
