@@ -369,7 +369,7 @@ String[] SimNames= {
   1};
 
 
-PFont font8,font9,font12,font15;
+PFont font8,font9,font10,font11,font12,font15;
 
 //Colors--------------------------------------------------------------------------------------------------------------------
 color yellow_ = color(200, 200, 20), green_ = color(30, 120, 30), red_ = color(120, 30, 30), blue_ = color(50, 50, 100),
@@ -402,20 +402,7 @@ Numberbox confItem[] = new Numberbox[CONFIGITEMS] ;
 Numberbox SimItem[] = new Numberbox[SIMITEMS] ;
 //  number boxes--------------------------------------------------------------------------------------------------------------
 
-// Slider2d ------------------------------------------------------------------------------------------------------------------
 
-Slider2D Pitch_Roll, Throttle_Yaw,MW_Pitch_Roll;
-
-Slider s_Altitude,s_Vario,s_VBat,s_RSSI;
-
-float sAltitude = 0;
-float sVario = 0;
-float sVBat = 0;
-// Slider2d ------------------------------------------------------------------------------------------------------------------
-
-// Knobs----------------------------------------------------------------------------------------------------------------------
-Knob HeadingKnob;
-//----------------------------------------------------------------------------------------------------------------------------
 
 // Timers --------------------------------------------------------------------------------------------------------------------
 //ControlTimer OnTimer,FlyTimer;
@@ -435,7 +422,7 @@ controlP5.Controller hideLabel(controlP5.Controller c) {
 
 void setup() {
   size(windowsX,windowsY);
-//size(windowsX,windowsY,OPENGL);
+ 
 
 OnTimer = millis();
   frameRate(20); 
@@ -445,7 +432,9 @@ RadioPot = loadImage("Radio_Pot.png");
 img_Clear = LoadFont("MW_OSD_Team.mcm");
 
   font8 = createFont("Arial bold",8,false);
-  font9 = createFont("Arial bold",9,false);
+  font9 = createFont("Arial bold",10,false);
+  font10 = createFont("Arial bold",11,false);
+  font11 = createFont("Arial bold",11,false);
   font12 = createFont("Arial bold",12,false);
   font15 = createFont("Arial bold",15,false);
 
@@ -453,11 +442,6 @@ img_Clear = LoadFont("MW_OSD_Team.mcm");
   controlP5.setControlFont(font12);
 
 
- 
- 
- 
- 
- 
   commListbox = controlP5.addListBox("portComList",5,100,110,260); // make a listbox and populate it with the available comm ports
   commListbox.setItemHeight(15);
   commListbox.setBarHeight(15);
@@ -533,32 +517,10 @@ BuildCheckBoxes(25, 34, XOther+5, YOther+3);
 
 
 
-for(int i=0;i<SIMITEMS;i++) {
-txtlblSimItem[i] = controlP5.addTextlabel("txtlblSimItem"+i,SimNames[i],XSim+40,YSim+i*17);
-} 
- 
-  for(int i=0;i<SIMITEMS;i++) {
-    SimItem[i] = (controlP5.Numberbox) hideLabel(controlP5.addNumberbox("SimItem"+i,0,XSim,YSim+i*17,35,14));
-    SimItem[i].setColorBackground(red_);confItem[i].setMin(0);confItem[i].setDirection(Controller.HORIZONTAL);confItem[i].setMax(ConfigRanges[i]);confItem[i].setDecimalPrecision(0); //confItem[i].setMultiplier(1);confItem[i].setDecimalPrecision(1);
- }
- 
-  
-  for(int i=0;i<SIMITEMS;i++) {
-    //buttonCheckbox[i] = controlP5.addButton("bcb"+i,1,xBox-30,yBox+20+13*i,68,12);
-   // buttonCheckbox[i].setColorBackground(red_);buttonCheckbox[i].setLabel(name);
-    checkboxSimItem[i] =  controlP5.addCheckBox("checkboxSimItem"+i,XSim+25,YSim+3+i*17);
-       checkboxSimItem[i].setColorActive(color(255));checkboxSimItem[i].setColorBackground(color(120));
-        checkboxSimItem[i].setItemsPerRow(1);checkboxSimItem[i].setSpacingColumn(10);
-        checkboxSimItem[i].setLabel(SimNames[i]);
-        //if (ConfigRanges[i] == 1){
-        checkboxSimItem[i].addItem("scbox"+i,1);
-        //}
-        checkboxSimItem[i].hideLabels();
-   
-  }
+
   
   // CheckBox "Simulate MultiWii"
-  SimulateMultiWii = controlP5.addCheckBox("SimulateMultiWii",XSim+200,YSim+3);
+  SimulateMultiWii = controlP5.addCheckBox("SimulateMultiWii",XSim+200,YSim);
   SimulateMultiWii.setColorActive(color(255));
   SimulateMultiWii.setColorBackground(color(120));
   SimulateMultiWii.setItemsPerRow(1);
@@ -567,7 +529,7 @@ txtlblSimItem[i] = controlP5.addTextlabel("txtlblSimItem"+i,SimNames[i],XSim+40,
   SimulateMultiWii.addItem("Simulate MultiWii",1);
        
   // CheckBox "Hide Background"
-  ShowSimBackground = controlP5.addCheckBox("ShowSimBackground",XSim+200,YSim+40);
+  ShowSimBackground = controlP5.addCheckBox("ShowSimBackground",XSim+50,YSim);
   ShowSimBackground.setColorActive(color(255));
   ShowSimBackground.setColorBackground(color(120));
   ShowSimBackground.setItemsPerRow(1);
@@ -589,128 +551,15 @@ txtlblSimItem[i] = controlP5.addTextlabel("txtlblSimItem"+i,SimNames[i],XSim+40,
     }
   }
   
-  for(int i=0;i<SIMITEMS;i++) {
-    if (SimRanges[i] == 0) {
-      checkboxSimItem[i].hide();
-      SimItem[i].hide();
-    }
-    if (SimRanges[i] > 1) {
-      checkboxSimItem[i].hide();
-    }
-      
-    if (SimRanges[i] == 1){
-      SimItem[i].hide();  
-    }
-  }
   
-MW_Pitch_Roll = controlP5.addSlider2D("MWPitch/Roll")
-         .setPosition(DisplayWindowX+WindowAdjX-100,DisplayWindowY+WindowAdjY+288-WindowShrinkY-90)
-         .setSize(70,70)
-         .setArrayValue(new float[] {50, 50})
-         .setMaxX(45) 
-         .setMaxY(25) 
-         .setMinX(-45) 
-         .setMinY(-25)
-         .setValueLabel("") 
-         .setLabel("MW Roll/Pitch")
-        //.setImage(RadioPot) 
-        //.updateDisplayMode(1)
-         //.disableCrosshair()
-         ;
- controlP5.getController("MWPitch/Roll").getValueLabel().hide();
+  
 
-
-  Pitch_Roll = controlP5.addSlider2D("Pitch/Roll")
-         .setPosition(XRCSim + 200,YRCSim)
-         .setSize(70,70)
-         .setArrayValue(new float[] {50, 50})
-         .setMaxX(2000) 
-         .setMaxY(1000) 
-         .setMinX(1000) 
-         .setMinY(2000)
-         .setLabel("Pitch/Roll")
-       //.setImage(RadioPot) 
-       //.updateDisplayMode(1)
-       //.disableCrosshair()
-         ;
-  controlP5.getController("Pitch/Roll").getValueLabel().hide();
-
- Throttle_Yaw = controlP5.addSlider2D("Throttle/Yaw")
-         .setPosition(XRCSim + 60,YRCSim)
-         .setSize(70,70)
-         .setArrayValue(new float[] {50, 100})
-         .setMaxX(2000) 
-         .setMaxY(1000) 
-         .setMinX(1000) 
-         .setMinY(2000)
-         
-         .setValueLabel("") 
-        .setLabel("  Thr/Yaw")
-        ;
- controlP5.getController("Throttle/Yaw").getValueLabel().hide();
- controlP5.getTooltip().register("Throttle/Yaw","Sift Key to hold position");
- 
- 
-
-  HeadingKnob = controlP5.addKnob("MwHeading")
-               .setRange(-180,+180)
-               .setValue(0)
-               .setPosition(DisplayWindowX+WindowAdjX-90,DisplayWindowY+WindowAdjY+288-WindowShrinkY-220)
-               .setRadius(35)
-               .setLabel("Heading")
-               
-               //.setNumberOfTickMarks(36)
-               //.setTickMarkLength(4)
-               //.snapToTickMarks(true)
-               //.setColorForeground(color(255))
-               .setColorBackground(color(0, 160, 100))
-               .setColorActive(color(255,255,0))
-               .setDragDirection(Knob.HORIZONTAL)
-               ;
-
-               
-s_Altitude = controlP5.addSlider("sAltitude")
-  .setPosition(XSim-130,YSim)
-  .setSize(8,75)
-  .setRange(-500,1000)
-  .setValue(0)
-  .setLabel("Alt");
-  controlP5.getController("sAltitude").getValueLabel()
-    .setFont(font9);
-  controlP5.getController("sAltitude").getCaptionLabel()
-    .setFont(font9)
-    .align(ControlP5.LEFT, ControlP5.BOTTOM_OUTSIDE).setPaddingX(0);
-
-s_Vario = controlP5.addSlider("sVario")
-  .setPosition(XSim-90,YSim)
-  .setSize(8,75)
-  .setRange(-20,20)
-  .setNumberOfTickMarks(41)
-  .showTickMarks(false)
-  .setValue(0)
-  .setLabel("Vario");
-  controlP5.getController("sVario").getValueLabel()
-    .setFont(font9);
-  controlP5.getController("sVario").getCaptionLabel()
-    .setFont(font9)
-    .align(ControlP5.LEFT, ControlP5.BOTTOM_OUTSIDE).setPaddingX(0);
-
-s_VBat = controlP5.addSlider("sVBat")
-  .setPosition(XSim-50,YSim)
-  .setSize(8,75)
-  .setRange(9,17)
-  .setValue(0)
-  .setLabel("VBat");
-  controlP5.getController("sVBat").getValueLabel()
-    .setFont(font9);
-  controlP5.getController("sVBat")
-    .getCaptionLabel()
-    .setFont(font9)
-    .align(ControlP5.LEFT, ControlP5.BOTTOM_OUTSIDE).setPaddingX(0);
   
   
 
   BuildToolHelp();
+  
+   SimSetup();
 }
 
 
@@ -832,29 +681,18 @@ void draw() {
     fill(80, 80,80); strokeWeight(3);stroke(1); rectMode(CORNER); rect(DisplayWindowX+WindowAdjX, DisplayWindowY+WindowAdjY, 360-WindowShrinkX, 288-WindowShrinkY);
   }
 
-  //pushMatrix();
-  //rect(DisplayWindowX+WindowAdjX, DisplayWindowY+WindowAdjY, DisplayWindowX+360-WindowShrinkX, DisplayWindowY+288-WindowShrinkY);
-
-  // makeText("Rush_KV OSD DEMO!", LINE02+6);
-  //MakeRectangle();
-  //image(DisplayScreen,DisplayWindowX, DisplayWindowY, DisplayWindowX+360, DisplayWindowY+288);
-
   MatchConfigs();
 
-  displayHorizon(int(Pitch_Roll.arrayValue()[0])*10,int(Pitch_Roll.arrayValue()[1])*10*-1);
+  displayHorizon(int(MW_Pitch_Roll.arrayValue()[0])*10,int(MW_Pitch_Roll.arrayValue()[1])*10*-1);
   SimulateTimer();
   ShowCurrentThrottlePosition();
   if (int(confItem[9].value()) > 0)
     ShowRSSI(); 
   if (int(confItem[10].value()) > 0) {
-    if (int(confItem[13].value()) > 0){
-      float voltage=MwVBat / 10.0;
-      ShowVolts(voltage);
-    }
-    else {
-      ShowVolts(12.8);    
-    }
+     ShowVolts(sVBat);
   }
+    
+ 
   CalcAlt_Vario(); 
   displaySensors();
   displayMode();
@@ -866,13 +704,7 @@ void draw() {
   hint(DISABLE_DEPTH_TEST);
 }
 
-void CalcAlt_Vario(){
-  if (time2 < time - 1000){
-    sAltitude += sVario /10;
-     System.out.println(sVario);
-    time2 = time;
-  }
-}
+
 
 void ShowSimBackground(float[] a) {
   Showback = int(a[0]);
@@ -909,31 +741,16 @@ void MatchConfigs(){
     }
   }
   // turn on FlyTimer----
-  if ((checkboxSimItem[0].arrayValue()[0] == 1) && (SimItem0 < 1)){
+  if ((checkboxModeItems[0].arrayValue()[0] == 1) && (SimItem0 < 1)){
     Armed = 1;
     FlyTimer = millis();
   }
   // turn off FlyTimer----
-  if ((checkboxSimItem[0].arrayValue()[0] == 0) && (SimItem0 == 1)){
+  if ((checkboxModeItems[0].arrayValue()[0] == 0) && (SimItem0 == 1)){
     FlyTimer = 0;
   }
 
-  for(int i=0;i<SIMITEMS;i++) {
-    if  (checkboxSimItem[i].isVisible()){
-      SimItem[i].setValue(int(checkboxSimItem[i].arrayValue()[0]));
-    }
-    if (SimRanges[i] == 0) {
-      checkboxSimItem[i].hide();
-      SimItem[i].hide();
-    }
-    if (SimRanges[i] > 1) {
-      checkboxSimItem[i].hide();
-    }
 
-    if (ConfigRanges[i] == 1){
-      SimItem[i].hide();  
-    }
-  }
 }
 
 // controls comport list click
@@ -991,90 +808,7 @@ void makeText(String inString, int inStartAddress ){
   }   
 }
 
-void displayHorizon(int rollAngle, int pitchAngle)
-{
-  if(pitchAngle>250) pitchAngle=250;
-  if(pitchAngle<-200) pitchAngle=-200;
-  if(rollAngle>400) rollAngle=400;
-  if(rollAngle<-400) rollAngle=-400;
 
-  for(int X=0; X<=8; X++) {
-    int Y = (rollAngle * (4-X)) / 64;
-    Y += pitchAngle / 8;
-    Y += 41;
-    if(Y >= 0 && Y <= 81) {
-      int pos = 30*(2+Y/9) + 10 + X;
-      mapchar(0x80+(Y%9), pos);
-      if(Y>=9 && (Y%9) == 0)
-        mapchar(0x89, pos-30);
-    }
-  }
-
-//if (DISPLAY_HORIZON_BR){
-  //Draw center screen
-  mapchar(0x03, 219-30);
-  mapchar(0x1D, 224-30-1);
-  mapchar(0x1D, 224-30+1);
-  mapchar(0x01, 224-30);
-  mapchar(0x02, 229-30);
-  
-  //if (WITHDECORATION){
-     mapchar(0xC7,128);
-     mapchar(0xC7,128+30);
-     mapchar(0xC7,128+60);
-     mapchar(0xC7,128+90);
-     mapchar(0xC7,128+120);
-     mapchar(0xC6,128+12);
-     mapchar(0xC6,128+12+30);
-     mapchar(0xC6,128+12+60);
-     mapchar(0xC6,128+12+90);
-     mapchar(0xC6,128+12+120);
-    //}
-  //}
-  //mapchar("0x10"+ 00,(rollAngle*30)+100+0);
-}
-
-
-void displayHeadingGraph()
-{
-  int xx;
-  
-  xx = MwHeading * 4;
-  xx = xx + 720 + 45;
-  xx = xx / 90;
- //for (int i = 0; i < 9; i++){
- 
-  mapchar(headGraph[xx++],MwHeadingGraphPosition[0]);
-  mapchar(headGraph[xx++],MwHeadingGraphPosition[0]+1);
-  mapchar(headGraph[xx++],MwHeadingGraphPosition[0]+2);
-  mapchar(headGraph[xx++],MwHeadingGraphPosition[0]+3);
-  mapchar(headGraph[xx++],MwHeadingGraphPosition[0]+4);
-  mapchar(headGraph[xx++],MwHeadingGraphPosition[0]+5);
-  mapchar(headGraph[xx++],MwHeadingGraphPosition[0]+6);
-  mapchar(headGraph[xx++],MwHeadingGraphPosition[0]+7);
-  mapchar(headGraph[xx],MwHeadingGraphPosition[0]+8);  
-
-}
-
-void displayHeading()
-{
-  int heading = MwHeading;
-  if(heading < 0)
-    heading += 360;
-    
-  switch (str(heading).length())
-  {
-  case 1:
-    makeText(str(heading), MwHeadingPosition[0]+2);
-    break;
-  case 2:
-    makeText(str(heading), MwHeadingPosition[0]+1);
-    break;
-  case 3:
-    makeText(str(heading), MwHeadingPosition[0]);
-  }
-  mapchar(MwHeadingUnitAdd,MwHeadingPosition[0]+3);  
-}
 
 void displaySensors()
 {
@@ -1096,63 +830,15 @@ void displaySensors()
   */
 }
 
-void displayMode()
-{
-  if (!SimulateMW){  
-    if (int(SimItem[1].value()) > 0){
-      mapchar(0xac,sensorPosition[0]+4);
-      mapchar(0xad,sensorPosition[0]+5);
-    }
-    else
-    {
-      mapchar(0xae,sensorPosition[0]+4);
-      mapchar(0xaf,sensorPosition[0]+5);
-    }
-    if (int(SimItem[1].value()) > 0){
-      mapchar(0xbe,sensorPosition[0]+LINE);
-      //mapchar("0xad",sensorPosition[0]+5);
-    }
-  }
-  else 
-  {
-    //if((MwSensorActive&ARMEDMODE) >0)
-      //checkboxSimItem[0].activate(0);
-    //else
-      //checkboxSimItem[0].deactivate(0);
-      
-    if((MwSensorActive&STABLEMODE) >0)
-      mapchar(0xbe,sensorPosition[0]+LINE);
 
-    if((MwSensorActive&BAROMODE) >0)
-      mapchar(0xbe,sensorPosition[0]+1+LINE);
 
-    if((MwSensorActive&MAGMODE) >0)
-      mapchar(0xbe,sensorPosition[0]+2+LINE);
 
-    if((MwSensorActive&GPSHOMEMODE) >0)
-      mapchar(0xbe,sensorPosition[0]+3+LINE);
-
-    if((MwSensorActive&GPSHOLDMODE) >0)
-      mapchar(0xbe,sensorPosition[0]+3+LINE);
-  }
- 
- 
-}
-
-void displayArmed()
-{
-  if (int(SimItem[0].value()) > 0){
-    makeText("ARMED", motorArmedPosition[0]);
-  }
-  else
-  {
-    makeText("DISARMED", motorArmedPosition[0]);
-  }
-}
 
 void ShowVolts(float voltage){
+  
+String output = OnePlaceDecimal.format(voltage);
   mapchar(0x97, voltagePosition[ScreenType]);
-  makeText(str(voltage), voltagePosition[ScreenType]+2);
+  makeText(output, voltagePosition[ScreenType]+2);
 }
 
 void ShowFlyTime(String FMinutes_Seconds){

@@ -1,6 +1,19 @@
 Serial g_serial;      // The serial port
 
 /******************************* Multiwii Serial Protocol **********************/
+
+String boxnames[] = { // names for dynamic generation of config GUI
+    "ANGLE;",
+    "HORIZON;",
+    "BARO;",
+    "MAG;",
+    "ARM;",
+    "GPS HOME;",
+    "GPS HOLD;"
+  };
+String strBoxNames = join(boxnames,""); 
+
+
 private static final String MSP_HEADER = "$M<";
 
 private static final int
@@ -281,6 +294,16 @@ void serialize32(int a) {
   serialize8((a>>24) & 0xFF);
 }
 
+void serializeNames(int s) {
+  //for (PGM_P c = s; pgm_read_byte(c); c++) {
+   // serialize8(pgm_read_byte(c));
+  //}
+  for (int c = 0; c < strBoxNames.length(); c++) {
+    serialize8(strBoxNames.charAt(c));
+    
+  }
+}
+
 int outChecksum;
 
 void headSerialResponse(int requestMSP, Boolean err, int s) {
@@ -322,16 +345,21 @@ public void evaluateCommand(byte cmd, int dataSize) {
     serialize16(Send_timer);
     serialize16(0);
     serialize16(1|1<<1|1<<2|1<<3|0<<4);
-    //serialize32(0x32|0x01);
+    
     int modebits = 0;
-    if(SimItem[1].value() > 0) modebits |= int(confItem[1].value());
-    if(SimItem[2].value() > 0) modebits |= int(confItem[2].value());
-    if(SimItem[3].value() > 0) modebits |= int(confItem[3].value());
-    if(SimItem[0].value() > 0) modebits |= int(confItem[4].value());
-    if(SimItem[4].value() > 0) modebits |= int(confItem[5].value());
-    if(SimItem[5].value() > 0) modebits |= int(confItem[6].value());
+    int BitCounter = 1;
+    for (int i=0; i<boxnames.length; i++) {
+      if(checkboxModeItems[i].arrayValue()[0] > 0) modebits |= BitCounter;
+      BitCounter += BitCounter;
+    }
+    
     serialize32(modebits);
     serialize8(0);   // current setting
+    break;
+    
+  case MSP_BOXNAMES:
+     headSerialReply(MSP_BOXNAMES,strBoxNames.length());
+     serializeNames(strBoxNames.length());
     break;
 
   case MSP_ATTITUDE:
