@@ -124,7 +124,7 @@ uint8_t EEPROM_DEFAULT[EEPROM_SETTINGS] = {
 int cursorPostion;
 
 // For Serial communicatin
-int8_t waitStick=0;
+//int8_t waitStick=0;
 
 uint8_t serialWait=0;
 

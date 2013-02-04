@@ -166,20 +166,21 @@ unsigned long currentMillis = millis();
       case 5:
         MSPcmdsend=MSP_ALTITUDE;
         break;
+
+      // XXX
+      case 6:
+        MSPcmdsend=MSP_RC_TUNING;
+        break;
+      case 7:
+        MSPcmdsend=MSP_PID;
+        break;
+      
  
       case 201:
         MSPcmdsend=MSP_STATUS;
         break;
       case 202:
         MSPcmdsend=MSP_RAW_IMU;
-      case 203:
-        MSPcmdsend=MSP_PID;
-        break;
-      case 204:
-        MSPcmdsend=MSP_RAW_IMU;
-        break;
-      case 205:
-        MSPcmdsend=MSP_RC_TUNING;
         break;
 
       default:
@@ -188,15 +189,14 @@ unsigned long currentMillis = millis();
           nextMSPrequest = 200;
         else
           nextMSPrequest = 0;
-
         break;
       } // end of case
       blankserialRequest(MSPcmdsend);      
     } // End of serial wait
-    
-    
+
     MAX7456_DrawScreen();
-    if( allSec < 9 ) displayIntro();
+    if( allSec < 9 )
+      displayIntro();
     else
     {
       if(armed){
@@ -210,11 +210,12 @@ unsigned long currentMillis = millis();
       }
       if(configMode)
       {
-        displayPIDConfigScreen();
+        displayConfigScreen();
       }
       else
       {
         CollectStatistics();
+
         if(Settings[S_DISPLAYVOLTAGE]&&((voltage>Settings[S_VOLTAGEMIN])||(Blink2hz))) displayVoltage();
         if(Settings[S_DISPLAYRSSI]&&((rssi>lowrssiAlarm)||(Blink2hz))) displayRSSI();
 
@@ -253,11 +254,10 @@ unsigned long currentMillis = millis();
     }       
   }  // End of fast Timed Service Routine (20ms loop)
 
-
   if(halfSec>=10){
     halfSec=0;
     Blink2hz=!Blink2hz;
-    if(waitStick) waitStick=waitStick-1;
+    //if(waitStick) waitStick=waitStick-1;
   }
 
   if(tenthSec>=20)     // this execute 1 time a second

@@ -604,12 +604,13 @@ void displayCursor(void)
 }
 
 
-void displayPIDConfigScreen(void)
+void displayConfigScreen(void)
 {
-
   MAX7456_WriteString_P(configMsg0, SAVEP);    //EXIT
-  MAX7456_WriteString_P(configMsg1, SAVEP+6);  //SaveExit
-  MAX7456_WriteString_P(configMsg2, SAVEP+16); //<Page>
+  if(!previousarmedstatus) {
+    MAX7456_WriteString_P(configMsg1, SAVEP+6);  //SaveExit
+    MAX7456_WriteString_P(configMsg2, SAVEP+16); //<Page>
+  }
 
   if(configPage==1)
   {
