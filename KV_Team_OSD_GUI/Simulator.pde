@@ -4,10 +4,23 @@
 float sAltitude = 0;
 float sVario = 0;
 float sVBat = 0;
+int mode_armed = 0;
+int mode_stable = 0;
+int mode_baro = 0;
+int mode_mag = 0;
+int mode_gpshome = 0;
+int mode_gpshold = 0;
+int mode_llights = 0;
+int mode_osd_switch = 0;
 
+boolean[] keys = new boolean[526];
 
 ControlP5 ScontrolP5;
 Group SG,SGModes,SGAtitude,SGRadio,SGSensors1; 
+
+// Checkboxs
+CheckBox checkboxSimItem[] = new CheckBox[SIMITEMS] ;
+CheckBox SimulateMultiWii,ShowSimBackground, UnlockControls; 
 
 // Slider2d ---
 Slider2D Pitch_Roll, Throttle_Yaw,MW_Pitch_Roll;
@@ -46,7 +59,7 @@ void SimSetup(){
                 .setBarHeight(15)
                 .activateEvent(true)
                 .setBackgroundColor(color(30,255))
-                .setBackgroundHeight(150)
+                .setBackgroundHeight((boxnames.length*17) + 8)
                 .setLabel("Modes")
                 .setGroup(SG)
                 //.close() 
@@ -65,7 +78,7 @@ void SimSetup(){
                ;
                
  SGRadio = ScontrolP5.addGroup("SGRadio")
-                .setPosition(295,185)
+                .setPosition(5,185)
                 .setWidth(130)
                 .setBarHeight(15)
                 .activateEvent(true)
@@ -118,6 +131,29 @@ SGSensors1 = ScontrolP5.addGroup("SGSensors1")
    
 
 
+ Throttle_Yaw = ScontrolP5.addSlider2D("Throttle/Yaw")
+         .setPosition(5,5)
+         .setSize(50,50)
+         .setArrayValue(new float[] {50, 100})
+         .setMaxX(2000) 
+         .setMaxY(1000) 
+         .setMinX(1000) 
+         .setMinY(2000)
+         .setValueLabel("") 
+        .setLabel("")
+         .setGroup(SGRadio)
+        ;
+ ScontrolP5.getController("Throttle/Yaw").getValueLabel().hide();
+ ScontrolP5.getTooltip().register("Throttle/Yaw","Ctrl Key to hold position");
+
+
+UnlockControls =  ScontrolP5.addCheckBox("UnlockControls",60,45);
+    UnlockControls.setColorBackground(color(120));
+    UnlockControls.setColorActive(color(255));
+    UnlockControls.addItem("UnlockControls1",1);
+    UnlockControls.hideLabels();
+    UnlockControls.setGroup(SGRadio);
+
   Pitch_Roll = ScontrolP5.addSlider2D("Pitch/Roll")
          .setPosition(75,5)
          .setSize(50,50)
@@ -134,20 +170,7 @@ SGSensors1 = ScontrolP5.addGroup("SGSensors1")
          ;
   ScontrolP5.getController("Pitch/Roll").getValueLabel().hide();
 
- Throttle_Yaw = ScontrolP5.addSlider2D("Throttle/Yaw")
-         .setPosition(5,5)
-         .setSize(50,50)
-         .setArrayValue(new float[] {50, 100})
-         .setMaxX(2000) 
-         .setMaxY(1000) 
-         .setMinX(1000) 
-         .setMinY(2000)
-         .setValueLabel("") 
-        .setLabel("")
-         .setGroup(SGRadio)
-        ;
- ScontrolP5.getController("Throttle/Yaw").getValueLabel().hide();
- ScontrolP5.getTooltip().register("Throttle/Yaw","Sift Key to hold position");
+
  
  
 
@@ -221,9 +244,9 @@ s_VBat = ScontrolP5.addSlider("sVBat")
     checkboxModeItems[i] =  ScontrolP5.addCheckBox("checkboxSimItem"+i,5,5+3+i*17);
     checkboxModeItems[i].setColorActive(color(255));
     checkboxModeItems[i].setColorBackground(color(120));
-    checkboxModeItems[i].setItemsPerRow(1);
-    checkboxModeItems[i].setSpacingColumn(10);
-    checkboxModeItems[i].setLabel(boxnames[i]);
+    //checkboxModeItems[i].setItemsPerRow(1);
+    //checkboxModeItems[i].setSpacingColumn(10);
+    //checkboxModeItems[i].setLabel(boxnames[i]);
     checkboxModeItems[i].addItem(boxnames[i],1);
     //checkboxModeItems[i].hideLabels();
     checkboxModeItems[i].setGroup(SGModes);
@@ -242,7 +265,34 @@ s_VBat = ScontrolP5.addSlider("sVBat")
       //SimItem[i].hide();  
     //}
   //}
+GetModes();  
+} 
+
+boolean checkKey(int k)
+{
+  if (keys.length >= k) {
+    return keys[k];  
+  }
+  return false;
+}
+
+
+
+void keyPressed()
+{ 
+  keys[keyCode] = true;
+}
+
+
+void keyReleased()
+{ 
+  keys[keyCode] = false; 
+  ControlLock();
   
+}
+
+void mouseReleased() {
+  ControlLock();
 } 
 
 void CalcAlt_Vario(){
@@ -255,34 +305,37 @@ void CalcAlt_Vario(){
 
 void displayMode()
 {
-      
-    if((MwSensorActive&STABLEMODE) >0)
-      mapchar(0xbe,sensorPosition[0]+LINE);
-
-    if((MwSensorActive&BAROMODE) >0)
-      mapchar(0xbe,sensorPosition[0]+1+LINE);
-
-    if((MwSensorActive&MAGMODE) >0)
-      mapchar(0xbe,sensorPosition[0]+2+LINE);
-
-    if((MwSensorActive&GPSHOMEMODE) >0)
-      mapchar(0xbe,sensorPosition[0]+3+LINE);
-
-    if((MwSensorActive&GPSHOLDMODE) >0)
-      mapchar(0xbe,sensorPosition[0]+3+LINE);
-
+  int SimModebits = 0;
+  int SimBitCounter = 1;
+    for (int i=0; i<boxnames.length; i++) {
+      if(checkboxModeItems[i].arrayValue()[0] > 0) SimModebits |= SimBitCounter;
+      SimBitCounter += SimBitCounter;
 }
-
-void displayArmed()
-{
-  if (int("ARM;") > 0){
+    if((SimModebits&mode_armed) >0){
     makeText("ARMED", motorArmedPosition[0]);
   }
-  else
-  {
+    else{
     makeText("DISARMED", motorArmedPosition[0]);
   }
+    
+    if((SimModebits&mode_stable) >0)
+      mapchar(0xbe,sensorPosition[0]+LINE);
+
+    if((SimModebits&mode_baro) >0)
+      mapchar(0xbe,sensorPosition[0]+1+LINE);
+
+    if((SimModebits&mode_mag) >0)
+      mapchar(0xbe,sensorPosition[0]+2+LINE);
+
+    if((SimModebits&mode_gpshome) >0)
+      mapchar(0xbe,sensorPosition[0]+3+LINE);
+
+    if((SimModebits&mode_gpshold) >0)
+      mapchar(0xbe,sensorPosition[0]+3+LINE);
+
 }
+
+
 
 void displayHorizon(int rollAngle, int pitchAngle)
 {
@@ -368,4 +421,46 @@ void displayHeading()
     makeText(str(heading), MwHeadingPosition[0]);
   }
   mapchar(MwHeadingUnitAdd,MwHeadingPosition[0]+3);  
+}
+
+void ControlLock(){
+  Pitch_Roll.setArrayValue(new float[] {500, -500});
+  if(checkKey(CONTROL) == false) {
+    if(UnlockControls.arrayValue()[0] < 1){
+      float A = (2000-Throttle_Yaw.getArrayValue()[1])*-1;
+      Throttle_Yaw.setArrayValue(new float[] {500, A});
+      s_Vario.setValue(0);
+      sVario = 0;
+    }
+  }    
+}
+
+void GetModes(){
+  int bit = 1;
+  int remaining = strBoxNames.length();
+  int len = 0;
+ 
+  mode_armed = 0;
+  mode_stable = 0;
+  mode_baro = 0;
+  mode_mag = 0;
+  mode_gpshome = 0;
+  mode_gpshold = 0;
+  mode_llights = 0;
+  mode_osd_switch = 0;
+  for (int c = 0; c < boxnames.length; c++) {
+    if (boxnames[c] == "ARM;") mode_armed |= bit;
+    if (boxnames[c] == "ANGLE;") mode_stable |= bit;
+    if (boxnames[c] == "HORIZON;") mode_stable |= bit;
+    if (boxnames[c] == "MAG;") mode_mag |= bit;
+    if (boxnames[c] == "BARO;") mode_baro |= bit;
+    if (boxnames[c] == "LLIGHTS;") mode_llights |= bit;
+    if (boxnames[c] == "GPS HOME;") mode_gpshome |= bit;
+    if (boxnames[c] == "GPS HOLD;") mode_gpshold |= bit;
+    
+    bit <<= 1L;
+  }
+  
+   
+ 
 }

@@ -8,11 +8,14 @@ String boxnames[] = { // names for dynamic generation of config GUI
     "BARO;",
     "MAG;",
     "ARM;",
+    "LLIGHTS;",
     "GPS HOME;",
-    "GPS HOLD;"
+    "GPS HOLD;",
+    "OSD SW;",
+    
   };
 String strBoxNames = join(boxnames,""); 
-
+//int modebits = 0;
 
 private static final String MSP_HEADER = "$M<";
 
@@ -300,7 +303,6 @@ void serializeNames(int s) {
   //}
   for (int c = 0; c < strBoxNames.length(); c++) {
     serialize8(strBoxNames.charAt(c));
-    
   }
 }
 

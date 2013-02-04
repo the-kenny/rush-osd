@@ -124,7 +124,7 @@ String SendCommand = "";
 
 boolean firstContact = false;   
 boolean disableSerial = false;
-boolean Shiftkey = false;
+
 
 // Int variables
 
@@ -391,8 +391,7 @@ Toggle toggleConfItem[] = new Toggle[CONFIGITEMS] ;
 
 // checkboxes------------------------------------------------------------------------------------------------------------------
 CheckBox checkboxConfItem[] = new CheckBox[CONFIGITEMS] ;
-CheckBox checkboxSimItem[] = new CheckBox[SIMITEMS] ;
-CheckBox SimulateMultiWii,ShowSimBackground; 
+
 
 // Toggles------------------------------------------------------------------------------------------------------------------    
 
@@ -697,7 +696,6 @@ void draw() {
   displaySensors();
   displayMode();
   ShowAmperage();
-  displayArmed();
   displayHeadingGraph();
   displayHeading();
   popMatrix();
@@ -759,41 +757,10 @@ public void controlEvent(ControlEvent theEvent) {
     if (theEvent.name()=="portComList")
       InitSerial(theEvent.group().value()); // initialize the serial port selected
 }
-void mouseReleased() {
-//if ((Throttle_Yaw.getArrayValue()[0] < 1500) || (Throttle_Yaw.getArrayValue()[0] > 1500)){   
-Pitch_Roll.setArrayValue(new float[] {500, -500});
-   
-   if (!Shiftkey){
-    float A = (2000-Throttle_Yaw.getArrayValue()[1])*-1;
-    Throttle_Yaw.setArrayValue(new float[] {500, A});
-    s_Vario.setValue(0);
-    sVario = 0;
-   }   
-   
-  
-}
-
-
-void keyPressed()
-{ 
-  if (keyCode == 32){
-    Shiftkey = true;
-    //println(KeyEvent.getKeyText(keyCode));
-    //println(keyCode);
-  }
-  //println(keyCode);
-}
 
 
 
-void keyReleased()
-{ 
-  Shiftkey = false;
-  float A = (2000-Throttle_Yaw.getArrayValue()[1])*-1;
-    Throttle_Yaw.setArrayValue(new float[] {500, A}); 
-   s_Vario.setValue(0);
-   sVario = 0;
-}
+
 
 void mapchar(int address, int screenAddress){
   int placeX = (screenAddress % 30) * 12;
