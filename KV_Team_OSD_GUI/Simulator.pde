@@ -297,35 +297,35 @@ void displayHorizon(int rollAngle, int pitchAngle)
     Y += 41;
     if(Y >= 0 && Y <= 81) {
       int pos = 30*(2+Y/9) + 10 + X;
-      if(X < 3 || X >5 || (Y/9) != 4)
+      if(X < 3 || X >5 || (Y/9) != 4 || confItem[28].value() == 0)
       	mapchar(0x80+(Y%9), pos);
       if(Y>=9 && (Y%9) == 0)
         mapchar(0x89, pos-30);
     }
   }
 
-//if (DISPLAY_HORIZON_BR){
-  //Draw center screen
-  mapchar(0x03, 219-30);
-  mapchar(0x00, 224-30-1);
-  mapchar(0x00, 224-30+1);
-  mapchar(0x01, 224-30);
-  mapchar(0x02, 229-30);
+  if(confItem[28].value() > 0) {
+    //Draw center screen
+    mapchar(0x01, 224-30);
+    mapchar(0x00, 224-30-1);
+    mapchar(0x00, 224-30+1);
+  }
   
   //if (WITHDECORATION){
-     mapchar(0xC7,128);
-     mapchar(0xC7,128+30);
-     mapchar(0xC7,128+60);
-     mapchar(0xC7,128+90);
-     mapchar(0xC7,128+120);
-     mapchar(0xC6,128+12);
-     mapchar(0xC6,128+12+30);
-     mapchar(0xC6,128+12+60);
-     mapchar(0xC6,128+12+90);
-     mapchar(0xC6,128+12+120);
-    //}
-  //}
-  //mapchar("0x10"+ 00,(rollAngle*30)+100+0);
+  if(confItem[29].value() > 0) {
+    mapchar(0xC7,128);
+    mapchar(0xC7,128+30);
+    mapchar(0xC7,128+60);
+    mapchar(0xC7,128+90);
+    mapchar(0xC7,128+120);
+    mapchar(0xC6,128+12);
+    mapchar(0xC6,128+12+30);
+    mapchar(0xC6,128+12+60);
+    mapchar(0xC6,128+12+90);
+    mapchar(0xC6,128+12+120);
+    mapchar(0x02, 229-30);
+    mapchar(0x03, 219-30);
+  }
 }
 
 
