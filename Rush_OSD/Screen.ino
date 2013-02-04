@@ -799,7 +799,7 @@ void displayPIDConfigScreen(void)
     MAX7456_WriteString(screenBuffer,VELD-7);
 
     MAX7456_WriteString_P(configMsg57, LEVT);
-    xx = pMeterSum / EST_PMSum;
+    xx= pMeterSum / EST_PMSum;
     MAX7456_WriteString(itoa(xx,screenBuffer,10),LEVD);
 
     MAX7456_WriteString_P(configMsg58, MAGT);
