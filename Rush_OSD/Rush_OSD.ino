@@ -176,8 +176,9 @@ unsigned long currentMillis = millis();
       case 7:
         MSPcmdsend=MSP_PID;
         break;
-      
- 
+      case 8:
+        MSPcmdsend=MSP_MWRSSI;
+        break;
       case 201:
         MSPcmdsend=MSP_STATUS;
         break;
