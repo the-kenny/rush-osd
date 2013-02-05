@@ -34,56 +34,44 @@ uint32_t mode_osd_switch;
 //char tempBuffer[256];
 
 //Current # of setting available
-#define EEPROM_SETTINGS            34
+#define EEPROM_SETTINGS            28
 
 uint8_t Settings[EEPROM_SETTINGS]; 
 
 // Settings Locations
 // used for check               0
-#define S_STABLEMODE            1           
-#define S_BAROMODE              2            
-#define S_MAGMODE               3            
-#define S_ARMEDMODE             4           
-#define S_GPSHOMEMODE           5           
-#define S_GPSHOLDMODE           6     
-#define S_RSSIMIN               7
-#define S_RSSIMAX               8
-#define S_DISPLAYRSSI           9
-#define S_DISPLAYVOLTAGE        10
-#define S_VOLTAGEMIN            11
-#define S_BATCELLS              12     
-#define S_DIVIDERRATIO          13
-#define S_MAINVOLTAGE_VBAT      14
-#define S_VIDVOLTAGE            15
-#define S_VIDDIVIDERRATIO       16    
-#define S_VIDVOLTAGE_VBAT       17
-#define S_DISPLAYTEMPERATURE    18
-#define S_TEMPERATUREMAX        19
-#define S_BOARDTYPE             20
-#define S_DISPLAYGPS            21
-#define S_COORDINATES           22
-#define S_SHOWHEADING           23
-#define S_HEADING360            24     
-#define S_UNITSYSTEM            25
-#define S_VIDEOSIGNALTYPE       26 
-#define S_THROTTLEPOSITION      27
-#define S_DISPLAY_HORIZON_BR    28
-#define S_WITHDECORATION        29
-#define S_SHOWBATLEVELEVOLUTION 30 
-#define S_RESETSTATISTICS       31
-#define S_ENABLEADC             32
-#define S_MWRSSI                33
+#define S_RSSIMIN               1
+#define S_RSSIMAX               2
+#define S_DISPLAYRSSI           3
+#define S_DISPLAYVOLTAGE        4
+#define S_VOLTAGEMIN            5
+#define S_BATCELLS              6     
+#define S_DIVIDERRATIO          7
+#define S_MAINVOLTAGE_VBAT      8
+#define S_VIDVOLTAGE            9
+#define S_VIDDIVIDERRATIO       10    
+#define S_VIDVOLTAGE_VBAT       11
+#define S_DISPLAYTEMPERATURE    12
+#define S_TEMPERATUREMAX        13
+#define S_BOARDTYPE             14
+#define S_DISPLAYGPS            15
+#define S_COORDINATES           16
+#define S_SHOWHEADING           17
+#define S_HEADING360            18     
+#define S_UNITSYSTEM            19
+#define S_VIDEOSIGNALTYPE       20 
+#define S_THROTTLEPOSITION      21
+#define S_DISPLAY_HORIZON_BR    22
+#define S_WITHDECORATION        23
+#define S_SHOWBATLEVELEVOLUTION 24 
+#define S_RESETSTATISTICS       25
+#define S_ENABLEADC             26
+#define S_MWRSSI                27
 
 
 // For Settings Defaults
 uint8_t EEPROM_DEFAULT[EEPROM_SETTINGS] = {
 1,   // used for check             0
-1,   // S_STABLEMODE             1           
-4,   // S_BAROMODE               2            
-8,   // S_MAGMODE                3            
-32,  // S_ARMEDMODE              4           
-64,  // S_GPSHOMEMODE            5           
-128, // S_GPSHOLDMODE            6     
 0,   // S_RSSIMIN                7
 255, // S_RSSIMAX                8
 1,   // S_DISPLAYRSSI            9
