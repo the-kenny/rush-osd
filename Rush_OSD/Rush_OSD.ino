@@ -142,10 +142,10 @@ void loop()
       uint16_t voltageRaw = 0;
       for (uint8_t i=0;i<8;i++)
         voltageRaw += voltageRawArray[i];
-      voltage = voltageRaw * Settings[S_DIVIDERRATIO] * (1.1/102.3/4/8);  
+      voltage = float(voltageRaw) * Settings[S_DIVIDERRATIO] * (1.1/102.3/4/8);  
     }
     if (!Settings[S_VIDVOLTAGE_VBAT]) {
-      vidvoltage = analogRead(vidvoltagePin) * Settings[S_VIDDIVIDERRATIO] * (1.1/102.3/4);
+      vidvoltage = float(analogRead(vidvoltagePin)) * Settings[S_VIDDIVIDERRATIO] * (1.1/102.3/4);
     }
     if (!Settings[S_MWRSSI]) {
       rssiADC = (analogRead(rssiPin)*1.1)/1023;
