@@ -78,10 +78,10 @@ uint8_t EEPROM_DEFAULT[EEPROM_SETTINGS] = {
 1,   // S_DISPLAYVOLTAGE         10
 105, // S_VOLTAGEMIN             11
 3,   // S_BATCELLS               12
-25,  // S_DIVIDERRATIO           13
+100, // S_DIVIDERRATIO           13
 0,   // S_MAINVOLTAGE_VBAT       14
 0,   // S_VIDVOLTAGE             15
-25,  // S_VIDDIVIDERRATIO        16    
+100, // S_VIDDIVIDERRATIO        16    
 0,   // S_VIDVOLTAGE_VBAT        17
 0,   // S_DISPLAYTEMPERATURE     18
 255, // S_TEMPERATUREMAX         19
@@ -360,3 +360,16 @@ enum Positions {
   horizonPosition,
 };
 
+#define REQ_MSP_IDENT     (1 <<  0)
+#define REQ_MSP_STATUS    (1 <<  1)
+#define REQ_MSP_RAW_IMU   (1 <<  2)
+#define REQ_MSP_RC        (1 <<  3)
+#define REQ_MSP_RAW_GPS   (1 <<  4)
+#define REQ_MSP_COMP_GPS  (1 <<  5)
+#define REQ_MSP_ATTITUDE  (1 <<  6)
+#define REQ_MSP_ALTITUDE  (1 <<  7)
+#define REQ_MSP_BAT       (1 <<  8)
+#define REQ_MSP_RC_TUNING (1 <<  9)
+#define REQ_MSP_PID       (1 << 10)
+#define REQ_MSP_MWRSSI    (1 << 11)
+#define REQ_MSP_BOXNAMES  (1 << 12)

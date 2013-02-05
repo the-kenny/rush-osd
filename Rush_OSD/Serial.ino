@@ -50,6 +50,7 @@ void serialMSPCheck()
   if (cmdMSP==MSP_IDENT)
   {
     MwVersion= read8();                             // MultiWii Firmware version
+    modedMSPRequests &=~ REQ_MSP_IDENT;
   }
 
   if (cmdMSP==MSP_STATUS)
@@ -118,6 +119,7 @@ void serialMSPCheck()
     dynThrPID = read8();
     thrMid8 = read8();
     thrExpo8 = read8();
+    modedMSPRequests &=~ REQ_MSP_RC_TUNING;
   }
 
   if (cmdMSP==MSP_PID)
@@ -127,6 +129,7 @@ void serialMSPCheck()
       I8[i] = read8();
       D8[i] = read8();
     }
+    modedMSPRequests &=~ REQ_MSP_PID;
   }
     
   if (cmdMSP==MSP_MWRSSI)
@@ -185,8 +188,8 @@ void serialMSPCheck()
       lastc = c;
       --remaining;
     }
-//  memcpy(tempBuffer, serialBuffer, dataSize);
-//  tempBuffer[dataSize] = 0;
+    
+    modedMSPRequests &=~ REQ_MSP_BOXNAMES;
   }
 
   serialMSPStringOK=0;
@@ -217,6 +220,7 @@ void handleRawRC() {
     {
       waitStick =1;
       configMode = 1;
+      setMspRequests();
     }
 
     //******************** EXIT from SHOW STATISTICS (menu page 6) AFTER DISARM (push throttle up) (Carlonb) NEB
@@ -453,6 +457,7 @@ void configExit()
     temperMAX = -128;
     flyingTime=0;
   }
+  setMspRequests();
 }
 
 void saveExit()
