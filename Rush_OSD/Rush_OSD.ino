@@ -59,8 +59,10 @@
 char screen[480];
 // ScreenBuffer is an intermietary buffer to created Strings to send to Screen buffer
 char screenBuffer[20];
-char nextMSPrequest=0;
 char MSPcmdsend=0;
+
+uint32_t modedMSPRequests;
+uint32_t queuedMSPRequests;
 
 //-------------- Timed Service Routine vars (No more needed Metro.h library)
 
@@ -87,9 +89,45 @@ void setup()
   MAX7456Setup();
   
   analogReference(INTERNAL);
-  
+
+  setMspRequests();
+
   MSPcmdsend=MSP_IDENT;            // Moved here from main loop as called once
   blankserialRequest(MSPcmdsend);
+}
+
+void setMspRequests() {
+  if(configMode) {
+    modedMSPRequests = 
+      REQ_MSP_IDENT|
+      REQ_MSP_STATUS|
+      REQ_MSP_RAW_GPS|
+      REQ_MSP_ATTITUDE|
+      REQ_MSP_ALTITUDE|
+      REQ_MSP_RC_TUNING|
+      REQ_MSP_PID|
+      REQ_MSP_RC;
+  }
+  else {
+    modedMSPRequests = 
+      REQ_MSP_IDENT|
+      REQ_MSP_STATUS|
+      REQ_MSP_RAW_GPS|
+      REQ_MSP_COMP_GPS|
+      REQ_MSP_ATTITUDE|
+      REQ_MSP_ALTITUDE|
+      REQ_MSP_RC_TUNING|
+      REQ_MSP_PID|
+      REQ_MSP_BOXNAMES;
+
+    if(!armed)
+      modedMSPRequests |= REQ_MSP_RC;
+  }
+ 
+  if(Settings[S_MAINVOLTAGE_VBAT] || Settings[S_VIDVOLTAGE_VBAT])
+    modedMSPRequests |= REQ_MSP_BAT;
+  if(Settings[S_MWRSSI])
+    modedMSPRequests |= REQ_MSP_MWRSSI;
 }
 
 void loop()
@@ -104,25 +142,28 @@ void loop()
       uint16_t voltageRaw = 0;
       for (uint8_t i=0;i<8;i++)
         voltageRaw += voltageRawArray[i];
-      voltage = ((voltageRaw *1.1*Settings[S_DIVIDERRATIO])/102.3) /8;  
+      voltage = voltageRaw * Settings[S_DIVIDERRATIO] * (1.1/102.3/4/8);  
     }
-    if (!Settings[S_VIDVOLTAGE_VBAT]){
-      vidvoltage=(analogRead(vidvoltagePin)*1.1*Settings[S_VIDDIVIDERRATIO])/102.3;
+    if (!Settings[S_VIDVOLTAGE_VBAT]) {
+      vidvoltage = analogRead(vidvoltagePin) * Settings[S_VIDDIVIDERRATIO] * (1.1/102.3/4);
     }
-    if (!Settings[S_MWRSSI]){
+    if (!Settings[S_MWRSSI]) {
       rssiADC = (analogRead(rssiPin)*1.1)/1023;
-    } 
+    }
     amperage = (AMPRERAGE_OFFSET - (analogRead(amperagePin)*AMPERAGE_CAL))/10.23;
   }
-  if (Settings[S_MWRSSI]){
+  if (Settings[S_MWRSSI]) {
       rssiADC = MwRssi;
- }     
+  }
+
   // Blink Basic Sanity Test Led at 1hz
-  if(tenthSec>10) BST_ON else BST_OFF
+  if(tenthSec>10)
+    BST_ON
+  else
+    BST_OFF
 
-
-//---------------  Start Timed Service Routines  ---------------------------------------
-unsigned long currentMillis = millis();
+  //---------------  Start Timed Service Routines  ---------------------------------------
+  unsigned long currentMillis = millis();
 
   if((currentMillis - previous_millis_low) >= lo_speed_cycle)  // 10 Hz (Executed every 100ms)
   {
@@ -132,8 +173,7 @@ unsigned long currentMillis = millis();
       blankserialRequest(MSPcmdsend);
     }
   }  // End of slow Timed Service Routine (100ms loop)
- 
-  
+
   if((currentMillis - previous_millis_high) >= hi_speed_cycle)  // 20 Hz (Executed every 50ms)
   {
     previous_millis_high = currentMillis;   
@@ -142,61 +182,55 @@ unsigned long currentMillis = millis();
     halfSec++;
     Blink10hz=!Blink10hz;
     calculateTrip();
-    if(Settings[S_DISPLAYRSSI]) calculateRssi();
+    if(Settings[S_DISPLAYRSSI])
+      calculateRssi();
 
     if(!serialWait) {
-      nextMSPrequest++;
-      switch (nextMSPrequest) {
-//      case 1:
-//        MSPcmdsend=MSP_IDENT;
-//        break;
-      case 1:
-        if(mode_armed != 0)
-          MSPcmdsend=MSP_STATUS;
-        else
-          MSPcmdsend=MSP_BOXNAMES;
+      if(queuedMSPRequests == 0)
+        queuedMSPRequests = modedMSPRequests;
+      uint32_t req = queuedMSPRequests & -queuedMSPRequests;
+      queuedMSPRequests &= ~req;
+      switch(req) {
+      case REQ_MSP_IDENT:
+        MSPcmdsend = MSP_IDENT;
         break;
-      case 2:
-        MSPcmdsend=MSP_BAT;
+      case REQ_MSP_STATUS:
+        MSPcmdsend = MSP_STATUS;
         break;
-      case 3:
-        MSPcmdsend=MSP_RAW_GPS;
+      case REQ_MSP_RAW_IMU:
+        MSPcmdsend = MSP_RAW_IMU;
         break;
-      case 4:
-        MSPcmdsend=MSP_COMP_GPS;
+      case REQ_MSP_RC:
+        MSPcmdsend = MSP_RC;
         break;
-      case 5:
-        MSPcmdsend=MSP_ALTITUDE;
+      case REQ_MSP_RAW_GPS:
+        MSPcmdsend = MSP_RAW_GPS;
         break;
-
-      // XXX
-      case 6:
-        MSPcmdsend=MSP_RC_TUNING;
+      case REQ_MSP_COMP_GPS:
+        MSPcmdsend = MSP_COMP_GPS;
         break;
-      case 7:
-        MSPcmdsend=MSP_PID;
+      case REQ_MSP_ATTITUDE:
+        MSPcmdsend = MSP_ATTITUDE;
         break;
-      case 8:
-        MSPcmdsend=MSP_MWRSSI;
+      case REQ_MSP_ALTITUDE:
+        MSPcmdsend = MSP_ALTITUDE;
         break;
-      case 201:
-        MSPcmdsend=MSP_STATUS;
+      case REQ_MSP_BAT:
+        MSPcmdsend = MSP_BAT;
         break;
-      case 202:
-        MSPcmdsend=MSP_RAW_IMU;
+      case REQ_MSP_RC_TUNING:
+        MSPcmdsend = MSP_RC_TUNING;
         break;
-      case 203:
-        MSPcmdsend=MSP_MWRSSI;
+      case REQ_MSP_PID:
+        MSPcmdsend = MSP_PID;
         break;
-
-      default:
-        MSPcmdsend=MSP_RC;
-        if(configMode)
-          nextMSPrequest = 200;
-        else
-          nextMSPrequest = 0;
+      case REQ_MSP_MWRSSI:
+        MSPcmdsend = MSP_MWRSSI;
         break;
-      } // end of case
+      case REQ_MSP_BOXNAMES:
+        MSPcmdsend = MSP_BOXNAMES;;
+        break;
+      }
       blankserialRequest(MSPcmdsend);      
     } // End of serial wait
 
@@ -213,6 +247,7 @@ unsigned long currentMillis = millis();
         ROW=10;
         COL=1;
         configMode=1;
+        setMspRequests();
       }
       if(configMode)
       {
@@ -235,18 +270,23 @@ unsigned long currentMillis = millis();
 #endif
         displaypMeterSum();
         displayArmed();
-        if (Settings[S_THROTTLEPOSITION]) displayCurrentThrottle();
+        if (Settings[S_THROTTLEPOSITION])
+          displayCurrentThrottle();
 
-        if(MwSensorPresent&ACCELEROMETER) displayHorizon(MwAngle[0],MwAngle[1]*-1);
-        if(MwSensorPresent&MAGNETOMETER)  {
+        if(MwSensorPresent&ACCELEROMETER)
+           displayHorizon(MwAngle[0],MwAngle[1]);
+
+        if(MwSensorPresent&MAGNETOMETER) {
           displayHeadingGraph();
           displayHeading();
         }
-        if(MwSensorPresent&BAROMETER)     {
+
+        if(MwSensorPresent&BAROMETER) {
           displayAltitude();
           displayClimbRate();
         }
-        if(MwSensorPresent&GPSSENSOR)     {
+
+        if(MwSensorPresent&GPSSENSOR) {
           displayNumberOfSat();
           displayDirectionToHome();
           displayDistanceToHome();
@@ -257,13 +297,12 @@ unsigned long currentMillis = millis();
             displayGPSPosition();
         }
       }
-    }       
+    }
   }  // End of fast Timed Service Routine (20ms loop)
 
   if(halfSec>=10){
     halfSec=0;
     Blink2hz=!Blink2hz;
-    //if(waitStick) waitStick=waitStick-1;
   }
 
   if(tenthSec>=20)     // this execute 1 time a second
@@ -285,6 +324,7 @@ unsigned long currentMillis = millis();
       flyTime++;
       flyingTime++;
       configMode=0;
+      setMspRequests();
     }
     allSec++;
 
@@ -353,26 +393,26 @@ void calculateRssi(void)
 
 void writeEEPROM(void)
 {
- for(int en=0;en<EEPROM_SETTINGS;en++){
-  if (EEPROM.read(en) != Settings[en]) EEPROM.write(en,Settings[en]);
- } 
+  for(int en=0;en<EEPROM_SETTINGS;en++){
+    if (EEPROM.read(en) != Settings[en]) EEPROM.write(en,Settings[en]);
+  } 
 }
 
 void readEEPROM(void)
 {
- for(int en=0;en<EEPROM_SETTINGS;en++){
-   Settings[en] = EEPROM.read(en);
- }
+  for(int en=0;en<EEPROM_SETTINGS;en++){
+     Settings[en] = EEPROM.read(en);
+  }
 }
 
 // for first run to ini
 void checkEEPROM(void)
 {
-  int EEPROM_Loaded = EEPROM.read(0);
+  uint8_t EEPROM_Loaded = EEPROM.read(0);
   if (!EEPROM_Loaded){
-    for(int en=0;en<EEPROM_SETTINGS;en++){
-     if (EEPROM.read(en) != EEPROM_DEFAULT[en]) EEPROM.write(en,EEPROM_DEFAULT[en]);
+    for(uint8_t en=0;en<EEPROM_SETTINGS;en++){
+      if (EEPROM.read(en) != EEPROM_DEFAULT[en])
+        EEPROM.write(en,EEPROM_DEFAULT[en]);
     }
   }
 }
-
