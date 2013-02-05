@@ -398,7 +398,7 @@ public void evaluateCommand(byte cmd, int dataSize) {
     serialize32(430948610);
     serialize32(-718897060);
     serialize16(int(SGPS_altitude.value()));
-    serialize16(100);
+    serialize16(int(SGPS_speed.value()));
     serialize16(355);     
     
     //headSerialReply(16);
@@ -413,6 +413,17 @@ public void evaluateCommand(byte cmd, int dataSize) {
     
   
   case MSP_COMP_GPS:
+    //GPS_distanceToHome=read16();
+    //GPS_directionToHome=read16();
+    //GPS_update=read8();
+     headSerialReply(MSP_COMP_GPS,5);
+     serialize16(int(SGPS_distanceToHome.value()));
+     serialize16(255);
+     serialize8(0);
+     
+    
+    break;
+  
   case MSP_ALTITUDE:
     headSerialReply(MSP_ALTITUDE, 6);
     serialize32(int(sAltitude) *100);

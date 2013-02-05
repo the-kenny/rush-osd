@@ -30,7 +30,10 @@ Slider s_Altitude,s_Vario,s_VBat,s_RSSI;
 // Knobs----
 Knob HeadingKnob;
 
-Numberbox SGPS_numSat, SGPS_altitude, SGPS_speed, SGPS_ground_course;
+Numberbox SGPS_numSat, SGPS_altitude, SGPS_speed, SGPS_ground_course,SGPS_distanceToHome,SGPS_directionToHome,SGPS_update;
+//GPS_distanceToHome=read16();
+    //GPS_directionToHome=read16();
+    //GPS_update=read8();
 
 CheckBox checkboxModeItems[] = new CheckBox[boxnames.length] ;
 DecimalFormat OnePlaceDecimal = new DecimalFormat("0.0");
@@ -121,7 +124,7 @@ SGPS_FIX =  ScontrolP5.addCheckBox("GPS_FIX",5,5);
     //GPSLock.hideLabels();
     SGPS_FIX.setGroup(SGGPS);
     
-SGPS_numSat = ScontrolP5.addNumberbox("SGPS_numSat",0,70,5,30,14);
+SGPS_numSat = ScontrolP5.addNumberbox("SGPS_numSat",0,5,20,40,14);
     SGPS_numSat.setLabel("Num Sats");
     //SGPS_numSat.setColorBackground(red_);
     SGPS_numSat.setMin(0);
@@ -130,10 +133,10 @@ SGPS_numSat = ScontrolP5.addNumberbox("SGPS_numSat",0,70,5,30,14);
     SGPS_numSat.setDecimalPrecision(0);
     SGPS_numSat.setGroup(SGGPS); 
  ScontrolP5.getController("SGPS_numSat").getCaptionLabel()
-   .align(ControlP5.LEFT, ControlP5.RIGHT_OUTSIDE).setPaddingX(35);
+   .align(ControlP5.LEFT, ControlP5.RIGHT_OUTSIDE).setPaddingX(45);
 
-SGPS_altitude = ScontrolP5.addNumberbox("SGPS_altitude",0,5,25,40,14);
-    SGPS_altitude.setLabel("GPS Alt");
+SGPS_altitude = ScontrolP5.addNumberbox("SGPS_altitude",0,5,40,40,14);
+    SGPS_altitude.setLabel("Alt");
     //SGPS_numSat.setColorBackground(red_);
     SGPS_altitude.setMin(0);
     SGPS_altitude.setDirection(Controller.HORIZONTAL);
@@ -142,6 +145,29 @@ SGPS_altitude = ScontrolP5.addNumberbox("SGPS_altitude",0,5,25,40,14);
     SGPS_altitude.setGroup(SGGPS); 
  ScontrolP5.getController("SGPS_altitude").getCaptionLabel()
    .align(ControlP5.LEFT, ControlP5.RIGHT_OUTSIDE).setPaddingX(45);     
+ 
+ SGPS_speed = ScontrolP5.addNumberbox("SGPS_speed",0,5,60,40,14);
+    SGPS_speed.setLabel("Speed");
+    //SGPS_numSat.setColorBackground(red_);
+    SGPS_speed.setMin(0);
+    SGPS_speed.setDirection(Controller.HORIZONTAL);
+    SGPS_speed.setMax(1000);
+    SGPS_speed.setDecimalPrecision(0);
+    SGPS_speed.setGroup(SGGPS); 
+ ScontrolP5.getController("SGPS_speed").getCaptionLabel()
+   .align(ControlP5.LEFT, ControlP5.RIGHT_OUTSIDE).setPaddingX(45);   
+ 
+ SGPS_distanceToHome = ScontrolP5.addNumberbox("SGPS_distanceToHome",0,5,80,40,14);
+    SGPS_distanceToHome.setLabel("Dist Home");
+    //SGPS_numSat.setColorBackground(red_);
+    SGPS_distanceToHome.setMin(0);
+    SGPS_distanceToHome.setDirection(Controller.HORIZONTAL);
+    SGPS_distanceToHome.setMax(1000);
+    SGPS_distanceToHome.setDecimalPrecision(0);
+    SGPS_distanceToHome.setGroup(SGGPS); 
+ ScontrolP5.getController("SGPS_distanceToHome").getCaptionLabel()
+   .align(ControlP5.LEFT, ControlP5.RIGHT_OUTSIDE).setPaddingX(45);   
+                 
                
                
   MW_Pitch_Roll = ScontrolP5.addSlider2D("MWPitch/Roll")
