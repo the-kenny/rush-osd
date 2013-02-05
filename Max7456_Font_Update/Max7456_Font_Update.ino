@@ -154,7 +154,7 @@ void setup()
 
   Serial.println("Ready for text file download");
   Serial.println("");
-  Serial.println("Please Send the .mcm file ");
+  Serial.println("Please Send the MW_OSD_Team.mcm file ");
   Serial.println("");
   delay(100);  
 }
@@ -235,7 +235,7 @@ void loop()
     Serial.println("");
     Serial.println("Done with file download");
     Serial.println("");
-    Serial.println("You can now put the new RushOSD code via Arduino");
+    Serial.println("You can now put the new KV_Team_OSD code via Arduino");
   }
 }
 
