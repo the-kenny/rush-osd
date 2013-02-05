@@ -185,6 +185,9 @@ unsigned long currentMillis = millis();
       case 202:
         MSPcmdsend=MSP_RAW_IMU;
         break;
+      case 203:
+        MSPcmdsend=MSP_MWRSSI;
+        break;
 
       default:
         MSPcmdsend=MSP_RC;
