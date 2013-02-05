@@ -128,7 +128,7 @@ boolean disableSerial = false;
 
 // Int variables
 
-
+String LoadPercent = "Not Loaded";
 int init_com;
 int commListMax;
 int whichKey = -1;  // Variable to hold keystoke values
@@ -355,6 +355,7 @@ grey_ = color(30, 30, 30);
 // textlabels -------------------------------------------------------------------------------------------------------------
 Textlabel txtlblconfItem[] = new Textlabel[CONFIGITEMS] ;
 Textlabel txtlblSimItem[] = new Textlabel[SIMITEMS] ;
+Textlabel FileUploadText;
 // textlabels -------------------------------------------------------------------------------------------------------------
 
 // Buttons------------------------------------------------------------------------------------------------------------------

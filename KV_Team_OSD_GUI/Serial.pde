@@ -1,5 +1,5 @@
 Serial g_serial;      // The serial port
-
+int FilePercent = 0;
 /******************************* Multiwii Serial Protocol **********************/
 
 String boxnames[] = { // names for dynamic generation of config GUI
