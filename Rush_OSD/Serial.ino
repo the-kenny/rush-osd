@@ -305,7 +305,10 @@ void handleRawRC() {
 	if(ROW==4) Settings[S_RSSIMAX]=rssiADC;
 	if(ROW==5) Settings[S_DISPLAYRSSI]=!Settings[S_DISPLAYRSSI];
 	if(ROW==6) Settings[S_UNITSYSTEM]=!Settings[S_UNITSYSTEM];
-
+	if(ROW==7) {
+          Settings[S_VIDEOSIGNALTYPE]=!Settings[S_VIDEOSIGNALTYPE];
+          MAX7456Setup();
+        }
       }
 
       if(configPage == 5 && COL == 3) {
@@ -361,7 +364,10 @@ void handleRawRC() {
 	if(ROW==4) Settings[S_RSSIMAX]=rssiADC;
 	if(ROW==5) Settings[S_DISPLAYRSSI]=!Settings[S_DISPLAYRSSI];
 	if(ROW==6) Settings[S_UNITSYSTEM]=!Settings[S_UNITSYSTEM];
-
+	if(ROW==7) {
+          Settings[S_VIDEOSIGNALTYPE]=!Settings[S_VIDEOSIGNALTYPE];
+          MAX7456Setup();
+        }
       }
 
       if(configPage == 5 && COL == 3) {

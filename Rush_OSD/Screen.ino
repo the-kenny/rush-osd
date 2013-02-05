@@ -733,6 +733,14 @@ void displayConfigScreen(void)
     else {
       MAX7456_WriteString_P(configMsg39, LEVD-2);
     }
+
+    MAX7456_WriteString_P(configMsg40, MAGT);
+    if(Settings[S_VIDEOSIGNALTYPE]){
+      MAX7456_WriteString_P(configMsg42, MAGD+1);
+    }
+    else {
+      MAX7456_WriteString_P(configMsg41, MAGD);
+    }
   }
 
   if(configPage==5)
