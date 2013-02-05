@@ -428,7 +428,12 @@ void displayGPSPosition(void)
   }
 
   screenBuffer[0] = MwGPSAltPositionAdd[Settings[S_UNITSYSTEM]];
-  itoa(GPS_altitude,screenBuffer+1,10);
+  uint16_t xx;
+  if(Settings[S_UNITSYSTEM])
+    xx = GPS_altitude * 0.32808;
+  else
+    xx = GPS_altitude;
+  itoa(xx,screenBuffer+1,10);
   MAX7456_WriteString(screenBuffer,getPosition(MwGPSAltPosition));
 }
 
