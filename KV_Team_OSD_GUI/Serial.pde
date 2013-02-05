@@ -388,7 +388,30 @@ public void evaluateCommand(byte cmd, int dataSize) {
     break;
   
   case MSP_RAW_IMU:
+  
   case MSP_RAW_GPS:
+   // We have: GPS_fix(0-2), GPS_numSat(0-15), GPS_coord[LAT & LON](signed, in 1/10 000 000 degres), GPS_altitude(signed, in meters) and GPS_speed(in cm/s)  
+   //FormatGPSCoord(GPS_latitude,screenBuffer+1,3,'N','S');
+    headSerialReply(MSP_RAW_GPS,16);
+    serialize8(int(SGPS_FIX.arrayValue()[0]));
+    serialize8(int(SGPS_numSat.value()));
+    serialize32(430948610);
+    serialize32(-718897060);
+    serialize16(int(SGPS_altitude.value()));
+    serialize16(100);
+    serialize16(355);     
+    
+    //headSerialReply(16);
+    //serialize8(f.GPS_FIX);
+    //serialize8(GPS_numSat);
+    //serialize32(GPS_coord[LAT]);
+    //serialize32(GPS_coord[LON]);
+    //serialize16(GPS_altitude);
+    //serialize16(GPS_speed);
+    //serialize16(GPS_ground_course);        // added since r1172
+    break;
+    
+  
   case MSP_COMP_GPS:
   case MSP_ALTITUDE:
     headSerialReply(MSP_ALTITUDE, 6);
@@ -551,4 +574,63 @@ void ResetVersion(){
   serialize8(0);         // MultiWii Serial Protocol Version
   serialize32(0);        
 }
+
+
+void sendFontFile(){
+ int byte_count = 0;
+ float xx=0;
+  g_serial.stop();
+  
+  String portPos = Serial.list()[0];
+ //     txtlblWhichcom.setValue("COM = " + shortifyPortName(portPos, 8));
+      g_serial = new Serial(this, portPos, 19200);
+  InputStream in = null;
+ System.out.println("begin transfer MW_OSD_Team.mcm");
+delay(5000); 
+  try {
+  in = createInput(FontFile);
+    
+    while(in.available() > 0) {
+      int inB = in.read();
+      
+      //if (char(inB) == '0') g_serial.write(char(inB));
+      //if (char(inB) == '1') g_serial.write(char(inB));
+      //System.out.println("read "+inB);
+      g_serial.write(char(inB));
+      if (inB == 13){
+       byte_count++;
+      }
+      if(byte_count == 64){
+         byte_count = 0;
+         xx+= 0.390;
+         FilePercent = int(xx);
+         LoadPercent = str(int(xx)) + " % Done";
+         //FileUploadText.setValue(str(int(xx)) + " % Done");
+         //setProgress((orgString.length() - i), orgString.length());
+        //FileUploadText.draw(this); 
+         //FileUploadText.draw(this); 
+         //System.out.print((int)xx);  
+        //System.out.println("% done");
+  }
+    }
+      g_serial.stop();
+  }
+  catch (FileNotFoundException e) {
+      System.out.println("File Not Found MW_OSD_Team.mcm");
+  }
+  catch (IOException e) {
+  }
+  catch(Exception e) {
+  }
+  finally {
+    if(in != null)
+      try {
+        in.close();
+      }
+      catch (IOException ioe) {
+      }
+  }
+
+}
+
       

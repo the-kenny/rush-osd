@@ -155,17 +155,17 @@ int XSim        = DisplayWindowX+WindowAdjX;        int YSim        = 288-Window
 // Box locations -------------------------------------------------------------------------
 int XEEPROM    = 120;        int YEEPROM    = 5;
 int XModeBox   = 120;        int YModeBox    = 50;
-int XRSSI      = 120;        int YRSSI    = 180;
-int XVolts      = 120;        int YVolts    = 260;
-int XTemp      = 120;        int YTemp    = 430;
-int XGPS       = 310;        int YGPS    = 50;
-int XBoard     = 310;        int YBoard   = 150;
-int XOther     = 310;        int YOther   = 200;
-int XControlBox     = 120;        int YControlBox   = 500;
+int XRSSI      = 120;        int YRSSI    = 50;
+int XVolts      = 120;        int YVolts    = 130;
+int XTemp      = 120;        int YTemp    = 300;
+int XGPS       = 120;        int YGPS    = 365;
+int XBoard     = 120;        int YBoard   = 465;
+int XOther     = 310;        int YOther   = 5;
+int XControlBox     = 5;        int YControlBox   = 435;
 int XRCSim    =   XSim;      int YRCSim = 430;
 
 
-
+File FontFile;
 int activeTab = 1;
 int xx=0;
 int YLocation = 0;
@@ -188,12 +188,6 @@ char MwHeadingUnitAdd=0xbd;
 
 int[] EEPROM_DEFAULT = {
 1,   // used for check                0
-1,   // EEPROM_STABLEMODE             1           
-4,   // EEPROM_BAROMODE               2            
-8,   // EEPROM_MAGMODE                3            
-32,  // EEPROM_ARMEDMODE              4           
-64,  // EEPROM_GPSHOMEMODE            5           
-128, // EEPROM_GPSHOLDMODE            6     
 0,   // EEPROM_RSSIMIN                7
 255, // EEPROM_RSSIMAX                8
 1,   // EEPROM_DISPLAYRSSI            9
@@ -223,12 +217,6 @@ int[] EEPROM_DEFAULT = {
 };
 String[] ConfigNames = {
   "EEPROM Loaded:",
-  "Stable Mode:",
-  "Baro Mode:",
-  "Mag Mode:",
-  "Armed Mode:",
-  "GPS Home Mode:",
-  "GPS Hold Mode:",
   "RSSI Min:",
   "RSSI Max:",
   "Display RSSI:",
@@ -262,12 +250,6 @@ String[] ConfigNames = {
 };
 String[] ConfigHelp = {
   "Shows if EEPROM is Loaded, uncheck to reset to defaults",
-  "Stable Mode:",
-  "Baro Mode:",
-  "Mag Mode:",
-  "16,32, or 64 check MW configuration",
-  "GPS Home Mode:",
-  "GPS Hold Mode:",
   "RSSI Min:",
   "RSSI Max:",
   "checked ON, unchecked OFF",
@@ -306,12 +288,6 @@ static int SIMITEMS=6;
   
 int[] ConfigRanges = {
 1,   // used for check             0
-255,   // S_STABLEMODE             1           
-255,   // S_BAROMODE               2            
-255,   // S_MAGMODE                3            
-255,   // S_ARMEDMODE              4           
-255,   // S_GPSHOMEMODE            5           
-255,   // S_GPSHOLDMODE            6     
 255,   // S_RSSIMIN                7
 255,   // S_RSSIMAX                8
 1,     // S_DISPLAYRSSI            9
@@ -382,7 +358,7 @@ Textlabel txtlblSimItem[] = new Textlabel[SIMITEMS] ;
 // textlabels -------------------------------------------------------------------------------------------------------------
 
 // Buttons------------------------------------------------------------------------------------------------------------------
-Button buttonIMPORT,buttonSAVE,buttonREAD,buttonRESET,buttonWRITE,buttonSETTING,buttonREQUEST;
+Button buttonIMPORT,buttonSAVE,buttonREAD,buttonRESET,buttonWRITE,buttonSendFile,buttonBrowseFile;
 // Buttons------------------------------------------------------------------------------------------------------------------
 
 // Toggles------------------------------------------------------------------------------------------------------------------
@@ -398,10 +374,10 @@ CheckBox checkboxConfItem[] = new CheckBox[CONFIGITEMS] ;
 //  number boxes--------------------------------------------------------------------------------------------------------------
 
 Numberbox confItem[] = new Numberbox[CONFIGITEMS] ;
-Numberbox SimItem[] = new Numberbox[SIMITEMS] ;
+//Numberbox SimItem[] = new Numberbox[SIMITEMS] ;
 //  number boxes--------------------------------------------------------------------------------------------------------------
 
-
+Group MGUploadF;
 
 // Timers --------------------------------------------------------------------------------------------------------------------
 //ControlTimer OnTimer,FlyTimer;
@@ -424,7 +400,7 @@ void setup() {
  
 
 OnTimer = millis();
-  frameRate(20); 
+  frameRate(10); 
 OSDBackground = loadImage("Background.jpg");
 RadioPot = loadImage("Radio_Pot.png");
 //image(OSDBackground,DisplayWindowX+WindowAdjX, DisplayWindowY+WindowAdjY, DisplayWindowX+360-WindowShrinkX, DisplayWindowY+288-WindowShrinkY);
@@ -438,7 +414,7 @@ img_Clear = LoadFont("MW_OSD_Team.mcm");
   font15 = createFont("Arial bold",15,false);
 
   controlP5 = new ControlP5(this); // initialize the GUI controls
-  controlP5.setControlFont(font12);
+  controlP5.setControlFont(font10);
 
 
   commListbox = controlP5.addListBox("portComList",5,100,110,260); // make a listbox and populate it with the available comm ports
@@ -459,61 +435,69 @@ img_Clear = LoadFont("MW_OSD_Team.mcm");
   buttonSAVE = controlP5.addButton("bSAVE",1,5,45,40,19); buttonSAVE.setLabel("SAVE"); buttonSAVE.setColorBackground(red_);
   buttonIMPORT = controlP5.addButton("bIMPORT",1,50,45,40,19); buttonIMPORT.setLabel("LOAD"); buttonIMPORT.setColorBackground(red_); 
   
-  buttonREAD = controlP5.addButton("READ",1,XControlBox+5,YControlBox+7,45,16);buttonREAD.setColorBackground(red_);
-  buttonRESET = controlP5.addButton("RESET",1,XControlBox+67,YControlBox+7,45,16);buttonRESET.setColorBackground(red_);
-  buttonWRITE = controlP5.addButton("WRITE",1,XControlBox+130,YControlBox+7,45,16);buttonWRITE.setColorBackground(red_);
-  //buttonREQUEST = controlP5.addButton("REQUEST",1,xParam+150,yParam+260,60,16);buttonREQUEST.setColorBackground(red_);
- // buttonSETTING = controlP5.addButton("SETTING",1,xParam+405,yParam+260,110,16); buttonSETTING.setLabel("SELECT SETTING"); buttonSETTING.setColorBackground(red_);
- 
+  buttonREAD = controlP5.addButton("READ",1,XControlBox+30,YControlBox+25,45,16);buttonREAD.setColorBackground(red_);
+  buttonRESET = controlP5.addButton("RESET",1,XControlBox+30,YControlBox+50,45,16);buttonRESET.setColorBackground(red_);
+  buttonWRITE = controlP5.addButton("WRITE",1,XControlBox+30,YControlBox+75,45,16);buttonWRITE.setColorBackground(red_);
 
-// test labels------------------------------------------------------------------
+//buttonSendFile = controlP5.addButton("Send Font",1,5,17,15,16)
 
 
 
 
 // EEPROM----------------------------------------------------------------
-BuildTextLabels(0, 1, XEEPROM+5, YEEPROM);
-BuildNumberBoxes(0, 1, XEEPROM+5, YEEPROM);
-BuildCheckBoxes(0, 1, XEEPROM+5, YEEPROM+3);
-
-// mode  ---------------------------------------------------------------------------
-BuildTextLabels(1, 7, XModeBox+5, YModeBox);
-BuildNumberBoxes(1, 7,XModeBox+5, YModeBox);
-BuildCheckBoxes(1, 7, XModeBox+5, YModeBox+3);
+MakeGroup(0, 1, XEEPROM, YEEPROM);
 
 // RSSI  ---------------------------------------------------------------------------
-BuildTextLabels(7, 10, XRSSI+5, YRSSI);
-BuildNumberBoxes(7, 10, XRSSI+5, YRSSI);
-BuildCheckBoxes(7, 10, XRSSI+5, YRSSI+3);
+MakeGroup(1, 4, XRSSI, YRSSI);
 
 // Voltage  ------------------------------------------------------------------------
-BuildTextLabels(10, 18, XVolts+5, YVolts);
-BuildNumberBoxes(10, 18, XVolts+5, YVolts);
-BuildCheckBoxes(10, 18, XVolts+5, YVolts+3);
+MakeGroup(4, 12, XVolts, YVolts);
 
 //  Temperature  --------------------------------------------------------------------
-BuildTextLabels(18, 20, XTemp+5, YTemp);
-BuildNumberBoxes(18, 20, XTemp+5, YTemp);
-BuildCheckBoxes(18, 20, XTemp+5, YTemp+3);
+MakeGroup(12, 14, XTemp, YTemp);
+
 
 //  Board ---------------------------------------------------------------------------
-BuildTextLabels(20, 21, XBoard+5, YBoard);
-BuildNumberBoxes(20, 21, XBoard+5, YBoard);
-BuildCheckBoxes(20, 21, XBoard+5, YBoard+3);
+MakeGroup(14, 15, XBoard, YBoard);
+//BuildTextLabels(20, 21, XBoard+5, YBoard);
+//BuildNumberBoxes(20, 21, XBoard+5, YBoard);
+//BuildCheckBoxes(20, 21, XBoard+5, YBoard+3);
 
 //  GPS  ----------------------------------------------------------------------------
-BuildTextLabels(21, 25, XGPS+5, YGPS);
-BuildNumberBoxes(21, 25, XGPS+5, YGPS);
-BuildCheckBoxes(21, 25, XGPS+5, YGPS+3);
+MakeGroup(15, 19, XGPS, YGPS);
+//BuildTextLabels(21, 25, XGPS+5, YGPS);
+//BuildNumberBoxes(21, 25, XGPS+5, YGPS);
+//BuildCheckBoxes(21, 25, XGPS+5, YGPS+3);
 
 //  Other ---------------------------------------------------------------------------
-BuildTextLabels(25, 34, XOther+5, YOther);
-BuildNumberBoxes(25, 34, XOther+5, YOther);
-BuildCheckBoxes(25, 34, XOther+5, YOther+3);
+MakeGroup(19, 28, XOther, YOther);
+//BuildTextLabels(25, 34, XOther+5, YOther);
+//BuildNumberBoxes(25, 34, XOther+5, YOther);
+//BuildCheckBoxes(25, 34, XOther+5, YOther+3);
 
 
+ MGUploadF = controlP5.addGroup("MGUploadF")
+                .setPosition(5,200)
+                .setWidth(110)
+                .setBarHeight(15)
+                .activateEvent(true)
+                .setBackgroundColor(color(30,255))
+                .setBackgroundHeight(70)
+                .setLabel("Upload Font")
+                //.setGroup(SG)
+                //.close() 
+               ; 
 
+FileUploadText = controlP5.addTextlabel("FileUploadText",LoadPercent,10,5)
+.setGroup(MGUploadF);
+;
 
+buttonSendFile = controlP5.addButton("Send",1,5,25,60,16)
+.setGroup(MGUploadF);
+;
+buttonBrowseFile = controlP5.addButton("Browse",1,5,45,60,16)
+.setGroup(MGUploadF);
+;
 
 
 
@@ -575,6 +559,12 @@ controlP5.Controller CheckboxVisable(controlP5.Controller c) {
   return c;
 }
 
+void MakeGroup(int starter, int ender, int StartXLoction, int StartYLocation){
+  BuildTextLabels(starter, ender, StartXLoction+5, StartYLocation);
+  BuildNumberBoxes(starter, ender, StartXLoction+5, StartYLocation);
+  BuildCheckBoxes(starter, ender, StartXLoction+5, StartYLocation+3);
+}
+
 void BuildCheckBoxes(int starter, int ender, int StartXLoction, int StartYLocation){
   YLocation = StartYLocation;
   for(int i=starter;i<ender;i++) {
@@ -619,6 +609,14 @@ void BuildToolHelp(){
   //controlP5.getTooltip().register("s2","Changes the Background");
 }
 
+public void Send(){
+  sendFontFile();
+}
+
+
+
+
+
 void draw() {
   time=millis();
   hint(ENABLE_DEPTH_TEST);
@@ -631,15 +629,15 @@ void draw() {
   // ------------------------------------------------------------------------
 
   // Coltrol Box
-  fill(100); strokeWeight(3);stroke(200); rectMode(CORNERS); rect(XControlBox,YControlBox, XControlBox+180 , YControlBox+30);
-  //textFont(font12); fill(0, 110, 220); text("Other",XControlBox + 75,YControlBox + 10);
+  fill(100); strokeWeight(3);stroke(200); rectMode(CORNERS); rect(XControlBox,YControlBox, XControlBox+105 , YControlBox+100);
+  textFont(font12); fill(255, 255, 255); text("OSD Controls",XControlBox + 15,YControlBox + 15);
   if (activeTab == 1) {
     // EEPROM Box
     fill(30, 30,30); strokeWeight(3);stroke(1); rectMode(CORNERS); rect(XEEPROM,YEEPROM, XEEPROM+180, YEEPROM+35);
     textFont(font12); fill(0, 110, 220); text("EEPROM STATUS", XEEPROM + 45,YEEPROM + 10);
     // Modes Box
-    fill(30, 30,30); strokeWeight(3);stroke(1); rectMode(CORNERS); rect(XModeBox,YModeBox, XModeBox+180, YModeBox+120);
-    textFont(font12); fill(0, 110, 220); text("Flight Modes",XModeBox + 45,YModeBox + 10);
+    //fill(30, 30,30); strokeWeight(3);stroke(1); rectMode(CORNERS); rect(XModeBox,YModeBox, XModeBox+180, YModeBox+120);
+    //textFont(font12); fill(0, 110, 220); text("Flight Modes",XModeBox + 45,YModeBox + 10);
     // RSSI Box
     fill(30, 30,30); strokeWeight(3);stroke(1); rectMode(CORNERS); rect(XRSSI,YRSSI, XRSSI+180 , YRSSI+70);
     textFont(font12); fill(0, 110, 220); text("RSSI",XRSSI + 70,YRSSI + 10);
@@ -650,10 +648,10 @@ void draw() {
     fill(30, 30,30); strokeWeight(3);stroke(1); rectMode(CORNERS); rect(XTemp,YTemp, XTemp+180 , YTemp+55);
     textFont(font12); fill(0, 110, 220); text("Temperature",XTemp + 50,YTemp + 10);
     // GPS Box
-    fill(30, 30,30); strokeWeight(3);stroke(1); rectMode(CORNERS); rect(XGPS,YGPS, XGPS+200 , YGPS+90);
+    fill(30, 30,30); strokeWeight(3);stroke(1); rectMode(CORNERS); rect(XGPS,YGPS, XGPS+180 , YGPS+90);
     textFont(font12); fill(0, 110, 220); text("GPS / Nav",XGPS + 60,YGPS + 10);
     // Board Box
-    fill(30, 30,30); strokeWeight(3);stroke(1); rectMode(CORNERS); rect(XBoard,YBoard, XBoard+200 , YBoard+40);
+    fill(30, 30,30); strokeWeight(3);stroke(1); rectMode(CORNERS); rect(XBoard,YBoard, XBoard+180 , YBoard+40);
     textFont(font12); fill(0, 110, 220); text("Board Type",XBoard + 65,YBoard + 10);
     // Other Box
   fill(30, 30,30); strokeWeight(3);stroke(1); rectMode(CORNERS); rect(XOther,YOther, XOther+200 , YOther+175);
@@ -874,6 +872,54 @@ void SimulateTimer(){
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////// BEGIN FILE OPS//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+public void Browse(){
+  SwingUtilities.invokeLater(new Runnable(){
+    public void run(){
+      final JFileChooser fc = new JFileChooser();
+      fc.setDialogType(JFileChooser.SAVE_DIALOG);
+      fc.setFileFilter(new FontFileFilter());
+      int returnVal = fc.showOpenDialog(null);
+      if (returnVal == JFileChooser.APPROVE_OPTION) {
+        FontFile = fc.getSelectedFile();
+        FileInputStream in = null;
+        boolean completed = false;
+        String error = null;
+        try{
+          in = new FileInputStream(FontFile) ;
+          //MWI.conf.loadFromXML(in); 
+          JOptionPane.showMessageDialog(null,new StringBuffer().append("Font File loaded : ").append(FontFile.toURI()) );
+          completed  = true;
+          
+        }catch(FileNotFoundException e){
+                error = e.getCause().toString();
+
+        }catch( IOException ioe){/*failed to read the file*/
+                ioe.printStackTrace();
+                error = ioe.getCause().toString();
+        }finally{
+          if (!completed){
+                 // MWI.conf.clear();
+                 // or we can set the properties with view values, sort of 'nothing happens'
+                 //updateModel();
+          }
+          //updateView();
+          if (in!=null){
+            try{
+              in.close();
+            }catch( IOException ioe){/*failed to close the file*/}
+          }
+          
+          if (error !=null){
+                  JOptionPane.showMessageDialog(null, new StringBuffer().append("error : ").append(error) );
+          }
+        }
+      }
+    }
+  }
+  );  
+}
+
+
 //save the content of the model to a file
 public void bSAVE() {
   updateModel();
@@ -977,6 +1023,7 @@ public class MwiFileFilter extends FileFilter {
     return false;
   }
 
+
   public String getExtension(File f) {
     if(f != null) {
       String filename = f.getName();
@@ -990,6 +1037,36 @@ public class MwiFileFilter extends FileFilter {
 
   public String getDescription() {
     return "*.osd Rush_OSD configuration file";
+  }   
+}
+
+public class FontFileFilter extends FileFilter {
+  public boolean accept(File f) {
+    if(f != null) {
+      if(f.isDirectory()) {
+        return true;
+      }
+      String extension = getExtension(f);
+      if("mcm".equals(extension)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public String getExtension(File f) {
+    if(f != null) {
+      String filename = f.getName();
+      int i = filename.lastIndexOf('.');
+      if(i>0 && i<filename.length()-1) {
+        return filename.substring(i+1).toLowerCase();
+      }
+    }
+    return null;
+  } 
+
+  public String getDescription() {
+    return "*.mcm Font File";
   }   
 }
 
@@ -1137,6 +1214,7 @@ boolean toggleRead = false,
 void stop(){
   if(init_com == 1){
    SimulateMW = false; 
+  init_com = 0; 
   InitSerial(0);
   }
 }         

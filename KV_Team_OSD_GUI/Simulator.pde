@@ -16,11 +16,11 @@ int mode_osd_switch = 0;
 boolean[] keys = new boolean[526];
 
 ControlP5 ScontrolP5;
-Group SG,SGModes,SGAtitude,SGRadio,SGSensors1; 
+Group SG,SGModes,SGAtitude,SGRadio,SGSensors1,SGGPS; 
 
 // Checkboxs
 CheckBox checkboxSimItem[] = new CheckBox[SIMITEMS] ;
-CheckBox SimulateMultiWii,ShowSimBackground, UnlockControls; 
+CheckBox SimulateMultiWii,ShowSimBackground, UnlockControls, SGPS_FIX; 
 
 // Slider2d ---
 Slider2D Pitch_Roll, Throttle_Yaw,MW_Pitch_Roll;
@@ -29,6 +29,8 @@ Slider s_Altitude,s_Vario,s_VBat,s_RSSI;
 
 // Knobs----
 Knob HeadingKnob;
+
+Numberbox SGPS_numSat, SGPS_altitude, SGPS_speed, SGPS_ground_course;
 
 CheckBox checkboxModeItems[] = new CheckBox[boxnames.length] ;
 DecimalFormat OnePlaceDecimal = new DecimalFormat("0.0");
@@ -43,8 +45,8 @@ void SimSetup(){
   ScontrolP5.setControlFont(font10);  
 
   SG = ScontrolP5.addGroup("SG")
-    .setPosition(XSim-130,YSim + 30)
-    .setWidth(470)
+    .setPosition(310,YSim + 30)
+    .setWidth(680)
     .setBarHeight(12)
     .activateEvent(true)
     .setBackgroundColor(color(0,255))
@@ -54,7 +56,7 @@ void SimSetup(){
                 
  
   SGModes = ScontrolP5.addGroup("SGModes")
-                .setPosition(365,20)
+                .setPosition(575,20)
                 .setWidth(100)
                 .setBarHeight(15)
                 .activateEvent(true)
@@ -66,7 +68,7 @@ void SimSetup(){
                ; 
                
   SGAtitude = ScontrolP5.addGroup("SGAtitude")
-                .setPosition(260,18)
+                .setPosition(465,20)
                 .setWidth(100)
                 .setBarHeight(15)
                 .activateEvent(true)
@@ -78,7 +80,7 @@ void SimSetup(){
                ;
                
  SGRadio = ScontrolP5.addGroup("SGRadio")
-                .setPosition(5,185)
+                .setPosition(290,185)
                 .setWidth(130)
                 .setBarHeight(15)
                 .activateEvent(true)
@@ -90,7 +92,7 @@ void SimSetup(){
                ; 
 
 SGSensors1 = ScontrolP5.addGroup("SGSensors1")
-                .setPosition(5,18)
+                .setPosition(5,20)
                 .setWidth(130)
                 .setBarHeight(15)
                 .activateEvent(true)
@@ -100,6 +102,47 @@ SGSensors1 = ScontrolP5.addGroup("SGSensors1")
                 .setGroup(SG)
                 //.close() 
                ;                                  
+SGGPS = ScontrolP5.addGroup("SGGPS")
+                .setPosition(255,20)
+                .setWidth(200)
+                .setBarHeight(15)
+                .activateEvent(true)
+                .setBackgroundColor(color(30,255))
+                .setBackgroundHeight(130)
+                .setLabel("GPS")
+                .setGroup(SG)
+                //.close() 
+               ;
+
+SGPS_FIX =  ScontrolP5.addCheckBox("GPS_FIX",5,5);
+    SGPS_FIX.setColorBackground(color(120));
+    SGPS_FIX.setColorActive(color(255));
+    SGPS_FIX.addItem("GPS Fix",1);
+    //GPSLock.hideLabels();
+    SGPS_FIX.setGroup(SGGPS);
+    
+SGPS_numSat = ScontrolP5.addNumberbox("SGPS_numSat",0,70,5,30,14);
+    SGPS_numSat.setLabel("Num Sats");
+    //SGPS_numSat.setColorBackground(red_);
+    SGPS_numSat.setMin(0);
+    SGPS_numSat.setDirection(Controller.HORIZONTAL);
+    SGPS_numSat.setMax(15);
+    SGPS_numSat.setDecimalPrecision(0);
+    SGPS_numSat.setGroup(SGGPS); 
+ ScontrolP5.getController("SGPS_numSat").getCaptionLabel()
+   .align(ControlP5.LEFT, ControlP5.RIGHT_OUTSIDE).setPaddingX(35);
+
+SGPS_altitude = ScontrolP5.addNumberbox("SGPS_altitude",0,5,25,40,14);
+    SGPS_altitude.setLabel("GPS Alt");
+    //SGPS_numSat.setColorBackground(red_);
+    SGPS_altitude.setMin(0);
+    SGPS_altitude.setDirection(Controller.HORIZONTAL);
+    SGPS_altitude.setMax(1000);
+    SGPS_altitude.setDecimalPrecision(0);
+    SGPS_altitude.setGroup(SGGPS); 
+ ScontrolP5.getController("SGPS_altitude").getCaptionLabel()
+   .align(ControlP5.LEFT, ControlP5.RIGHT_OUTSIDE).setPaddingX(45);     
+               
                
   MW_Pitch_Roll = ScontrolP5.addSlider2D("MWPitch/Roll")
     .setPosition(25,5)
@@ -224,6 +267,8 @@ s_VBat = ScontrolP5.addSlider("sVBat")
 
 
 
+
+
   //for(int i=0;i<SIMITEMS;i++) {
     //txtlblSimItem[i] = ScontrolP5.addTextlabel("txtlblSimItem"+i,"",20,5+i*17);//SimNames[i],20,5+i*17);
     //if (i < 6){
@@ -252,19 +297,7 @@ s_VBat = ScontrolP5.addSlider("sVBat")
     checkboxModeItems[i].setGroup(SGModes);
     
   }
-  //for(int i=0;i<SIMITEMS;i++) {
-    //if (SimRanges[i] == 0) {
-      //checkboxSimItem[i].hide();
-     // SimItem[i].hide();
-    //}
-    //if (SimRanges[i] > 1) {
-      //checkboxSimItem[i].hide();
-    //}
       
-    //if (SimRanges[i] == 1){
-      //SimItem[i].hide();  
-    //}
-  //}
 GetModes();  
 } 
 
@@ -350,14 +383,14 @@ void displayHorizon(int rollAngle, int pitchAngle)
     Y += 41;
     if(Y >= 0 && Y <= 81) {
       int pos = 30*(2+Y/9) + 10 + X;
-      if(X < 3 || X >5 || (Y/9) != 4 || confItem[28].value() == 0)
+      if(X < 3 || X >5 || (Y/9) != 4 || confItem[22].value() == 0)
       	mapchar(0x80+(Y%9), pos);
       if(Y>=9 && (Y%9) == 0)
         mapchar(0x89, pos-30);
     }
   }
 
-  if(confItem[28].value() > 0) {
+  if(confItem[22].value() > 0) {
     //Draw center screen
     mapchar(0x01, 224-30);
     mapchar(0x00, 224-30-1);
@@ -365,7 +398,7 @@ void displayHorizon(int rollAngle, int pitchAngle)
   }
   
   //if (WITHDECORATION){
-  if(confItem[29].value() > 0) {
+  if(confItem[23].value() > 0) {
     mapchar(0xC7,128);
     mapchar(0xC7,128+30);
     mapchar(0xC7,128+60);
