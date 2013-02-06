@@ -120,7 +120,7 @@ void setMspRequests() {
       REQ_MSP_PID|
       REQ_MSP_BOXNAMES;
 
-    if(!armed)
+    if(!armed || Settings[S_THROTTLEPOSITION])
       modedMSPRequests |= REQ_MSP_RC;
   }
  
