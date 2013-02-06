@@ -185,14 +185,14 @@ void displayHorizon(int rollAngle, int pitchAngle)
 {
   uint16_t position = getPosition(horizonPosition);
 
-  if(pitchAngle>250) pitchAngle=250;
-  if(pitchAngle<-200) pitchAngle=-200;
+  if(pitchAngle>200) pitchAngle=200;
+  if(pitchAngle<-250) pitchAngle=-250;
   if(rollAngle>400) rollAngle=400;
   if(rollAngle<-400) rollAngle=-400;
 
   for(int X=0; X<=8; X++) {
     int Y = (rollAngle * (4-X)) / 64;
-    Y += pitchAngle / 8;
+    Y -= pitchAngle / 8;
     Y += 41;
     if(Y >= 0 && Y <= 81) {
       uint16_t pos = position + LINE*(Y/9) + 2 - 2*LINE + X;
