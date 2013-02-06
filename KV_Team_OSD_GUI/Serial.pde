@@ -397,7 +397,7 @@ public void evaluateCommand(byte cmd, int dataSize) {
     serialize8(int(SGPS_numSat.value()));
     serialize32(430948610);
     serialize32(-718897060);
-    serialize16(int(SGPS_altitude.value()));
+    serialize16(int(SGPS_altitude.value()/100));
     serialize16(int(SGPS_speed.value()));
     serialize16(355);     
     
@@ -418,7 +418,9 @@ public void evaluateCommand(byte cmd, int dataSize) {
     //GPS_update=read8();
      headSerialReply(MSP_COMP_GPS,5);
      serialize16(int(SGPS_distanceToHome.value()));
-     serialize16(255);
+     int GPSheading = int(SGPSHeadHome.value());
+     if(GPSheading < 0) GPSheading += 360;
+     serialize16(GPSheading);
      serialize8(0);
      
     
@@ -615,7 +617,7 @@ delay(5000);
          byte_count = 0;
          xx+= 0.390;
          FilePercent = int(xx);
-         LoadPercent = str(int(xx)) + " % Done";
+         //LoadPercent = str(int(xx)) + " % Done";
          //FileUploadText.setValue(str(int(xx)) + " % Done");
          //setProgress((orgString.length() - i), orgString.length());
         //FileUploadText.draw(this); 

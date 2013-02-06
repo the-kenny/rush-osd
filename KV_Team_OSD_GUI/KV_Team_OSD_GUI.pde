@@ -134,6 +134,8 @@ int commListMax;
 int whichKey = -1;  // Variable to hold keystoke values
 int inByte = -1;    // Incoming serial data
 int[] serialInArray = new int[3];    // Where we'll put what we receive
+
+String test;
 int serialCount = 0;                 // A count of how many bytes we receive
 int ConfigEEPROM = -1;
 int ConfigVALUE = -1;
@@ -154,13 +156,15 @@ int XSim        = DisplayWindowX+WindowAdjX;        int YSim        = 288-Window
 //DisplayWindowX+WindowAdjX, DisplayWindowY+WindowAdjY, 360-WindowShrinkX, 288-WindowShrinkY);
 // Box locations -------------------------------------------------------------------------
 int XEEPROM    = 120;        int YEEPROM    = 5;
-int XModeBox   = 120;        int YModeBox    = 50;
-int XRSSI      = 120;        int YRSSI    = 50;
-int XVolts      = 120;        int YVolts    = 130;
-int XTemp      = 120;        int YTemp    = 300;
-int XGPS       = 120;        int YGPS    = 365;
-int XBoard     = 120;        int YBoard   = 465;
-int XOther     = 310;        int YOther   = 5;
+//int XModeBox   = 120;        int YModeBox    = 50;
+int XRSSI      = 120;        int YRSSI    = 48;
+int XVolts      = 120;       int YVolts    = 126;
+int XAmps       = 120;       int YAmps    = 238;
+int XVVolts    = 120;        int YVVolts  = 300;
+int XTemp      = 120;        int YTemp    = 378;
+int XGPS       = 120;        int YGPS    = 442;
+int XBoard     = 310;        int YBoard   = 5;
+int XOther     = 310;        int YOther   = 48;
 int XControlBox     = 5;        int YControlBox   = 435;
 int XRCSim    =   XSim;      int YRCSim = 430;
 
@@ -217,30 +221,39 @@ int[] EEPROM_DEFAULT = {
 };
 String[] ConfigNames = {
   "EEPROM Loaded:",
+  
   "RSSI Min:",
   "RSSI Max:",
   "Display RSSI:",
+  
   "Display Voltage:",
   "Voltage Min:",
   "Battery Cells",
   "Main Voltage Devider:",
   "Main Voltage MW:",
+  
+  "Display Amperage:",
+  "Diplay Amperage Used:",
+  
   "Display Video Voltage:",
   "Video Voltage Devider:",
   "Video Voltage MW:",
+  
   "Display Temperature:",
   "Temperature Max:",
+  
   "Board Type:",
+  
   "Display GPS:",
   "Display GPS Coords:",
   "Display Heading:",
   "Display Heading 360:",
+  
   "Unit System:",
   "Screen Type NTSC / PAL:",
   "Display Thottle Position",
   "Display Hoizon Bar:",
   "Display Horizon Side Bars:",
-  
   "Display Battery Evo:",
   "Reset Stats After Arm:",
   "Enable OSD Read ADC:",
@@ -249,34 +262,45 @@ String[] ConfigNames = {
 
 };
 String[] ConfigHelp = {
-  "Shows if EEPROM is Loaded, uncheck to reset to defaults",
+  "EEPROM Loaded:",
+  
   "RSSI Min:",
   "RSSI Max:",
-  "checked ON, unchecked OFF",
-  "checked ON, unchecked OFF",
+  "Display RSSI:",
+  
+  "Display Voltage:",
   "Voltage Min:",
-  "# of Battery Cells",
+  "Battery Cells",
   "Main Voltage Devider:",
   "Main Voltage MW:",
-  "checked ON, unchecked OFF",
+  
+  "Display Amperage:",
+  "Diplay Amperage Used:",
+  
+  "Display Video Voltage:",
   "Video Voltage Devider:",
   "Video Voltage MW:",
-  "checked ON, unchecked OFF",
+  
+  "Display Temperature:",
   "Temperature Max:",
-  "checked MinimOSD, unchecked RUSHDUINO --reboot OSD Required after change, close comm, open comm, read--",
-  "checked ON, unchecked OFF",
-  "checked ON, unchecked OFF",
-  "checked metric, unchecked Imperial",
-  "checked narrow, unchecked wide",
-  "checked ON, unchecked OFF",
-  "checked ON, unchecked OFF",
-  "checked ON, unchecked OFF",
-  "checked ON, unchecked OFF",
-  "checked ON, unchecked OFF",
-  "checked ON, unchecked OFF",
-  "checked Reset, unchecked Don't reset",
-  "checked ON, unchecked OFF",
-  "checked RSSI from MW, unchecked Onboard RSSI"
+  
+  "Board Type:",
+  
+  "Display GPS:",
+  "Display GPS Coords:",
+  "Display Heading:",
+  "Display Heading 360:",
+  
+  "Unit System:",
+  "Screen Type NTSC / PAL:",
+  "Display Thottle Position",
+  "Display Hoizon Bar:",
+  "Display Horizon Side Bars:",
+  "Display Battery Evo:",
+  "Reset Stats After Arm:",
+  "Enable OSD Read ADC:",
+  "RSSI Over MW:"
+  
   };
 
 
@@ -288,29 +312,39 @@ static int SIMITEMS=6;
   
 int[] ConfigRanges = {
 1,   // used for check             0
+
 255,   // S_RSSIMIN                7
 255,   // S_RSSIMAX                8
 1,     // S_DISPLAYRSSI            9
+
 1,     // S_DISPLAYVOLTAGE         10
 255,   // S_VOLTAGEMIN             11
 6,     // S_BATCELLS               12
 255,   // S_DIVIDERRATIO           13
 1,     // S_MAINVOLTAGE_VBAT       14
+
+1,     // S_AMPERAGE,
+1,     // S_AMPER_HOUR,
+
 1,     // S_VIDVOLTAGE             15
 255,   // S_VIDDIVIDERRATIO        16    
 1,     // S_VIDVOLTAGE_VBAT        17
+
 1,     // S_DISPLAYTEMPERATURE     18
 255,   // S_TEMPERATUREMAX         19
+
 1,     // S_BOARDTYPE              20
+
 1,     // S_DISPLAYGPS             21
 1,     // S_COORDINATES            22
+1,     // S_SHOWHEADING            28 
+1,     // S_HEADING360             29
+
 1,     // S_UNITSYSTEM             23
 1,     // S_SCREENTYPE             24
 1,     // S_THROTTLEPOSITION       25
 1,     // S_DISPLAY_HORIZON_BR     26
 1,     // S_WITHDECORATION         27
-1,     // S_SHOWHEADING            28 
-1,     // S_HEADING360             29             
 1,     // S_SHOWBATLEVELEVOLUTION  30 
 1,     // S_RESETSTATISTICS        31
 1,     // S_ENABLEADC              32
@@ -452,29 +486,26 @@ MakeGroup(0, 1, XEEPROM, YEEPROM);
 MakeGroup(1, 4, XRSSI, YRSSI);
 
 // Voltage  ------------------------------------------------------------------------
-MakeGroup(4, 12, XVolts, YVolts);
+MakeGroup(4, 9, XVolts, YVolts);
+
+// Amperage  ------------------------------------------------------------------------
+MakeGroup(9, 11, XAmps, YAmps);
+
+// Video Voltage  ------------------------------------------------------------------------
+MakeGroup(11, 14, XVVolts, YVVolts);
 
 //  Temperature  --------------------------------------------------------------------
-MakeGroup(12, 14, XTemp, YTemp);
-
+MakeGroup(14, 16, XTemp, YTemp);
 
 //  Board ---------------------------------------------------------------------------
-MakeGroup(14, 15, XBoard, YBoard);
-//BuildTextLabels(20, 21, XBoard+5, YBoard);
-//BuildNumberBoxes(20, 21, XBoard+5, YBoard);
-//BuildCheckBoxes(20, 21, XBoard+5, YBoard+3);
+MakeGroup(16, 17, XBoard, YBoard);
 
 //  GPS  ----------------------------------------------------------------------------
-MakeGroup(15, 19, XGPS, YGPS);
-//BuildTextLabels(21, 25, XGPS+5, YGPS);
-//BuildNumberBoxes(21, 25, XGPS+5, YGPS);
-//BuildCheckBoxes(21, 25, XGPS+5, YGPS+3);
+MakeGroup(17, 21, XGPS, YGPS);
 
 //  Other ---------------------------------------------------------------------------
-MakeGroup(19, 28, XOther, YOther);
-//BuildTextLabels(25, 34, XOther+5, YOther);
-//BuildNumberBoxes(25, 34, XOther+5, YOther);
-//BuildCheckBoxes(25, 34, XOther+5, YOther+3);
+MakeGroup(21, 30, XOther, YOther);
+
 
 
  MGUploadF = controlP5.addGroup("MGUploadF")
@@ -636,15 +667,20 @@ void draw() {
     // EEPROM Box
     fill(30, 30,30); strokeWeight(3);stroke(1); rectMode(CORNERS); rect(XEEPROM,YEEPROM, XEEPROM+180, YEEPROM+35);
     textFont(font12); fill(0, 110, 220); text("EEPROM STATUS", XEEPROM + 45,YEEPROM + 10);
-    // Modes Box
-    //fill(30, 30,30); strokeWeight(3);stroke(1); rectMode(CORNERS); rect(XModeBox,YModeBox, XModeBox+180, YModeBox+120);
-    //textFont(font12); fill(0, 110, 220); text("Flight Modes",XModeBox + 45,YModeBox + 10);
     // RSSI Box
     fill(30, 30,30); strokeWeight(3);stroke(1); rectMode(CORNERS); rect(XRSSI,YRSSI, XRSSI+180 , YRSSI+70);
     textFont(font12); fill(0, 110, 220); text("RSSI",XRSSI + 70,YRSSI + 10);
     // Volts Box
-    fill(30, 30,30); strokeWeight(3);stroke(1); rectMode(CORNERS); rect(XVolts,YVolts, XVolts+180 , YVolts+160);
-    textFont(font12); fill(0, 110, 220); text("Voltage",XVolts + 65,YVolts + 10);
+    fill(30, 30,30); strokeWeight(3);stroke(1); rectMode(CORNERS); rect(XVolts,YVolts, XVolts+180 , YVolts+105);
+    textFont(font12); fill(0, 110, 220); text("Main Voltage",XVolts + 65,YVolts + 10);
+    // Amps Box
+    fill(30, 30,30); strokeWeight(3);stroke(1); rectMode(CORNERS); rect(XAmps,YAmps, XAmps+180 , YAmps+55);
+    textFont(font12); fill(0, 110, 220); text("Amperage",XAmps + 65,YAmps + 10);
+    // Video Volts Box
+    fill(30, 30,30); strokeWeight(3);stroke(1); rectMode(CORNERS); rect(XVVolts,YVVolts, XVVolts+180 , YVVolts+70);
+    textFont(font12); fill(0, 110, 220); text("Video Voltage",XVVolts + 65,YVVolts + 10);
+    
+    
     // Temp Box
     fill(30, 30,30); strokeWeight(3);stroke(1); rectMode(CORNERS); rect(XTemp,YTemp, XTemp+180 , YTemp+55);
     textFont(font12); fill(0, 110, 220); text("Temperature",XTemp + 50,YTemp + 10);
@@ -652,7 +688,7 @@ void draw() {
     fill(30, 30,30); strokeWeight(3);stroke(1); rectMode(CORNERS); rect(XGPS,YGPS, XGPS+180 , YGPS+90);
     textFont(font12); fill(0, 110, 220); text("GPS / Nav",XGPS + 60,YGPS + 10);
     // Board Box
-    fill(30, 30,30); strokeWeight(3);stroke(1); rectMode(CORNERS); rect(XBoard,YBoard, XBoard+180 , YBoard+40);
+    fill(30, 30,30); strokeWeight(3);stroke(1); rectMode(CORNERS); rect(XBoard,YBoard, XBoard+200 , YBoard+35);
     textFont(font12); fill(0, 110, 220); text("Board Type",XBoard + 65,YBoard + 10);
     // Other Box
   fill(30, 30,30); strokeWeight(3);stroke(1); rectMode(CORNERS); rect(XOther,YOther, XOther+200 , YOther+175);
@@ -663,7 +699,7 @@ void draw() {
   strokeWeight(3);stroke(0);
   rectMode(CORNERS);
   rect(5,5,113,40);
-  textFont(font15);
+  textFont(font12);
   // version
   fill(255, 255, 255);
   text("KV Team OSD",10,19);
@@ -679,6 +715,7 @@ void draw() {
     fill(80, 80,80); strokeWeight(3);stroke(1); rectMode(CORNER); rect(DisplayWindowX+WindowAdjX, DisplayWindowY+WindowAdjY, 360-WindowShrinkX, 288-WindowShrinkY);
   }
 
+
   MatchConfigs();
 
   displayHorizon(int(MW_Pitch_Roll.arrayValue()[0])*10,int(MW_Pitch_Roll.arrayValue()[1])*10*-1);
@@ -690,6 +727,12 @@ void draw() {
      ShowVolts(sVBat);
   }
     
+  if (SGRadio.isOpen()){
+   //System.out.println("showing");
+  }
+  else{
+    //System.out.println("nope");
+  }
  
   CalcAlt_Vario(); 
   displaySensors();
@@ -1212,11 +1255,15 @@ boolean toggleRead = false,
         toggleSetSetting = false;
         
         
-void stop(){
-  if(init_com == 1){
-   SimulateMW = false; 
-  init_com = 0; 
-  InitSerial(0);
-  }
-}         
+
+
+void exit() {
+  println("exiting");
+  SimulateMultiWii.arrayValue()[0] = 0;
+  
+  delay(200);
+  InitSerial(commListMax); 
+  super.exit();
+}
+
 
