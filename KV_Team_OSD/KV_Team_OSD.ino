@@ -120,7 +120,7 @@ void setMspRequests() {
       REQ_MSP_PID|
       REQ_MSP_BOXNAMES;
 
-    if(!armed)
+    if(!armed || Settings[S_THROTTLEPOSITION])
       modedMSPRequests |= REQ_MSP_RC;
   }
  
@@ -265,10 +265,9 @@ void loop()
 
         if(Settings[S_DISPLAYTEMPERATURE]&&((temperature<Settings[S_TEMPERATUREMAX])||(Blink2hz))) displayTemperature();
 
-#if defined HARDSENSOR
-        displayAmperage();
-#endif
-        displaypMeterSum();
+        if(Settings[S_AMPERAGE]) displayAmperage();
+
+        if(Settings[S_AMPER_HOUR])  displaypMeterSum();
         displayArmed();
         if (Settings[S_THROTTLEPOSITION])
           displayCurrentThrottle();
@@ -309,9 +308,8 @@ void loop()
   {
     onTime++;
 
-#if defined HARDSENSOR
+    // XXX
     amperagesum += amperage / AMPDIVISION; //(mAh)
-#endif
 
     tenthSec=0;
     armedTimer++;

@@ -332,9 +332,9 @@ void displayAmperage(void)
 
 void displaypMeterSum(void)
 {
-#if defined (HARDSENSOR)
-  pMeterSum = amperagesum;
-#endif
+  if (Settings[S_ENABLEADC]){
+    pMeterSum = amperagesum;
+  }
   screenBuffer[0]=SYM_MAH;
   int xx = pMeterSum / EST_PMSum;
   itoa(xx,screenBuffer+1,10);

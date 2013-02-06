@@ -34,79 +34,79 @@ uint32_t mode_osd_switch;
 //char tempBuffer[256];
 
 //Current # of setting available
-#define EEPROM_SETTINGS            28
-
-uint8_t Settings[EEPROM_SETTINGS]; 
 
 // Settings Locations
-// used for check               0
-#define S_RSSIMIN               1
-#define S_RSSIMAX               2
-#define S_DISPLAYRSSI           3
-#define S_DISPLAYVOLTAGE        4
-#define S_VOLTAGEMIN            5
-#define S_BATCELLS              6     
-#define S_DIVIDERRATIO          7
-#define S_MAINVOLTAGE_VBAT      8
-#define S_VIDVOLTAGE            9
-#define S_VIDDIVIDERRATIO       10    
-#define S_VIDVOLTAGE_VBAT       11
-#define S_DISPLAYTEMPERATURE    12
-#define S_TEMPERATUREMAX        13
-#define S_BOARDTYPE             14
-#define S_DISPLAYGPS            15
-#define S_COORDINATES           16
-#define S_SHOWHEADING           17
-#define S_HEADING360            18     
-#define S_UNITSYSTEM            19
-#define S_VIDEOSIGNALTYPE       20 
-#define S_THROTTLEPOSITION      21
-#define S_DISPLAY_HORIZON_BR    22
-#define S_WITHDECORATION        23
-#define S_SHOWBATLEVELEVOLUTION 24 
-#define S_RESETSTATISTICS       25
-#define S_ENABLEADC             26
-#define S_MWRSSI                27
+enum Setting_ {
+  S_CHECK_,		// used for check
+  S_RSSIMIN,
+  S_RSSIMAX,
+  S_DISPLAYRSSI,
+  S_DISPLAYVOLTAGE,
+  S_VOLTAGEMIN,
+  S_BATCELLS,
+  S_DIVIDERRATIO,
+  S_MAINVOLTAGE_VBAT,
+  S_AMPERAGE,
+  S_AMPER_HOUR,
+  S_VIDVOLTAGE,
+  S_VIDDIVIDERRATIO,
+  S_VIDVOLTAGE_VBAT,
+  S_DISPLAYTEMPERATURE,
+  S_TEMPERATUREMAX,
+  S_BOARDTYPE,
+  S_DISPLAYGPS,
+  S_COORDINATES,
+  S_SHOWHEADING,
+  S_HEADING360,
+  S_UNITSYSTEM,
+  S_VIDEOSIGNALTYPE,
+  S_THROTTLEPOSITION,
+  S_DISPLAY_HORIZON_BR,
+  S_WITHDECORATION,
+  S_SHOWBATLEVELEVOLUTION,
+  S_RESETSTATISTICS,
+  S_ENABLEADC,
+  S_MWRSSI,
+  // EEPROM_SETTINGS must be last!
+  EEPROM_SETTINGS
+};
+
+uint8_t Settings[EEPROM_SETTINGS];
 
 
 // For Settings Defaults
 uint8_t EEPROM_DEFAULT[EEPROM_SETTINGS] = {
-1,   // used for check             0
-0,   // S_RSSIMIN                7
-255, // S_RSSIMAX                8
-1,   // S_DISPLAYRSSI            9
-1,   // S_DISPLAYVOLTAGE         10
-105, // S_VOLTAGEMIN             11
-3,   // S_BATCELLS               12
-100, // S_DIVIDERRATIO           13
-0,   // S_MAINVOLTAGE_VBAT       14
-0,   // S_VIDVOLTAGE             15
-100, // S_VIDDIVIDERRATIO        16    
-0,   // S_VIDVOLTAGE_VBAT        17
-0,   // S_DISPLAYTEMPERATURE     18
-255, // S_TEMPERATUREMAX         19
-0,   // S_BOARDTYPE              20
-1,   // S_DISPLAYGPS             21
-0,   // S_COORDINATES            22
-1,   // S_SHOWHEADING            23 
-1,   // S_HEADING360             24      
-0,   // S_UNITSYSTEM             25
-1,   // S_VIDEOSIGNALTYPE        26
-1,   // S_THROTTLEPOSITION       27
-1,   // S_DISPLAY_HORIZON_BR     28
-1,   // S_WITHDECORATION         29
-0,   // S_SHOWBATLEVELEVOLUTION  30 
-1,   // S_RESETSTATISTICS        31
-0,   // S_ENABLEADC              32
-1,   // S_MWRSSI                 33
+1,   // used for check
+0,   // S_RSSIMIN
+255, // S_RSSIMAX
+1,   // S_DISPLAYRSSI
+1,   // S_DISPLAYVOLTAGE
+105, // S_VOLTAGEMIN
+3,   // S_BATCELLS
+100, // S_DIVIDERRATIO
+0,   // S_MAINVOLTAGE_VBAT
+0,   // S_AMPERAGE
+0,   // S_AMPER_HOUR
+0,   // S_VIDVOLTAGE
+100, // S_VIDDIVIDERRATIO
+0,   // S_VIDVOLTAGE_VBAT
+0,   // S_DISPLAYTEMPERATURE
+255, // S_TEMPERATUREMAX
+0,   // S_BOARDTYPE
+1,   // S_DISPLAYGPS
+0,   // S_COORDINATES
+1,   // S_SHOWHEADING
+1,   // S_HEADING360
+0,   // S_UNITSYSTEM
+1,   // S_VIDEOSIGNALTYPE
+1,   // S_THROTTLEPOSITION
+1,   // S_DISPLAY_HORIZON_BR
+1,   // S_WITHDECORATION
+0,   // S_SHOWBATLEVELEVOLUTION
+1,   // S_RESETSTATISTICS
+0,   // S_ENABLEADC
+1,   // S_MWRSSI
 };
-
-
-
-
-
-
-
 
 // For Menu
 int cursorPostion;
@@ -178,10 +178,8 @@ const char headGraph[]={
 static int16_t MwHeading=0;
 
 // For Amperage
-   float amperage =0.0;                // its the real value x10
-#if defined (HARDSENSOR)
-   float amperagesum =0;
-#endif
+float amperage = 0;                // its the real value x10
+float amperagesum = 0;
 
 // Rssi
 int rssi =0;
@@ -246,7 +244,7 @@ uint16_t flyingTime=0;
 #define MSP_SELECT_SETTING       210   //in message          Select Setting Number (0-2)
 
 #define MSP_OSD_READ             220   //in message          starts epprom send to OSD GUI
-#define MSP_OSD_WRITE            221   //in message          write OSD GUI setting to eeprom 
+#define MSP_OSD_WRITE            221   //in message          write OSD GUI setting to eeprom
 
 #define MSP_SPEK_BIND            240   //in message          no param
 #define MSP_EEPROM_WRITE         250   //in message          no param
