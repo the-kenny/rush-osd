@@ -208,7 +208,7 @@ void handleRawRC() {
 	waitStick = 0;
         timeout = 1000;
   }
-  else if(waitStick) {
+  else if(waitStick == 1) {
     if((millis() - stickTime) > timeout)
       waitStick = 0;
       timeout = 300;
@@ -218,170 +218,168 @@ void handleRawRC() {
   {
     if((MwRcData[PITCHSTICK]>MAXSTICK)&&(MwRcData[YAWSTICK]>MAXSTICK)&&(MwRcData[THROTTLESTICK]>MINSTICK)&&!configMode&&(allSec>5)&&!armed)
     {
-      waitStick =1;
+      // Enter config mode using stick comvination
+      waitStick =  2;	// Sticks must return to center before continue!
       configMode = 1;
       setMspRequests();
     }
+    else if(configMode) {
+      if(previousarmedstatus&&(MwRcData[THROTTLESTICK]>MINSTICK))
+      {
+	// EXIT from SHOW STATISTICS (menu page 6) AFTER DISARM (push throttle up) (Carlonb) NEB
+	waitStick = 2;
+	configExit();
+      }
+      if(!previousarmedstatus&&configMode&&(MwRcData[THROTTLESTICK]<MINSTICK)) // EXIT NEB mod for autostatistics
+      {
+	waitStick = 2;
+	configExit();
+      }
+      else if(configMode&&(MwRcData[ROLLSTICK]>MAXSTICK)) // MOVE RIGHT
+      {
+	waitStick = 1;
+	COL++;
+	if(COL>3) COL=3;
+      }
+      else if(configMode&&(MwRcData[ROLLSTICK]<MINSTICK)) // MOVE LEFT
+      {
+	waitStick = 1;
+	COL--;
+	if(COL<1) COL=1;  
+      }
+      else if(configMode&&(MwRcData[PITCHSTICK]>MAXSTICK)) // MOVE UP
+      {
+	waitStick = 1;
+	ROW--;
+	if(ROW<1)
+	  ROW=1;
+      }
+      else if(configMode&&(MwRcData[PITCHSTICK]<MINSTICK)) // MOVE DOWN
+      {
+	waitStick = 1;
+	ROW++;
+	if(ROW>10)
+	  ROW=10;
+      }
+      else if(!previousarmedstatus&&configMode&&(MwRcData[YAWSTICK]<MINSTICK)) // DECREASE
+      {
+	waitStick = 1;
 
-    //******************** EXIT from SHOW STATISTICS (menu page 6) AFTER DISARM (push throttle up) (Carlonb) NEB
-    if(configMode&&(MwRcData[THROTTLESTICK]>MINSTICK)&&previousarmedstatus) // EXIT
-    {
-      waitStick =1;
-      configExit();
-    }
+	if(configPage == 1) {
+	  if(ROW >= 1 && ROW <= 5) {
+	    if(COL==1) P8[ROW-1]--;
+	    if(COL==2) I8[ROW-1]--;
+	    if(COL==3) D8[ROW-1]--;
+	  }
 
-    if(configMode&&(MwRcData[THROTTLESTICK]<MINSTICK)&& !previousarmedstatus) // EXIT NEB mod for autostatistics
-    {
-      waitStick =1;
-      configExit();
-    }
+	  if(ROW == 6) {
+	    if(COL==1) P8[7]--;
+	    if(COL==2) I8[7]--;
+	    if(COL==3) D8[7]--;
+	  }
 
-    if(configMode&&(MwRcData[ROLLSTICK]>MAXSTICK)) // MOVE RIGHT
-    {
-      waitStick =1;
-      COL++;
-      if(COL>3) COL=3;
-    }
-
-    if(configMode&&(MwRcData[ROLLSTICK]<MINSTICK)) // MOVE LEFT
-    {
-      waitStick =1;
-      COL--;
-      if(COL<1) COL=1;  
-    }
-
-    if(configMode&&(MwRcData[PITCHSTICK]>MAXSTICK)) // MOVE UP
-    {
-      waitStick =1;
-      ROW--;
-      if(ROW<1) ROW=1;
-    }
-
-    if(configMode&&(MwRcData[PITCHSTICK]<MINSTICK)) // MOVE DOWN
-    {
-      waitStick =1;
-      ROW++;
-      if(ROW>10) ROW=10;
-    }
-
-    if(configMode&&(MwRcData[YAWSTICK]<MINSTICK)&&!previousarmedstatus) // DECREASE
-    {
-      waitStick =1;
-
-      if(configPage == 1) {
-	if(ROW >= 1 && ROW <= 5) {
-	  if(COL==1) P8[ROW-1]--;
-	  if(COL==2) I8[ROW-1]--;
-	  if(COL==3) D8[ROW-1]--;
+	  if((ROW==7)&&(COL==1)) P8[8]--;
 	}
 
-	if(ROW == 6) {
-	  if(COL==1) P8[7]--;
-	  if(COL==2) I8[7]--;
-	  if(COL==3) D8[7]--;
+	if(configPage == 2 && COL == 3) {
+	  if(ROW==1) rcRate8--;
+	  if(ROW==2) rcExpo8--;
+	  if(ROW==3) rollPitchRate--;
+	  if(ROW==4) yawRate--;
+	  if(ROW==5) dynThrPID--;
 	}
 
-	if((ROW==7)&&(COL==1)) P8[8]--;
-      }
+	if(configPage == 3 && COL == 3) {
+	  if(ROW==2) Settings[S_DISPLAYVOLTAGE]=!Settings[S_DISPLAYVOLTAGE];
+	  if(ROW==3) Settings[S_VOLTAGEMIN]--;
+	  if(ROW==4) Settings[S_DISPLAYTEMPERATURE]=!Settings[S_DISPLAYTEMPERATURE];
+	  if(ROW==5) Settings[S_TEMPERATUREMAX]--;
+	  if(ROW==6) Settings[S_DISPLAYGPS]=!Settings[S_DISPLAYGPS];
+	}
 
-      if(configPage == 2 && COL == 3) {
-	if(ROW==1) rcRate8--;
-	if(ROW==2) rcExpo8--;
-	if(ROW==3) rollPitchRate--;
-	if(ROW==4) yawRate--;
-	if(ROW==5) dynThrPID--;
-      }
+	if(configPage == 4 && COL == 3) {
+	  if(ROW==3) rssiTimer=15;
+	  if(ROW==4) Settings[S_RSSIMAX]=rssiADC;
+	  if(ROW==5) Settings[S_DISPLAYRSSI]=!Settings[S_DISPLAYRSSI];
+	  if(ROW==6) Settings[S_UNITSYSTEM]=!Settings[S_UNITSYSTEM];
+	  if(ROW==7) {
+	    Settings[S_VIDEOSIGNALTYPE]=!Settings[S_VIDEOSIGNALTYPE];
+	    MAX7456Setup();
+	  }
+	}
 
-      if(configPage == 3 && COL == 3) {
-	if(ROW==2) Settings[S_DISPLAYVOLTAGE]=!Settings[S_DISPLAYVOLTAGE];
-	if(ROW==3) Settings[S_VOLTAGEMIN]--;
-	if(ROW==4) Settings[S_DISPLAYTEMPERATURE]=!Settings[S_DISPLAYTEMPERATURE];
-	if(ROW==5) Settings[S_TEMPERATUREMAX]--;
-	if(ROW==6) Settings[S_DISPLAYGPS]=!Settings[S_DISPLAYGPS];
-      }
+	if(configPage == 5 && COL == 3) {
+	  if(ROW==1) accCalibrationTimer=0;
+	  if(ROW==5) magCalibrationTimer=0;
+	  if(ROW==7) eepromWriteTimer=0;
+	}
 
-      if(configPage == 4 && COL == 3) {
-	if(ROW==3) rssiTimer=15;
-	if(ROW==4) Settings[S_RSSIMAX]=rssiADC;
-	if(ROW==5) Settings[S_DISPLAYRSSI]=!Settings[S_DISPLAYRSSI];
-	if(ROW==6) Settings[S_UNITSYSTEM]=!Settings[S_UNITSYSTEM];
-	if(ROW==7) {
-          Settings[S_VIDEOSIGNALTYPE]=!Settings[S_VIDEOSIGNALTYPE];
-          MAX7456Setup();
-        }
+	if((ROW==10)&&(COL==3)) configPage--;
+	if(configPage<MINPAGE) configPage = MAXPAGE;
+	if((ROW==10)&&(COL==1)) configExit();
+	if((ROW==10)&&(COL==2)) saveExit();
       }
+      else if(!previousarmedstatus&&configMode&&(MwRcData[YAWSTICK]>MAXSTICK)) // INCREASE
+      {
+	waitStick =1;
 
-      if(configPage == 5 && COL == 3) {
-	if(ROW==1) accCalibrationTimer=0;
-	if(ROW==5) magCalibrationTimer=0;
-	if(ROW==7) eepromWriteTimer=0;
+	if(configPage == 1) {
+	  if(ROW >= 1 && ROW <= 5) {
+	    if(COL==1) P8[ROW-1]++;
+	    if(COL==2) I8[ROW-1]++;
+	    if(COL==3) D8[ROW-1]++;
+	  }
+
+	  if(ROW == 6) {
+	    if(COL==1) P8[7]++;
+	    if(COL==2) I8[7]++;
+	    if(COL==3) D8[7]++;
+	  }
+
+	  if((ROW==7)&&(COL==1)) P8[8]++;
+	}
+
+	if(configPage == 2 && COL == 3) {
+	  if(ROW==1) rcRate8++;
+	  if(ROW==2) rcExpo8++;
+	  if(ROW==3) rollPitchRate++;
+	  if(ROW==4) yawRate++;
+	  if(ROW==5) dynThrPID++;
+	}
+
+	if(configPage == 3 && COL == 3) {
+	  if(ROW==2) Settings[S_DISPLAYVOLTAGE]=!Settings[S_DISPLAYVOLTAGE];
+	  if(ROW==3) Settings[S_VOLTAGEMIN]++;
+	  if(ROW==4) Settings[S_DISPLAYTEMPERATURE]=!Settings[S_DISPLAYTEMPERATURE];
+	  if(ROW==5) Settings[S_TEMPERATUREMAX]++;
+	  if(ROW==6) Settings[S_DISPLAYGPS]=!Settings[S_DISPLAYGPS];
+	}
+
+	if(configPage == 4 && COL == 3) {
+	  if(ROW==3) rssiTimer=15;
+	  if(ROW==4) Settings[S_RSSIMAX]=rssiADC;
+	  if(ROW==5) Settings[S_DISPLAYRSSI]=!Settings[S_DISPLAYRSSI];
+	  if(ROW==6) Settings[S_UNITSYSTEM]=!Settings[S_UNITSYSTEM];
+	  if(ROW==7) {
+	    Settings[S_VIDEOSIGNALTYPE]=!Settings[S_VIDEOSIGNALTYPE];
+	    MAX7456Setup();
+	  }
+	}
+
+	if(configPage == 5 && COL == 3) {
+	  if(ROW==1) accCalibrationTimer=CALIBRATION_DELAY;
+	  if(ROW==5) magCalibrationTimer=CALIBRATION_DELAY;
+	  if(ROW==7) eepromWriteTimer=EEPROM_WRITE_DELAY;
+	}
+
+	if((ROW==10)&&(COL==3)) configPage++;
+	if(configPage>MAXPAGE) configPage = MINPAGE;
+	if((ROW==10)&&(COL==1)) configExit();
+	if((ROW==10)&&(COL==2)) saveExit();
       }
-
-      if((ROW==10)&&(COL==3)) configPage--;
-      if(configPage<MINPAGE) configPage = MAXPAGE;
-      if((ROW==10)&&(COL==1)) configExit();
-      if((ROW==10)&&(COL==2)) saveExit();
     }
 
-    if(configMode&&(MwRcData[YAWSTICK]>MAXSTICK)) // INCREASE
-    {
-      waitStick =1;
-
-      if(configPage == 1) {
-	if(ROW >= 1 && ROW <= 5) {
-	  if(COL==1) P8[ROW-1]++;
-	  if(COL==2) I8[ROW-1]++;
-	  if(COL==3) D8[ROW-1]++;
-	}
-
-	if(ROW == 6) {
-	  if(COL==1) P8[7]++;
-	  if(COL==2) I8[7]++;
-	  if(COL==3) D8[7]++;
-	}
-
-	if((ROW==7)&&(COL==1)) P8[8]++;
-      }
-
-      if(configPage == 2 && COL == 3) {
-	if(ROW==1) rcRate8++;
-	if(ROW==2) rcExpo8++;
-	if(ROW==3) rollPitchRate++;
-	if(ROW==4) yawRate++;
-	if(ROW==5) dynThrPID++;
-      }
-
-      if(configPage == 3 && COL == 3) {
-	if(ROW==2) Settings[S_DISPLAYVOLTAGE]=!Settings[S_DISPLAYVOLTAGE];
-	if(ROW==3) Settings[S_VOLTAGEMIN]++;
-	if(ROW==4) Settings[S_DISPLAYTEMPERATURE]=!Settings[S_DISPLAYTEMPERATURE];
-	if(ROW==5) Settings[S_TEMPERATUREMAX]++;
-	if(ROW==6) Settings[S_DISPLAYGPS]=!Settings[S_DISPLAYGPS];
-      }
-
-      if(configPage == 4 && COL == 3) {
-	if(ROW==3) rssiTimer=15;
-	if(ROW==4) Settings[S_RSSIMAX]=rssiADC;
-	if(ROW==5) Settings[S_DISPLAYRSSI]=!Settings[S_DISPLAYRSSI];
-	if(ROW==6) Settings[S_UNITSYSTEM]=!Settings[S_UNITSYSTEM];
-	if(ROW==7) {
-          Settings[S_VIDEOSIGNALTYPE]=!Settings[S_VIDEOSIGNALTYPE];
-          MAX7456Setup();
-        }
-      }
-
-      if(configPage == 5 && COL == 3) {
-	if(ROW==1) accCalibrationTimer=CALIBRATION_DELAY;
-	if(ROW==5) magCalibrationTimer=CALIBRATION_DELAY;
-	if(ROW==7) eepromWriteTimer=EEPROM_WRITE_DELAY;
-      }
-
-      if((ROW==10)&&(COL==3)) configPage++;
-      if(configPage>MAXPAGE) configPage = MINPAGE;
-      if((ROW==10)&&(COL==1)) configExit();
-      if((ROW==10)&&(COL==2)) saveExit();
-    }
-    if(waitStick)
+    if(waitStick == 1)
       stickTime = millis();
   }
 }
