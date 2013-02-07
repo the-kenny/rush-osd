@@ -118,7 +118,21 @@ void serialEvent(Serial g_serial) {
 	confItem[ConfigEEPROM].setValue(ConfigVALUE);
 	if (ConfigEEPROM == CONFIGITEMS-1)  buttonWRITE.setColorBackground(green_);
           
-        if (ConfigVALUE>0) toggleConfItem[ConfigEEPROM].setValue(1); else toggleConfItem[ConfigEEPROM].setValue(0);	
+        if (ConfigVALUE>0){
+          toggleConfItem[ConfigEEPROM].setValue(1);
+          
+        }
+        else{
+          toggleConfItem[ConfigEEPROM].setValue(0);
+        }
+        
+        try{
+            switch(ConfigVALUE) {
+              case(0):RadioButtonConfItem[ConfigEEPROM].activate(0); break;
+              case(1): RadioButtonConfItem[ConfigEEPROM].activate(1); break;
+            }
+          }
+        catch(Exception e) {}finally {}  	
         //if (ConfigVALUE>0) checkboxConfItem[ConfigEEPROM].activate(0); else checkboxConfItem[ConfigEEPROM].deactivate(0);
        // print the values (for debugging purposes only):
 	//println(ConfigEEPROM + "\t" + ConfigVALUE );
@@ -135,6 +149,11 @@ public void READ(){
     for(int i=0;i<CONFIGITEMS;i++) {
       confItem[i].setValue(0);
       toggleConfItem[i].setValue(0);
+      try{
+        RadioButtonConfItem[i].setNoneSelectedAllowed(true); 
+        RadioButtonConfItem[i].deactivateAll();
+        RadioButtonConfItem[i].setNoneSelectedAllowed(false); 
+      }catch(Exception e) {}finally {}  
     }
     g_serial.write('$');
     g_serial.write('M');

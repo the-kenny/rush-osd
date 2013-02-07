@@ -232,7 +232,7 @@ SGPS_altitude = ScontrolP5.addNumberbox("SGPS_altitude",0,5,40,40,14);
  ScontrolP5.getTooltip().register("Throttle/Yaw","Ctrl Key to hold position");
 
 
-UnlockControls =  ScontrolP5.addCheckBox("UnlockControls",60,45);
+UnlockControls =  ScontrolP5.addCheckBox("UnlockControls",60,25);
     UnlockControls.setColorBackground(color(120));
     UnlockControls.setColorActive(color(255));
     UnlockControls.addItem("UnlockControls1",1);

@@ -226,8 +226,8 @@ String[] ConfigNames = {
   "Display Heading:",
   "Display Heading 360:",
   
-  "Unit System:",
-  "Screen Type NTSC / PAL:",
+  "Units:",
+  "Video Signal:",
   "Display Thottle Position",
   "Display Hoizon Bar:",
   "Display Horizon Side Bars:",
@@ -510,7 +510,8 @@ CreateItem(GetSetting("S_TEMPERATUREMAX"),  5,1*17, G_Temperature);
 
 //  Board ---------------------------------------------------------------------------
 CreateItem(GetSetting("S_BOARDTYPE"),  5,0, G_Board);
-//BuildRadioButton(16, 17, XBoard, YBoard, "Rush","Minim");
+BuildRadioButton(GetSetting("S_BOARDTYPE"),  5,0, G_Board, "Rush","Minim");
+
 
 //  GPS  ----------------------------------------------------------------------------
 CreateItem(GetSetting("S_DISPLAYGPS"), 5,0, G_GPS);
@@ -520,7 +521,9 @@ CreateItem(GetSetting("S_HEADING360"),  5,3*17, G_GPS);
 
 //  Other ---------------------------------------------------------------------------
 CreateItem(GetSetting("S_UNITSYSTEM"),  5,0, G_Other);
+BuildRadioButton(GetSetting("S_UNITSYSTEM"),  5,0, G_Other, "Metric","Imperial");
 CreateItem(GetSetting("S_VIDEOSIGNALTYPE"),  5,1*17, G_Other);
+BuildRadioButton(GetSetting("S_VIDEOSIGNALTYPE"),  5,1*17, G_Other, "NTSC","PAL");
 CreateItem(GetSetting("S_THROTTLEPOSITION"),  5,2*17, G_Other);
 CreateItem(GetSetting("S_DISPLAY_HORIZON_BR"),  5,3*17, G_Other);
 CreateItem(GetSetting("S_WITHDECORATION"),  5,4*17, G_Other);
@@ -615,26 +618,30 @@ controlP5.Controller CheckboxVisable(controlP5.Controller c) {
 
 
 
-void BuildRadioButton(int starter, int ender, int StartXLoction, int StartYLocation,String Cap1, String Cap2){
-  YLocation = StartYLocation;
-  for(int i=starter;i<ender;i++) {
-     YLocation+=17;
-     RadioButtonConfItem[i] = controlP5.addRadioButton("RadioButton"+i)
-         .setPosition(StartXLoction+5,YLocation)
-         .setSize(9,9)
-         .setColorBackground(color(120))
-         .setColorActive(color(255))
-         .setColorLabel(color(255))
+void BuildRadioButton(int ItemIndex, int XLoction, int YLocation,Group inGroup, String Cap1, String Cap2){
+    
+  RadioButtonConfItem[ItemIndex] = controlP5.addRadioButton("RadioButton"+ItemIndex)
+         .setPosition(XLoction,YLocation+3)
+         .setSize(10,10)
+         .setNoneSelectedAllowed(false) 
+         //.setColorBackground(color(120))
+         //.setColorActive(color(255))
+        // .setColorLabel(color(255))
          .setItemsPerRow(2)
-         .setSpacingColumn(25)
-         .addItem("ON"+i,0)
-         .addItem("OFF"+i,1)
+         .setSpacingColumn(int(textWidth(Cap1))+10)
+         .addItem("First"+ItemIndex,0)
+         .addItem("Second"+ItemIndex,1)
          .toUpperCase(false)
         //.hideLabels() 
          ;
-    RadioButtonConfItem[i].getItem(0).setCaptionLabel(Cap1);
-    RadioButtonConfItem[i].getItem(1).setCaptionLabel(Cap2 + "  " + ConfigNames[i]);
-  }
+    RadioButtonConfItem[ItemIndex].setGroup(inGroup);
+    RadioButtonConfItem[ItemIndex].getItem(0).setCaptionLabel(Cap1);
+    RadioButtonConfItem[ItemIndex].getItem(1).setCaptionLabel(Cap2 + "    " + ConfigNames[ItemIndex]);
+    
+    toggleConfItem[ItemIndex].hide();
+    txtlblconfItem[ItemIndex].hide();
+    
+  
 }
 
 
@@ -647,7 +654,7 @@ void CreateItem(int ItemIndex, int XLoction, int YLocation, Group inGroup){
   confItem[ItemIndex].setMax(ConfigRanges[ItemIndex]);
   confItem[ItemIndex].setDecimalPrecision(0);
   confItem[ItemIndex].setGroup(inGroup);
-  //checkbox
+  //Toggle
   toggleConfItem[ItemIndex] = (controlP5.Toggle) hideLabel(controlP5.addToggle("toggleValue"+ItemIndex));
   toggleConfItem[ItemIndex].setPosition(XLoction,YLocation+3);
   toggleConfItem[ItemIndex].setSize(35,10);
@@ -767,6 +774,13 @@ void SimulateMultiWii(float[] a) {
 
 void MatchConfigs(){
  for(int i=0;i<CONFIGITEMS;i++) {
+   try{ 
+       if (RadioButtonConfItem[i].isVisible()){
+          confItem[i].setValue(int(RadioButtonConfItem[i].getValue()));
+       }
+        }catch(Exception e) {}finally {}
+    
+   
    if  (toggleConfItem[i].isVisible()){
      //confItem[i].setValue(int(checkboxConfItem[i].arrayValue()[0]));
      if (int(toggleConfItem[i].getValue())== 1){
@@ -778,17 +792,17 @@ void MatchConfigs(){
    }
    if (ConfigRanges[i] == 0) {
       toggleConfItem[i].hide();
-      RadioButtonConfItem[i].hide();
+      //RadioButtonConfItem[i].hide();
       confItem[i].hide();
     }
     if (ConfigRanges[i] > 1) {
       toggleConfItem[i].hide();
-      try{ RadioButtonConfItem[i].hide(); }catch(Exception e) {}finally {}
-    }
       
+    }  
     if (ConfigRanges[i] == 1){
       confItem[i].hide();  
     }
+    
     
   }
   // turn on FlyTimer----
