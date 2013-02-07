@@ -430,7 +430,7 @@ void displayHorizon(int rollAngle, int pitchAngle)
     }
   }
 
-  if(confItem[22].value() > 0) {
+  if(confItem[Setting_.S_DISPLAY_HORIZON_BR].value() > 0) {
     //Draw center screen
     mapchar(0x01, 224-30);
     mapchar(0x00, 224-30-1);
@@ -438,7 +438,7 @@ void displayHorizon(int rollAngle, int pitchAngle)
   }
   
   //if (WITHDECORATION){
-  if(confItem[23].value() > 0) {
+  if(confItem[Setting_.S_WITHDECORATION].value() > 0) {
     mapchar(0xC7,128);
     mapchar(0xC7,128+30);
     mapchar(0xC7,128+60);

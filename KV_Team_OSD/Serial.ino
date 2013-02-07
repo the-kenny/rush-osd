@@ -132,7 +132,7 @@ void serialMSPCheck()
     modedMSPRequests &=~ REQ_MSP_PID;
   }
     
-  if (cmdMSP==MSP_MWRSSI)
+  if (cmdMSP==MSP_RSSI)
   {
     MwRssi = read16();
   }
@@ -186,6 +186,52 @@ void serialMSPCheck()
         bit <<= 1L;
       }
       lastc = c;
+      --remaining;
+    }
+    
+    modedMSPRequests &=~ REQ_MSP_BOXNAMES;
+  }
+
+  if(cmdMSP==MSP_BOXIDS) {
+    uint32_t bit = 1;
+    uint8_t remaining = dataSize;
+
+    mode_armed = 0;
+    mode_stable = 0;
+    mode_baro = 0;
+    mode_mag = 0;
+    mode_gpshome = 0;
+    mode_gpshold = 0;
+    mode_llights = 0;
+    mode_osd_switch = 0;
+
+    while(remaining > 0) {
+      char c = read8();
+      switch(c) {
+      case 0:
+        mode_armed |= bit;
+        break;
+      case 1:
+      case 2:
+        mode_stable |= bit;
+        break;
+      case 3:
+        mode_baro |= bit;
+        break;
+      case 5:
+        mode_mag |= bit;
+        break;
+      case 10:
+        mode_gpshome |= bit;
+        break;
+      case 11:
+        mode_gpshold |= bit;
+        break;
+      case 16:
+        mode_llights |= bit;
+        break; 
+      }
+      bit <<= 1;
       --remaining;
     }
     

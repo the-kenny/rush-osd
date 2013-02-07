@@ -127,7 +127,7 @@ void setMspRequests() {
   if(Settings[S_MAINVOLTAGE_VBAT] || Settings[S_VIDVOLTAGE_VBAT])
     modedMSPRequests |= REQ_MSP_BAT;
   if(Settings[S_MWRSSI])
-    modedMSPRequests |= REQ_MSP_MWRSSI;
+    modedMSPRequests |= REQ_MSP_RSSI;
 }
 
 void loop()
@@ -224,11 +224,14 @@ void loop()
       case REQ_MSP_PID:
         MSPcmdsend = MSP_PID;
         break;
-      case REQ_MSP_MWRSSI:
-        MSPcmdsend = MSP_MWRSSI;
+      case REQ_MSP_RSSI:
+        MSPcmdsend = MSP_RSSI;
         break;
       case REQ_MSP_BOXNAMES:
-        MSPcmdsend = MSP_BOXNAMES;;
+        MSPcmdsend = MSP_BOXNAMES;
+        break;
+      case REQ_MSP_BOXIDS:
+        MSPcmdsend = MSP_BOXIDS;
         break;
       }
       blankserialRequest(MSPcmdsend);      
