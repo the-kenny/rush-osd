@@ -377,17 +377,8 @@ void displayHeadingGraph(void)
   xx = xx + 720 + 45;
   xx = xx / 90;
 
-  screenBuffer[0] = headGraph[xx++];
-  screenBuffer[1] = headGraph[xx++];
-  screenBuffer[2] = headGraph[xx++];
-  screenBuffer[3] = headGraph[xx++];
-  screenBuffer[4] = headGraph[xx++];
-  screenBuffer[5] = headGraph[xx++];
-  screenBuffer[6] = headGraph[xx++];
-  screenBuffer[7] = headGraph[xx++];
-  screenBuffer[8] = headGraph[xx];
-  screenBuffer[9] = 0;
-  MAX7456_WriteString(screenBuffer,getPosition(MwHeadingGraphPosition));
+  uint16_t pos = getPosition(MwHeadingGraphPosition);
+  memcpy_P(screen+pos, headGraph+xx, 10);
 }
 
 void displayIntro(void)
