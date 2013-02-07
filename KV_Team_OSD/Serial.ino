@@ -1,6 +1,5 @@
 #define SERIALBUFFERSIZE 256
 static uint8_t serialBuffer[SERIALBUFFERSIZE]; // this hold the imcoming string from serial O string
-static uint8_t serialMSPStringOK=0;
 static uint8_t receiverIndex=0;
 static uint8_t dataSize;
 static uint8_t cmdMSP;
@@ -27,12 +26,12 @@ uint8_t read8()  {
 // Here are decoded received commands from MultiWii
 void serialMSPCheck()
 {
-  readIndex=0;
-  
+  readIndex = 0;
+
   if ((cmdMSP == MSP_OSD_READ) && (MwVersion == 0)){                           // for GUI communication
     serialWait = 1;
     for(int en=0;en<EEPROM_SETTINGS;en++){
-      Serial.write("*");  
+      Serial.write("*");
       Serial.write(en);
       Serial.write(',');
       Serial.write(EEPROM.read(en));
@@ -40,14 +39,14 @@ void serialMSPCheck()
     serialWait = 0;
   }
   if ((cmdMSP == MSP_OSD_WRITE)&& (MwVersion == 0)){                          // for GUI communication
-    serialWait = 1; 
+    serialWait = 1;
     for(int en=0;en<EEPROM_SETTINGS;en++){
       uint8_t inSetting = read8();
       if (inSetting != Settings[en]){
         EEPROM.write(en,inSetting);
+      }
     }
-    }
-    
+
     readEEPROM();
     serialWait = 0;
   }
@@ -138,7 +137,7 @@ void serialMSPCheck()
     }
     modeMSPRequests &=~ REQ_MSP_PID;
   }
-    
+
   if (cmdMSP==MSP_RSSI)
   {
     MwRssi = read16();
@@ -195,7 +194,7 @@ void serialMSPCheck()
       lastc = c;
       --remaining;
     }
-    
+
     modeMSPRequests &=~ REQ_MSP_BOXNAMES;
   }
 
@@ -236,16 +235,14 @@ void serialMSPCheck()
         break;
       case 16:
         mode_llights |= bit;
-        break; 
+        break;
       }
       bit <<= 1;
       --remaining;
     }
-    
+
     modeMSPRequests &=~ REQ_MSP_BOXNAMES;
   }
-
-  serialMSPStringOK=0;
 }
 // End of decoded received commands from MultiWii
 // --------------------------------------------------------------------------------------
@@ -298,7 +295,7 @@ void handleRawRC() {
       {
 	waitStick = 1;
 	COL--;
-	if(COL<1) COL=1;  
+	if(COL<1) COL=1;
       }
       else if(configMode&&(MwRcData[PITCHSTICK]>MAXSTICK)) // MOVE UP
       {
@@ -492,10 +489,9 @@ void serialMSPreceive()
       if(receiverIndex>=dataSize)
       {
         receiverIndex=0;
-        serialMSPStringOK=1;
         c_state = IDLE;
+        serialMSPCheck();
       }
-      if(serialMSPStringOK) serialMSPCheck();
     }
   }
 }
@@ -521,55 +517,56 @@ void configExit()
 
 void saveExit()
 {
-  //waitStick=3;
+  uint8_t txCheckSum;
+  uint8_t txSize;
   serialWait=0;
 
   if (configPage==1){
     Serial.write('$');
     Serial.write('M');
     Serial.write('<');
-    checksum=0;
-    dataSize=30;
-    Serial.write((byte)dataSize);
-    checksum ^= dataSize;
+    txCheckSum=0;
+    txSize=30;
+    Serial.write(txSize);
+    txCheckSum ^= txSize;
     Serial.write(MSP_SET_PID);
-    checksum ^= MSP_SET_PID;
+    txCheckSum ^= MSP_SET_PID;
     for(uint8_t i=0; i<PIDITEMS; i++) {
       Serial.write(P8[i]);
-      checksum ^= P8[i];
+      txCheckSum ^= P8[i];
       Serial.write(I8[i]);
-      checksum ^= I8[i];
+      txCheckSum ^= I8[i];
       Serial.write(D8[i]);
-      checksum ^= D8[i];
+      txCheckSum ^= D8[i];
     }
-    Serial.write((byte)checksum);
+    Serial.write(txCheckSum);
   }
 
   if (configPage==2){
     Serial.write('$');
     Serial.write('M');
     Serial.write('<');
-    checksum=0;
-    dataSize=7;
-    Serial.write((byte)dataSize);
-    checksum ^= dataSize;
+    txCheckSum=0;
+    txSize=7;
+    Serial.write(txSize);
+    txCheckSum ^= txSize;
     Serial.write(MSP_SET_RC_TUNING);
-    checksum ^= MSP_SET_RC_TUNING;
+    txCheckSum ^= MSP_SET_RC_TUNING;
     Serial.write(rcRate8);
-    checksum ^= rcRate8;
+    txCheckSum ^= rcRate8;
     Serial.write(rcExpo8);
-    checksum ^= rcExpo8;
+    txCheckSum ^= rcExpo8;
     Serial.write(rollPitchRate);
-    checksum ^= rollPitchRate;
+    txCheckSum ^= rollPitchRate;
     Serial.write(yawRate);
-    checksum ^= yawRate;
+    txCheckSum ^= yawRate;
     Serial.write(dynThrPID);
-    checksum ^= dynThrPID;
+    txCheckSum ^= dynThrPID;
     Serial.write(thrMid8);
-    checksum ^= thrMid8;
+    txCheckSum ^= thrMid8;
     Serial.write(thrExpo8);
-    checksum ^= thrExpo8;
-    Serial.write((byte)checksum);
+    txCheckSum ^= thrExpo8;
+    Serial.write(txCheckSum);
   }
 
   if (configPage==3 || configPage==4){
@@ -583,7 +580,7 @@ void blankserialRequest(char requestMSP)
   Serial.write('$');
   Serial.write('M');
   Serial.write('<');
-  Serial.write((byte)0x00);
+  Serial.write((uint8_t)0x00);
   Serial.write(requestMSP);
   Serial.write(requestMSP);
 }
