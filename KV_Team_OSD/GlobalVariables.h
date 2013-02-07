@@ -134,14 +134,11 @@ uint8_t armed=0;
 uint8_t previousarmedstatus=0;  // NEB for statistics after disarming
 int16_t armedTimer=0;
 int16_t GPS_distanceToHome=0;
-uint8_t GPSPresent=0;
 uint8_t GPS_fix=0;
 int32_t GPS_latitude;
 int32_t GPS_longitude;
 int16_t GPS_altitude;
 int16_t GPS_speed=0;
-int16_t GPS_ground_course;
-uint8_t GPS_update=0;
 int16_t GPS_directionToHome=0;
 uint8_t GPS_numSat=0;
 int16_t I2CError=0;

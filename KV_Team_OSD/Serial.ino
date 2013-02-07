@@ -86,14 +86,12 @@ void serialMSPCheck()
     GPS_longitude = read32();
     GPS_altitude = read16();
     GPS_speed = read16();
-    GPS_ground_course = read16();
   }
 
   if (cmdMSP==MSP_COMP_GPS)
   {
     GPS_distanceToHome=read16();
     GPS_directionToHome=read16();
-    GPS_update=read8();
   }
 
   if (cmdMSP==MSP_ATTITUDE)
