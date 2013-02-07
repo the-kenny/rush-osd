@@ -193,6 +193,9 @@ void serialMSPCheck()
       --remaining;
     }
 
+    if(mode_osd_switch == 0)
+      mode_osd_switch = mode_llights;
+
     modeMSPRequests &=~ REQ_MSP_BOXNAMES;
   }
 

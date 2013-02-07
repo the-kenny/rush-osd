@@ -183,6 +183,9 @@ void displayArmed(void)
 
 void displayHorizon(int rollAngle, int pitchAngle)
 {
+  if(!fieldIsVisible(horizonPosition))
+    return;
+
   uint16_t position = getPosition(horizonPosition);
 
   if(pitchAngle>200) pitchAngle=200;
@@ -350,19 +353,19 @@ void displayRSSI(void)
   screenBuffer[xx++] = '%';
   screenBuffer[xx] = 0;
   MAX7456_WriteString(screenBuffer,getPosition(rssiPosition));
-  }
+}
 
 void displayHeading(void)
 {
   int16_t heading = MwHeading;
-  if (Settings[S_HEADING360]){
+  if (Settings[S_HEADING360]) {
     if(heading < 0)
       heading += 360;
     ItoaPadded(heading,screenBuffer,3,0);
     screenBuffer[3]=SYM_DEGREES;
     screenBuffer[4]=0;
   }
-  else{
+  else {
     ItoaPadded(heading,screenBuffer,4,0);
     screenBuffer[4]=SYM_DEGREES;
     screenBuffer[5]=0;
@@ -409,13 +412,17 @@ void displayGPSPosition(void)
     return;
 
   if(Settings[S_COORDINATES]){
-  screenBuffer[0] = SYM_LAT;
-  FormatGPSCoord(GPS_latitude,screenBuffer+1,3,'N','S');
-  MAX7456_WriteString(screenBuffer,getPosition(MwGPSLatPosition));
+    if(fieldIsVisible(MwGPSLatPosition)) {
+      screenBuffer[0] = SYM_LAT;
+      FormatGPSCoord(GPS_latitude,screenBuffer+1,3,'N','S');
+      MAX7456_WriteString(screenBuffer,getPosition(MwGPSLatPosition));
+    }
 
-  screenBuffer[0] = SYM_LON;
-  FormatGPSCoord(GPS_longitude,screenBuffer+1,4,'E','W');
-  MAX7456_WriteString(screenBuffer,getPosition(MwGPSLonPosition));
+    if(fieldIsVisible(MwGPSLatPosition)) {
+      screenBuffer[0] = SYM_LON;
+      FormatGPSCoord(GPS_longitude,screenBuffer+1,4,'E','W');
+      MAX7456_WriteString(screenBuffer,getPosition(MwGPSLonPosition));
+    }
   }
 
   screenBuffer[0] = MwGPSAltPositionAdd[Settings[S_UNITSYSTEM]];
@@ -518,10 +525,9 @@ void displayAngleToHome(void)
   if(GPS_distanceToHome <= 2 && Blink2hz)
     return;
 
-  itoa(GPS_directionToHome,screenBuffer,10);
-  uint8_t xx = FindNull();
-  screenBuffer[xx++] = SYM_DEGREES;
-  screenBuffer[xx] = 0;
+  ItoaPadded(GPS_directionToHome,screenBuffer,3,0);
+  screenBuffer[3] = SYM_DEGREES;
+  screenBuffer[4] = 0;
   MAX7456_WriteString(screenBuffer,getPosition(GPS_angleToHomePosition));
 }
 
