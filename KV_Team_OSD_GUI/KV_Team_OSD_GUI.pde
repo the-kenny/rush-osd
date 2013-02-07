@@ -129,6 +129,12 @@ boolean firstContact = false;
 boolean disableSerial = false;
 
 
+ControlGroup messageBox;
+Textlabel MessageText;
+int messageBoxResult = -1;
+
+
+
 // Int variables
 
 String LoadPercent = "Not Loaded";
@@ -170,7 +176,7 @@ int XTemp      = 120;        int YTemp    = 378;
 int XGPS       = 120;        int YGPS    = 442;
 int XBoard     = 310;        int YBoard   = 5;
 int XOther     = 310;        int YOther   = 48;
-int XControlBox     = 5;        int YControlBox   = 435;
+int XControlBox     = 5;        int YControlBox   = 415;
 int XRCSim    =   XSim;      int YRCSim = 430;
 
 
@@ -370,7 +376,7 @@ Textlabel FileUploadText;
 // textlabels -------------------------------------------------------------------------------------------------------------
 
 // Buttons------------------------------------------------------------------------------------------------------------------
-Button buttonIMPORT,buttonSAVE,buttonREAD,buttonRESET,buttonWRITE,buttonSendFile,buttonBrowseFile;
+Button buttonIMPORT,buttonSAVE,buttonREAD,buttonRESET,buttonWRITE,buttonRESTART,buttonSendFile,buttonBrowseFile;
 // Buttons------------------------------------------------------------------------------------------------------------------
 
 // Toggles------------------------------------------------------------------------------------------------------------------
@@ -474,6 +480,7 @@ img_Clear = LoadFont("MW_OSD_Team.mcm");
   buttonREAD = controlP5.addButton("READ",1,XControlBox+30,YControlBox+25,45,16);buttonREAD.setColorBackground(red_);
   buttonRESET = controlP5.addButton("RESET",1,XControlBox+30,YControlBox+50,45,16);buttonRESET.setColorBackground(red_);
   buttonWRITE = controlP5.addButton("WRITE",1,XControlBox+30,YControlBox+75,45,16);buttonWRITE.setColorBackground(red_);
+  buttonRESTART = controlP5.addButton("RESTART",1,XControlBox+25,YControlBox+100,55,16);buttonWRITE.setColorBackground(red_);
 
 
 
@@ -600,6 +607,7 @@ buttonBrowseFile = controlP5.addButton("Browse",1,5,45,60,16)
   BuildToolHelp();
   
    SimSetup();
+  
 }
 
 
@@ -679,7 +687,27 @@ public void Send(){
   sendFontFile();
 }
 
+void BounceSerial(){
+  InitSerial(commListMax);
+  InitSerial(LastPort);
+  delay(2000);
+  READ();
+}  
 
+void RESTART(){
+  InitSerial(commListMax);
+  InitSerial(LastPort);
+  delay(2000);
+  READ();
+}  
+
+
+public void RESET(){
+  MessageText.setValue("Are you sure you wish to set OSD to Defaults?");
+  //messageBox.bringToFront(); 
+  messageBox.show();
+  
+}
 
 
 
@@ -696,7 +724,7 @@ void draw() {
   // ------------------------------------------------------------------------
 
   // Coltrol Box
-  fill(100); strokeWeight(3);stroke(200); rectMode(CORNERS); rect(XControlBox,YControlBox, XControlBox+105 , YControlBox+100);
+  fill(100); strokeWeight(3);stroke(200); rectMode(CORNERS); rect(XControlBox,YControlBox, XControlBox+105 , YControlBox+120);
   textFont(font12); fill(255, 255, 255); text("OSD Controls",XControlBox + 15,YControlBox + 15);
   if (activeTab == 1) {
   
@@ -743,7 +771,21 @@ void draw() {
   displayHeading();
   popMatrix();
   hint(DISABLE_DEPTH_TEST);
+  CheckMessageBox();
 }
+
+void CheckMessageBox(){
+  
+  if (messageBoxResult == 1){
+  toggleConfItem[0].setValue(0);
+  confItem[0].setValue(0);
+  WRITE();
+  BounceSerial();
+  messageBoxResult = -1;
+  }
+  
+}
+
 
 int GetSetting(String test){
   int TheSetting = 0;
@@ -1279,6 +1321,88 @@ boolean toggleRead = false,
         toggleWrite = false,
         toggleSpekBind = false,
         toggleSetSetting = false;
+        
+        
+        
+        
+void createMessageBox() {
+  // create a group to store the messageBox elements
+  messageBox = GroupcontrolP5.addGroup("messageBox",width/2 - 150,100,300);
+  messageBox.setBackgroundHeight(120);
+  messageBox.setBackgroundColor(color(0,255));
+  messageBox.hideBar();
+  
+  // add a TextLabel to the messageBox.
+  MessageText = GroupcontrolP5.addTextlabel("messageBoxLabel","Some MessageBox text goes here.",20,20);
+ MessageText.moveTo(messageBox);
+  
+  // add a textfield-controller with named-id inputbox
+  // this controller will be linked to function inputbox() below.
+ 
+  // add the OK button to the messageBox.
+  // the name of the button corresponds to function buttonOK
+  // below and will be triggered when pressing the button.
+  Button b1 = GroupcontrolP5.addButton("buttonOK",0,65,80,80,24);
+  b1.moveTo(messageBox);
+  b1.setColorBackground(color(40));
+  b1.setColorActive(color(20));
+  // by default setValue would trigger function buttonOK, 
+  // therefore we disable the broadcasting before setting
+  // the value and enable broadcasting again afterwards.
+  // same applies to the cancel button below.
+  b1.setBroadcast(false); 
+  b1.setValue(1);
+  b1.setBroadcast(true);
+  b1.setCaptionLabel("OK");
+  // centering of a label needs to be done manually 
+  // with marginTop and marginLeft
+  //b1.captionLabel().style().marginTop = -2;
+  //b1.captionLabel().style().marginLeft = 26;
+  
+  // add the Cancel button to the messageBox. 
+  // the name of the button corresponds to function buttonCancel
+  // below and will be triggered when pressing the button.
+  Button b2 = GroupcontrolP5.addButton("buttonCancel",0,155,80,80,24);
+  b2.moveTo(messageBox);
+  b2.setBroadcast(false);
+  b2.setValue(0);
+  b2.setBroadcast(true);
+  b2.setCaptionLabel("Cancel");
+  b2.setColorBackground(color(40));
+  b2.setColorActive(color(20));
+  //b2.captionLabel().toUpperCase(false);
+  // centering of a label needs to be done manually 
+  // with marginTop and marginLeft
+  //b2.captionLabel().style().marginTop = -2;
+  //b2.captionLabel().style().marginLeft = 16;
+}
+
+// function buttonOK will be triggered when pressing
+// the OK button of the messageBox.
+void buttonOK(int theValue) {
+  println("a button event from button OK.");
+  //messageBoxString = ((Textfield)controlP5.controller("inputbox")).getText();
+  messageBoxResult = theValue;
+  messageBox.hide();
+}
+
+
+// function buttonCancel will be triggered when pressing
+// the Cancel button of the messageBox.
+void buttonCancel(int theValue) {
+  println("a button event from button Cancel.");
+  messageBoxResult = theValue;
+  messageBox.hide();
+}
+
+// inputbox is called whenever RETURN has been pressed 
+// in textfield-controller inputbox 
+void inputbox(String theString) {
+  println("got something from the inputbox : "+theString);
+  //messageBoxString = theString;
+  messageBox.hide();
+}
+
         
         
         

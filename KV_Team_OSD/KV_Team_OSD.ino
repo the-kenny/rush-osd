@@ -406,6 +406,7 @@ void readEEPROM(void)
   }
 }
 
+
 // for first run to ini
 void checkEEPROM(void)
 {

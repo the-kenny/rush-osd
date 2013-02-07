@@ -1,5 +1,6 @@
 Serial g_serial;      // The serial port
 int FilePercent = 0;
+float LastPort = 0;
 /******************************* Multiwii Serial Protocol **********************/
 
 String boxnames[] = { // names for dynamic generation of config GUI
@@ -65,12 +66,15 @@ void InitSerial(float portValue) {
       String portPos = Serial.list()[int(portValue)];
       txtlblWhichcom.setValue("COM = " + shortifyPortName(portPos, 8));
       g_serial = new Serial(this, portPos, 115200);
+      LastPort = portValue;
       init_com=1;
       buttonREAD.setColorBackground(green_);
       buttonRESET.setColorBackground(green_);
       commListbox.setColorBackground(green_);
       g_serial.buffer(256);
       System.out.println("Port Turned On " );
+      delay(2000);
+      READ();
       //+((int)(cmd&0xFF))+": "+(checksum&0xFF)+" expected, got "+(int)(c&0xFF));
     }
   }
@@ -85,6 +89,7 @@ void InitSerial(float portValue) {
       init_com=0;
       g_serial.stop();
       SimulateMultiWii.deactivateAll();
+      System.out.println("Port Turned Off " );
     }
   }
 }

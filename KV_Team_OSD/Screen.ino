@@ -579,9 +579,10 @@ void displayCursor(void)
     if(configPage==3){
       COL=3;
       if (ROW==1) ROW=2;
-      if (ROW==9) ROW=6;
-      if (ROW==7) ROW=10;
+      if (ROW==9) ROW=7;
+      if (ROW==8) ROW=10;
       cursorpos=(ROW+2)*30+10+6+6;
+     
       }
     if(configPage==4){
       COL=3;
@@ -703,6 +704,13 @@ void displayConfigScreen(void)
      }
      else {
       MAX7456_WriteString_P(configMsg22, LEVD);
+    }
+    MAX7456_WriteString_P(configMsg28, MAGT);
+    if(Settings[S_COORDINATES]){
+      MAX7456_WriteString_P(configMsg21, MAGD);
+     }
+     else {
+      MAX7456_WriteString_P(configMsg22, MAGD);
     }
   }
 

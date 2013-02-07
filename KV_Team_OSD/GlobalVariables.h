@@ -302,7 +302,7 @@ const char configMsg24[] PROGMEM = "VOLTAGE ALARM";
 const char configMsg25[] PROGMEM = "DISPLAY TEMPERATURE";
 const char configMsg26[] PROGMEM = "SET ALARM TEMP";
 const char configMsg27[] PROGMEM = "DISPLAY GPS";
-const char configMsg28[] PROGMEM = "                  ";
+const char configMsg28[] PROGMEM = "DISPLAY COORDINATES";
 const char configMsg29[] PROGMEM = " ";
 const char configMsg30[] PROGMEM = "                   ";
 //-----------------------------------------------------------Page4

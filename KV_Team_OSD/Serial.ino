@@ -40,9 +40,11 @@ void serialMSPCheck()
     serialWait = 1; 
     for(int en=0;en<EEPROM_SETTINGS;en++){
       uint8_t inSetting = read8();
-      if (inSetting != Settings[en])
+      if (inSetting != Settings[en]){
         EEPROM.write(en,inSetting);
     }
+    }
+    
     readEEPROM();
     serialWait = 0;
   }
@@ -341,6 +343,7 @@ void handleRawRC() {
 	  if(ROW==4) Settings[S_DISPLAYTEMPERATURE]=!Settings[S_DISPLAYTEMPERATURE];
 	  if(ROW==5) Settings[S_TEMPERATUREMAX]--;
 	  if(ROW==6) Settings[S_DISPLAYGPS]=!Settings[S_DISPLAYGPS];
+          if(ROW==7) Settings[S_COORDINATES]=!Settings[S_COORDINATES];
 	}
 
 	if(configPage == 4 && COL == 3) {
@@ -399,6 +402,7 @@ void handleRawRC() {
 	  if(ROW==4) Settings[S_DISPLAYTEMPERATURE]=!Settings[S_DISPLAYTEMPERATURE];
 	  if(ROW==5) Settings[S_TEMPERATUREMAX]++;
 	  if(ROW==6) Settings[S_DISPLAYGPS]=!Settings[S_DISPLAYGPS];
+          if(ROW==7) Settings[S_COORDINATES]=!Settings[S_COORDINATES];
 	}
 
 	if(configPage == 4 && COL == 3) {
