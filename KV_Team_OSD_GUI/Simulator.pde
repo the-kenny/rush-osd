@@ -15,7 +15,7 @@ int mode_osd_switch = 0;
 
 boolean[] keys = new boolean[526];
 
-ControlP5 ScontrolP5;
+
 Group SG,SGModes,SGAtitude,SGRadio,SGSensors1,SGGPS; 
 
 // Checkboxs
@@ -47,8 +47,7 @@ DecimalFormat OnePlaceDecimal = new DecimalFormat("0.0");
 void SimSetup(){
 
   
-  ScontrolP5 = new ControlP5(this); // initialize the GUI controls
-  ScontrolP5.setControlFont(font10);  
+ 
 
   SG = ScontrolP5.addGroup("SG")
     .setPosition(310,YSim + 30)
@@ -71,6 +70,7 @@ void SimSetup(){
                 .setBackgroundHeight((boxnames.length*17) + 8)
                 .setLabel("Modes")
                 .setGroup(SG)
+                .disableCollapse() 
                 //.close() 
                ; 
                
@@ -430,7 +430,7 @@ void displayHorizon(int rollAngle, int pitchAngle)
     }
   }
 
-  if(confItem[Setting_.S_DISPLAY_HORIZON_BR].value() > 0) {
+  if(confItem[GetSetting("S_DISPLAY_HORIZON_BR")].value() > 0) {
     //Draw center screen
     mapchar(0x01, 224-30);
     mapchar(0x00, 224-30-1);
@@ -438,7 +438,7 @@ void displayHorizon(int rollAngle, int pitchAngle)
   }
   
   //if (WITHDECORATION){
-  if(confItem[Setting_.S_WITHDECORATION].value() > 0) {
+  if(confItem[GetSetting("S_WITHDECORATION")].value() > 0) {
     mapchar(0xC7,128);
     mapchar(0xC7,128+30);
     mapchar(0xC7,128+60);

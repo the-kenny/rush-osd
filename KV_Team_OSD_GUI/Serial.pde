@@ -117,7 +117,9 @@ void serialEvent(Serial g_serial) {
 	
 	confItem[ConfigEEPROM].setValue(ConfigVALUE);
 	if (ConfigEEPROM == CONFIGITEMS-1)  buttonWRITE.setColorBackground(green_);
-	if (ConfigVALUE>0) checkboxConfItem[ConfigEEPROM].activate(0); else checkboxConfItem[ConfigEEPROM].deactivate(0);
+          
+        if (ConfigVALUE>0) toggleConfItem[ConfigEEPROM].setValue(1); else toggleConfItem[ConfigEEPROM].setValue(0);	
+        //if (ConfigVALUE>0) checkboxConfItem[ConfigEEPROM].activate(0); else checkboxConfItem[ConfigEEPROM].deactivate(0);
        // print the values (for debugging purposes only):
 	//println(ConfigEEPROM + "\t" + ConfigVALUE );
 	firstContact = false;
@@ -132,7 +134,7 @@ public void READ(){
   if(init_com ==1){
     for(int i=0;i<CONFIGITEMS;i++) {
       confItem[i].setValue(0);
-      checkboxConfItem[i].deactivateAll();
+      toggleConfItem[i].setValue(0);
     }
     g_serial.write('$');
     g_serial.write('M');
