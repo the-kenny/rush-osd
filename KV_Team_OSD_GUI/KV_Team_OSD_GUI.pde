@@ -197,44 +197,44 @@ char MwHeadingUnitAdd=0xbd;
 
 
 String[] ConfigNames = {
-  "EEPROM Loaded:",
+  "EEPROM Loaded",
   
-  "RSSI Min:",
-  "RSSI Max:",
-  "Display RSSI:",
+  "RSSI Min",
+  "RSSI Max",
+  "Display RSSI",
   
-  "Display Voltage:",
-  "Voltage Min:",
+  "Display Voltage",
+  "Voltage Min",
   "Battery Cells",
-  "Main Voltage Devider:",
-  "Main Voltage MW:",
+  "Main Voltage Devider",
+  "Main Voltage MW",
   
-  "Display Amperage:",
-  "Diplay Amperage Used:",
+  "Display Amperage",
+  "Diplay Amperage Used",
   
-  "Display Video Voltage:",
-  "Video Voltage Devider:",
-  "Video Voltage MW:",
+  "Display Video Voltage",
+  "Video Voltage Devider",
+  "Video Voltage MW",
   
-  "Display Temperature:",
-  "Temperature Max:",
+  "Display Temperature",
+  "Temperature Max",
   
-  "Board Type:",
+  "",
   
-  "Display GPS:",
-  "Display GPS Coords:",
-  "Display Heading:",
-  "Display Heading 360:",
+  "Display GPS",
+  "Display GPS Coords",
+  "Display Heading",
+  "Display Heading 360",
   
-  "Units:",
-  "Video Signal:",
+  "Units",
+  "Video Signal",
   "Display Thottle Position",
-  "Display Hoizon Bar:",
-  "Display Horizon Side Bars:",
-  "Display Battery Evo:",
-  "Reset Stats After Arm:",
-  "Enable OSD Read ADC:",
-  "RSSI Over MW:"
+  "Display Hoizon Bar",
+  "Display Horizon Side Bars",
+  "Display Battery Evo",
+  "Reset Stats After Arm",
+  "Enable OSD Read ADC",
+  "RSSI Over MW"
   
 
 };
