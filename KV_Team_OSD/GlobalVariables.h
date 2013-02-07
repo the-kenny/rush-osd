@@ -5,7 +5,6 @@
 #define IMPERIAL 1
 
 //General use variables
-int thisSec=0;
 int tenthSec=0;
 int halfSec=0;
 int Blink2hz=0;                               // This is turing on and off at 2hz
@@ -17,6 +16,7 @@ uint8_t eepromWriteTimer=0;
 
 unsigned int allSec=0;
 
+// Config status and cursor location
 uint8_t ROW=10;
 uint8_t COL=3;
 uint8_t configPage=MINPAGE;
@@ -31,9 +31,6 @@ uint32_t mode_gpshome;
 uint32_t mode_gpshold;
 uint32_t mode_llights;
 uint32_t mode_osd_switch;
-//char tempBuffer[256];
-
-//Current # of setting available
 
 // Settings Locations
 enum Setting_ {
@@ -108,15 +105,7 @@ uint8_t EEPROM_DEFAULT[EEPROM_SETTINGS] = {
 1,   // S_MWRSSI
 };
 
-// For Menu
-int cursorPostion;
-
-// For Serial communicatin
-//int8_t waitStick=0;
-
 uint8_t serialWait=0;
-
-
 
 static uint8_t P8[PIDITEMS], I8[PIDITEMS], D8[PIDITEMS];
 
@@ -128,10 +117,6 @@ static uint8_t thrMid8;
 static uint8_t thrExpo8;
 
 
-#define SERIALBUFFERSIZE 256
-static uint8_t serialBuffer[SERIALBUFFERSIZE]; // this hold the imcoming string from serial O string
-uint8_t serialMSPStringOK=0;
-uint8_t receiverIndex=0;
 static uint16_t  MwAccSmooth[3]={0,0,0};       // Those will hold Accelerator data
 int32_t  MwAltitude=0;                         // This hold barometric value
 
