@@ -307,8 +307,11 @@ private List<Byte> SendMSP (int msp, Character[] payload) {
 }
 */
 
+int outChecksum;
+
 void serialize8(int val) {
    g_serial.write(val);
+   outChecksum ^= val;
 }
 
 void serialize16(int a) {
@@ -331,8 +334,6 @@ void serializeNames(int s) {
     serialize8(strBoxNames.charAt(c));
   }
 }
-
-int outChecksum;
 
 void headSerialResponse(int requestMSP, Boolean err, int s) {
   serialize8('$');
@@ -472,6 +473,7 @@ public void evaluateCommand(byte cmd, int dataSize) {
     System.out.println(str(icmd));
     break;
   }
+  tailSerialReply();
 }
 
 void GetMWData() {

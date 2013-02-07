@@ -1,9 +1,9 @@
 #define SERIALBUFFERSIZE 256
 static uint8_t serialBuffer[SERIALBUFFERSIZE]; // this hold the imcoming string from serial O string
-static uint8_t receiverIndex=0;
+static uint8_t receiverIndex;
 static uint8_t dataSize;
 static uint8_t cmdMSP;
-static uint8_t checksum;
+static uint8_t rcvChecksum;
 static uint8_t readIndex;
 
 uint32_t read32() {
@@ -477,22 +477,27 @@ void serialMSPreceive()
       {
         dataSize = c;
         c_state = HEADER_SIZE;
+        rcvChecksum = c;
       }
     }
     else if (c_state == HEADER_SIZE)
     {
       c_state = HEADER_CMD;
       cmdMSP = c;
+      rcvChecksum ^= c;
+      receiverIndex=0;
     }
     else if (c_state == HEADER_CMD)
     {
-      serialBuffer[receiverIndex++]=c;
-      if(receiverIndex>=dataSize)
+      rcvChecksum ^= c;
+      if(receiverIndex == dataSize) // received checksum byte
       {
-        receiverIndex=0;
+        if(rcvChecksum == 0)
+          serialMSPCheck();
         c_state = IDLE;
-        serialMSPCheck();
       }
+      else
+        serialBuffer[receiverIndex++]=c;
     }
   }
 }
