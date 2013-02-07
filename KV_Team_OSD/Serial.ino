@@ -1,30 +1,33 @@
-
+#define SERIALBUFFERSIZE 256
+static uint8_t serialBuffer[SERIALBUFFERSIZE]; // this hold the imcoming string from serial O string
+static uint8_t serialMSPStringOK=0;
+static uint8_t receiverIndex=0;
 static uint8_t dataSize;
 static uint8_t cmdMSP;
 static uint8_t checksum;
-
-int p=0;
-int i=0;
+static uint8_t readIndex;
 
 uint32_t read32() {
   uint32_t t = read16();
-  t+= (uint32_t)read16()<<16;
+  t |= (uint32_t)read16()<<16;
   return t;
 }
+
 uint16_t read16() {
   uint16_t t = read8();
-  t+= (uint16_t)read8()<<8;
+  t |= (uint16_t)read8()<<8;
   return t;
 }
+
 uint8_t read8()  {
-  return serialBuffer[p++]&0xff;
+  return serialBuffer[readIndex++];
 }
 
 // --------------------------------------------------------------------------------------
 // Here are decoded received commands from MultiWii
 void serialMSPCheck()
 {
-  p=0;
+  readIndex=0;
   
   if ((cmdMSP == MSP_OSD_READ) && (MwVersion == 0)){                           // for GUI communication
     serialWait = 1;
@@ -52,7 +55,7 @@ void serialMSPCheck()
   if (cmdMSP==MSP_IDENT)
   {
     MwVersion= read8();                             // MultiWii Firmware version
-    modedMSPRequests &=~ REQ_MSP_IDENT;
+    modeMSPRequests &=~ REQ_MSP_IDENT;
   }
 
   if (cmdMSP==MSP_STATUS)
@@ -65,12 +68,13 @@ void serialMSPCheck()
 
   if (cmdMSP==MSP_RAW_IMU)
   {
-    for(i=0;i<3;i++) MwAccSmooth[i] = read16();    // for(i=0;i<3;i++) serialize16(accSmooth[i]);
+    for(uint8_t i=0;i<3;i++)
+      MwAccSmooth[i] = read16();
   }
 
   if (cmdMSP==MSP_RC)
   {
-    for(i=0;i<8;i++)
+    for(uint8_t i=0;i<8;i++)
       MwRcData[i] = read16();
     handleRawRC();
   }
@@ -95,7 +99,8 @@ void serialMSPCheck()
 
   if (cmdMSP==MSP_ATTITUDE)
   {
-    for(i=0;i<2;i++) MwAngle[i] = read16();
+    for(uint8_t i=0;i<2;i++)
+      MwAngle[i] = read16();
     MwHeading = read16();
     read16();
   }
@@ -121,17 +126,17 @@ void serialMSPCheck()
     dynThrPID = read8();
     thrMid8 = read8();
     thrExpo8 = read8();
-    modedMSPRequests &=~ REQ_MSP_RC_TUNING;
+    modeMSPRequests &=~ REQ_MSP_RC_TUNING;
   }
 
   if (cmdMSP==MSP_PID)
   {
-    for(i=0; i<PIDITEMS; i++){
+    for(uint8_t i=0; i<PIDITEMS; i++) {
       P8[i] = read8();
       I8[i] = read8();
       D8[i] = read8();
     }
-    modedMSPRequests &=~ REQ_MSP_PID;
+    modeMSPRequests &=~ REQ_MSP_PID;
   }
     
   if (cmdMSP==MSP_RSSI)
@@ -191,7 +196,7 @@ void serialMSPCheck()
       --remaining;
     }
     
-    modedMSPRequests &=~ REQ_MSP_BOXNAMES;
+    modeMSPRequests &=~ REQ_MSP_BOXNAMES;
   }
 
   if(cmdMSP==MSP_BOXIDS) {
@@ -237,7 +242,7 @@ void serialMSPCheck()
       --remaining;
     }
     
-    modedMSPRequests &=~ REQ_MSP_BOXNAMES;
+    modeMSPRequests &=~ REQ_MSP_BOXNAMES;
   }
 
   serialMSPStringOK=0;
@@ -529,7 +534,7 @@ void saveExit()
     checksum ^= dataSize;
     Serial.write(MSP_SET_PID);
     checksum ^= MSP_SET_PID;
-    for(i=0; i<PIDITEMS; i++){
+    for(uint8_t i=0; i<PIDITEMS; i++) {
       Serial.write(P8[i]);
       checksum ^= P8[i];
       Serial.write(I8[i]);

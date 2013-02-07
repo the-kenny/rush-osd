@@ -59,9 +59,8 @@
 char screen[480];
 // ScreenBuffer is an intermietary buffer to created Strings to send to Screen buffer
 char screenBuffer[20];
-char MSPcmdsend=0;
 
-uint32_t modedMSPRequests;
+uint32_t modeMSPRequests;
 uint32_t queuedMSPRequests;
 
 //-------------- Timed Service Routine vars (No more needed Metro.h library)
@@ -92,13 +91,12 @@ void setup()
 
   setMspRequests();
 
-  MSPcmdsend=MSP_IDENT;            // Moved here from main loop as called once
-  blankserialRequest(MSPcmdsend);
+  blankserialRequest(MSP_IDENT);
 }
 
 void setMspRequests() {
   if(configMode) {
-    modedMSPRequests = 
+    modeMSPRequests = 
       REQ_MSP_IDENT|
       REQ_MSP_STATUS|
       REQ_MSP_RAW_GPS|
@@ -109,7 +107,7 @@ void setMspRequests() {
       REQ_MSP_RC;
   }
   else {
-    modedMSPRequests = 
+    modeMSPRequests = 
       REQ_MSP_IDENT|
       REQ_MSP_STATUS|
       REQ_MSP_RAW_GPS|
@@ -121,13 +119,13 @@ void setMspRequests() {
       REQ_MSP_BOXNAMES;
 
     if(!armed || Settings[S_THROTTLEPOSITION])
-      modedMSPRequests |= REQ_MSP_RC;
+      modeMSPRequests |= REQ_MSP_RC;
   }
  
   if(Settings[S_MAINVOLTAGE_VBAT] || Settings[S_VIDVOLTAGE_VBAT])
-    modedMSPRequests |= REQ_MSP_BAT;
+    modeMSPRequests |= REQ_MSP_BAT;
   if(Settings[S_MWRSSI])
-    modedMSPRequests |= REQ_MSP_RSSI;
+    modeMSPRequests |= REQ_MSP_RSSI;
 }
 
 void loop()
@@ -169,8 +167,7 @@ void loop()
   {
     previous_millis_low = currentMillis;    
     if(!serialWait){
-      MSPcmdsend=MSP_ATTITUDE;
-      blankserialRequest(MSPcmdsend);
+      blankserialRequest(MSP_ATTITUDE);
     }
   }  // End of slow Timed Service Routine (100ms loop)
 
@@ -186,8 +183,9 @@ void loop()
       calculateRssi();
 
     if(!serialWait) {
+      uint8_t MSPcmdsend;
       if(queuedMSPRequests == 0)
-        queuedMSPRequests = modedMSPRequests;
+        queuedMSPRequests = modeMSPRequests;
       uint32_t req = queuedMSPRequests & -queuedMSPRequests;
       queuedMSPRequests &= ~req;
       switch(req) {
@@ -330,20 +328,17 @@ void loop()
     allSec++;
 
     if((accCalibrationTimer==1)&&(configMode)) {
-      MSPcmdsend = MSP_ACC_CALIBRATION;
-      blankserialRequest(MSPcmdsend);
+      blankserialRequest(MSP_ACC_CALIBRATION);
       accCalibrationTimer=0;
     }
 
     if((magCalibrationTimer==1)&&(configMode)) {
-      MSPcmdsend = MSP_MAG_CALIBRATION;
-      blankserialRequest(MSPcmdsend);
+      blankserialRequest(MSP_MAG_CALIBRATION);
       magCalibrationTimer=0;
     }
 
     if((eepromWriteTimer==1)&&(configMode)) {
-      MSPcmdsend = MSP_EEPROM_WRITE;
-      blankserialRequest(MSPcmdsend);
+      blankserialRequest(MSP_EEPROM_WRITE);
       eepromWriteTimer=0;
     }
 
