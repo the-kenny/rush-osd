@@ -239,8 +239,11 @@ uint16_t flyingTime=0;
 // ---------------------------------------------------------------------------------------
 
 // Private MSP for use with the GUI
-#define MSP_OSD_READ             220   //in message          starts epprom send to OSD GUI
-#define MSP_OSD_WRITE            221   //in message          write OSD GUI setting to eeprom
+#define MSP_OSD                  220   //in message          starts epprom send to OSD GUI
+// Subcommands
+#define OSD_NULL                 0
+#define OSD_READ_CMD             1
+#define OSD_WRITE_CMD            2
 // End private MSP for use with the GUI
 
 // For Intro

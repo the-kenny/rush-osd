@@ -807,7 +807,7 @@ void SimulateMultiWii(float[] a) {
   }
   else{
      SimulateMW = false;
-     ResetVersion();
+     // ResetVersion();
      //s.arrayValue()[0] =0;
      //s.arrayValue()[1] =0;
   }

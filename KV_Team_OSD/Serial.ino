@@ -28,27 +28,37 @@ void serialMSPCheck()
 {
   readIndex = 0;
 
-  if ((cmdMSP == MSP_OSD_READ) && (MwVersion == 0)){                           // for GUI communication
-    serialWait = 1;
-    for(int en=0;en<EEPROM_SETTINGS;en++){
-      Serial.write("*");
-      Serial.write(en);
-      Serial.write(',');
-      Serial.write(EEPROM.read(en));
-    }
-    serialWait = 0;
-  }
-  if ((cmdMSP == MSP_OSD_WRITE)&& (MwVersion == 0)){                          // for GUI communication
-    serialWait = 1;
-    for(int en=0;en<EEPROM_SETTINGS;en++){
-      uint8_t inSetting = read8();
-      if (inSetting != Settings[en]){
-        EEPROM.write(en,inSetting);
+  if (cmdMSP == MSP_OSD) {
+    uint8_t cmd = read8();
+
+    if(cmd == OSD_READ_CMD) {
+      uint8_t txCheckSum, txSize;
+      Serial.write('$');
+      Serial.write('M');
+      Serial.write('<');
+      txCheckSum=0;
+      txSize = EEPROM_SETTINGS + 1;
+      Serial.write(txSize);
+      txCheckSum ^= txSize;
+      Serial.write(MSP_OSD);
+      txCheckSum ^= MSP_OSD;
+      Serial.write(cmd);
+      txCheckSum ^= cmd;
+      for(uint8_t i=0; i<EEPROM_SETTINGS; i++) {
+        Serial.write(Settings[i]);
+	txCheckSum ^= Settings[i];
       }
+      Serial.write(txCheckSum);
     }
 
-    readEEPROM();
-    serialWait = 0;
+    if (cmd == OSD_WRITE_CMD) {
+      for(int en=0;en<EEPROM_SETTINGS; en++){
+	uint8_t inSetting = read8();
+	if (inSetting != Settings[en])
+	  EEPROM.write(en,inSetting);
+	Settings[en] = inSetting;
+      }
+    }
   }
 
   if (cmdMSP==MSP_IDENT)

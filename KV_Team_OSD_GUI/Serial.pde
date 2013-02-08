@@ -1,3 +1,5 @@
+
+
 Serial g_serial;      // The serial port
 int FilePercent = 0;
 float LastPort = 0;
@@ -50,14 +52,22 @@ private static final int
   MSP_SET_MISC             =207,
   MSP_RESET_CONF           =208,
   MSP_SELECT_SETTING       =210,
-  MSP_OSD_READ             =220,
-  MSP_OSD_WRITE            =221,
   MSP_SPEK_BIND            =240,
 
   MSP_EEPROM_WRITE         =250,
   
   MSP_DEBUGMSG             =253,
   MSP_DEBUG                =254;
+
+private static final int
+  MSP_OSD                  =220;
+
+// Subcommands
+private static final int
+  OSD_NULL                 =0,
+  OSD_READ_CMD             =1,
+  OSD_WRITE_CMD            =2;
+
 
 // initialize the serial port selected in the listBox
 void InitSerial(float portValue) {
@@ -92,6 +102,34 @@ void InitSerial(float portValue) {
       System.out.println("Port Turned Off " );
     }
   }
+}
+
+void SetConfigItem(int index, int value) {
+  if(index >= CONFIGITEMS)
+    return;
+
+  confItem[index].setValue(value);
+  if (index == CONFIGITEMS-1)
+    buttonWRITE.setColorBackground(green_);
+    
+  if (value >0){
+    toggleConfItem[index].setValue(1);
+  }
+  else{
+    toggleConfItem[index].setValue(0);
+  }
+
+  try{
+    switch(ConfigVALUE) {
+    case(0):
+      RadioButtonConfItem[index].activate(0);
+      break;
+    case(1):
+      RadioButtonConfItem[index].activate(1);
+      break;
+    }
+  }
+  catch(Exception e) {}finally {}  	
 }
 
 void serialEvent(Serial g_serial) {
@@ -150,6 +188,11 @@ void serialEvent(Serial g_serial) {
 }
 
 public void READ(){
+  p = 0;
+  inBuf[0] = OSD_READ_CMD;
+  evaluateCommand((byte)MSP_OSD, 1);
+
+/*
   if(init_com ==1){
     for(int i=0;i<CONFIGITEMS;i++) {
       confItem[i].setValue(0);
@@ -168,9 +211,17 @@ public void READ(){
     g_serial.write(MSP_OSD_READ);
     SetMode();
   }
+*/
 }
 
 public void WRITE(){
+  p = 0;
+  inBuf[0] = OSD_WRITE_CMD;
+  evaluateCommand((byte)MSP_OSD, 1);
+
+
+
+/*
   if(init_com == 1){ 
     for(int j=0;j<2;j++) {
       g_serial.write('$');
@@ -189,6 +240,7 @@ public void WRITE(){
       g_serial.write((byte)checksum);
     }
   }
+*/
 }
 
 // coded by Eberhard Rensch
@@ -360,6 +412,41 @@ public void evaluateCommand(byte cmd, int dataSize) {
   int icmd = (int)(cmd&0xFF);
 
   switch(icmd) {
+
+  case MSP_OSD:
+  {
+    int cmd_internal = read8();
+    if(cmd_internal == OSD_NULL) {
+      headSerialReply(MSP_OSD, 1);
+      serialize8(OSD_NULL);
+    }
+
+    if(cmd_internal == OSD_READ_CMD) {
+      if(dataSize == 1) {
+	// Send a NULL reply
+	headSerialReply(MSP_OSD, 1);
+	serialize8(OSD_READ_CMD);
+      }
+      else {
+	// Returned result from OSD.
+	for(int i = 0; i < CONFIGITEMS; i++)
+	  SetConfigItem(i, read8());
+
+	// Send a NULL reply
+	headSerialReply(MSP_OSD, 1);
+	serialize8(OSD_NULL);
+      }
+    }
+
+    if(cmd_internal == OSD_WRITE_CMD && dataSize == 1) {
+      headSerialReply(MSP_OSD, CONFIGITEMS+1);
+      serialize8(OSD_WRITE_CMD);
+      for(int i = 0; i < CONFIGITEMS; i++)
+        serialize8(int(confItem[i].value()));
+    }
+    break;
+  }
+    
   case MSP_IDENT:
     headSerialReply(MSP_IDENT, 7);
     serialize8(101);   // multiwii version
@@ -414,7 +501,6 @@ public void evaluateCommand(byte cmd, int dataSize) {
       }
     break;
   
-  case MSP_RAW_IMU:
   
   case MSP_RAW_GPS:
    // We have: GPS_fix(0-2), GPS_numSat(0-15), GPS_coord[LAT & LON](signed, in 1/10 000 000 degres), GPS_altitude(signed, in meters) and GPS_speed(in cm/s)  
@@ -460,8 +546,6 @@ public void evaluateCommand(byte cmd, int dataSize) {
     serialize16(int(sVario) *10);     
     break;
   
-  case MSP_RC_TUNING:
-  case MSP_PID:
   case MSP_BAT:
     headSerialReply(MSP_BAT, 3);
     serialize8(int(sVBat * 10));
@@ -607,7 +691,6 @@ int GetBit(int Mode){
   }
   return SendBit;
 }
-*/
 void ResetVersion(){
   headSerialReply(MSP_IDENT, 7);
   serialize8(0);   // multiwii version
@@ -615,6 +698,7 @@ void ResetVersion(){
   serialize8(0);         // MultiWii Serial Protocol Version
   serialize32(0);        
 }
+*/
 
 
 void sendFontFile(){
