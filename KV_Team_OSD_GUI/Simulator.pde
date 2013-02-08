@@ -423,7 +423,7 @@ void displayHorizon(int rollAngle, int pitchAngle)
     Y += 41;
     if(Y >= 0 && Y <= 81) {
       int pos = 30*(2+Y/9) + 10 + X;
-      if(X < 3 || X >5 || (Y/9) != 4 || confItem[22].value() == 0)
+      if(X < 3 || X >5 || (Y/9) != 4 || confItem[GetSetting("S_DISPLAY_HORIZON_BR")].value() == 0)
       	mapchar(0x80+(Y%9), pos);
       if(Y>=9 && (Y%9) == 0)
         mapchar(0x89, pos-30);
