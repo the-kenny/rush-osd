@@ -58,7 +58,10 @@ void serialMSPCheck()
 	  EEPROM.write(en,inSetting);
 	Settings[en] = inSetting;
       }
+      readEEPROM();
+      setMspRequests();
     }
+    
   }
 
   if (cmdMSP==MSP_IDENT)

@@ -1402,8 +1402,6 @@ void inputbox(String theString) {
 
 void exit() {
   println("exiting");
-  SimulateMultiWii.arrayValue()[0] = 0;
-  
   delay(200);
   InitSerial(commListMax); 
   super.exit();

@@ -98,7 +98,6 @@ void InitSerial(float portValue) {
       buttonWRITE.setColorBackground(red_);
       init_com=0;
       g_serial.stop();
-      SimulateMultiWii.deactivateAll();
       System.out.println("Port Turned Off " );
     }
   }
@@ -120,7 +119,7 @@ void SetConfigItem(int index, int value) {
   }
 
   try{
-    switch(ConfigVALUE) {
+    switch(value) {
     case(0):
       RadioButtonConfItem[index].activate(0);
       break;
