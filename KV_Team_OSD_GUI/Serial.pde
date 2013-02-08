@@ -41,7 +41,8 @@ private static final int
   MSP_MOTOR_PINS           =115,
   MSP_BOXNAMES             =116,
   MSP_PIDNAMES             =117,
-
+  MSP_BOXIDS               =119,
+  MSP_RSSI                 =120,
   MSP_SET_RAW_RC           =200,
   MSP_SET_RAW_GPS          =201,
   MSP_SET_PID              =202,
@@ -537,8 +538,6 @@ public void evaluateCommand(byte cmd, int dataSize) {
      if(GPSheading < 0) GPSheading += 360;
      serialize16(GPSheading);
      serialize8(0);
-     
-    
     break;
   
   case MSP_ALTITUDE:
@@ -553,6 +552,32 @@ public void evaluateCommand(byte cmd, int dataSize) {
     serialize8(int(sVBat * 10));
     serialize16(0);
     break;
+
+   case MSP_RC_TUNING:
+     headSerialReply(MSP_RC_TUNING, 7);
+     serialize8(80);
+     serialize8(80);
+     serialize8(80);
+     serialize8(80);
+     serialize8(80);
+     serialize8(80);
+     serialize8(80);
+     break;
+
+   case MSP_PID:
+     headSerialReply(MSP_PID, 3*10);
+     for(int i=0;i<20;i++) {
+       serialize8(40);
+       serialize8(20);
+       serialize8(70);
+     }
+     break;
+
+   case MSP_RSSI:
+     headSerialReply(MSP_RSSI, 2);
+     serialize16(700);
+     break;
+
 
   default:
     System.out.print("Unsupported request = ");
