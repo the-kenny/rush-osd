@@ -188,6 +188,9 @@ void serialEvent(Serial g_serial) {
 }
 
 public void READ(){
+  for(int i = 0; i < CONFIGITEMS; i++)
+    SetConfigItem((byte)i, 0);
+
   p = 0;
   inBuf[0] = OSD_READ_CMD;
   evaluateCommand((byte)MSP_OSD, 1);
@@ -565,7 +568,7 @@ void GetMWData() {
   int i,aa;
   float val,inter,a,b,h;
   int c;
-  if ((init_com==1) && SimulateMW) {
+  if (init_com==1) {
 /*
     time=millis();
     if ((time-time4)>40 ) {

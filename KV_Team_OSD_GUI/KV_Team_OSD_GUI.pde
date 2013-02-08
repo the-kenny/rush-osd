@@ -110,7 +110,7 @@ int WindowShrinkY = 50;
 
 int currentCol = 0;
 int currentRow = 0;  
-Boolean SimulateMW = false;
+//Boolean SimulateMW = true;
 
 
 ControlP5 controlP5;
@@ -567,13 +567,13 @@ buttonBrowseFile = controlP5.addButton("Browse",1,5,45,60,16)
 
 
   // CheckBox "Simulate MultiWii"
-  SimulateMultiWii = controlP5.addCheckBox("SimulateMultiWii",XSim+200,YSim);
-  SimulateMultiWii.setColorActive(color(255));
-  SimulateMultiWii.setColorBackground(color(120));
-  SimulateMultiWii.setItemsPerRow(1);
-  SimulateMultiWii.setSpacingColumn(10);
-  SimulateMultiWii.setLabel("Simulate MultiWii");
-  SimulateMultiWii.addItem("Simulate MultiWii",1);
+  //SimulateMultiWii = controlP5.addCheckBox("SimulateMultiWii",XSim+200,YSim);
+  //SimulateMultiWii.setColorActive(color(255));
+  //SimulateMultiWii.setColorBackground(color(120));
+  //SimulateMultiWii.setItemsPerRow(1);
+  //SimulateMultiWii.setSpacingColumn(10);
+  //SimulateMultiWii.setLabel("Simulate MultiWii");
+  //SimulateMultiWii.addItem("Simulate MultiWii",1);
        
   // CheckBox "Hide Background"
   ShowSimBackground = controlP5.addCheckBox("ShowSimBackground",XSim+50,YSim);
@@ -801,17 +801,8 @@ void ShowSimBackground(float[] a) {
   Showback = int(a[0]);
 }
 
-void SimulateMultiWii(float[] a) {
-  if (a[0] > 0){
-    SimulateMW = true;
-  }
-  else{
-     SimulateMW = false;
-     // ResetVersion();
-     //s.arrayValue()[0] =0;
-     //s.arrayValue()[1] =0;
-  }
-}
+//void SimulateMultiWii(float[] a) {
+//}
 
 
 void MatchConfigs(){
