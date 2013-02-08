@@ -428,7 +428,7 @@ void displayGPSPosition(void)
   screenBuffer[0] = MwGPSAltPositionAdd[Settings[S_UNITSYSTEM]];
   uint16_t xx;
   if(Settings[S_UNITSYSTEM])
-    xx = GPS_altitude * 0.32808;
+    xx = GPS_altitude * 3.2808;
   else
     xx = GPS_altitude;
   itoa(xx,screenBuffer+1,10);
