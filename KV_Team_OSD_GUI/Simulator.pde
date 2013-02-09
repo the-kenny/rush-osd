@@ -20,12 +20,15 @@ Group SG,SGModes,SGAtitude,SGRadio,SGSensors1,SGGPS;
 
 // Checkboxs
 CheckBox checkboxSimItem[] = new CheckBox[SIMITEMS] ;
-CheckBox SimulateMultiWii,ShowSimBackground, UnlockControls, SGPS_FIX; 
-
+CheckBox ShowSimBackground, UnlockControls, SGPS_FIX;
+//Toggles
+Toggle toggleModeItems[] = new Toggle[boxnames.length] ;
 // Slider2d ---
 Slider2D Pitch_Roll, Throttle_Yaw,MW_Pitch_Roll;
 //Sliders ---
 Slider s_Altitude,s_Vario,s_VBat,s_RSSI;
+
+Textlabel txtlblModeItems[] = new Textlabel[boxnames.length] ;
 
 // Knobs----
 Knob HeadingKnob,SGPSHeadHome;
@@ -38,7 +41,7 @@ Numberbox SGPS_numSat, SGPS_altitude, SGPS_speed, SGPS_ground_course,SGPS_distan
     
 //ControlWindow  Throttle_YawWindow;    
 
-CheckBox checkboxModeItems[] = new CheckBox[boxnames.length] ;
+//CheckBox checkboxModeItems[] = new CheckBox[boxnames.length] ;
 DecimalFormat OnePlaceDecimal = new DecimalFormat("0.0");
 
 
@@ -307,35 +310,14 @@ s_VBat = ScontrolP5.addSlider("sVBat")
 
 
 
-
-
-  //for(int i=0;i<SIMITEMS;i++) {
-    //txtlblSimItem[i] = ScontrolP5.addTextlabel("txtlblSimItem"+i,"",20,5+i*17);//SimNames[i],20,5+i*17);
-    //if (i < 6){
-      //txtlblSimItem[i].setGroup(SGModes);
-    //}
-  //} 
- 
-  //for(int i=0;i<SIMITEMS;i++) {
-    //SimItem[i] = (controlP5.Numberbox) hideLabel(ScontrolP5.addNumberbox("SimItem"+i,0,5,5+i*17,35,14));
-    //SimItem[i].setColorBackground(red_);confItem[i].setMin(0);confItem[i].setDirection(Controller.HORIZONTAL);confItem[i].setMax(ConfigRanges[i]);confItem[i].setDecimalPrecision(0);
-    //if (i < 6){
-      //SimItem[i].setGroup(SGModes);
-    //}
-    
- //}
-
   for(int i=0;i<boxnames.length ;i++) {
-    checkboxModeItems[i] =  ScontrolP5.addCheckBox("checkboxSimItem"+i,5,5+3+i*17);
-    checkboxModeItems[i].setColorActive(color(255));
-    checkboxModeItems[i].setColorBackground(color(120));
-    //checkboxModeItems[i].setItemsPerRow(1);
-    //checkboxModeItems[i].setSpacingColumn(10);
-    //checkboxModeItems[i].setLabel(boxnames[i]);
-    checkboxModeItems[i].addItem(boxnames[i],1);
-    //checkboxModeItems[i].hideLabels();
-    checkboxModeItems[i].setGroup(SGModes);
-    
+    toggleModeItems[i] = (controlP5.Toggle) hideLabel(ScontrolP5.addToggle("toggleModeItems"+i,false));
+    toggleModeItems[i].setPosition(5,3+i*17);
+    toggleModeItems[i].setSize(10,10);
+    //toggleConfItem[i].setMode(ControlP5.SWITCH);
+    toggleModeItems[i].setGroup(SGModes);
+    txtlblModeItems[i] = controlP5.addTextlabel("ModeItems"+i,boxnames[i].substring(0, boxnames[i].length()-1) ,20,i*17);
+    txtlblModeItems[i].setGroup(SGModes);
   }
       
 GetModes();  
@@ -381,7 +363,7 @@ void displayMode()
   int SimModebits = 0;
   int SimBitCounter = 1;
     for (int i=0; i<boxnames.length; i++) {
-      if(checkboxModeItems[i].arrayValue()[0] > 0) SimModebits |= SimBitCounter;
+      if(toggleModeItems[i].getValue() > 0) SimModebits |= SimBitCounter;
       SimBitCounter += SimBitCounter;
 }
     if((SimModebits&mode_armed) >0){

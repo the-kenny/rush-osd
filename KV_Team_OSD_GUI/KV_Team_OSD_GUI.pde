@@ -1,12 +1,19 @@
-/**
- * Rush_KV Configuration
- * by Ross Power. 
- * 
- * 
- * 
- * 
- * 
- */
+
+              /***********************************************************************************************************************************************/
+              /*                                                            KV_OSD_Team_GUI                                                                  */
+              /*                                                                                                                                             */
+              /*                                                                                                                                             */
+              /*                                             This software is the result of a team work                                                      */
+              /*                                                                                                                                             */
+              /*                           POWER67             KATAVENTOS               ITAIN                    CARLONB                                     */
+              /*                                                                                                                                             */
+              /*                                                                                                                                             */
+              /*                                                                                                                                             */
+              /*                                                                                                                                             */
+              /*                                                                                                                                             */
+              /***********************************************************************************************************************************************/
+
+
  
 
 
@@ -128,6 +135,9 @@ String SendCommand = "";
 boolean firstContact = false;   
 boolean disableSerial = false;
 
+boolean PortRead = true;
+boolean PortWrite = false;
+
 
 ControlGroup messageBox;
 Textlabel MessageText;
@@ -166,16 +176,17 @@ int XSim        = DisplayWindowX+WindowAdjX;        int YSim        = 288-Window
 // Box locations -------------------------------------------------------------------------
 int Col1Width = 180;        int Col2Width = 200;
 
-int XEEPROM    = 120;        int YEEPROM    = 5;
-//int XModeBox   = 120;        int YModeBox    = 50;
+int XEEPROM    = 120;        int YEEPROM    = 5;  //hidden do not remove
+int XBoard     = 120;        int YBoard   = 5;
 int XRSSI      = 120;        int YRSSI    = 48;
 int XVolts      = 120;       int YVolts    = 126;
 int XAmps       = 120;       int YAmps    = 238;
 int XVVolts    = 120;        int YVVolts  = 300;
 int XTemp      = 120;        int YTemp    = 378;
 int XGPS       = 120;        int YGPS    = 442;
-int XBoard     = 310;        int YBoard   = 5;
-int XOther     = 310;        int YOther   = 48;
+
+int XOther     = 310;        int YOther   = 5; //48;
+int XPortStat  = 5;            int YPortStat = 350;
 int XControlBox     = 5;        int YControlBox   = 415;
 int XRCSim    =   XSim;      int YRCSim = 430;
 
@@ -389,7 +400,7 @@ CheckBox checkboxConfItem[] = new CheckBox[CONFIGITEMS] ;
 
 // Toggles------------------------------------------------------------------------------------------------------------------    
 RadioButton RadioButtonConfItem[] = new RadioButton[CONFIGITEMS] ;
-RadioButton r;
+RadioButton R_PortStat;
 
 //  number boxes--------------------------------------------------------------------------------------------------------------
 
@@ -406,7 +417,8 @@ Group MGUploadF,
   G_Temperature,
   G_Board,
   G_GPS,
-  G_Other
+  G_Other,
+  G_PortStatus
   ;
 
 // Timers --------------------------------------------------------------------------------------------------------------------
@@ -566,14 +578,6 @@ buttonBrowseFile = controlP5.addButton("Browse",1,5,45,60,16)
 
 
 
-  // CheckBox "Simulate MultiWii"
-  //SimulateMultiWii = controlP5.addCheckBox("SimulateMultiWii",XSim+200,YSim);
-  //SimulateMultiWii.setColorActive(color(255));
-  //SimulateMultiWii.setColorBackground(color(120));
-  //SimulateMultiWii.setItemsPerRow(1);
-  //SimulateMultiWii.setSpacingColumn(10);
-  //SimulateMultiWii.setLabel("Simulate MultiWii");
-  //SimulateMultiWii.addItem("Simulate MultiWii",1);
        
   // CheckBox "Hide Background"
   ShowSimBackground = controlP5.addCheckBox("ShowSimBackground",XSim+50,YSim);
@@ -658,7 +662,7 @@ void CreateItem(int ItemIndex, int XLoction, int YLocation, Group inGroup){
   confItem[ItemIndex] = (controlP5.Numberbox) hideLabel(controlP5.addNumberbox("configItem"+ItemIndex,0,XLoction,YLocation,35,14));
   confItem[ItemIndex].setColorBackground(red_);
   confItem[ItemIndex].setMin(0);
-  confItem[ItemIndex].setDirection(Controller.HORIZONTAL);
+  confItem[ItemIndex].setDirection(Controller.VERTICAL);
   confItem[ItemIndex].setMax(ConfigRanges[ItemIndex]);
   confItem[ItemIndex].setDecimalPrecision(0);
   confItem[ItemIndex].setGroup(inGroup);
@@ -684,39 +688,67 @@ void BuildToolHelp(){
 }
 
 public void Send(){
-  sendFontFile();
+  //sendFontFile();
+  g_serial.clear();
 }
 
 void BounceSerial(){
-  InitSerial(commListMax);
+  toggleMSP_Data = false;
+  InitSerial(200.00);
   InitSerial(LastPort);
-  delay(2000);
-  READ();
+  toggleMSP_Data = true;
+  delay(1000);
+  
 }  
 
 void RESTART(){
-  InitSerial(commListMax);
-  InitSerial(LastPort);
-  delay(2000);
-  READ();
+  BounceSerial();
 }  
 
 
 public void RESET(){
-  MessageText.setValue("Are you sure you wish to set OSD to Defaults?");
+  MessageText.setValue("Reset OSD to Default Settings?");
   //messageBox.bringToFront(); 
   messageBox.show();
   
 }
 
-
-
+void MakePorts(){
+  
+  //time=millis();
+  strokeWeight(3);stroke(100);
+  fill(100); strokeWeight(3);stroke(200); rectMode(CORNERS); rect(XPortStat,YPortStat, XPortStat+105 , YPortStat+30);
+  if ((PortRead) && (time - time2 >200)){
+    time2 = time;
+    fill(255, 10, 0);
+  }
+  else
+  {
+    fill(100, 10, 0);
+  }
+  ellipse(XPortStat+35, YPortStat+15, 10, 10);
+  if ((PortWrite) && (time - time3 > 200)){
+   time3 = time;
+    fill(0,240, 0);
+  }
+   else
+  {
+   fill(0,100, 0);
+  }
+   
+  ellipse(XPortStat+ 65, YPortStat+15, 10, 10);
+  
+}
 
 void draw() {
   time=millis();
   hint(ENABLE_DEPTH_TEST);
   pushMatrix();
-  GetMWData();
+ PortRead = false; 
+ PortWrite = false; 
+  if (toggleMSP_Data == true) MWData_Com();
+  
+  
   background(80);
   
   // ------------------------------------------------------------------------
@@ -769,6 +801,10 @@ void draw() {
   ShowAmperage();
   displayHeadingGraph();
   displayHeading();
+  
+  
+  MakePorts();
+  
   popMatrix();
   hint(DISABLE_DEPTH_TEST);
   CheckMessageBox();
@@ -839,12 +875,12 @@ void MatchConfigs(){
     
   }
   // turn on FlyTimer----
-  if ((checkboxModeItems[0].arrayValue()[0] == 1) && (SimItem0 < 1)){
+  if ((toggleModeItems[0].getValue() == 0) && (SimItem0 < 1)){
     Armed = 1;
     FlyTimer = millis();
   }
   // turn off FlyTimer----
-  if ((checkboxModeItems[0].arrayValue()[0] == 0) && (SimItem0 == 1)){
+  if ((toggleModeItems[0].getValue() == 1 ) && (SimItem0 == 1)){
     FlyTimer = 0;
   }
 
@@ -1102,13 +1138,33 @@ public void updateModel(){
 
 public void updateView(){
   for(int j=0; j<ConfigNames.length; j++) {
-    confItem[j].setValue(int(MWI.getProperty(ConfigNames[j])));
-    if(confItem[j].value() >0) {
-      checkboxConfItem[j].activateAll();
+    
+    //confItem[j].setValue(int(MWI.getProperty(ConfigNames[j])));
+    if(j >= CONFIGITEMS)
+    return;
+  int value = int(MWI.getProperty(ConfigNames[j]));
+  confItem[j].setValue(value);
+  if (j == CONFIGITEMS-1){
+    buttonWRITE.setColorBackground(green_);
+  }  
+  if (value >0){
+    toggleConfItem[j].setValue(1);
     }
     else {
-      checkboxConfItem[j].deactivateAll();
+    toggleConfItem[j].setValue(0);
+  }
+
+  try{
+    switch(value) {
+    case(0):
+      RadioButtonConfItem[j].activate(0);
+      break;
+    case(1):
+      RadioButtonConfItem[j].activate(1);
+      break;
     }
+  }
+  catch(Exception e) {}finally {}
   }
 }
 
@@ -1305,22 +1361,16 @@ int cycleTime=0;
 int pMeterSum=0;
 
 
-boolean toggleRead = false,
-        toggleReset = false,
-        toggleCalibAcc = false,
-        toggleCalibMag = false,
-        toggleWrite = false,
-        toggleSpekBind = false,
-        toggleSetSetting = false;
+
         
         
         
         
 void createMessageBox() {
   // create a group to store the messageBox elements
-  messageBox = GroupcontrolP5.addGroup("messageBox",width/2 - 150,100,300);
+  messageBox = GroupcontrolP5.addGroup("messageBox",width/2 - 150,height/2 -60,300);
   messageBox.setBackgroundHeight(120);
-  messageBox.setBackgroundColor(color(0,255));
+  messageBox.setBackgroundColor(color(120,255));
   messageBox.hideBar();
   
   // add a TextLabel to the messageBox.
@@ -1333,10 +1383,11 @@ void createMessageBox() {
   // add the OK button to the messageBox.
   // the name of the button corresponds to function buttonOK
   // below and will be triggered when pressing the button.
-  Button b1 = GroupcontrolP5.addButton("buttonOK",0,65,80,80,24);
+  Button b1 = controlP5.addButton("buttonOK",0,65,80,80,24);
   b1.moveTo(messageBox);
-  b1.setColorBackground(color(40));
-  b1.setColorActive(color(20));
+  //b1.setColorBackground(color(80));
+  b1.setColorForeground(red_); 
+  b1.setColorActive(red_);
   // by default setValue would trigger function buttonOK, 
   // therefore we disable the broadcasting before setting
   // the value and enable broadcasting again afterwards.
@@ -1401,9 +1452,19 @@ void inputbox(String theString) {
 
 
 void exit() {
-  println("exiting");
-  delay(200);
-  InitSerial(commListMax); 
+  println("Shut Down Comm & Exiting");
+  g_serial.clear();
+  toggleMSP_Data = false;
+  delay(1000);
+  InitSerial(200.00);
+  
+  //if (init_com==1){
+    //init_com=0;
+  //g_serial.stop();
+  //}
+  
+ 
+  
   super.exit();
 }
 

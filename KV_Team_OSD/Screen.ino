@@ -87,6 +87,13 @@ uint8_t FindNull(void)
   return xx;
 }
 
+void displayCom(void)
+{
+  screenBuffer[0] = ' ';
+  screenBuffer[1] = 0x05;
+  screenBuffer[2]=0;
+  MAX7456_WriteString(screenBuffer,getPosition(sensorPosition)+2*LINE);
+}
 void displayTemperature(void)        // WILL WORK ONLY WITH V1.2
 {
   int xxx;

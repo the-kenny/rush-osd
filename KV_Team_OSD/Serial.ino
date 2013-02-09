@@ -29,8 +29,8 @@ void serialMSPCheck()
   readIndex = 0;
 
   if (cmdMSP == MSP_OSD) {
+    displayCom();
     uint8_t cmd = read8();
-
     if(cmd == OSD_READ_CMD) {
       uint8_t txCheckSum, txSize;
       Serial.write('$');

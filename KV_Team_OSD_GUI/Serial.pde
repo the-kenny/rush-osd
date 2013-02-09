@@ -1,5 +1,12 @@
 
-
+public boolean toggleRead = false,
+        toggleMSP_Data = true,
+        toggleReset = false,
+        toggleCalibAcc = false,
+        toggleCalibMag = false,
+        toggleWrite = false,
+        toggleSpekBind = false,
+        toggleSetSetting = false;
 Serial g_serial;      // The serial port
 int FilePercent = 0;
 float LastPort = 0;
@@ -79,12 +86,14 @@ void InitSerial(float portValue) {
       g_serial = new Serial(this, portPos, 115200);
       LastPort = portValue;
       init_com=1;
+      toggleMSP_Data = true;
       buttonREAD.setColorBackground(green_);
       buttonRESET.setColorBackground(green_);
       commListbox.setColorBackground(green_);
       g_serial.buffer(256);
       System.out.println("Port Turned On " );
       delay(2000);
+      
       READ();
       //+((int)(cmd&0xFF))+": "+(checksum&0xFF)+" expected, got "+(int)(c&0xFF));
     }
@@ -92,12 +101,15 @@ void InitSerial(float portValue) {
   else {
     if(init_com == 1){ 
       txtlblWhichcom.setValue("Comm Closed");
+      toggleMSP_Data = false;
       init_com=0;
       commListbox.setColorBackground(red_);
       buttonREAD.setColorBackground(red_);
       buttonRESET.setColorBackground(red_);
       buttonWRITE.setColorBackground(red_);
       init_com=0;
+      g_serial.clear();
+      toggleMSP_Data = false;
       g_serial.stop();
       System.out.println("Port Turned Off " );
     }
@@ -129,63 +141,12 @@ void SetConfigItem(int index, int value) {
       break;
     }
   }
-  catch(Exception e) {}finally {}  	
+  catch(Exception e) {
+  }finally {
+  }  	
 }
 
-void serialEvent(Serial g_serial) {
-  inByte = g_serial.read();
-  // if this is the first byte received, and it's an A,
-  // clear the serial buffer and note that you've
-  // had first contact from the microcontroller. 
-  // Otherwise, add the incoming byte to the array:
-  if (disableSerial != true){
-    if (firstContact == false) {
-      if (inByte == '*') { 
-	//g_serial.clear();          // clear the serial port buffer
-	firstContact = true;     // you've had first contact from the microcontroller
-	//myPort.write('A');       // ask for more
-      } 
-    } 
-    else {
-      // Add the latest byte from the serial port to array:
-     
-      serialInArray[serialCount] = inByte;
-      serialCount++;
-      // If we have 3 bytes:
-      if (serialCount > 2 ) {
-	ConfigEEPROM = serialInArray[0];
-	//skip the ","
-	ConfigVALUE = serialInArray[2];
-	//byteCi[ConfigEEPROM] = ConfigVALUE;
-	
-	confItem[ConfigEEPROM].setValue(ConfigVALUE);
-	if (ConfigEEPROM == CONFIGITEMS-1)  buttonWRITE.setColorBackground(green_);
-          
-        if (ConfigVALUE>0){
-          toggleConfItem[ConfigEEPROM].setValue(1);
-          
-        }
-        else{
-          toggleConfItem[ConfigEEPROM].setValue(0);
-        }
-        
-        try{
-            switch(ConfigVALUE) {
-              case(0):RadioButtonConfItem[ConfigEEPROM].activate(0); break;
-              case(1): RadioButtonConfItem[ConfigEEPROM].activate(1); break;
-            }
-          }
-        catch(Exception e) {}finally {}  	
-        //if (ConfigVALUE>0) checkboxConfItem[ConfigEEPROM].activate(0); else checkboxConfItem[ConfigEEPROM].deactivate(0);
-       // print the values (for debugging purposes only):
-	//println(ConfigEEPROM + "\t" + ConfigVALUE );
-	firstContact = false;
-	// Reset serialCount:
-	serialCount = 0;
-      }
-    }
-  }
-}
+
 
 public void READ(){
   for(int i = 0; i < CONFIGITEMS; i++)
@@ -195,26 +156,6 @@ public void READ(){
   inBuf[0] = OSD_READ_CMD;
   evaluateCommand((byte)MSP_OSD, 1);
 
-/*
-  if(init_com ==1){
-    for(int i=0;i<CONFIGITEMS;i++) {
-      confItem[i].setValue(0);
-      toggleConfItem[i].setValue(0);
-      try{
-        RadioButtonConfItem[i].setNoneSelectedAllowed(true); 
-        RadioButtonConfItem[i].deactivateAll();
-        RadioButtonConfItem[i].setNoneSelectedAllowed(false); 
-      }catch(Exception e) {}finally {}  
-    }
-    g_serial.write('$');
-    g_serial.write('M');
-    g_serial.write('>');
-    g_serial.write((byte)0x00);
-    g_serial.write(MSP_OSD_READ);
-    g_serial.write(MSP_OSD_READ);
-    SetMode();
-  }
-*/
 }
 
 public void WRITE(){
@@ -222,28 +163,6 @@ public void WRITE(){
   inBuf[0] = OSD_WRITE_CMD;
   evaluateCommand((byte)MSP_OSD, 1);
 
-
-
-/*
-  if(init_com == 1){ 
-    for(int j=0;j<2;j++) {
-      g_serial.write('$');
-      g_serial.write('M');
-      g_serial.write('>');
-      checksum=0;
-      dataSize=CONFIGITEMS;
-      g_serial.write((byte)dataSize);
-      checksum ^= dataSize;
-      g_serial.write(MSP_OSD_WRITE);
-      checksum ^= MSP_OSD_WRITE;
-      for(int i=0; i<CONFIGITEMS; i++){
-        g_serial.write(int(confItem[i].value()));
-        checksum ^= int(confItem[i].value());
-      }
-      g_serial.write((byte)checksum);
-    }
-  }
-*/
 }
 
 // coded by Eberhard Rensch
@@ -280,93 +199,20 @@ int read32() {return (inBuf[p++]&0xff) + ((inBuf[p++]&0xff)<<8) + ((inBuf[p++]&0
 int read16() {return (inBuf[p++]&0xff) + ((inBuf[p++])<<8); }
 int read8()  {return inBuf[p++]&0xff;}
 
-/*
-//send msp without payload
-private List<Byte> requestMSP(int msp) {
-  return  requestMSP( msp, null);
-}
 
-//send multiple msp without payload
-private List<Byte> requestMSP (int[] msps) {
-  List<Byte> s = new LinkedList<Byte>();
-  for (int m : msps) {
-    s.addAll(requestMSP(m, null));
-  }
-  return s;
-}
-
-//send msp with payload
-private List<Byte> requestMSP (int msp, Character[] payload) {
-  if(msp < 0) {
-   return null;
-  }
-  List<Byte> bf = new LinkedList<Byte>();
-  for (byte c : MSP_SIM_HEADER.getBytes()) {
-    bf.add( c );
-  }
-  
-  byte checksum=0;
-  byte pl_size = (byte)((payload != null ? int(payload.length) : 0)&0xFF);
-  bf.add(pl_size);
-  checksum ^= (pl_size&0xFF);
-  
-  bf.add((byte)(msp & 0xFF));
-  checksum ^= (msp&0xFF);
-  
-  if (payload != null) {
-    for (char c :payload){
-      bf.add((byte)(c&0xFF));
-      checksum ^= (c&0xFF);
-    }
-  }
-  bf.add(checksum);
-  return (bf);
-}
-
-void sendRequestMSP(List<Byte> msp) {
-  byte[] arr = new byte[msp.size()];
-  int i = 0;
-  for (byte b: msp) {
-    arr[i++] = b;
-  }
-  g_serial.write(arr); // send the complete byte sequence in one go
-}
-
-//send msp with payload
-private List<Byte> SendMSP (int msp, Character[] payload) {
-  if(msp < 0) {
-   return null;
-  }
-  List<Byte> bf = new LinkedList<Byte>();
-  //for (byte c : MSP_HEADER.getBytes()) {
-  for (byte c : MSP_SIM_HEADER.getBytes()) {
-    bf.add( c );
-  }
-  
-  byte checksum=0;
-  byte pl_size = (byte)((payload != null ? int(payload.length) : 0)&0xFF);
-  bf.add(pl_size);
-  checksum ^= (pl_size&0xFF);
-  
-  bf.add((byte)(msp & 0xFF));
-  checksum ^= (msp&0xFF);
-  
-  if (payload != null) {
-    for (char c :payload){
-      bf.add((byte)(c&0xFF));
-      checksum ^= (c&0xFF);
-    }
-  }
-  bf.add(checksum);
-  return (bf);
-}
-*/
 
 int outChecksum;
 
+
 void serialize8(int val) {
+ if (toggleMSP_Data == false) return;
+   PortWrite = true;
    g_serial.write(val);
    outChecksum ^= val;
+   
+      //println("Error from Serialize8");
+   
+  
 }
 
 void serialize16(int a) {
@@ -412,11 +258,13 @@ void tailSerialReply() {
 }
 
 public void evaluateCommand(byte cmd, int dataSize) {
+   if (toggleMSP_Data == false) return;
+  try{
   int icmd = (int)(cmd&0xFF);
-
   switch(icmd) {
 
   case MSP_OSD:
+ 
   {
     int cmd_internal = read8();
     if(cmd_internal == OSD_NULL) {
@@ -451,6 +299,7 @@ public void evaluateCommand(byte cmd, int dataSize) {
   }
     
   case MSP_IDENT:
+  
     headSerialReply(MSP_IDENT, 7);
     serialize8(101);   // multiwii version
     serialize8(0); // type of multicopter
@@ -459,6 +308,7 @@ public void evaluateCommand(byte cmd, int dataSize) {
     break;
 
   case MSP_STATUS:
+   
     Send_timer+=1;
     headSerialReply(MSP_STATUS, 11);
     serialize16(Send_timer);
@@ -468,7 +318,7 @@ public void evaluateCommand(byte cmd, int dataSize) {
     int modebits = 0;
     int BitCounter = 1;
     for (int i=0; i<boxnames.length; i++) {
-      if(checkboxModeItems[i].arrayValue()[0] > 0) modebits |= BitCounter;
+      if(toggleModeItems[i].getValue() > 0) modebits |= BitCounter;
       BitCounter += BitCounter;
     }
     
@@ -477,11 +327,13 @@ public void evaluateCommand(byte cmd, int dataSize) {
     break;
     
   case MSP_BOXNAMES:
+    
      headSerialReply(MSP_BOXNAMES,strBoxNames.length());
      serializeNames(strBoxNames.length());
     break;
 
   case MSP_ATTITUDE:
+   
     headSerialReply(MSP_ATTITUDE, 8);
     serialize16(int(MW_Pitch_Roll.arrayValue()[0])*10);
     serialize16(int(MW_Pitch_Roll.arrayValue()[1])*10);
@@ -490,6 +342,7 @@ public void evaluateCommand(byte cmd, int dataSize) {
     break;
 
   case MSP_RC:
+   
      headSerialReply(MSP_RC, 14);
       //Roll 
      serialize16(int(Pitch_Roll.arrayValue()[0]));
@@ -506,6 +359,7 @@ public void evaluateCommand(byte cmd, int dataSize) {
   
   
   case MSP_RAW_GPS:
+   
    // We have: GPS_fix(0-2), GPS_numSat(0-15), GPS_coord[LAT & LON](signed, in 1/10 000 000 degres), GPS_altitude(signed, in meters) and GPS_speed(in cm/s)  
    //FormatGPSCoord(GPS_latitude,screenBuffer+1,3,'N','S');
     headSerialReply(MSP_RAW_GPS,16);
@@ -516,22 +370,11 @@ public void evaluateCommand(byte cmd, int dataSize) {
     serialize16(int(SGPS_altitude.value()/100));
     serialize16(int(SGPS_speed.value()));
     serialize16(355);     
-    
-    //headSerialReply(16);
-    //serialize8(f.GPS_FIX);
-    //serialize8(GPS_numSat);
-    //serialize32(GPS_coord[LAT]);
-    //serialize32(GPS_coord[LON]);
-    //serialize16(GPS_altitude);
-    //serialize16(GPS_speed);
-    //serialize16(GPS_ground_course);        // added since r1172
     break;
     
   
   case MSP_COMP_GPS:
-    //GPS_distanceToHome=read16();
-    //GPS_directionToHome=read16();
-    //GPS_update=read8();
+   
      headSerialReply(MSP_COMP_GPS,5);
      serialize16(int(SGPS_distanceToHome.value()));
      int GPSheading = int(SGPSHeadHome.value());
@@ -541,6 +384,7 @@ public void evaluateCommand(byte cmd, int dataSize) {
     break;
   
   case MSP_ALTITUDE:
+  
     headSerialReply(MSP_ALTITUDE, 6);
     serialize32(int(sAltitude) *100);
     
@@ -548,12 +392,14 @@ public void evaluateCommand(byte cmd, int dataSize) {
     break;
   
   case MSP_BAT:
+  
     headSerialReply(MSP_BAT, 3);
     serialize8(int(sVBat * 10));
     serialize16(0);
     break;
 
    case MSP_RC_TUNING:
+   
      headSerialReply(MSP_RC_TUNING, 7);
      serialize8(80);
      serialize8(80);
@@ -565,6 +411,7 @@ public void evaluateCommand(byte cmd, int dataSize) {
      break;
 
    case MSP_PID:
+   
      headSerialReply(MSP_PID, 3*10);
      for(int i=0;i<20;i++) {
        serialize8(40);
@@ -574,6 +421,7 @@ public void evaluateCommand(byte cmd, int dataSize) {
      break;
 
    case MSP_RSSI:
+   
      headSerialReply(MSP_RSSI, 2);
      serialize16(700);
      break;
@@ -585,44 +433,28 @@ public void evaluateCommand(byte cmd, int dataSize) {
     break;
   }
   tailSerialReply();
+
+}
+    catch(Exception e) {
+      println("error from evaluateCommand");
+    }
+    finally {
+    }   
 }
 
-void GetMWData() {
+void MWData_Com() {
+  if (toggleMSP_Data == false) return;
   List<Character> payload;
   int i,aa;
   float val,inter,a,b,h;
   int c;
-  if (init_com==1) {
-/*
-    time=millis();
-    if ((time-time4)>40 ) {
-      time4=time;
-      //accROLL.addVal(ax);accPITCH.addVal(ay); //accYAW.addVal(az);gyroROLL.addVal(gx);gyroPITCH.addVal(gy);gyroYAW.addVal(gz);
+  if ((init_com==1)  && toggleMSP_Data) {
+    try{
       
-      //magxData.addVal(magx);magyData.addVal(magy);magzData.addVal(magz);
-      //altData.addVal(alt);headData.addVal(head);
-      //debug1Data.addVal(debug1);debug2Data.addVal(debug2);debug3Data.addVal(debug3);debug4Data.addVal(debug4);
-    }
-    if ((time-time2)>40 && ! toggleRead && ! toggleWrite && ! toggleSetSetting) {
-      time2=time;
-      int[] requests = {MSP_STATUS, MSP_RAW_IMU, MSP_SERVO, MSP_MOTOR, MSP_RC, MSP_RAW_GPS, MSP_COMP_GPS, MSP_ALTITUDE, MSP_BAT, MSP_DEBUGMSG, MSP_DEBUG};
-      sendRequestMSP(requestMSP(requests));
-    }
-    if ((time-time3)>20 && ! toggleRead && ! toggleWrite && ! toggleSetSetting) {
-      sendRequestMSP(requestMSP(MSP_ATTITUDE));
-      time3=time;
-    }
-*/
     while (g_serial.available()>0) {
       c = (g_serial.read());
 
-      //if(c >= ' ' && c <= '~')
-      //  System.out.print(char(c));
-      //else
-      //  System.out.print(hex(c));
-      //System.out.print(" ");
-      //System.out.println(int(c_state));
-
+      PortRead = true;
       if (c_state == IDLE) {
         c_state = (c=='$') ? HEADER_START : IDLE;
       }
@@ -680,52 +512,19 @@ void GetMWData() {
           System.out.println(new String(inBuf, 0, dataSize));
         }
         c_state = IDLE;
+        
       }
     }
+   }
+  catch(Exception e) {
+      println("error from MWData_Com");
+    }
+    finally {
+    }   
+   
   }
 }
-/*
-int GetBit(int Mode){
-  
-  int GetFromSettings = int(confItem[Mode].value());
-  int SendBit = 0;    
-  switch(GetFromSettings) {
-    case 1:
-      SendBit = 0;
-    break;
-    
-    case 2:
-     SendBit = 1;
-    break;
-    case 4:
-     SendBit = 2;
-    break;
-    case 8:
-     SendBit = 3;
-    break;
-    case 16:
-     SendBit = 4;
-    break;
-    case 32:
-     SendBit = 5;
-    break;
-    case 64:
-     SendBit = 6;
-    break;
-    case 128:
-     SendBit = 7;
-    break;
-  }
-  return SendBit;
-}
-void ResetVersion(){
-  headSerialReply(MSP_IDENT, 7);
-  serialize8(0);   // multiwii version
-  serialize8(0); // type of multicopter
-  serialize8(0);         // MultiWii Serial Protocol Version
-  serialize32(0);        
-}
-*/
+
 
 
 void sendFontFile(){

@@ -24,6 +24,7 @@ void SetupGroups(){
                 .toUpperCase(false)
                 .align(controlP5.CENTER,controlP5.CENTER)
                 ;
+                G_EEPROM.hide();
 G_RSSI = GroupcontrolP5.addGroup("G_RSSI")
                 .setPosition(XRSSI,YRSSI+15)
                 .setWidth(Col1Width)
@@ -117,7 +118,7 @@ G_GPS = GroupcontrolP5.addGroup("G_GPS")
                 ;        
 G_Board = GroupcontrolP5.addGroup("G_Board")
                 .setPosition(XBoard,YBoard+15)
-                .setWidth(Col2Width)
+                .setWidth(Col1Width)
                 .setBarHeight(15)
                 .setBackgroundColor(color(30,255))
                 .setColorActive(red_)
@@ -146,6 +147,10 @@ G_Other = GroupcontrolP5.addGroup("G_Other")
                 .toUpperCase(false)
                 .align(controlP5.CENTER,controlP5.CENTER)
                 ;                                          
+
+
+
+
                  
  
  createMessageBox();
