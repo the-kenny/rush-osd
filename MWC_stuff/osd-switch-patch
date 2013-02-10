@@ -1,21 +1,8 @@
-diff -r -u3 MultiWii.r1317/config.h MultiWii.itai/config.h
---- MultiWii.r1317/config.h	2013-01-20 18:24:44.000000000 +0200
-+++ MultiWii.itai/config.h	2013-02-04 01:50:51.286182531 +0200
-@@ -607,6 +607,10 @@
-        (allready done if the option RCAUXPIN12 is selected) */
-     //#define DISABLE_POWER_PIN
- 
-+  /*******************************    OSD Switch    *************************************/
-+    // This adds a box that can be used by Rushdiono OSD.
-+  #define OSD_SWITCH
-+
- 
-   /**************************************************************************************/
-   /***********************                  TX-related         **************************/
-diff -r -u3 MultiWii.r1317/MultiWii.ino MultiWii.itai/MultiWii.ino
---- MultiWii.r1317/MultiWii.ino	2013-01-15 21:16:30.000000000 +0200
-+++ MultiWii.itai/MultiWii.ino	2013-02-04 01:48:17.349180790 +0200
-@@ -93,6 +93,9 @@
+Index: MultiWii_shared/MultiWii.ino
+===================================================================
+--- MultiWii_shared/MultiWii.ino	(revision 1335)
++++ MultiWii_shared/MultiWii.ino	(working copy)
+@@ -102,6 +102,9 @@
    #ifdef GOVERNOR_P
      BOXGOV,
    #endif
@@ -25,7 +12,7 @@ diff -r -u3 MultiWii.r1317/MultiWii.ino MultiWii.itai/MultiWii.ino
    CHECKBOXITEMS
  };
  
-@@ -146,6 +149,9 @@
+@@ -151,6 +154,9 @@
    #ifdef GOVERNOR_P
      "GOVERNOR;"
    #endif
@@ -34,11 +21,38 @@ diff -r -u3 MultiWii.r1317/MultiWii.ino MultiWii.itai/MultiWii.ino
 +  #endif
  ;
  
- const char pidnames[] PROGMEM =
-diff -r -u3 MultiWii.r1317/Serial.ino MultiWii.itai/Serial.ino
---- MultiWii.r1317/Serial.ino	2013-01-15 21:16:30.000000000 +0200
-+++ MultiWii.itai/Serial.ino	2013-02-04 01:48:17.349180790 +0200
-@@ -310,6 +310,9 @@
+ const uint8_t boxids[] PROGMEM = {// permanent IDs associated to boxes. This way, you can rely on an ID number to identify a BOX function.
+@@ -199,6 +205,9 @@
+   #ifdef GOVERNOR_P
+     18, //"GOVERNOR;"
+   #endif
++  #ifdef OSD_SWITCH
++    19, //"OSD_SWITCH;"
++  #endif
+ };
+ 
+ 
+Index: MultiWii_shared/config.h
+===================================================================
+--- MultiWii_shared/config.h	(revision 1335)
++++ MultiWii_shared/config.h	(working copy)
+@@ -609,7 +609,11 @@
+        (allready done if the option RCAUXPIN12 is selected) */
+     //#define DISABLE_POWER_PIN
+ 
++  /*******************************    OSD Switch    *************************************/
++    // This adds a box that can be used by Rushdiono OSD.
++  //#define OSD_SWITCH
+ 
++
+   /**************************************************************************************/
+   /***********************                  TX-related         **************************/
+   /**************************************************************************************/
+Index: MultiWii_shared/Serial.ino
+===================================================================
+--- MultiWii_shared/Serial.ino	(revision 1335)
++++ MultiWii_shared/Serial.ino	(working copy)
+@@ -324,6 +324,9 @@
                   #if defined(GOVERNOR_P)
                     rcOptions[BOXGOV]<<BOXGOV |
                   #endif
