@@ -120,14 +120,8 @@ void MAX7456Setup(void)
   uint8_t MAX7456_reset;
   uint8_t MAX_screen_rows;
 
-  if(Settings[S_BOARDTYPE]){
-    MAX7456SELECT = 6;       // ss
-    MAX7456RESET = 10;       // RESET
-  }
-  else {
-    MAX7456SELECT = 10;      // ss 
-    MAX7456RESET  = 9;       // RESET
-  }
+  
+  MAX7456Configure();
 
   if(Settings[S_VIDEOSIGNALTYPE]) {    // PAL
     //ENABLE_display = 0x48;
@@ -236,4 +230,19 @@ void MAX7456_Send(uint8_t add, uint8_t data)
 {
   spi_transfer(add);
   spi_transfer(data);
+}
+
+void MAX7456Configure() {
+  // todo - automatically recognising card.
+
+
+  if(Settings[S_BOARDTYPE] == 0) {	// Rush
+    MAX7456SELECT = 6;       // ss
+    MAX7456RESET = 10;       // RESET
+  }
+
+  if(Settings[S_BOARDTYPE] = 1) {	// Minim
+    MAX7456SELECT = 10;      // ss 
+    MAX7456RESET  = 9;       // RESET
+  }
 }

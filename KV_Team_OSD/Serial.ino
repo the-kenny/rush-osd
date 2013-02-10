@@ -76,6 +76,7 @@ void serialMSPCheck()
     I2CError=read16();
     MwSensorPresent = read16();
     MwSensorActive = read32();
+    armed = (MwSensorActive & mode_armed) != 0;
   }
 
   if (cmdMSP==MSP_RAW_IMU)
@@ -121,10 +122,11 @@ void serialMSPCheck()
     MwVario = read16();
   }
 
-  if (cmdMSP==MSP_BAT)
+  if (cmdMSP==MSP_ANALOG)
   {
     MwVBat=read8();
     pMeterSum=read16();
+    MwRssi = read16();
   }
 
   if (cmdMSP==MSP_RC_TUNING)
@@ -149,11 +151,7 @@ void serialMSPCheck()
     modeMSPRequests &=~ REQ_MSP_PID;
   }
 
-  if (cmdMSP==MSP_RSSI)
-  {
-    MwRssi = read16();
-  }
-
+#ifdef USE_BOXNAMES 
   if(cmdMSP==MSP_BOXNAMES) {
     uint32_t bit = 1;
     uint8_t remaining = dataSize;
@@ -196,8 +194,10 @@ void serialMSPCheck()
           if(lastc == 'D') // "GPS HOLD;"
             mode_gpshold |= bit;
         }
+#ifdef BOX_OSD_SWITCH
         if(firstc == 'O' && lastc == 'W') // "OSD SW;"
           mode_osd_switch |= bit;
+#endif
 
         len = 0;
         bit <<= 1L;
@@ -205,13 +205,12 @@ void serialMSPCheck()
       lastc = c;
       --remaining;
     }
-
-    if(mode_osd_switch == 0)
-      mode_osd_switch = mode_llights;
-
-    modeMSPRequests &=~ REQ_MSP_BOXNAMES;
+#ifndef BOX_OSD_SWITCH
+    mode_osd_switch = mode_llights;
+#endif
+    modeMSPRequests &=~ REQ_MSP_BOX;
   }
-
+#else // use MSP_BOXIDS
   if(cmdMSP==MSP_BOXIDS) {
     uint32_t bit = 1;
     uint8_t remaining = dataSize;
@@ -250,14 +249,23 @@ void serialMSPCheck()
       case 16:
         mode_llights |= bit;
         break;
+#ifdef BOX_OSD_SWITCH
+      case BOX_OSD_SWITCH:
+        mode_osd_switch |= bit;
+        break;
+#endif
       }
       bit <<= 1;
       --remaining;
     }
-
-    modeMSPRequests &=~ REQ_MSP_BOXNAMES;
+#ifndef BOX_OSD_SWITCH
+    mode_osd_switch = mode_llights;
+#endif
+    modeMSPRequests &=~ REQ_MSP_BOX;
   }
+  #endif
 }
+
 // End of decoded received commands from MultiWii
 // --------------------------------------------------------------------------------------
 
@@ -505,8 +513,9 @@ void serialMSPreceive()
       rcvChecksum ^= c;
       if(receiverIndex == dataSize) // received checksum byte
       {
-        if(rcvChecksum == 0)
-          serialMSPCheck();
+        if(rcvChecksum == 0) {
+            serialMSPCheck();
+        }
         c_state = IDLE;
       }
       else

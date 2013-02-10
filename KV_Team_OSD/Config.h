@@ -55,7 +55,9 @@
 // moved HEADING360 to eeprom, default values are in GlobalVariables
 // moved VIDVOLTAGE  to eeprom, default values are in GlobalVariables
 
-
+/**********************************   MSP Options and compatibility **********************/
+#define USE_BOXNAMES             // Comment this line to use MSP_BOXIDS
+//#define BOX_OSD_SWITCH 19      // Uncomment to use this option. Otherwise LLIGHT will be used
 
 /********************       For Sensors presence      *********************/
 
@@ -90,12 +92,6 @@ const uint8_t lowrssiAlarm=75;     // This will make blink the Rssi if lower the
 /*----------------------------------------------       End of configurable parameters      ----------------------------------------------------*/
 
 
-
-/******************       FOR DEBUG ONLY      ********************/
-
-
-#define TIMEBASE_X1   50
-#define TIMEBASE  TIMEBASE_X1
 #define LINE      30
 #define LINE01    0
 #define LINE02    30

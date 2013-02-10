@@ -132,7 +132,6 @@ uint8_t MwVBat=0;
 int16_t MwVario=0;
 uint8_t armed=0;
 uint8_t previousarmedstatus=0;  // NEB for statistics after disarming
-int16_t armedTimer=0;
 int16_t GPS_distanceToHome=0;
 uint8_t GPS_fix=0;
 int32_t GPS_latitude;
@@ -189,7 +188,7 @@ float trip=0;
 uint16_t flyingTime=0;
 
 // ---------------------------------------------------------------------------------------
-// Defines imported from Multiwii Serial Protocol MultiWii_shared svn r1333
+// Defines imported from Multiwii Serial Protocol MultiWii_shared svn r1337
 #define MSP_VERSION              0
 
 //to multiwii developpers/committers : do not add new MSP messages without a proper argumentation/agreement on the forum
@@ -203,7 +202,7 @@ uint16_t flyingTime=0;
 #define MSP_COMP_GPS             107   //out message         distance home, direction home
 #define MSP_ATTITUDE             108   //out message         2 angles 1 heading
 #define MSP_ALTITUDE             109   //out message         altitude, variometer
-#define MSP_BAT                  110   //out message         vbat, powermetersum
+#define MSP_ANALOG               110   //out message         vbat, powermetersum, rssi if available on RX
 #define MSP_RC_TUNING            111   //out message         rc rate, rc expo, rollpitch rate, yaw rate, dyn throttle PID
 #define MSP_PID                  112   //out message         P I D coeff (9 are used currently)
 #define MSP_BOX                  113   //out message         BOX setup (number is dependant of your setup)
@@ -213,8 +212,6 @@ uint16_t flyingTime=0;
 #define MSP_PIDNAMES             117   //out message         the PID names
 #define MSP_WP                   118   //out message         get a WP, WP# is in the payload, returns (WP#, lat, lon, alt, flags) WP#0-home, WP#16-poshold
 #define MSP_BOXIDS               119   //out message         get the permanent IDs associated to BOXes
-#define MSP_RSSI                 120   //out message         get the RSSI of RX if available
-
 
 #define MSP_SET_RAW_RC           200   //in message          8 rc chan
 #define MSP_SET_RAW_GPS          201   //in message          fix, numsat, lat, lon, alt, speed
@@ -358,9 +355,7 @@ enum Positions {
 #define REQ_MSP_COMP_GPS  (1 <<  5)
 #define REQ_MSP_ATTITUDE  (1 <<  6)
 #define REQ_MSP_ALTITUDE  (1 <<  7)
-#define REQ_MSP_BAT       (1 <<  8)
+#define REQ_MSP_ANALOG    (1 <<  8)
 #define REQ_MSP_RC_TUNING (1 <<  9)
 #define REQ_MSP_PID       (1 << 10)
-#define REQ_MSP_RSSI      (1 << 11)
-#define REQ_MSP_BOXNAMES  (1 << 12)
-#define REQ_MSP_BOXIDS    (1 << 13)
+#define REQ_MSP_BOX       (1 << 11)

@@ -151,6 +151,7 @@ void displayMode(void)
   screenBuffer[4] = 0;
   MAX7456_WriteString(screenBuffer,getPosition(sensorPosition)+LINE);
 
+/*
   if(MwSensorActive & mode_llights)
     screenBuffer[0] = 0x04;
   else
@@ -162,29 +163,14 @@ void displayMode(void)
     screenBuffer[1] = ' ';
   screenBuffer[2]=0;
   MAX7456_WriteString(screenBuffer,getPosition(sensorPosition)+2*LINE);
-//  MAX7456_WriteString(tempBuffer,getPosition(sensorPosition)+2*LINE+4);
-
-  
-//  itoa(mode_armed, screenBuffer, 10);
-//  MAX7456_WriteString(screenBuffer,getPosition(sensorPosition)+3*LINE);
-//  itoa(mode_stable, screenBuffer, 10);
-//  MAX7456_WriteString(screenBuffer,getPosition(sensorPosition)+3*LINE+4);
-//  itoa(mode_baro, screenBuffer, 10);
-//  MAX7456_WriteString(screenBuffer,getPosition(sensorPosition)+3*LINE+8);
-//  itoa(mode_mag, screenBuffer, 10);
-//  MAX7456_WriteString(screenBuffer,getPosition(sensorPosition)+3*LINE+12);
-//  itoa(mode_gpshome, screenBuffer, 10);
-//  MAX7456_WriteString(screenBuffer,getPosition(sensorPosition)+3*LINE+16);
-//  itoa(mode_gpshold, screenBuffer, 10);
-//  MAX7456_WriteString(screenBuffer,getPosition(sensorPosition)+3*LINE+20);
+*/
 }
 
 void displayArmed(void)
 {
-  armed = (MwSensorActive&mode_armed) != 0;
-  if(armedTimer==0)
+  if(!armed)
     MAX7456_WriteString_P(disarmed_text, getPosition(motorArmedPosition));
-  else if((armedTimer>1) && (armedTimer<9) && (Blink10hz))
+  else if(Blink10hz && flyTime < 9)
     MAX7456_WriteString_P(armed_text, getPosition(motorArmedPosition));
 }
 

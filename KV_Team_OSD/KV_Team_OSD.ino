@@ -113,19 +113,34 @@ void setMspRequests() {
       REQ_MSP_RAW_GPS|
       REQ_MSP_COMP_GPS|
       REQ_MSP_ATTITUDE|
-      REQ_MSP_ALTITUDE|
-      REQ_MSP_RC_TUNING|
-      REQ_MSP_PID|
-      REQ_MSP_BOXNAMES;
+      REQ_MSP_ALTITUDE;
+
+    if(MwVersion == 0)
+      modeMSPRequests |= REQ_MSP_IDENT;
 
     if(!armed || Settings[S_THROTTLEPOSITION])
       modeMSPRequests |= REQ_MSP_RC;
+
+    if(mode_armed == 0) {
+        modeMSPRequests |= REQ_MSP_BOX;
+/*
+#ifdef REQ_MSP_BOXNAMES
+      if(msp_ids_failed)
+        modeMSPRequests |= REQ_MSP_BOXNAMES;
+      else
+#endif
+        modeMSPRequests |= REQ_MSP_BOXIDS;
+*/
+    }
   }
  
-  if(Settings[S_MAINVOLTAGE_VBAT] || Settings[S_VIDVOLTAGE_VBAT])
-    modeMSPRequests |= REQ_MSP_BAT;
-  if(Settings[S_MWRSSI])
-    modeMSPRequests |= REQ_MSP_RSSI;
+  if(Settings[S_MAINVOLTAGE_VBAT] ||
+     Settings[S_VIDVOLTAGE_VBAT] ||
+     Settings[S_MWRSSI])
+    modeMSPRequests |= REQ_MSP_ANALOG;
+
+  // so we do not send requests that are not needed.
+  queuedMSPRequests &= modeMSPRequests;
 }
 
 void loop()
@@ -213,8 +228,8 @@ void loop()
       case REQ_MSP_ALTITUDE:
         MSPcmdsend = MSP_ALTITUDE;
         break;
-      case REQ_MSP_BAT:
-        MSPcmdsend = MSP_BAT;
+      case REQ_MSP_ANALOG:
+        MSPcmdsend = MSP_ANALOG;
         break;
       case REQ_MSP_RC_TUNING:
         MSPcmdsend = MSP_RC_TUNING;
@@ -222,14 +237,12 @@ void loop()
       case REQ_MSP_PID:
         MSPcmdsend = MSP_PID;
         break;
-      case REQ_MSP_RSSI:
-        MSPcmdsend = MSP_RSSI;
-        break;
-      case REQ_MSP_BOXNAMES:
+      case REQ_MSP_BOX:
+#ifdef USE_BOXNAMES
         MSPcmdsend = MSP_BOXNAMES;
-        break;
-      case REQ_MSP_BOXIDS:
+#else
         MSPcmdsend = MSP_BOXIDS;
+#endif
         break;
       }
       blankserialRequest(MSPcmdsend);      
@@ -300,12 +313,12 @@ void loop()
     }
   }  // End of fast Timed Service Routine (20ms loop)
 
-  if(halfSec>=10){
-    halfSec=0;
-    Blink2hz=!Blink2hz;
+  if(halfSec >= 10) {
+    halfSec = 0;
+    Blink2hz =! Blink2hz;
   }
 
-  if(tenthSec>=20)     // this execute 1 time a second
+  if(tenthSec >= 20)     // this execute 1 time a second
   {
     onTime++;
 
@@ -313,10 +326,8 @@ void loop()
     amperagesum += amperage / AMPDIVISION; //(mAh)
 
     tenthSec=0;
-    armedTimer++;
 
     if(!armed) {
-      armedTimer=0;
       flyTime=0;
     }
     else {
