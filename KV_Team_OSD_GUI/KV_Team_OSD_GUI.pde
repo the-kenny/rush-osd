@@ -123,6 +123,7 @@ int currentRow = 0;
 ControlP5 controlP5;
 ControlP5 SmallcontrolP5;
 ControlP5 ScontrolP5;
+ControlP5 FontGroupcontrolP5;
 ControlP5 GroupcontrolP5;
 Textlabel txtlblWhichcom; 
 ListBox commListbox;
@@ -147,7 +148,7 @@ int messageBoxResult = -1;
 
 // Int variables
 
-String LoadPercent = "Not Loaded";
+String LoadPercent = "";
 int init_com;
 int commListMax;
 int whichKey = -1;  // Variable to hold keystoke values
@@ -387,7 +388,7 @@ Textlabel FileUploadText;
 // textlabels -------------------------------------------------------------------------------------------------------------
 
 // Buttons------------------------------------------------------------------------------------------------------------------
-Button buttonIMPORT,buttonSAVE,buttonREAD,buttonRESET,buttonWRITE,buttonRESTART,buttonSendFile,buttonBrowseFile;
+Button buttonIMPORT,buttonSAVE,buttonREAD,buttonRESET,buttonWRITE,buttonRESTART,buttonSendFile,buttonBrowseFile,buttonEditFont;
 // Buttons------------------------------------------------------------------------------------------------------------------
 
 // Toggles------------------------------------------------------------------------------------------------------------------
@@ -441,7 +442,7 @@ OnTimer = millis();
 OSDBackground = loadImage("Background.jpg");
 RadioPot = loadImage("Radio_Pot.png");
 //image(OSDBackground,DisplayWindowX+WindowAdjX, DisplayWindowY+WindowAdjY, DisplayWindowX+360-WindowShrinkX, DisplayWindowY+288-WindowShrinkY);
-img_Clear = LoadFont("MW_OSD_Team.mcm");
+
 
   font8 = createFont("Arial bold",8,false);
   font9 = createFont("Arial bold",10,false);
@@ -452,12 +453,22 @@ img_Clear = LoadFont("MW_OSD_Team.mcm");
 
   controlP5 = new ControlP5(this); // initialize the GUI controls
   controlP5.setControlFont(font10);
+  controlP5.setAutoDraw(false);
+  
 
   SmallcontrolP5 = new ControlP5(this); // initialize the GUI controls
   SmallcontrolP5.setControlFont(font9); 
+  SmallcontrolP5.setAutoDraw(false); 
  
   ScontrolP5 = new ControlP5(this); // initialize the GUI controls
   ScontrolP5.setControlFont(font10);  
+  ScontrolP5.setAutoDraw(false);  
+ 
+ 
+ FontGroupcontrolP5 = new ControlP5(this); // initialize the GUI controls
+ FontGroupcontrolP5.setControlFont(font10);
+ FontGroupcontrolP5.setAutoDraw(false); 
+ 
  
   GroupcontrolP5 = new ControlP5(this); // initialize the GUI controls
   GroupcontrolP5.setControlFont(font10);
@@ -466,9 +477,12 @@ img_Clear = LoadFont("MW_OSD_Team.mcm");
   GroupcontrolP5.setColorLabel(color(0, 110, 220));
   GroupcontrolP5.setColorValue(0xffff88ff);
   GroupcontrolP5.setColorActive(color(30,255));
+  GroupcontrolP5.setAutoDraw(false);
   
 
   SetupGroups();
+
+
 
 
   commListbox = controlP5.addListBox("portComList",5,100,110,260); // make a listbox and populate it with the available comm ports
@@ -553,28 +567,6 @@ CreateItem(GetSetting("S_MWRSSI"),  5,8*17, G_Other);
 
 
 
- MGUploadF = controlP5.addGroup("MGUploadF")
-                .setPosition(5,200)
-                .setWidth(110)
-                .setBarHeight(15)
-                .activateEvent(true)
-                .setBackgroundColor(color(30,255))
-                .setBackgroundHeight(70)
-                .setLabel("Upload Font")
-                //.setGroup(SG)
-                //.close() 
-               ; 
-
-FileUploadText = controlP5.addTextlabel("FileUploadText",LoadPercent,10,5)
-.setGroup(MGUploadF);
-;
-
-buttonSendFile = controlP5.addButton("Send",1,5,25,60,16)
-.setGroup(MGUploadF);
-;
-buttonBrowseFile = controlP5.addButton("Browse",1,5,45,60,16)
-.setGroup(MGUploadF);
-;
 
 
 
@@ -609,9 +601,9 @@ buttonBrowseFile = controlP5.addButton("Browse",1,5,45,60,16)
   
 
   BuildToolHelp();
-  
+  Font_Editor_setup();
    SimSetup();
-  
+  img_Clear = LoadFont("MW_OSD_Team.mcm");
 }
 
 
@@ -805,6 +797,12 @@ void draw() {
   
   MakePorts();
   
+  GroupcontrolP5.draw();
+  controlP5.draw();
+  ScontrolP5.draw();
+  SmallcontrolP5.draw();
+  FontGroupcontrolP5.draw();
+  
   popMatrix();
   hint(DISABLE_DEPTH_TEST);
   CheckMessageBox();
@@ -893,6 +891,21 @@ public void controlEvent(ControlEvent theEvent) {
   if (theEvent.isGroup())
     if (theEvent.name()=="portComList")
       InitSerial(theEvent.group().value()); // initialize the serial port selected
+      
+  try{
+  //for (int i=0;i<col.length;i++) {
+    if ((theEvent.getController().getName().substring(0, 7).equals("CharPix")) && (theEvent.getController().isMousePressed())) {
+      //println("Got a pixel " + theEvent.controller().id());
+        int ColorCheck = int(theEvent.getController().value());
+        curPixel = theEvent.controller().id();
+    }
+    if ((theEvent.getController().getName().substring(0, 7).equals("CharMap")) && (theEvent.getController().isMousePressed())) {
+      curChar = theEvent.controller().id();    
+      //println("Got a Char " + theEvent.controller().id());
+    }
+   } catch(ClassCastException e){}
+     catch(StringIndexOutOfBoundsException se){}
+      
 }
 
 
@@ -1368,7 +1381,7 @@ int pMeterSum=0;
         
 void createMessageBox() {
   // create a group to store the messageBox elements
-  messageBox = GroupcontrolP5.addGroup("messageBox",width/2 - 150,height/2 -60,300);
+  messageBox = GroupcontrolP5.addGroup("messageBox",width/2 - 450,height/2 -60,300);
   messageBox.setBackgroundHeight(120);
   messageBox.setBackgroundColor(color(120,255));
   messageBox.hideBar();
@@ -1445,7 +1458,30 @@ void inputbox(String theString) {
   messageBox.hide();
 }
 
+void mouseReleased() {
+   mouseDown = false;
+                mouseUp = true;
+                if (curPixel>-1)changePixel(curPixel);
+                if (curChar>-1)GetChar(curChar);
+  ControlLock();
+  
+} 
+
         
+public void mousePressed() {
+                mouseDown = true;
+                mouseUp = false;
+        }
+
+
+
+        public boolean mouseDown() {
+                return mouseDown;
+        }
+
+        public boolean mouseUp() {
+                return mouseUp;
+        }
         
         
         
@@ -1453,7 +1489,7 @@ void inputbox(String theString) {
 
 void exit() {
   println("Shut Down Comm & Exiting");
-  g_serial.clear();
+//
   toggleMSP_Data = false;
   delay(1000);
   InitSerial(200.00);

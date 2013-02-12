@@ -102,29 +102,39 @@ PImage RawFontToImage(byte[][] raw) {
   int white = 0xFFFFFFFF;
   int black = 0xFF000000;
   int transparent = 0x00000000;
+  color gray = color(120);
 
   for(int charNo = 0; charNo < 256; charNo++) {
+    CharImages[charNo].loadPixels();
+   // CharImages[charNo] = createImage(12, 18, ARGB);
     for(int byteNo = 0; byteNo < 54; byteNo++) {
       for(int i = 0; i < 4; i++) {
 	int index = (charNo*12*18) + (byteNo*4) + (3-i);
-        //System.out.println("charNo="+charNo+" byteNo="+byteNo+" index="+index+" limit="+img.pixels.length); 
+        int CharIndex = (byteNo*4) + (3-i);
+        //System.out.println("charNo="+charNo+" byteNo="+byteNo+" index="+index+" CharIndex="+CharIndex+" Charlimit="+CharImages[charNo].pixels.length + " limit="+img.pixels.length); 
         int curByte = (int)raw[charNo][byteNo];
 	switch((curByte >> (2*i)) & 0x03) {
 	case 0x00:
 	   img.pixels[index] = black;
+            CharImages[charNo].pixels[CharIndex] = black;
 	   break; 
 	case 0x01:
 	   img.pixels[index] = transparent;
+            CharImages[charNo].pixels[CharIndex] = gray;
 	   break; 
 	case 0x02:
 	   img.pixels[index] = white;
+            CharImages[charNo].pixels[CharIndex] = white;
 	   break; 
 	case 0x03:
 	   img.pixels[index] = transparent;
+            CharImages[charNo].pixels[CharIndex] = gray;
+;
 	   break; 
 	}
       }
     }
+    CharImages[charNo].updatePixels();
   }
 
   img.updatePixels();

@@ -4,6 +4,7 @@
 float sAltitude = 0;
 float sVario = 0;
 float sVBat = 0;
+float sMRSSI = 0;
 int mode_armed = 0;
 int mode_stable = 0;
 int mode_baro = 0;
@@ -26,7 +27,7 @@ Toggle toggleModeItems[] = new Toggle[boxnames.length] ;
 // Slider2d ---
 Slider2D Pitch_Roll, Throttle_Yaw,MW_Pitch_Roll;
 //Sliders ---
-Slider s_Altitude,s_Vario,s_VBat,s_RSSI;
+Slider s_Altitude,s_Vario,s_VBat,s_MRSSI;
 
 Textlabel txtlblModeItems[] = new Textlabel[boxnames.length] ;
 
@@ -57,6 +58,7 @@ void SimSetup(){
     .setWidth(680)
     .setBarHeight(12)
     .activateEvent(true)
+    .disableCollapse()
     .setBackgroundColor(color(0,255))
     .setBackgroundHeight(265)
    .setLabel("Simulator Controls")
@@ -69,6 +71,7 @@ void SimSetup(){
                 .setWidth(100)
                 .setBarHeight(15)
                 .activateEvent(true)
+                .disableCollapse()
                 .setBackgroundColor(color(30,255))
                 .setBackgroundHeight((boxnames.length*17) + 8)
                 .setLabel("Modes")
@@ -82,6 +85,7 @@ void SimSetup(){
                 .setWidth(100)
                 .setBarHeight(15)
                 .activateEvent(true)
+                .disableCollapse()
                 .setBackgroundColor(color(30,255))
                 .setBackgroundHeight(150)
                 .setLabel("Angle/Heading")
@@ -94,6 +98,7 @@ void SimSetup(){
                 .setWidth(130)
                 .setBarHeight(15)
                 .activateEvent(true)
+                .disableCollapse()
                 .setBackgroundColor(color(30,255))
                 .setBackgroundHeight(65)
                 .setLabel("Radio")
@@ -103,9 +108,10 @@ void SimSetup(){
 
 SGSensors1 = ScontrolP5.addGroup("SGSensors1")
                 .setPosition(5,20)
-                .setWidth(130)
+                .setWidth(175)
                 .setBarHeight(15)
                 .activateEvent(true)
+                .disableCollapse()
                 .setBackgroundColor(color(30,255))
                 .setBackgroundHeight(110)
                 .setLabel("Sensors 1")
@@ -117,6 +123,7 @@ SGGPS = ScontrolP5.addGroup("SGGPS")
                 .setWidth(200)
                 .setBarHeight(15)
                 .activateEvent(true)
+                .disableCollapse()
                 .setBackgroundColor(color(30,255))
                 .setBackgroundHeight(130)
                 .setLabel("GPS")
@@ -308,6 +315,21 @@ s_VBat = ScontrolP5.addSlider("sVBat")
     .setFont(font9)
     .align(ControlP5.LEFT, ControlP5.BOTTOM_OUTSIDE).setPaddingX(0);               
 
+s_MRSSI = ScontrolP5.addSlider("sMRSSI")
+  .setPosition(130,10)
+  .setSize(8,75)
+  .setRange(0,100)
+  .setValue(0)
+  .setLabel("RSSI")
+  .setDecimalPrecision(0)
+  .setGroup(SGSensors1);
+  ScontrolP5.getController("sMRSSI").getValueLabel()
+     .setFont(font9);
+  ScontrolP5.getController("sMRSSI")
+    .getCaptionLabel()
+    .setFont(font9)
+    .align(ControlP5.LEFT, ControlP5.BOTTOM_OUTSIDE).setPaddingX(0);          
+
 
 
   for(int i=0;i<boxnames.length ;i++) {
@@ -346,9 +368,7 @@ void keyReleased()
   
 }
 
-void mouseReleased() {
-  ControlLock();
-} 
+
 
 void CalcAlt_Vario(){
   if (time2 < time - 1000){

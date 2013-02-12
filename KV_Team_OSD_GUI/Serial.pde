@@ -40,7 +40,7 @@ private static final int
   MSP_COMP_GPS             =107,
   MSP_ATTITUDE             =108,
   MSP_ALTITUDE             =109,
-  MSP_BAT                  =110,
+  MSP_ANALOG               =110,
   MSP_RC_TUNING            =111,
   MSP_PID                  =112,
   MSP_BOX                  =113,
@@ -110,6 +110,7 @@ void InitSerial(float portValue) {
       init_com=0;
       g_serial.clear();
       toggleMSP_Data = false;
+      delay(500);
       g_serial.stop();
       System.out.println("Port Turned Off " );
     }
@@ -207,10 +208,13 @@ int outChecksum;
 void serialize8(int val) {
  if (toggleMSP_Data == false) return;
    PortWrite = true;
+  
+   //try{
    g_serial.write(val);
    outChecksum ^= val;
-   
+   //NullPointerException
       //println("Error from Serialize8");
+   //}
    
   
 }
@@ -391,11 +395,12 @@ public void evaluateCommand(byte cmd, int dataSize) {
     serialize16(int(sVario) *10);     
     break;
   
-  case MSP_BAT:
+  case MSP_ANALOG:
   
-    headSerialReply(MSP_BAT, 3);
+    headSerialReply(MSP_ANALOG, 5);
     serialize8(int(sVBat * 10));
     serialize16(0);
+    serialize16(int(sMRSSI));
     break;
 
    case MSP_RC_TUNING:
