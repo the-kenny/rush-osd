@@ -192,7 +192,7 @@ int XControlBox     = 5;        int YControlBox   = 415;
 int XRCSim    =   XSim;      int YRCSim = 430;
 
 
-File FontFile;
+//File FontFile;
 int activeTab = 1;
 int xx=0;
 int YLocation = 0;
@@ -681,7 +681,7 @@ void BuildToolHelp(){
 
 public void Send(){
   //sendFontFile();
-  g_serial.clear();
+  //g_serial.clear();
 }
 
 void BounceSerial(){
@@ -1032,7 +1032,7 @@ public void Browse(){
       fc.setFileFilter(new FontFileFilter());
       int returnVal = fc.showOpenDialog(null);
       if (returnVal == JFileChooser.APPROVE_OPTION) {
-        FontFile = fc.getSelectedFile();
+        File FontFile = fc.getSelectedFile();
         FileInputStream in = null;
         boolean completed = false;
         String error = null;

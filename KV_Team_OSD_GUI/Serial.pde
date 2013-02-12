@@ -532,61 +532,6 @@ void MWData_Com() {
 
 
 
-void sendFontFile(){
- int byte_count = 0;
- float xx=0;
-  g_serial.stop();
-  
-  String portPos = Serial.list()[0];
- //     txtlblWhichcom.setValue("COM = " + shortifyPortName(portPos, 8));
-      g_serial = new Serial(this, portPos, 19200);
-  InputStream in = null;
- System.out.println("begin transfer MW_OSD_Team.mcm");
-delay(5000); 
-  try {
-  in = createInput(FontFile);
-    
-    while(in.available() > 0) {
-      int inB = in.read();
-      
-      //if (char(inB) == '0') g_serial.write(char(inB));
-      //if (char(inB) == '1') g_serial.write(char(inB));
-      //System.out.println("read "+inB);
-      g_serial.write(char(inB));
-      if (inB == 13){
-       byte_count++;
-      }
-      if(byte_count == 64){
-         byte_count = 0;
-         xx+= 0.390;
-         FilePercent = int(xx);
-         //LoadPercent = str(int(xx)) + " % Done";
-         //FileUploadText.setValue(str(int(xx)) + " % Done");
-         //setProgress((orgString.length() - i), orgString.length());
-        //FileUploadText.draw(this); 
-         //FileUploadText.draw(this); 
-         //System.out.print((int)xx);  
-        //System.out.println("% done");
-  }
-    }
-      g_serial.stop();
-  }
-  catch (FileNotFoundException e) {
-      System.out.println("File Not Found MW_OSD_Team.mcm");
-  }
-  catch (IOException e) {
-  }
-  catch(Exception e) {
-  }
-  finally {
-    if(in != null)
-      try {
-        in.close();
-      }
-      catch (IOException ioe) {
-      }
-  }
 
-}
 
       
