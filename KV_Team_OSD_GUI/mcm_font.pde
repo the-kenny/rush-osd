@@ -1,5 +1,5 @@
 byte[][] raw_font;
-
+PrintWriter  Output;
 
 PImage LoadFont(String filename) {
   System.out.println("LoadFont "+filename);
@@ -12,6 +12,7 @@ byte[][] LoadRawFont(String filename) {
   byte[][] raw = new byte[256][54];
 
   InputStream in = null;
+  
   byte[] header = { 'M','A','X','7','4','5','6' };
   boolean inHeader = true;
   int hIndex = 0;
@@ -140,3 +141,49 @@ PImage RawFontToImage(byte[][] raw) {
   img.updatePixels();
   return img;
 }
+
+void CreateFontFile(){
+  String gray = "01";  // gray in Gui transparrent in OSD
+  String black = "00"; //black
+  String white = "10";
+  int PixelCounter = 0;
+  int fullpixels = 0;
+  String OutputLine = "";
+  
+  Output = createWriter("Custom_KV_MCM.mcm");
+  
+  Output.println("MAX7456"); // write header
+  for(int id = 0; id < 256; id++) {
+    for(int byteNo = 0; byteNo < 216; byteNo++) {
+      switch(CharImages[id].pixels[byteNo]) {
+        case 0xFF000000:
+          OutputLine+=black;
+          PixelCounter+=1;
+        break; 
+        case 0xFF787878:
+         OutputLine+=gray;
+         PixelCounter+=1;
+        break; 
+        case 0xFFFFFFFF:
+          OutputLine+=white;
+          PixelCounter+=1;
+        break; 
+      }
+      
+    if(PixelCounter == 4){
+      Output.println(OutputLine);
+      OutputLine = "";
+      PixelCounter = 0;
+    }
+     
+    }
+    for(int spacer = 0; spacer < 10; spacer++) {
+      Output.println("01010101");
+    }
+  }
+  
+ //Output.println("done");
+ Output.flush(); // Writes the remaining data to the file
+  Output.close();  
+}
+  

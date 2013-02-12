@@ -20,12 +20,24 @@
 
 import processing.serial.Serial; // serial library
 import controlP5.*; // controlP5 library
-//import processing.opengl.*; 
+import java.io.File;
 import java.lang.StringBuffer; // for efficient String concatemation
 import javax.swing.SwingUtilities; // required for swing and EDT
 import javax.swing.JFileChooser; // Saving dialogue
 import javax.swing.filechooser.FileFilter; // for our configuration file filter "*.mwi"
 import javax.swing.JOptionPane; // for message dialogue
+import java.io.BufferedReader;
+import java.io.PrintWriter;
+import java.io.InputStream;
+import java.io.OutputStream; 
+import java.io.FileOutputStream;
+import java.io.FileInputStream;
+import java.util.*;
+import java.io.FileNotFoundException;
+import java.text.DecimalFormat; 
+
+//added new imports to support proccessing 2.0b7
+
 
 
 String KV_OSD_GUI_Version = "2.01b";
@@ -388,7 +400,7 @@ Textlabel FileUploadText;
 // textlabels -------------------------------------------------------------------------------------------------------------
 
 // Buttons------------------------------------------------------------------------------------------------------------------
-Button buttonIMPORT,buttonSAVE,buttonREAD,buttonRESET,buttonWRITE,buttonRESTART,buttonSendFile,buttonBrowseFile,buttonEditFont;
+Button buttonIMPORT,buttonSAVE,buttonREAD,buttonRESET,buttonWRITE,buttonRESTART;
 // Buttons------------------------------------------------------------------------------------------------------------------
 
 // Toggles------------------------------------------------------------------------------------------------------------------
@@ -682,6 +694,7 @@ void BuildToolHelp(){
 public void Send(){
   //sendFontFile();
   //g_serial.clear();
+  CreateFontFile();
 }
 
 void BounceSerial(){
@@ -738,7 +751,7 @@ void draw() {
   pushMatrix();
  PortRead = false; 
  PortWrite = false; 
-  if (toggleMSP_Data == true) MWData_Com();
+  if ((init_com==1)  && (toggleMSP_Data == true)) MWData_Com();
   
   
   background(80);
@@ -775,7 +788,7 @@ void draw() {
   }
 
 
-  MatchConfigs();
+ 
 
   displayHorizon(int(MW_Pitch_Roll.arrayValue()[0])*10,int(MW_Pitch_Roll.arrayValue()[1])*10*-1);
   SimulateTimer();
@@ -802,7 +815,7 @@ void draw() {
   ScontrolP5.draw();
   SmallcontrolP5.draw();
   FontGroupcontrolP5.draw();
-  
+  MatchConfigs();
   popMatrix();
   hint(DISABLE_DEPTH_TEST);
   CheckMessageBox();
@@ -1024,52 +1037,7 @@ void SimulateTimer(){
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////// BEGIN FILE OPS//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-public void Browse(){
-  SwingUtilities.invokeLater(new Runnable(){
-    public void run(){
-      final JFileChooser fc = new JFileChooser();
-      fc.setDialogType(JFileChooser.SAVE_DIALOG);
-      fc.setFileFilter(new FontFileFilter());
-      int returnVal = fc.showOpenDialog(null);
-      if (returnVal == JFileChooser.APPROVE_OPTION) {
-        File FontFile = fc.getSelectedFile();
-        FileInputStream in = null;
-        boolean completed = false;
-        String error = null;
-        try{
-          in = new FileInputStream(FontFile) ;
-          //MWI.conf.loadFromXML(in); 
-          JOptionPane.showMessageDialog(null,new StringBuffer().append("Font File loaded : ").append(FontFile.toURI()) );
-          completed  = true;
-          
-        }catch(FileNotFoundException e){
-                error = e.getCause().toString();
 
-        }catch( IOException ioe){/*failed to read the file*/
-                ioe.printStackTrace();
-                error = ioe.getCause().toString();
-        }finally{
-          if (!completed){
-                 // MWI.conf.clear();
-                 // or we can set the properties with view values, sort of 'nothing happens'
-                 //updateModel();
-          }
-          //updateView();
-          if (in!=null){
-            try{
-              in.close();
-            }catch( IOException ioe){/*failed to close the file*/}
-          }
-          
-          if (error !=null){
-                  JOptionPane.showMessageDialog(null, new StringBuffer().append("error : ").append(error) );
-          }
-        }
-      }
-    }
-  }
-  );  
-}
 
 
 //save the content of the model to a file
@@ -1212,35 +1180,7 @@ public class MwiFileFilter extends FileFilter {
   }   
 }
 
-public class FontFileFilter extends FileFilter {
-  public boolean accept(File f) {
-    if(f != null) {
-      if(f.isDirectory()) {
-        return true;
-      }
-      String extension = getExtension(f);
-      if("mcm".equals(extension)) {
-        return true;
-      }
-    }
-    return false;
-  }
 
-  public String getExtension(File f) {
-    if(f != null) {
-      String filename = f.getName();
-      int i = filename.lastIndexOf('.');
-      if(i>0 && i<filename.length()-1) {
-        return filename.substring(i+1).toLowerCase();
-      }
-    }
-    return null;
-  } 
-
-  public String getDescription() {
-    return "*.mcm Font File";
-  }   
-}
 
 
 // import the content of a file into the model

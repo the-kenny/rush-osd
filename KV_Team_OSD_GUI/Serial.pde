@@ -111,6 +111,7 @@ void InitSerial(float portValue) {
       g_serial.clear();
       toggleMSP_Data = false;
       delay(500);
+      g_serial.clear();
       g_serial.stop();
       System.out.println("Port Turned Off " );
     }
@@ -206,17 +207,30 @@ int outChecksum;
 
 
 void serialize8(int val) {
- if (toggleMSP_Data == false) return;
+ if ((init_com==1)  && (toggleMSP_Data == true)){
    PortWrite = true;
   
-   //try{
+   try {
    g_serial.write(val);
    outChecksum ^= val;
+    } catch (Exception e) { // null pointer or serial port dead
+        System.out.println("write error " + e);
+    }
+    
+    
+     
+     
+           
    //NullPointerException
       //println("Error from Serialize8");
+   
+   //catch(NullPointerException e)
+   //{
+     //System.out.println("Error from serialize8");
    //}
    
   
+ } 
 }
 
 void serialize16(int a) {
@@ -452,12 +466,17 @@ void MWData_Com() {
   List<Character> payload;
   int i,aa;
   float val,inter,a,b,h;
-  int c;
-  if ((init_com==1)  && toggleMSP_Data) {
-    try{
+  int c = 0;
+  if ((init_com==1)  && (toggleMSP_Data == true)) {
+    
       
     while (g_serial.available()>0) {
+     try{
       c = (g_serial.read());
+     } catch (Exception e) { // null pointer or serial port dead
+        System.out.println("write error " + e);
+     }
+
 
       PortRead = true;
       if (c_state == IDLE) {
@@ -520,13 +539,6 @@ void MWData_Com() {
         
       }
     }
-   }
-  catch(Exception e) {
-      println("error from MWData_Com");
-    }
-    finally {
-    }   
-   
   }
 }
 

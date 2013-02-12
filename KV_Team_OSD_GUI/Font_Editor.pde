@@ -10,6 +10,7 @@ int gap = 5;
 int gapE = 1;
 int curPixel = -1;
 int curChar = -1;
+int editChar = -1;
 boolean mouseSet = false;
 color gray = color(120);
 color white = color(255);
@@ -30,7 +31,7 @@ Textlabel CharTopLabel[] = new Textlabel[16] ;
 Textlabel CharSideLabel[] = new Textlabel[16] ;
 Textlabel LabelCurChar;
 Group FG,FGFull,FGCharEdit, FGPreview;
-Button buttonFClose;
+Button buttonSendFile,buttonBrowseFile,buttonEditFont,buttonFClose,buttonFSave;
 
 
 void Font_Editor_setup() {
@@ -142,7 +143,12 @@ String[] CharRows = {"0","1","2","3","4","5","6","7","8","9","A","B","C","D","E"
       .setImages(PreviewChar, PreviewChar, PreviewChar, PreviewChar) 
       .setGroup(FGCharEdit);
     ;
- 
+  buttonFSave = FontGroupcontrolP5.addButton("FSave",1,FGCharEdit.getWidth()-55, FGCharEdit.getBackgroundHeight()-25,45,18);//buttonFClose.setColorBackground(red_);
+  buttonFSave.getCaptionLabel()
+    .setFont(font12)
+    .toUpperCase(false)
+    .setText("SAVE");
+  buttonFSave.setGroup(FGCharEdit); 
  
  
  
@@ -151,7 +157,6 @@ String[] CharRows = {"0","1","2","3","4","5","6","7","8","9","A","B","C","D","E"
     .setFont(font12)
     .toUpperCase(false)
     .setText("CLOSE");
-
   buttonFClose.setGroup(FG);
  
   MGUploadF = controlP5.addGroup("MGUploadF")
@@ -207,6 +212,10 @@ void MakePreviewChar(){
   }
   PreviewChar.updatePixels();
   PreviewCharBang.setImages(PreviewChar, PreviewChar, PreviewChar, PreviewChar); 
+}
+
+void FSave(){
+ UpdateChar(); 
 }
 
 void FCLOSE(){
@@ -279,15 +288,49 @@ void GetChar(int id){
       
     }
     //LabelCurChar.setValue("          ");
-    String HexId = " -- Hex ID 0x" + hex(id).substring(hex(id).length()-2, hex(id).length());  
-    LabelCurChar.setValue("INDEX # "+id + HexId);
+    //String HexId = " -- Hex ID 0x" + hex(id).substring(hex(id).length()-2, hex(id).length());  
+    //LabelCurChar.setValue("INDEX # "+id + HexId);
+    LabelCurChar.setValue(str(id));
     LabelCurChar.setColorBackground(0);
     MakePreviewChar();
+    editChar = id;
     //LabelCurChar.update(); 
     curChar = -1;
   }
  
 }
+
+
+void UpdateChar(){
+ int changechar = Integer.parseInt(LabelCurChar.getStringValue());
+
+ println(changechar);
+  CharImages[changechar].loadPixels();
+  for(int byteNo = 0; byteNo < 216; byteNo++) {
+    switch(int(CharPixelsBang[byteNo].value())) {
+      case 0:
+       CharImages[changechar].pixels[byteNo] = gray;
+        //CharImages[charNo].pixels[CharIndex] = gray;
+      break;     
+      case 1:
+       CharImages[changechar].pixels[byteNo] = black;
+        //CharImages[charNo].pixels[CharIndex] = black;
+      break; 
+      case 2:
+       CharImages[changechar].pixels[byteNo] = white;
+        //CharImages[charNo].pixels[CharIndex] = white;
+      break; 
+    }
+  }
+  CharImages[changechar].updatePixels();
+  CharBang[changechar].setImages(CharImages[changechar], CharImages[changechar], CharImages[changechar], CharImages[changechar]); 
+}    
+  
+  
+  
+
+
+
 
 void setLock(Controller theController, boolean theValue) {
   theController.setLock(theValue);
@@ -311,6 +354,82 @@ ControllerInterface[] sctrl = ScontrolP5.getControllerList();
       setLock(controlP5.getController(ctrl5[i].getName()),theLock);
     }catch (NullPointerException e){}
    }
+}
+
+public void Browse(){
+  SwingUtilities.invokeLater(new Runnable(){
+    public void run(){
+      final JFileChooser fc = new JFileChooser();
+      fc.setDialogType(JFileChooser.SAVE_DIALOG);
+      fc.setFileFilter(new FontFileFilter());
+      int returnVal = fc.showOpenDialog(null);
+      if (returnVal == JFileChooser.APPROVE_OPTION) {
+        File FontFile = fc.getSelectedFile();
+        FileInputStream in = null;
+        boolean completed = false;
+        String error = null;
+        try{
+          in = new FileInputStream(FontFile) ;
+          //MWI.conf.loadFromXML(in); 
+          JOptionPane.showMessageDialog(null,new StringBuffer().append("Font File loaded : ").append(FontFile.toURI()) );
+          completed  = true;
+          
+        }catch(FileNotFoundException e){
+                error = e.getCause().toString();
+
+        }catch( IOException ioe){/*failed to read the file*/
+                ioe.printStackTrace();
+                error = ioe.getCause().toString();
+        }finally{
+          if (!completed){
+                 // MWI.conf.clear();
+                 // or we can set the properties with view values, sort of 'nothing happens'
+                 //updateModel();
+          }
+          //updateView();
+          if (in!=null){
+            try{
+              in.close();
+            }catch( IOException ioe){/*failed to close the file*/}
+          }
+          
+          if (error !=null){
+                  JOptionPane.showMessageDialog(null, new StringBuffer().append("error : ").append(error) );
+          }
+        }
+      }
+    }
+  }
+  );  
+}
 
 
+public class FontFileFilter extends FileFilter {
+  public boolean accept(File f) {
+    if(f != null) {
+      if(f.isDirectory()) {
+        return true;
+      }
+      String extension = getExtension(f);
+      if("mcm".equals(extension)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public String getExtension(File f) {
+    if(f != null) {
+      String filename = f.getName();
+      int i = filename.lastIndexOf('.');
+      if(i>0 && i<filename.length()-1) {
+        return filename.substring(i+1).toLowerCase();
+      }
+    }
+    return null;
+  } 
+
+  public String getDescription() {
+    return "*.mcm Font File";
+  }   
 }
