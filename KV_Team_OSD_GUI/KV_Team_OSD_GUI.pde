@@ -1,6 +1,5 @@
 
 //   KV Team OSD GUI
-//   By Ross Power
 //   http://code.google.com/p/rush-osd-development/
 //   February  2013  V2.01b
 //   This program is free software: you can redistribute it and/or modify
