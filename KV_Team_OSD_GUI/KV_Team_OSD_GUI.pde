@@ -453,8 +453,6 @@ OnTimer = millis();
   frameRate(10); 
 OSDBackground = loadImage("Background.jpg");
 RadioPot = loadImage("Radio_Pot.png");
-//image(OSDBackground,DisplayWindowX+WindowAdjX, DisplayWindowY+WindowAdjY, DisplayWindowX+360-WindowShrinkX, DisplayWindowY+288-WindowShrinkY);
-
 
   font8 = createFont("Arial bold",8,false);
   font9 = createFont("Arial bold",10,false);
@@ -691,11 +689,7 @@ void BuildToolHelp(){
   //controlP5.getTooltip().register("s2","Changes the Background");
 }
 
-public void Send(){
-  //sendFontFile();
-  //g_serial.clear();
-  CreateFontFile();
-}
+
 
 void BounceSerial(){
   toggleMSP_Data = false;

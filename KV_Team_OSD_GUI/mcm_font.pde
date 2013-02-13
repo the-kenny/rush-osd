@@ -129,8 +129,8 @@ PImage RawFontToImage(byte[][] raw) {
 	   break; 
 	case 0x03:
 	   img.pixels[index] = transparent;
-            CharImages[charNo].pixels[CharIndex] = gray;
-;
+            //CharImages[charNo].pixels[CharIndex] = gray;
+
 	   break; 
 	}
       }
@@ -150,7 +150,7 @@ void CreateFontFile(){
   int fullpixels = 0;
   String OutputLine = "";
   
-  Output = createWriter("Custom_KV_MCM.mcm");
+  Output = createWriter("/data/Custom_KV_MCM.mcm");
   
   Output.println("MAX7456"); // write header
   for(int id = 0; id < 256; id++) {
@@ -160,14 +160,14 @@ void CreateFontFile(){
           OutputLine+=black;
           PixelCounter+=1;
         break; 
-        case 0xFF787878:
-         OutputLine+=gray;
-         PixelCounter+=1;
-        break; 
         case 0xFFFFFFFF:
           OutputLine+=white;
           PixelCounter+=1;
         break; 
+       default:
+         OutputLine+=gray;
+         PixelCounter+=1;
+        break;  
       }
       
     if(PixelCounter == 4){
@@ -185,5 +185,35 @@ void CreateFontFile(){
  //Output.println("done");
  Output.flush(); // Writes the remaining data to the file
   Output.close();  
+}
+
+void CreateFontBytes(){
+  byte[][] EditFont = new byte[256][54];
+  int curByte =0;
+  int PixelCounter = 0;
+
+  for(int charNo = 0; charNo < 256; charNo++) {
+    for(int byteNo = 0; byteNo < 216; byteNo++) {
+      switch(CharImages[charNo].pixels[byteNo]) {
+        case 0xFF000000:
+          curByte = (curByte << 2) | 0x00;
+          PixelCounter+=1;
+        break; 
+        case 0xFFFFFFFF:
+          curByte = (curByte << 2) | 0x02;
+          PixelCounter+=1;
+        break;
+        default:
+          curByte = (curByte << 2) | 0x01;
+          PixelCounter+=1;
+        break;  
+      }
+      if(PixelCounter == 4){
+        EditFont[charNo][byteNo/4] = (byte)curByte;
+        curByte = 0;
+        PixelCounter = 0;
+      }
+    }
+  }
 }
   

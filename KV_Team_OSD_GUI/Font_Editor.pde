@@ -1,6 +1,6 @@
 PImage FullFont;
 
-
+public boolean FontChanged = false;
 public boolean mouseDown = false;
 public boolean mouseUp = true;
 PImage PreviewChar;
@@ -191,6 +191,12 @@ buttonSendFile = controlP5.addButton("Send",1,20,75,60,16)
  
 }
 
+public void Send(){
+  //sendFontFile();
+  //g_serial.clear();
+  //CreateFontFile();
+}
+
 void MakePreviewChar(){
   PImage PreviewChar = createImage(12, 18, ARGB);
    PreviewChar.loadPixels();
@@ -216,6 +222,8 @@ void MakePreviewChar(){
 
 void FSave(){
  UpdateChar(); 
+ CreateFontFile();
+CreateFontBytes(); 
 }
 
 void FCLOSE(){
@@ -239,6 +247,7 @@ void changePixel(int id){
     case 0: 
      CharPixelsBang[id].setColorForeground(black);
      CharPixelsBang[id].setValue(1);
+     FontChanged = true;
      //println("0");
     
     break; 
@@ -246,6 +255,7 @@ void changePixel(int id){
     case 1: 
      CharPixelsBang[id].setColorForeground(white);
      CharPixelsBang[id].setValue(2);
+     FontChanged = true;
      //println("1");
     
     break; 
@@ -253,6 +263,7 @@ void changePixel(int id){
     case 2: 
      CharPixelsBang[id].setColorForeground(gray);
      CharPixelsBang[id].setValue(0);
+     FontChanged = true;
      //println("2");
     
     break; 
@@ -276,14 +287,14 @@ void GetChar(int id){
             CharPixelsBang[byteNo].setColorForeground(black);
             CharPixelsBang[byteNo].setValue(1);
           break; 
-          case 120:
-            CharPixelsBang[byteNo].setColorForeground(gray);
-            CharPixelsBang[byteNo].setValue(0);
-          break; 
           case 0xFFFFFFFF:
             CharPixelsBang[byteNo].setColorForeground(white);
             CharPixelsBang[byteNo].setValue(2);
           break; 
+          default:
+            CharPixelsBang[byteNo].setColorForeground(gray);
+            CharPixelsBang[byteNo].setValue(0);
+          break;  
       }
       
     }
@@ -304,7 +315,7 @@ void GetChar(int id){
 void UpdateChar(){
  int changechar = Integer.parseInt(LabelCurChar.getStringValue());
 
- println(changechar);
+ 
   CharImages[changechar].loadPixels();
   for(int byteNo = 0; byteNo < 216; byteNo++) {
     switch(int(CharPixelsBang[byteNo].value())) {
