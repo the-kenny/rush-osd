@@ -1,13 +1,16 @@
+/*
+KV Team OSD
+http://code.google.com/p/rush-osd-development/
+February  2013  V2.2
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ any later version. see http://www.gnu.org/licenses/
+*/
 
-
-
-
-
-
-// This software is a copy of the original Rushduino-OSD project was written by Jean-Gabriel Maurice. http://code.google.com/p/rushduino-osd/
-// For more information if you have a original Rushduino OSD <Multiwii forum>  http://www.multiwii.com/forum/viewtopic.php?f=8&t=922
-// For more information if you have a Minim OSD <Multiwii forum>  http://www.multiwii.com/forum/viewtopic.php?f=8&t=2918
-// For new code releases http://code.google.com/p/rush-osd-development/
+// This Team work is based on the earlier work developed by Jean Gabriel Maurice known as Rushduino. http://code.google.com/p/rushduino-osd/
+// Rushduino OSD <Multiwii forum>  http://www.multiwii.com/forum/viewtopic.php?f=8&t=922
+// Minim OSD <Multiwii forum>  http://www.multiwii.com/forum/viewtopic.php?f=8&t=2918
 // Thanks to all developers that coded this software before us, and all users that also help us to improve.
 // This team wish you great flights.
 
@@ -31,19 +34,19 @@
 
 
               /************************************************************************************************************************************************/
-              /*                         Created for Multiwii r1240 or higher and using the KV_OSD_Team_1.0.mcm Chararter map file.                            */
+              /*                         Created for Multiwii r1240 or higher and using the KV_OSD_Team.mcm Chararter map file.                               */
               /************************************************************************************************************************************************/
 
 
-              // This software communicates using MSP via the serial port. Therefore Multiwii develop-dependent.
+              // This software communicates using MSP via the serial protocol. Therefore Multiwii develop-dependent.
               // Changes the values of pid and rc-tuning, writes in eeprom of Multiwii FC.
               // In config mode, can do acc and mag calibration.
-              // In addition, it works by collecting information analogue inputs. Such as voltage, amperage, rssi, temperature on the original hardware (RUSHDUINO).
+              // In addition, it works by collecting information analogue inputs. Such as voltage, amperage, rssi and temperature.
               // At the end of the flight may be useful to look at the statistics.
 
 
               /***********************************************************************************************************************************************/
-              /*                                                            KV_OSD_Team_2.2                                                                  */
+              /*                                                            KV_OSD_Team_V2.2                                                                  */
               /*                                                                                                                                             */
               /*                                                                                                                                             */
               /***********************************************************************************************************************************************/

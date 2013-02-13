@@ -1,4 +1,13 @@
 
+//   KV Team OSD GUI
+//   By Ros Power
+//   http://code.google.com/p/rush-osd-development/
+//   February  2013  V2.01b
+//   This program is free software: you can redistribute it and/or modify
+//   it under the terms of the GNU General Public License as published by
+//   the Free Software Foundation, either version 3 of the License, or
+//   any later version. see http://www.gnu.org/licenses/
+
               /***********************************************************************************************************************************************/
               /*                                                            KV_OSD_Team_GUI                                                                  */
               /*                                                                                                                                             */
