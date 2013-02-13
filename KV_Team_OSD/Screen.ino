@@ -421,9 +421,9 @@ void displayGPSPosition(void)
   screenBuffer[0] = MwGPSAltPositionAdd[Settings[S_UNITSYSTEM]];
   uint16_t xx;
   if(Settings[S_UNITSYSTEM])
-    xx = GPS_altitude * 3.2808;
+    xx = GPS_altitude * 3.2808; // Mt to Feet
   else
-    xx = GPS_altitude;
+    xx = GPS_altitude;          // Mt
   itoa(xx,screenBuffer+1,10);
   MAX7456_WriteString(screenBuffer,getPosition(MwGPSAltPosition));
 }
@@ -438,8 +438,9 @@ void displayNumberOfSat(void)
 
 void displayGPS_speed(void)
 {
-  if(!GPS_fix)
-    return;
+//  if(!GPS_fix)
+  if(!GPS_fix) return;
+  if(!armed) GPS_speed=0;
 
   int xx;
   if(!Settings[S_UNITSYSTEM])
@@ -447,6 +448,9 @@ void displayGPS_speed(void)
   else
     xx = GPS_speed * 0.02236932;      // (0.036*0.62137)  From MWii cm/sec to mph
 
+  if(xx > speedMAX)
+    speedMAX = xx;
+    
   screenBuffer[0]=speedUnitAdd[Settings[S_UNITSYSTEM]];
   itoa(xx,screenBuffer+1,10);
   MAX7456_WriteString(screenBuffer,getPosition(speedPosition));
@@ -494,8 +498,9 @@ void displayClimbRate(void)
 
 void displayDistanceToHome(void)
 {
-  if(!GPS_fix)
-    return;
+//  if(!GPS_fix)
+  if(!GPS_fix) return;
+  if(!armed) GPS_distanceToHome=0;
 
   int16_t dist;
   if(Settings[S_UNITSYSTEM])
@@ -795,12 +800,12 @@ void displayConfigScreen(void)
     MAX7456_WriteString_P(configMsg54, YAWT);
     MAX7456_WriteString(itoa(altitudeMAX,screenBuffer,10),YAWD);
 
-    if(!Settings[S_UNITSYSTEM])
-      xx = speedMAX * 0.036;           // From MWii cm/sec to Km/h
-    else
-      xx = speedMAX * 0.02236932;      // (0.036*0.62137)  From MWii cm/sec to mph
+//    if(!Settings[S_UNITSYSTEM])
+//      xx = speedMAX * 0.036;           // From MWii cm/sec to Km/h
+//    else
+//      xx = speedMAX * 0.02236932;      // (0.036*0.62137)  From MWii cm/sec to mph
     MAX7456_WriteString_P(configMsg55, ALTT);
-    MAX7456_WriteString(itoa(xx,screenBuffer,10),ALTD);
+    MAX7456_WriteString(itoa(speedMAX,screenBuffer,10),ALTD);
 
     MAX7456_WriteString_P(configMsg56, VELT);
 

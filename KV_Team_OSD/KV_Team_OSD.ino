@@ -269,7 +269,7 @@ void loop()
       }
       else
       {
-        CollectStatistics();
+//        CollectStatistics();
 
         if(Settings[S_DISPLAYVOLTAGE]&&((voltage>Settings[S_VOLTAGEMIN])||(Blink2hz))) displayVoltage();
         if(Settings[S_DISPLAYRSSI]&&((rssi>lowrssiAlarm)||(Blink2hz))) displayRSSI();
@@ -370,15 +370,18 @@ void loop()
 //---------------------  End of Timed Service Routine ---------------------------------------
 
 
-void CollectStatistics() {
-  if(GPS_fix && GPS_speed > speedMAX)
-    speedMAX = GPS_speed;
-}
+  //void CollectStatistics() {
+//  if(GPS_fix && GPS_speed > speedMAX)
+//    speedMAX = GPS_speed;
+//}
 
 void calculateTrip(void)
 {
-  if(GPS_fix && (GPS_speed>0))
-    trip += GPS_speed *0.0005;                  // NEB mod : 100/1000*50=0.0005  cm/sec ---> mt/50msec (trip var is float)
+//  if(GPS_fix && (GPS_speed>0))
+  if(GPS_fix && armed && (GPS_speed>0)){
+    if(!Settings[S_UNITSYSTEM]) trip += GPS_speed *0.0005;        //  50/(100*1000)=0.0005               cm/sec ---> mt/50msec (trip var is float)      
+    if(Settings[S_UNITSYSTEM])  trip += GPS_speed *0.0016404;     //  50/(100*1000)*3.2808=0.0016404     cm/sec ---> ft/50msec
+    }
 }
 
 void calculateRssi(void)
