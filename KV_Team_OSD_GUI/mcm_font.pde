@@ -193,8 +193,8 @@ void CreateFontBytes(){
   int PixelCounter = 0;
 
   for(int charNo = 0; charNo < 256; charNo++) {
-    for(int byteNo = 0; byteNo < 216; byteNo++) {
-      switch(CharImages[charNo].pixels[byteNo]) {
+    for(int pixelNo = 0; pixelNo < 216; pixelNo++) {
+      switch(CharImages[charNo].pixels[pixelNo]) {
         case 0xFF000000:
           curByte = (curByte << 2) | 0x00;
           PixelCounter+=1;
@@ -209,7 +209,7 @@ void CreateFontBytes(){
         break;  
       }
       if(PixelCounter == 4){
-        EditFont[charNo][byteNo/4] = (byte)curByte;
+        EditFont[charNo][pixelNo/4] = (byte)curByte;
         curByte = 0;
         PixelCounter = 0;
       }

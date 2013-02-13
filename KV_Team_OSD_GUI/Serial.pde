@@ -522,7 +522,10 @@ void MWData_Com() {
             //System.err.println("Copter did not understand request type "+c);
           } else {
             /* we got a valid response packet, evaluate it */
+            if ((init_com==1)  && (toggleMSP_Data == true)) {
             evaluateCommand(cmd, (int)dataSize);
+            }
+           
           }
         }
         else {
