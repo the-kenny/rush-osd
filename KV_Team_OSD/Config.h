@@ -1,23 +1,15 @@
+ 
+ 
+ 
                                       /**********************************************************************************/
                                       /*        KV_OSD_Team 2.2    Configurable parameters       KV_OSD_Team 2.2        */
                                       /**********************************************************************************/
 
-// _______________________________________________________________General configuration________________________________________________________________________//
 
-
-//*************************************   Define your OSD Board   ****************************************/
-// moved MINIMOSD to eeprom, default values are in GlobalVariables
-// moved RUSHDUINO to eeprom, default values are in GlobalVariables
-
-/*******************************************  Video System  ***********************************/
-//moved VideoSignalType to eeprom, default values are in GlobalVariables
 
 /**********************       Serial speed      ************************/
 
 #define SERIAL_SPEED 115200
-
-//moved active modes to eeprom, default values are in GlobalVariables
-
 
 /**********    Here you can define time out for Mag calibration and EEProm write (mostly useful for mag calibration)    ***********/
 
@@ -25,35 +17,19 @@
 #define EEPROM_WRITE_DELAY 5
 
 /***************************************         Amperage        ********************************************/
- /*                                                                                                                     */
-  /************** Voltage match multimeter (you can change this options to match your setup/requirements) ****************/
-// moved DIVIDERRATIO to eeprom, default values are in GlobalVariables
-// moved VIDDIVIDERRATIO to eeprom, default values are in GlobalVariables
-// moved  VIDVOLTAGE_VBAT to eeprom, default values are in GlobalVariables
-// moved MAINVOLTAGE_VBAT to eeprom, default values are in GlobalVariables
 
 #define EST_PMSum 2.6                 /****  NOTE  **** If you use hardware CURRENT sensor on OSD use (#define EST_PMSum 1) BEFORE ANY ADJUSTMENT OR CALIBRATION
-                                                      this value is empirical and you can find "yours" after some flights using the same instructions as for VBAT adjustment
-                                                      on Mwc (first you have to MWC fine tune your voltage (VBat))                                                            ****/
+                                                        this value is empirical and you can find "yours" after some flights using the same instructions as for VBAT adjustment
+                                                        on Mwc (first you have to MWC fine tune your voltage (VBat))                                                            ****/
 
 //#define HARDSENSOR                // Uncomment to change from MW_POWERMETER to Hard current sensor on analogue Pin (MW_POWERMETER is DEFAULT and must be defined on MWCode)
 #define AMPDIVISION 3600            // Hardware current sensor division ratio
 #define AMPERAGE_CAL 1.1            // Amperage calibration
 #define AMPRERAGE_OFFSET 512        // Amperage = AMPRERAGE_OFFSET - analogRead * AMPERAGE_CAL / 10.23
 
-
 /**********************************         Display Settings         ************************/
 
 #define DECIMAL '.'                 // Decimal point character, change to what suits you best (.) (,)
-
-// moved THROTTLEPOSITION to eeprom, default values are in GlobalVariables
-// moved DISPLAY_HORIZON_BR to eeprom, default values are in GlobalVariables
-// moved COORDINATES to eeprom, default values are in GlobalVariables
-// moved WITHDECORATION to eeprom, default values are in GlobalVariables
-// moved SHOWHEADING to eeprom, default values are in GlobalVariables
-// moved HEADING360 to eeprom, default values are in GlobalVariables
-// moved HEADING360 to eeprom, default values are in GlobalVariables
-// moved VIDVOLTAGE  to eeprom, default values are in GlobalVariables
 
 /**********************************   MSP Options and compatibility **********************/
 #define USE_BOXNAMES             // Comment this line to use MSP_BOXIDS
@@ -67,16 +43,10 @@
 #define GPSSENSOR      8//0b00001000
 //#define SONAR         16//0b00010000
 
-//moved BATCELLS to EEPROM
-// moved BATEVs to DisplayVoltage
-
 /*********************      Led output      *******************************/
 #define BST 7                        // pin 7 for original Rushduino Board
 #define BST_OFF digitalWrite(BST,LOW);
 #define BST_ON digitalWrite(BST,HIGH);
-
-/*********************      Statistics      *******************************/
-// moved RESETSTATISTICS to eeprom, default values are in GlobalVariables
 
 /********************      Analog input defines     ***********************/
 
@@ -90,7 +60,6 @@ const uint8_t lowrssiAlarm=75;     // This will make blink the Rssi if lower the
 
 
 /*----------------------------------------------       End of configurable parameters      ----------------------------------------------------*/
-
 
 #define LINE      30
 #define LINE01    0
@@ -159,11 +128,6 @@ const uint8_t lowrssiAlarm=75;     // This will make blink the Rssi if lower the
 // DEFINE CONFIGURATION MENU PAGES
 #define MINPAGE 1
 #define MAXPAGE 6
-
-
-
-
-
 
 // POSITION OF EACH CHARACTER OR LOGO IN THE MAX7456
 const unsigned char speedUnitAdd[2] ={
