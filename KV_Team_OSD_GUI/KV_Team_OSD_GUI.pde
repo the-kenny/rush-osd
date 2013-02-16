@@ -169,8 +169,8 @@ int messageBoxResult = -1;
 // Int variables
 
 String LoadPercent = "";
-int init_com;
-int commListMax;
+int init_com = 0;
+int commListMax = 0;
 int whichKey = -1;  // Variable to hold keystoke values
 int inByte = -1;    // Incoming serial data
 int[] serialInArray = new int[3];    // Where we'll put what we receive
@@ -903,9 +903,14 @@ void MatchConfigs(){
 
 // controls comport list click
 public void controlEvent(ControlEvent theEvent) {
+  try{
   if (theEvent.isGroup())
     if (theEvent.name()=="portComList")
       InitSerial(theEvent.group().value()); // initialize the serial port selected
+  }catch(Exception e){
+    System.out.println("error with Port");
+  }
+
       
   try{
   //for (int i=0;i<col.length;i++) {
@@ -1401,10 +1406,10 @@ void inputbox(String theString) {
 }
 
 void mouseReleased() {
-   mouseDown = false;
-                mouseUp = true;
-                if (curPixel>-1)changePixel(curPixel);
-                if (curChar>-1)GetChar(curChar);
+  mouseDown = false;
+  mouseUp = true;
+  if (curPixel>-1)changePixel(curPixel);
+  if (curChar>-1)GetChar(curChar);
   ControlLock();
   
 } 

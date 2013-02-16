@@ -150,7 +150,7 @@ void CreateFontFile(){
   int fullpixels = 0;
   String OutputLine = "";
   
-  Output = createWriter("/data/Custom_KV_MCM.mcm");
+  Output = createWriter("/data/MW_OSD_Team.mcm");
   
   Output.println("MAX7456"); // write header
   for(int id = 0; id < 256; id++) {
@@ -163,7 +163,7 @@ void CreateFontFile(){
         case 0xFFFFFFFF:
           OutputLine+=white;
           PixelCounter+=1;
-        break; 
+        break;
        default:
          OutputLine+=gray;
          PixelCounter+=1;
@@ -185,35 +185,8 @@ void CreateFontFile(){
  //Output.println("done");
  Output.flush(); // Writes the remaining data to the file
   Output.close();  
+  img_Clear = LoadFont("MW_OSD_Team.mcm");  
 }
 
-void CreateFontBytes(){
-  byte[][] EditFont = new byte[256][54];
-  int curByte =0;
-  int PixelCounter = 0;
 
-  for(int charNo = 0; charNo < 256; charNo++) {
-    for(int pixelNo = 0; pixelNo < 216; pixelNo++) {
-      switch(CharImages[charNo].pixels[pixelNo]) {
-        case 0xFF000000:
-          curByte = (curByte << 2) | 0x00;
-          PixelCounter+=1;
-        break; 
-        case 0xFFFFFFFF:
-          curByte = (curByte << 2) | 0x02;
-          PixelCounter+=1;
-        break;
-        default:
-          curByte = (curByte << 2) | 0x01;
-          PixelCounter+=1;
-        break;  
-      }
-      if(PixelCounter == 4){
-        EditFont[charNo][pixelNo/4] = (byte)curByte;
-        curByte = 0;
-        PixelCounter = 0;
-      }
-    }
-  }
-}
   

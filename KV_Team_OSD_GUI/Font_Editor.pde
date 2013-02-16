@@ -132,17 +132,17 @@ String[] CharRows = {"0","1","2","3","4","5","6","7","8","9","A","B","C","D","E"
   }
 
   LabelCurChar = FontGroupcontrolP5.addTextlabel("LabelCurChar","No Index Set" ,XcharEdit+ 10,YcharEdit + 18*(12+gapE)+5)
-  .setColor(white)
-  .setGroup(FGCharEdit);
+    .setColor(white)
+    .setGroup(FGCharEdit);
  
- PreviewCharBang = FontGroupcontrolP5.addBang("PreviewCharBang")
-      .setPosition(FGCharEdit.getWidth() / 2 -6, PreviewY)
-      .setSize(12, 18)
-      .setLabel("")
-      //.setId(i)
-      .setImages(PreviewChar, PreviewChar, PreviewChar, PreviewChar) 
-      .setGroup(FGCharEdit);
-    ;
+  PreviewCharBang = FontGroupcontrolP5.addBang("PreviewCharBang")
+    .setPosition(FGCharEdit.getWidth() / 2 -6, PreviewY)
+    .setSize(12, 18)
+    .setLabel("")
+    //.setId(i)
+    .setImages(PreviewChar, PreviewChar, PreviewChar, PreviewChar) 
+    .setGroup(FGCharEdit);
+  ;
   buttonFSave = FontGroupcontrolP5.addButton("FSave",1,FGCharEdit.getWidth()-55, FGCharEdit.getBackgroundHeight()-25,45,18);//buttonFClose.setColorBackground(red_);
   buttonFSave.getCaptionLabel()
     .setFont(font12)
@@ -171,7 +171,7 @@ String[] CharRows = {"0","1","2","3","4","5","6","7","8","9","A","B","C","D","E"
                 //.close() 
                ; 
 
-FileUploadText = controlP5.addTextlabel("FileUploadText",LoadPercent,10,5)
+FileUploadText = controlP5.addTextlabel("FileUploadText","",10,5)
 .setGroup(MGUploadF);
 ;
 
@@ -182,12 +182,16 @@ buttonEditFont = controlP5.addButton("EditFont",1,20,25,60,16)
 .setText("Edit Font")
 ;
 
-buttonBrowseFile = controlP5.addButton("Browse",1,20,50,60,16)
+buttonSendFile = controlP5.addButton("FONT_UPLOAD",1,20,50,60,16)
 .setGroup(MGUploadF);
-;
-buttonSendFile = controlP5.addButton("Send",1,20,75,60,16)
-.setGroup(MGUploadF);
-;
+
+buttonBrowseFile = controlP5.addButton("Browse",1,20,75,60,16)
+.setGroup(MGUploadF)
+.hide();
+
+buttonSendFile.getCaptionLabel()
+    .toUpperCase(false)
+    .setText("Upload");
  
 }
 
@@ -221,9 +225,8 @@ void MakePreviewChar(){
 }
 
 void FSave(){
- UpdateChar(); 
+ UpdateChar();
  CreateFontFile();
-CreateFontBytes(); 
 }
 
 void FCLOSE(){
@@ -290,7 +293,7 @@ void GetChar(int id){
           case 0xFFFFFFFF:
             CharPixelsBang[byteNo].setColorForeground(white);
             CharPixelsBang[byteNo].setValue(2);
-          break; 
+          break;
           default:
             CharPixelsBang[byteNo].setColorForeground(gray);
             CharPixelsBang[byteNo].setValue(0);

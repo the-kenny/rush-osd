@@ -8,7 +8,6 @@ public boolean toggleRead = false,
         toggleSpekBind = false,
         toggleSetSetting = false;
 Serial g_serial;      // The serial port
-int FilePercent = 0;
 float LastPort = 0;
 /******************************* Multiwii Serial Protocol **********************/
 
@@ -74,13 +73,15 @@ private static final int
 private static final int
   OSD_NULL                 =0,
   OSD_READ_CMD             =1,
-  OSD_WRITE_CMD            =2;
+  OSD_WRITE_CMD            =2,
+  OSD_GET_FONT             =3;
 
 
 // initialize the serial port selected in the listBox
 void InitSerial(float portValue) {
   if (portValue < commListMax) {
     if(init_com == 0){ 
+      try{
       String portPos = Serial.list()[int(portValue)];
       txtlblWhichcom.setValue("COM = " + shortifyPortName(portPos, 8));
       g_serial = new Serial(this, portPos, 115200);
@@ -90,16 +91,20 @@ void InitSerial(float portValue) {
       buttonREAD.setColorBackground(green_);
       buttonRESET.setColorBackground(green_);
       commListbox.setColorBackground(green_);
-      g_serial.buffer(256);
+      g_serial.buffer(128);
       System.out.println("Port Turned On " );
       delay(2000);
       
       READ();
+       } catch (Exception e) { // null pointer or serial port dead
+        System.out.println("OpenPort error " + e);
+     }
       //+((int)(cmd&0xFF))+": "+(checksum&0xFF)+" expected, got "+(int)(c&0xFF));
     }
   }
   else {
-    if(init_com == 1){ 
+    if(init_com == 1){
+     System.out.println("Begin Port Down " ); 
       txtlblWhichcom.setValue("Comm Closed");
       toggleMSP_Data = false;
       init_com=0;
@@ -107,15 +112,21 @@ void InitSerial(float portValue) {
       buttonREAD.setColorBackground(red_);
       buttonRESET.setColorBackground(red_);
       buttonWRITE.setColorBackground(red_);
-      init_com=0;
-      g_serial.clear();
+      try{
       toggleMSP_Data = false;
-      delay(500);
       g_serial.clear();
+      //System.out.println("after clear " ); 
+      delay(1000);
       g_serial.stop();
+      g_serial.clear();
+
+      } catch (Exception e) { // null pointer or serial port dead
+        System.out.println("ClosePort error " + e);
+     }
       System.out.println("Port Turned Off " );
     }
   }
+  
 }
 
 void SetConfigItem(int index, int value) {
@@ -153,7 +164,7 @@ void SetConfigItem(int index, int value) {
 public void READ(){
   for(int i = 0; i < CONFIGITEMS; i++)
     SetConfigItem((byte)i, 0);
-
+   
   p = 0;
   inBuf[0] = OSD_READ_CMD;
   evaluateCommand((byte)MSP_OSD, 1);
@@ -164,7 +175,13 @@ public void WRITE(){
   p = 0;
   inBuf[0] = OSD_WRITE_CMD;
   evaluateCommand((byte)MSP_OSD, 1);
+}
 
+public void FONT_UPLOAD(){
+  System.out.println("FONT_UPLOAD");
+  p = 0;
+  inBuf[0] = OSD_GET_FONT;
+  evaluateCommand((byte)MSP_OSD, 1);
 }
 
 // coded by Eberhard Rensch
@@ -211,25 +228,11 @@ void serialize8(int val) {
    PortWrite = true;
   
    try {
-   g_serial.write(val);
-   outChecksum ^= val;
+        g_serial.write(val);
+     outChecksum ^= val;
     } catch (Exception e) { // null pointer or serial port dead
         System.out.println("write error " + e);
     }
-    
-    
-     
-     
-           
-   //NullPointerException
-      //println("Error from Serialize8");
-   
-   //catch(NullPointerException e)
-   //{
-     //System.out.println("Error from serialize8");
-   //}
-   
-  
  } 
 }
 
@@ -275,23 +278,25 @@ void tailSerialReply() {
   serialize8(outChecksum);
 }
 
-public void evaluateCommand(byte cmd, int dataSize) {
-   if (toggleMSP_Data == false) return;
-  try{
+public void evaluateCommand(byte cmd, int size) {
+   if ((init_com==0)  || (toggleMSP_Data == false)) return;
+ 
   int icmd = (int)(cmd&0xFF);
+  //System.out.println("evaluateCommand "+icmd+" size "+size);
   switch(icmd) {
 
   case MSP_OSD:
  
   {
     int cmd_internal = read8();
+    //System.out.println("MSP_OSD "+cmd_internal);
     if(cmd_internal == OSD_NULL) {
       headSerialReply(MSP_OSD, 1);
       serialize8(OSD_NULL);
     }
 
     if(cmd_internal == OSD_READ_CMD) {
-      if(dataSize == 1) {
+      if(size == 1) {
 	// Send a NULL reply
 	headSerialReply(MSP_OSD, 1);
 	serialize8(OSD_READ_CMD);
@@ -307,14 +312,38 @@ public void evaluateCommand(byte cmd, int dataSize) {
       }
     }
 
-    if(cmd_internal == OSD_WRITE_CMD && dataSize == 1) {
+    if(cmd_internal == OSD_WRITE_CMD && size == 1) {
       headSerialReply(MSP_OSD, CONFIGITEMS+1);
       serialize8(OSD_WRITE_CMD);
       for(int i = 0; i < CONFIGITEMS; i++)
         serialize8(int(confItem[i].value()));
     }
-    break;
+
+    if(cmd_internal == OSD_GET_FONT) {
+      if( size == 1) {
+	headSerialReply(MSP_OSD, 3);
+	serialize8(OSD_GET_FONT);
+	serialize16(7456);
+      }
+      else if(size == 2) {
+	int cindex = read8();
+	//System.out.println("send char "+cindex);
+	headSerialReply(MSP_OSD, 56);
+        serialize8(OSD_GET_FONT);
+	for(int i = 0; i < 54; i++)
+	   serialize8(int(raw_font[cindex][i]));
+	serialize8(cindex);
+        FileUploadText.setText("  Please Wait");
+        buttonSendFile.getCaptionLabel()
+        .toUpperCase(false)
+        .setText("Sent: "+cindex);
+	System.out.println("Sent Char "+cindex);
+      }
+    }
   }
+    
+    break;
+  
     
   case MSP_IDENT:
   
@@ -342,6 +371,12 @@ public void evaluateCommand(byte cmd, int dataSize) {
     
     serialize32(modebits);
     serialize8(0);   // current setting
+    
+    buttonSendFile.getCaptionLabel()
+        .toUpperCase(false)
+        .setText("Upload");
+    FileUploadText.setText("");
+    
     break;
     
   case MSP_BOXNAMES:
@@ -350,14 +385,7 @@ public void evaluateCommand(byte cmd, int dataSize) {
      serializeNames(strBoxNames.length());
     break;
 
-  case MSP_ATTITUDE:
-   
-    headSerialReply(MSP_ATTITUDE, 8);
-    serialize16(int(MW_Pitch_Roll.arrayValue()[0])*10);
-    serialize16(int(MW_Pitch_Roll.arrayValue()[1])*10);
-    serialize16(MwHeading);
-    serialize16(0);
-    break;
+ 
 
   case MSP_RC:
    
@@ -374,12 +402,30 @@ public void evaluateCommand(byte cmd, int dataSize) {
        serialize16(1500);
       }
     break;
+    
+/*
+     case MSP_ATTITUDE:
+   
+    headSerialReply(MSP_ATTITUDE, 8);
+    serialize16(int(MW_Pitch_Roll.arrayValue()[0])*10);
+    serialize16(int(MW_Pitch_Roll.arrayValue()[1])*10);
+    serialize16(MwHeading);
+    serialize16(0);
+    break;
+
+    case MSP_ANALOG:
+  
+    headSerialReply(MSP_ANALOG, 5);
+    serialize8(int(sVBat * 10));
+    serialize16(0);
+    serialize16(int(sMRSSI));
+    break;
   
   
   case MSP_RAW_GPS:
    
    // We have: GPS_fix(0-2), GPS_numSat(0-15), GPS_coord[LAT & LON](signed, in 1/10 000 000 degres), GPS_altitude(signed, in meters) and GPS_speed(in cm/s)  
-   //FormatGPSCoord(GPS_latitude,screenBuffer+1,3,'N','S');
+   FormatGPSCoord(GPS_latitude,screenBuffer+1,3,'N','S');
     headSerialReply(MSP_RAW_GPS,16);
     serialize8(int(SGPS_FIX.arrayValue()[0]));
     serialize8(int(SGPS_numSat.value()));
@@ -391,12 +437,12 @@ public void evaluateCommand(byte cmd, int dataSize) {
     break;
     
   
-  case MSP_COMP_GPS:
+ case MSP_COMP_GPS:
    
      headSerialReply(MSP_COMP_GPS,5);
      serialize16(int(SGPS_distanceToHome.value()));
-     int GPSheading = int(SGPSHeadHome.value());
-     if(GPSheading < 0) GPSheading += 360;
+    int GPSheading = int(SGPSHeadHome.value());
+    if(GPSheading < 0) GPSheading += 360;
      serialize16(GPSheading);
      serialize8(0);
     break;
@@ -409,13 +455,7 @@ public void evaluateCommand(byte cmd, int dataSize) {
     serialize16(int(sVario) *10);     
     break;
   
-  case MSP_ANALOG:
   
-    headSerialReply(MSP_ANALOG, 5);
-    serialize8(int(sVBat * 10));
-    serialize16(0);
-    serialize16(int(sMRSSI));
-    break;
 
    case MSP_RC_TUNING:
    
@@ -450,15 +490,14 @@ public void evaluateCommand(byte cmd, int dataSize) {
     System.out.print("Unsupported request = ");
     System.out.println(str(icmd));
     break;
+  */
   }
+  
+ 
   tailSerialReply();
 
-}
-    catch(Exception e) {
-      println("error from evaluateCommand");
-    }
-    finally {
-    }   
+
+    
 }
 
 void MWData_Com() {
@@ -469,15 +508,16 @@ void MWData_Com() {
   int c = 0;
   if ((init_com==1)  && (toggleMSP_Data == true)) {
     
-      
+    
     while (g_serial.available()>0) {
-     try{
+     try{   
       c = (g_serial.read());
-     } catch (Exception e) { // null pointer or serial port dead
-        System.out.println("write error " + e);
+    } catch (NullPointerException e) { // null pointer or serial port dead
+        System.out.println("Error from Read " + e);
+        return;
      }
 
-
+     
       PortRead = true;
       if (c_state == IDLE) {
         c_state = (c=='$') ? HEADER_START : IDLE;
@@ -522,9 +562,18 @@ void MWData_Com() {
             //System.err.println("Copter did not understand request type "+c);
           } else {
             /* we got a valid response packet, evaluate it */
-            if ((init_com==1)  && (toggleMSP_Data == true)) {
-            evaluateCommand(cmd, (int)dataSize);
-            }
+            try{
+              if ((init_com==1)  && (toggleMSP_Data == true)) {
+              evaluateCommand(cmd, (int)dataSize);
+              }
+              else{
+                System.out.println("port is off ");
+              }
+              
+              
+              } catch (Exception e) { // null pointer or serial port dead
+              System.out.println("write error " + e);
+              }
            
           }
         }
@@ -542,6 +591,7 @@ void MWData_Com() {
         
       }
     }
+     
   }
 }
 

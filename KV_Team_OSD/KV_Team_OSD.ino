@@ -51,7 +51,7 @@ February  2013  V2.2
               /*                                                                                                                                             */
               /***********************************************************************************************************************************************/
 
-/*Test for Carlo*/
+
 #include <avr/pgmspace.h>
 #include <EEPROM.h> //Needed to access eeprom read/write functions
 #include "symbols.h"
@@ -98,7 +98,10 @@ void setup()
 }
 
 void setMspRequests() {
-  if(configMode) {
+  if(fontMode) {
+      modeMSPRequests = REQ_MSP_FONT;
+  }
+  else if(configMode) {
     modeMSPRequests = 
       REQ_MSP_IDENT|
       REQ_MSP_STATUS|
@@ -184,9 +187,8 @@ void loop()
   if((currentMillis - previous_millis_low) >= lo_speed_cycle)  // 10 Hz (Executed every 100ms)
   {
     previous_millis_low = currentMillis;    
-    if(!serialWait){
+    if(!fontMode)
       blankserialRequest(MSP_ATTITUDE);
-    }
   }  // End of slow Timed Service Routine (100ms loop)
 
   if((currentMillis - previous_millis_high) >= hi_speed_cycle)  // 20 Hz (Executed every 50ms)
@@ -200,7 +202,6 @@ void loop()
     if(Settings[S_DISPLAYRSSI])
       calculateRssi();
 
-    if(!serialWait) {
       uint8_t MSPcmdsend;
       if(queuedMSPRequests == 0)
         queuedMSPRequests = modeMSPRequests;
@@ -246,10 +247,12 @@ void loop()
 #else
         MSPcmdsend = MSP_BOXIDS;
 #endif
-        break;
-      }
+         break;
+    case REQ_MSP_FONT:
+      MSPcmdsend = MSP_OSD;
+      break;
+    }
       blankserialRequest(MSPcmdsend);      
-    } // End of serial wait
 
     MAX7456_DrawScreen();
     if( allSec < 9 )
@@ -266,13 +269,16 @@ void loop()
         configMode=1;
         setMspRequests();
       }
-      if(configMode)
+      if(fontMode) {
+         displayFontScreen();
+      }
+      else if(configMode)
       {
         displayConfigScreen();
       }
       else
       {
-//        CollectStatistics();
+        CollectStatistics();
 
         if(Settings[S_DISPLAYVOLTAGE]&&((voltage>Settings[S_VOLTAGEMIN])||(Blink2hz))) displayVoltage();
         if(Settings[S_DISPLAYRSSI]&&((rssi>lowrssiAlarm)||(Blink2hz))) displayRSSI();
@@ -373,18 +379,22 @@ void loop()
 //---------------------  End of Timed Service Routine ---------------------------------------
 
 
-  //void CollectStatistics() {
-//  if(GPS_fix && GPS_speed > speedMAX)
-//    speedMAX = GPS_speed;
-//}
+void CollectStatistics() {
+  if(GPS_fix && GPS_speed > speedMAX)
+    speedMAX = GPS_speed;
+
+  if(temperature > temperMAX)
+    temperMAX = temperature;
+}
 
 void calculateTrip(void)
 {
-//  if(GPS_fix && (GPS_speed>0))
-  if(GPS_fix && armed && (GPS_speed>0)){
-    if(!Settings[S_UNITSYSTEM]) trip += GPS_speed *0.0005;        //  50/(100*1000)=0.0005               cm/sec ---> mt/50msec (trip var is float)      
-    if(Settings[S_UNITSYSTEM])  trip += GPS_speed *0.0016404;     //  50/(100*1000)*3.2808=0.0016404     cm/sec ---> ft/50msec
-    }
+  if(GPS_fix && armed && (GPS_speed>0)) {
+    if(Settings[S_UNITSYSTEM])
+      trip += GPS_speed *0.0016404;     //  50/(100*1000)*3.2808=0.0016404     cm/sec ---> ft/50msec
+    else
+      trip += GPS_speed *0.0005;        //  50/(100*1000)=0.0005               cm/sec ---> mt/50msec (trip var is float)      
+  }
 }
 
 void calculateRssi(void)
@@ -429,4 +439,45 @@ void checkEEPROM(void)
         EEPROM.write(en,EEPROM_DEFAULT[en]);
     }
   }
+}
+
+uint8_t safeMode() {
+  return 1;	// XXX
+}
+
+void initFontMode() {
+  if(armed || configMode || fontMode|| !safeMode()) 
+    return;
+
+  for(int i = 0; i < 32; i++)
+     needFontUpdate[i] = 0xff;
+
+  fontMode = 1;
+  nextCharToRequest = 0;
+  setMspRequests();
+}
+
+void findNextCharToRequest() {
+  if(!fontMode)
+    return;
+
+  for(int i = 0; i < 32; i++) {
+     uint8_t v = needFontUpdate[i];
+     if(v == 0)
+       continue;
+     for(uint8_t j = 0; j < 8; j++) {
+       if(needFontUpdate[i] & (1<<j)) {
+         nextCharToRequest = i * 8 + j;
+         return;
+       }
+     }
+  }
+  // Nothing to request,
+  fontMode = 0;
+  MAX7456Setup();
+  setMspRequests();
+}
+
+void fontCharReceived(uint8_t c) {
+  needFontUpdate[c/8] &= ~(1<< (c & 7));
 }

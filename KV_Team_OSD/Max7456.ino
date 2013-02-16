@@ -93,6 +93,7 @@
 #define MAX7456ADD_RB14         0x1e
 #define MAX7456ADD_RB15         0x1f
 #define MAX7456ADD_OSDBL        0x6c
+#define MAX7456ADD_STAT         0xA0
 
 // Selectable by board type
 uint8_t MAX7456SELECT;		// output pin
@@ -243,4 +244,59 @@ void MAX7456Configure() {
     MAX7456SELECT = 6;       // ss
     MAX7456RESET = 10;       // RESET
   }
+}
+//MAX7456 commands
+
+#define WRITE_TO_MAX7456
+#define NVM_ram_size 54
+
+#define CLEAR_display 0x04
+#define CLEAR_display_vert 0x06
+#define END_string 0xff
+#define WRITE_nvr 0xa0
+// with NTSC
+#define ENABLE_display 0x08
+#define ENABLE_display_vert 0x0c
+#define MAX7456_reset 0x02
+#define DISABLE_display 0x00
+#define STATUS_reg_nvr_busy 0x20
+
+void write_NVM(uint8_t char_address)
+{
+#ifdef WRITE_TO_MAX7456
+  // disable display
+   digitalWrite(MAX7456SELECT,LOW);
+  spi_transfer(VM0_reg); 
+  spi_transfer(DISABLE_display);
+
+  
+  
+  //digitalWrite(MAX7456SELECT,LOW);
+  //spi_transfer(VM0_reg);
+  //spi_transfer(Settings[S_VIDEOSIGNALTYPE]?0x40:0);
+
+  spi_transfer(MAX7456ADD_CMAH); // set start address high
+  spi_transfer(char_address);
+
+  for(uint8_t x = 0; x < NVM_ram_size; x++) // write out 54 bytes of character to shadow ram
+  {
+    spi_transfer(MAX7456ADD_CMAL); // set start address low
+    spi_transfer(x);
+    spi_transfer(MAX7456ADD_CMDI);
+    spi_transfer(fontData[x]);
+  }
+
+  // transfer 54 bytes from shadow ram to NVM
+  spi_transfer(MAX7456ADD_CMM);
+  spi_transfer(WRITE_nvr);
+  
+  // wait until bit 5 in the status register returns to 0 (12ms)
+  while ((spi_transfer(MAX7456ADD_STAT) & STATUS_reg_nvr_busy) != 0x00);
+
+ spi_transfer(VM0_reg); // turn on screen next vertical
+  spi_transfer(ENABLE_display_vert);
+  digitalWrite(MAX7456SELECT,HIGH);  
+#else
+  delay(12);
+#endif
 }

@@ -21,6 +21,10 @@ uint8_t ROW=10;
 uint8_t COL=3;
 uint8_t configPage=MINPAGE;
 uint8_t configMode=0;
+uint8_t fontMode = 0;
+uint8_t needFontUpdate[32];
+uint8_t fontData[54];
+uint8_t nextCharToRequest;
 
 // Mode bits
 uint32_t mode_armed;
@@ -105,8 +109,6 @@ uint8_t EEPROM_DEFAULT[EEPROM_SETTINGS] = {
 1,   // S_MWRSSI
 };
 
-uint8_t serialWait=0;
-
 static uint8_t P8[PIDITEMS], I8[PIDITEMS], D8[PIDITEMS];
 
 static uint8_t rcRate8,rcExpo8;
@@ -137,11 +139,11 @@ uint8_t GPS_fix=0;
 int32_t GPS_latitude;
 int32_t GPS_longitude;
 int16_t GPS_altitude;
-int16_t GPS_speed=0;
+uint16_t GPS_speed=0;
 int16_t GPS_directionToHome=0;
 uint8_t GPS_numSat=0;
 int16_t I2CError=0;
-int16_t cycleTime=0;
+uint16_t cycleTime=0;
 uint16_t pMeterSum=0;
 uint8_t MwRssi=0;
 
@@ -171,16 +173,15 @@ int rssi_Int=0;
 
 
 // For Voltage
-float voltage=0;                      // its the real value x10
-float vidvoltage=0;                   // its the real value x10
+uint8_t voltage=0;                      // its the value x10
+uint8_t vidvoltage=0;                   // its the value x10
 
 // For temprature
-float temperature=0;                  // its the real value x10
-
+int8_t temperature=0;                  // temperature in degrees Centigrade
 
 
 // For Statistics
-int16_t speedMAX=0;
+uint16_t speedMAX=0;
 int8_t temperMAX=0;
 int16_t altitudeMAX=0;
 int16_t distanceMAX=0;
@@ -241,6 +242,7 @@ uint16_t flyingTime=0;
 #define OSD_NULL                 0
 #define OSD_READ_CMD             1
 #define OSD_WRITE_CMD            2
+#define OSD_GET_FONT             3
 // End private MSP for use with the GUI
 
 // For Intro
@@ -359,3 +361,4 @@ enum Positions {
 #define REQ_MSP_RC_TUNING (1 <<  9)
 #define REQ_MSP_PID       (1 << 10)
 #define REQ_MSP_BOX       (1 << 11)
+#define REQ_MSP_FONT      (1 << 12)
