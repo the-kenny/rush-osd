@@ -51,8 +51,6 @@ February  2013  V2.2
               /*                                                                                                                                             */
               /***********************************************************************************************************************************************/
 
-//Test for Andi
-
 #include <avr/pgmspace.h>
 #include <EEPROM.h> //Needed to access eeprom read/write functions
 #include "symbols.h"
