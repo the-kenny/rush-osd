@@ -51,6 +51,8 @@ February  2013  V2.2
               /*                                                                                                                                             */
               /***********************************************************************************************************************************************/
 
+//Test for Andi
+
 #include <avr/pgmspace.h>
 #include <EEPROM.h> //Needed to access eeprom read/write functions
 #include "symbols.h"
@@ -400,7 +402,7 @@ void calculateRssi(void)
 {
   float aa=0; 
   if (Settings[S_MWRSSI]) {
-    aa =  MwRssi;    //Temporary for calculation tests only
+    aa =  MwRssi;    
   }
   else
   {
