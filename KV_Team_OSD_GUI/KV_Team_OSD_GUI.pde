@@ -459,7 +459,7 @@ void setup() {
  
 //Map<Settings, String> table = new EnumMap<Settings>(Settings.class);
 OnTimer = millis();
-  frameRate(20); 
+  frameRate(30); 
 OSDBackground = loadImage("Background.jpg");
 RadioPot = loadImage("Radio_Pot.png");
 
@@ -472,32 +472,32 @@ RadioPot = loadImage("Radio_Pot.png");
 
   controlP5 = new ControlP5(this); // initialize the GUI controls
   controlP5.setControlFont(font10);
-  controlP5.setAutoDraw(false);
+  //controlP5.setAutoDraw(false);
   
 
   SmallcontrolP5 = new ControlP5(this); // initialize the GUI controls
   SmallcontrolP5.setControlFont(font9); 
-  SmallcontrolP5.setAutoDraw(false); 
+  //SmallcontrolP5.setAutoDraw(false); 
  
   ScontrolP5 = new ControlP5(this); // initialize the GUI controls
   ScontrolP5.setControlFont(font10);  
-  ScontrolP5.setAutoDraw(false);  
+  //ScontrolP5.setAutoDraw(false);  
  
  
- FontGroupcontrolP5 = new ControlP5(this); // initialize the GUI controls
- FontGroupcontrolP5.setControlFont(font10);
- FontGroupcontrolP5.setAutoDraw(false); 
+ 
+ //FontGroupcontrolP5.setAutoDraw(false); 
  
  
   GroupcontrolP5 = new ControlP5(this); // initialize the GUI controls
   GroupcontrolP5.setControlFont(font10);
-  GroupcontrolP5.setColorForeground(color(30,255));
-  GroupcontrolP5.setColorBackground(color(30,255));
-  GroupcontrolP5.setColorLabel(color(0, 110, 220));
-  GroupcontrolP5.setColorValue(0xffff88ff);
-  GroupcontrolP5.setColorActive(color(30,255));
-  GroupcontrolP5.setAutoDraw(false);
-  
+  //GroupcontrolP5.setColorForeground(color(30,255));
+  //GroupcontrolP5.setColorBackground(color(30,255));
+  //GroupcontrolP5.setColorLabel(color(0, 110, 220));
+  //GroupcontrolP5.setColorValue(0xffff88ff);
+  //GroupcontrolP5.setColorActive(color(30,255));
+  //GroupcontrolP5.setAutoDraw(false);
+  FontGroupcontrolP5 = new ControlP5(this); // initialize the GUI controls
+ FontGroupcontrolP5.setControlFont(font10);
 
   SetupGroups();
 
@@ -624,6 +624,7 @@ CreateItem(GetSetting("S_MWRSSI"),  5,8*17, G_Other);
    SimSetup();
   img_Clear = LoadFont("MW_OSD_Team.mcm");
   toggleMSP_Data = true;
+  
 }
 
 
@@ -754,7 +755,7 @@ void MakePorts(){
 void draw() {
   time=millis();
   hint(ENABLE_DEPTH_TEST);
-  pushMatrix();
+  //pushMatrix();
   PortRead = false; 
   PortWrite = false; 
   //del++; 
@@ -774,23 +775,26 @@ void draw() {
   }
   
  if ((init_com==1)  && (time-time5 >5000) && (toggleMSP_Data == false)){
+   if(ClosePort) return;
    time5 = time;
-   PortRead = true; 
+   PortWrite = true; 
    if (init_com==1)SendCommand(MSP_BOXNAMES);
-   PortRead = false;
+   PortWrite = false;
  }
  if ((init_com==1)  && (time-time4 >40)){
+   if(ClosePort) return;
    time4 = time; 
-   PortRead = true;
+   PortWrite = true;
    if (init_com==1)SendCommand(MSP_ANALOG);
    if (init_com==1)SendCommand(MSP_STATUS);
-   PortRead = false;
+   PortWrite = false;
  }
  if ((init_com==1)  && (time-time1 >20)){
+   if(ClosePort) return;
    time1 = time; 
-   PortRead = true;
+   PortWrite = true;
    if (init_com==1)SendCommand(MSP_ATTITUDE);
-   PortRead = false;
+   PortWrite = false;
  }
  
   
@@ -850,13 +854,13 @@ void draw() {
   
   MakePorts();
   
-  GroupcontrolP5.draw();
-  controlP5.draw();
-  ScontrolP5.draw();
+  //GroupcontrolP5.draw();
+  //controlP5.draw();
+  //ScontrolP5.draw();
   //SmallcontrolP5.draw();
-  FontGroupcontrolP5.draw();
+  //FontGroupcontrolP5.draw();
   MatchConfigs();
-  popMatrix();
+  //popMatrix();
   hint(DISABLE_DEPTH_TEST);
   //CheckMessageBox();
   

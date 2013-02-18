@@ -124,11 +124,7 @@ void InitSerial(float portValue) {
       ClosePort = true;
       init_com=0;
       delay(250);
-      if (PortWrite == true){
-        while (g_serial.available()>0){
-        System.out.println("Port is still writing");
-        }
-      }
+      
       //try{
       //toggleMSP_Data = false;
       //g_serial.clear();
@@ -377,6 +373,7 @@ void serialize8(int val) {
    
   
    try {
+     if(ClosePort) return;
      g_serial.write(val);
      outChecksum ^= val;
      }
