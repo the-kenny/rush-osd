@@ -22,8 +22,8 @@ const uint16_t screenPosition[] PROGMEM = {
   POS(LINE02+10, 0, DISPLAY_ALWAYS), // MwHeadingGraphPosition
   POS(LINE07+2,  1, DISPLAY_ALWAYS), // MwAltitudePosition
   POS(LINE07+24, 1, DISPLAY_ALWAYS), // MwClimbRatePosition
-  POS(LINE11+22, 2, DISPLAY_ALWAYS), // CurrentThrottlePosition
-  POS(LINE12+22, 2, DISPLAY_ALWAYS), // flyTimePosition
+  POS(LINE12+22, 2, DISPLAY_ALWAYS), // CurrentThrottlePosition
+  POS(LINE13+22, 2, DISPLAY_ALWAYS), // flyTimePosition
   POS(LINE13+22, 2, DISPLAY_ALWAYS), // onTimePosition
   POS(LINE12+11, 2, DISPLAY_ALWAYS), // motorArmedPosition
   POS(LINE10+2,  2, DISPLAY_CONDR),  // MwGPSLatPosition

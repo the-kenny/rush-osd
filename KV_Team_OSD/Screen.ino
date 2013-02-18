@@ -294,7 +294,7 @@ void displayCurrentThrottle(void)
 }
 
 void displayTime(void)
-{
+{ 
   if(flyTime < 3600) {
     screenBuffer[0] = SYM_FLY_M;
     formatTime(flyTime, screenBuffer+1, 0);
@@ -305,6 +305,8 @@ void displayTime(void)
   }
   MAX7456_WriteString(screenBuffer,getPosition(flyTimePosition));
 
+  if (armed) return ;
+  uint16_t position = getPosition(onTimePosition);
   if(onTime < 3600) {
     screenBuffer[0] = SYM_ON_M;
     formatTime(onTime, screenBuffer+1, 0);

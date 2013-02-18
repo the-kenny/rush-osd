@@ -151,8 +151,11 @@ void setMspRequests() {
 void loop()
 {
   // Process AI
+  if (!Settings[S_ENABLEADC]){
+    temperature=0;
+}    
   if (Settings[S_ENABLEADC]){
-    temperature=(analogRead(temperaturePin)*1.1)/10.23;
+    temperature=(analogRead(temperaturePin)*1.1)/10.23; 
     if (!Settings[S_MAINVOLTAGE_VBAT]){
       static uint8_t ind = 0;
       static uint16_t voltageRawArray[8];
@@ -173,7 +176,7 @@ void loop()
   if (Settings[S_MWRSSI]) {
       rssiADC = MwRssi;
   }
-
+ 
   // Blink Basic Sanity Test Led at 1hz
   if(tenthSec>10)
     BST_ON
