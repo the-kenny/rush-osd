@@ -34,7 +34,7 @@ import javax.swing.SwingUtilities; // required for swing and EDT
 import javax.swing.JFileChooser; // Saving dialogue
 import javax.swing.filechooser.FileFilter; // for our configuration file filter "*.mwi"
 import javax.swing.JOptionPane; // for message dialogue
-import java.io.BufferedReader;
+//import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.io.InputStream;
 import java.io.OutputStream; 
@@ -153,8 +153,7 @@ String TestString = "";
 String SendCommand = "";
 
 
-boolean firstContact = false;   
-boolean disableSerial = false;
+
 
 boolean PortRead = true;
 boolean PortWrite = false;
@@ -224,6 +223,7 @@ int FlyTimer = 0;
 float SimItem0= 0;
 int Armed = 0;
 int Showback = 1;
+int del = 0;
 // int variables
 
 // For Heading
@@ -622,6 +622,7 @@ CreateItem(GetSetting("S_MWRSSI"),  5,8*17, G_Other);
   Font_Editor_setup();
    SimSetup();
   img_Clear = LoadFont("MW_OSD_Team.mcm");
+  toggleMSP_Data = true;
 }
 
 
@@ -725,8 +726,9 @@ void MakePorts(){
   //time=millis();
   strokeWeight(3);stroke(100);
   fill(100); strokeWeight(3);stroke(200); rectMode(CORNERS); rect(XPortStat,YPortStat, XPortStat+105 , YPortStat+30);
-  if ((PortRead) && (time - time2 >200)){
-    time2 = time;
+  //if ((PortRead) && (time - time2 >200)){
+  if (PortRead){  
+    //time2 = time;
     fill(255, 10, 0);
   }
   else
@@ -734,8 +736,9 @@ void MakePorts(){
     fill(100, 10, 0);
   }
   ellipse(XPortStat+35, YPortStat+15, 10, 10);
-  if ((PortWrite) && (time - time3 > 200)){
-   time3 = time;
+  //if ((PortWrite) && (time - time3 > 200)){
+  if (PortWrite){  
+   //time3 = time;
     fill(0,240, 0);
   }
    else
@@ -751,10 +754,43 @@ void draw() {
   time=millis();
   hint(ENABLE_DEPTH_TEST);
   pushMatrix();
- PortRead = false; 
- PortWrite = false; 
-  if ((init_com==1)  && (toggleMSP_Data == true)) MWData_Com();
+  PortRead = false; 
+  PortWrite = false; 
+  //del++; 
+  //System.out.println(del);
+  if ((init_com==1)  && (toggleMSP_Data == true)) {
+    //time2 = time;
+   //PortRead = true;
+    MWData_Com();
+    
+  }
   
+  if (FontMode == true){
+    buttonSendFile.getCaptionLabel()
+    .toUpperCase(false)
+    .setText("Sent: "+FontCounter);
+  }
+  
+ if ((init_com==1)  && (time-time3 >5000) && (toggleMSP_Data == false)){
+   time3 = time; 
+   //
+   //SendCommand(MSP_IDENT);
+   //toggleMSP_Data = true;
+   //SendCommand(MSP_BOXNAMES);
+   //SendCommand(MSP_STATUS);
+   //toggleMSP_Data = false;
+ }
+ if ((init_com==1)  && (time-time4 >500)){
+   time4 = time; 
+   //
+   //SendCommand(MSP_IDENT);
+   //toggleMSP_Data = true;
+   //SendCommand(MSP_BOXNAMES);
+   //SendCommand(MSP_STATUS);
+   //SendCommand(MSP_ATTITUDE);
+   //toggleMSP_Data = false;
+ }
+ 
   
   background(80);
   
@@ -808,19 +844,24 @@ void draw() {
   ShowAmperage();
   displayHeadingGraph();
   displayHeading();
-  
+ 
   
   MakePorts();
   
   GroupcontrolP5.draw();
   controlP5.draw();
   ScontrolP5.draw();
-  SmallcontrolP5.draw();
+  //SmallcontrolP5.draw();
   FontGroupcontrolP5.draw();
   MatchConfigs();
   popMatrix();
   hint(DISABLE_DEPTH_TEST);
-  CheckMessageBox();
+  //CheckMessageBox();
+  
+  
+  if ((ClosePort ==true)&& (PortWrite == false) && (init_com==1)){
+    ClosePort();
+  }
 }
 
 void CheckMessageBox(){
@@ -1270,55 +1311,10 @@ static class MWI {
 
 
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// BEGIN MW SERIAL////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-int STABLEMODE =  1;           // OK
-int BAROMODE=     4;           // OK
-int MAGMODE=      8;           // OK
-int ARMEDMODE=    16;          // OK
-int GPSHOLDMODE=  64;          // OK
-int GPSHOMEMODE=  128;         // OK
 
-void SetMode(){
-  STABLEMODE =  int(confItem[1].value());          
-  BAROMODE=     int(confItem[2].value());         // OK
-  MAGMODE=      int(confItem[3].value());
-  ARMEDMODE=    int(confItem[4].value());
-  GPSHOMEMODE=  int(confItem[5].value());
-  GPSHOLDMODE=  int(confItem[6].value());
-}
 
-int time,time2,time3,time4;
 
-int version,versionMisMatch;
-int multiType;
-
-int[] MwAngle={ 0, 0 };           // Those will hold Accelerator Angle
-int[] MwRcData={   // This hold receiver pulse signal
-  1500,1500,1500,1500,1500,1500,1500,1500} ;
-
-int MwSensorPresent=0;
-int MwSensorActive=0;
-int MwVersion=0;
-int MwVBat=0;
-int MwVario=0;
-int armed=0;
-int previousarmedstatus=0;  // NEB for statistics after disarming
-int armedTimer=0;
-int GPS_distanceToHome=0;
-int GPSPresent=0;
-int GPS_fix=0;
-int GPS_latitude;
-int GPS_longitude;
-int GPS_altitude;
-int GPS_speed=0;
-int GPS_ground_course;
-int GPS_update=0;
-int GPS_directionToHome=0;
-int GPS_numSat=0;
-int I2CError=0;
-int cycleTime=0;
-int pMeterSum=0;
 
 
 
