@@ -42,7 +42,8 @@ import java.io.FileOutputStream;
 import java.io.FileInputStream;
 import java.util.*;
 import java.io.FileNotFoundException;
-import java.text.DecimalFormat; 
+import java.text.DecimalFormat;
+
 
 //added new imports to support proccessing 2.0b7
 
@@ -458,7 +459,7 @@ void setup() {
  
 //Map<Settings, String> table = new EnumMap<Settings>(Settings.class);
 OnTimer = millis();
-  frameRate(10); 
+  frameRate(20); 
 OSDBackground = loadImage("Background.jpg");
 RadioPot = loadImage("Radio_Pot.png");
 
@@ -760,8 +761,9 @@ void draw() {
   //System.out.println(del);
   if ((init_com==1)  && (toggleMSP_Data == true)) {
     //time2 = time;
-   //PortRead = true;
+    PortRead = true;
     MWData_Com();
+    PortRead = false;
     
   }
   
@@ -771,24 +773,24 @@ void draw() {
     .setText("Sent: "+FontCounter);
   }
   
- if ((init_com==1)  && (time-time3 >5000) && (toggleMSP_Data == false)){
-   time3 = time; 
-   //
-   //SendCommand(MSP_IDENT);
-   //toggleMSP_Data = true;
-   //SendCommand(MSP_BOXNAMES);
-   //SendCommand(MSP_STATUS);
-   //toggleMSP_Data = false;
+ if ((init_com==1)  && (time-time5 >5000) && (toggleMSP_Data == false)){
+   time5 = time;
+   PortRead = true; 
+   if (init_com==1)SendCommand(MSP_BOXNAMES);
+   PortRead = false;
  }
- if ((init_com==1)  && (time-time4 >500)){
+ if ((init_com==1)  && (time-time4 >40)){
    time4 = time; 
-   //
-   //SendCommand(MSP_IDENT);
-   //toggleMSP_Data = true;
-   //SendCommand(MSP_BOXNAMES);
-   //SendCommand(MSP_STATUS);
-   //SendCommand(MSP_ATTITUDE);
-   //toggleMSP_Data = false;
+   PortRead = true;
+   if (init_com==1)SendCommand(MSP_ANALOG);
+   if (init_com==1)SendCommand(MSP_STATUS);
+   PortRead = false;
+ }
+ if ((init_com==1)  && (time-time1 >20)){
+   time1 = time; 
+   PortRead = true;
+   if (init_com==1)SendCommand(MSP_ATTITUDE);
+   PortRead = false;
  }
  
   
@@ -859,7 +861,7 @@ void draw() {
   //CheckMessageBox();
   
   
-  if ((ClosePort ==true)&& (PortWrite == false) && (init_com==1)){
+  if ((ClosePort ==true)&& (PortWrite == false)){ //&& (init_com==1)
     ClosePort();
   }
 }

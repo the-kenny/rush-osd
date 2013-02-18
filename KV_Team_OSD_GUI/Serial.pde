@@ -9,7 +9,7 @@ public boolean toggleRead = false,
         toggleSetSetting = false;
 Serial g_serial;      // The serial port
 float LastPort = 0;
-int time,time2,time3,time4;
+int time,time1,time2,time3,time4,time5;
 
 boolean ClosePort = false;
 boolean PortIsWriting = false;
@@ -122,6 +122,8 @@ void InitSerial(float portValue) {
       g_serial.clear();
       toggleMSP_Data = false;
       ClosePort = true;
+      init_com=0;
+      delay(250);
       if (PortWrite == true){
         while (g_serial.available()>0){
         System.out.println("Port is still writing");
@@ -145,7 +147,7 @@ void ClosePort(){
   init_com=0;
   g_serial.clear();
   g_serial.stop();
-  System.out.println("Port Turned Off " );
+  //System.out.println("Port Turned Off " );
   init_com=0;
   commListbox.setColorBackground(red_);
   buttonREAD.setColorBackground(red_);
@@ -278,6 +280,7 @@ void SendCommand(int cmd){
         for (int i=5; i<8; i++) {
           serialize16(1500);
         }
+        tailSerialReply();
         PortIsWriting = false;
       break;
       
@@ -308,6 +311,7 @@ void SendCommand(int cmd){
         serialize16(int(MW_Pitch_Roll.arrayValue()[1])*10);
         serialize16(MwHeading);
         serialize16(0);
+        tailSerialReply();
         PortIsWriting = false;
       break;
      
@@ -319,6 +323,7 @@ void SendCommand(int cmd){
         serialize8(int(sVBat * 10));
         serialize16(0);
         serialize16(int(sMRSSI));
+        tailSerialReply();
         PortIsWriting = false;
       break;
       
@@ -369,17 +374,20 @@ int outChecksum;
 
 void serialize8(int val) {
  if (init_com==1){
-   //PortWrite = true;
+   
   
    try {
-    
-     if (init_com==1)g_serial.write(val);
-     
+     g_serial.write(val);
      outChecksum ^= val;
-    } catch (Exception e) { // null pointer or serial port dead
-        System.out.println("write error " + e);
-    }
- } 
+     }
+  catch(Exception e) {
+    println("ERROR WRITING");
+  }finally {
+  }    
+    
+    
+ }
+
 }
 
 void serialize16(int a) {
@@ -399,29 +407,29 @@ void serializeNames(int s) {
    // serialize8(pgm_read_byte(c));
   //}
   for (int c = 0; c < strBoxNames.length(); c++) {
-    serialize8(strBoxNames.charAt(c));
+    if (init_com==1)serialize8(strBoxNames.charAt(c));
   }
 }
 
 void headSerialResponse(int requestMSP, Boolean err, int s) {
-  serialize8('$');
-  serialize8('M');
-  serialize8(err ? '!' : '>');
+  if (init_com==1)serialize8('$');
+  if (init_com==1)serialize8('M');
+  if (init_com==1)serialize8(err ? '!' : '>');
   outChecksum = 0; // start calculating a new checksum
-  serialize8(s);
-  serialize8(requestMSP);
+  if (init_com==1)serialize8(s);
+  if (init_com==1)serialize8(requestMSP);
 }
 
 void headSerialReply(int requestMSP, int s) {
-  headSerialResponse(requestMSP, false, s);
+  if (init_com==1)headSerialResponse(requestMSP, false, s);
 }
 
 void headSerialError(int requestMSP, int s) {
-  headSerialResponse(requestMSP, true, s);
+ if (init_com==1) headSerialResponse(requestMSP, true, s);
 }
 
 void tailSerialReply() {
-  serialize8(outChecksum);
+  if (init_com==1)serialize8(outChecksum);
 }
 
 public void DelayTimer(int ms){
@@ -612,7 +620,7 @@ void MWData_Com() {
   float val,inter,a,b,h;
   int c = 0;
   if ((init_com==1)  && (toggleMSP_Data == true)) {
-  System.out.println("MWData_Com");  
+  //System.out.println("MWData_Com");  
     
     while (g_serial.available()>0 && (toggleMSP_Data == true)) {
     
