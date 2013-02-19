@@ -151,10 +151,7 @@ void setMspRequests() {
 
 void loop()
 {
-  // Process AI
-  if (!Settings[S_ENABLEADC]){
-    temperature=0;
-}    
+  // Process AI   
   if (Settings[S_ENABLEADC]){
     temperature=(analogRead(temperaturePin)*1.1)/10.23; 
     if (!Settings[S_MAINVOLTAGE_VBAT]){
@@ -281,7 +278,7 @@ void loop()
       }
       else
       {
-        CollectStatistics();
+       // CollectStatistics();      DO NOT DELETE
 
         if(Settings[S_DISPLAYVOLTAGE]&&((voltage>Settings[S_VOLTAGEMIN])||(Blink2hz))) displayVoltage();
         if(Settings[S_DISPLAYRSSI]&&((rssi>lowrssiAlarm)||(Blink2hz))) displayRSSI();
@@ -382,13 +379,13 @@ void loop()
 //---------------------  End of Timed Service Routine ---------------------------------------
 
 
-void CollectStatistics() {
-  if(GPS_fix && GPS_speed > speedMAX)
+/*void CollectStatistics() {
+  if(GPS_fix && GPS_speed > speedMAX)    // DO NOT DELETE
     speedMAX = GPS_speed;
 
   if(temperature > temperMAX)
     temperMAX = temperature;
-}
+}*/
 
 void calculateTrip(void)
 {

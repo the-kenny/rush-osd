@@ -88,12 +88,12 @@ uint8_t FindNull(void)
 }
 
 // Unit conversions
-uint8_t CMsToKMh(uint16_t speed)       // cm/sec to km/h or to mph
+/*uint8_t CMsToKMh(uint16_t speed)       // cm/sec to km/h or to mph
 {
   return GPS_speed *
            (Settings[S_UNITSYSTEM] ?
                (0.036*0.62137) :       // From MWii cm/sec to mph
-               0.036);                 // From MWii cm/sec to Km/h
+               0.036);                 // From MWii cm/sec to Km/h           //   NOT DELETE
 }
 
 int16_t TempConverter(int16_t temp) { // deg-C to deg-C or deg-F
@@ -102,12 +102,30 @@ int16_t TempConverter(int16_t temp) { // deg-C to deg-C or deg-F
            temp;
 }
 
-void displayTemperature(void)        // WILL WORK ONLY WITH V1.2
+void displayTemperature(void)        // WILL WORK ONLY WITH V1.2                 //   NOT DELETE
 {
   itoa(TempConverter(temperature), screenBuffer, 10);
   uint8_t xx = FindNull();
   screenBuffer[xx++] = temperatureUnitAdd[Settings[S_UNITSYSTEM]];
   screenBuffer[xx] = 0;
+  MAX7456_WriteString(screenBuffer,getPosition(temperaturePosition));
+}*/
+
+void displayTemperature(void)        // WILL WORK ONLY WITH V1.2
+{
+  int xxx;
+  if (Settings[S_UNITSYSTEM])
+    xxx = temperature*1.8+32;       //Fahrenheit conversion for imperial system.
+  else
+    xxx = temperature;
+
+  if(xxx > temperMAX)
+    temperMAX = xxx;
+
+  itoa(xxx,screenBuffer,10);
+  uint8_t xx = FindNull();   // find the NULL
+  screenBuffer[xx++]=temperatureUnitAdd[Settings[S_UNITSYSTEM]];
+  screenBuffer[xx]=0;  // Restore the NULL
   MAX7456_WriteString(screenBuffer,getPosition(temperaturePosition));
 }
 
@@ -445,15 +463,37 @@ void displayNumberOfSat(void)
   MAX7456_WriteString(screenBuffer,getPosition(GPS_numSatPosition));
 }
 
+
 void displayGPS_speed(void)
 {
+//  if(!GPS_fix)
+  if(!GPS_fix) return;
+  if(!armed) GPS_speed=0;
+
+  int xx;
+  if(!Settings[S_UNITSYSTEM])
+    xx = GPS_speed * 0.036;           // From MWii cm/sec to Km/h
+  else
+    xx = GPS_speed * 0.02236932;      // (0.036*0.62137)  From MWii cm/sec to mph
+
+  if(xx > speedMAX)
+    speedMAX = xx;
+    
+  screenBuffer[0]=speedUnitAdd[Settings[S_UNITSYSTEM]];
+  itoa(xx,screenBuffer+1,10);
+  MAX7456_WriteString(screenBuffer,getPosition(speedPosition));
+}
+
+
+/*void displayGPS_speed(void)
+{
   if(!GPS_fix)
-    return;
+    return;                                               //  DO NOT DELETE
 
   screenBuffer[0] = speedUnitAdd[Settings[S_UNITSYSTEM]];
   itoa(CMsToKMh(GPS_speed), screenBuffer+1, 10);
   MAX7456_WriteString(screenBuffer,getPosition(speedPosition));
-}
+}*/
 
 void displayAltitude(void)
 {
@@ -799,7 +839,8 @@ void displayConfigScreen(void)
     MAX7456_WriteString(itoa(altitudeMAX,screenBuffer,10),YAWD);
 
     MAX7456_WriteString_P(configMsg55, ALTT);
-    MAX7456_WriteString(itoa(CMsToKMh(speedMAX), screenBuffer, 10), ALTD);
+    MAX7456_WriteString(itoa(speedMAX,screenBuffer,10),ALTD);
+    //MAX7456_WriteString(itoa(CMsToKMh(speedMAX), screenBuffer, 10), ALTD);     DO NOT DELETE
 
     MAX7456_WriteString_P(configMsg56, VELT);
 
@@ -811,7 +852,8 @@ void displayConfigScreen(void)
     MAX7456_WriteString(itoa(xx,screenBuffer,10),LEVD);
 
     MAX7456_WriteString_P(configMsg58, MAGT);
-    MAX7456_WriteString(itoa(TempConverter(temperMAX), screenBuffer, 10), MAGD);
+    MAX7456_WriteString(itoa(temperMAX,screenBuffer,10),MAGD);
+    //MAX7456_WriteString(itoa(TempConverter(temperMAX), screenBuffer, 10), MAGD);      DO NOT DELETE
   }
   displayCursor();
 }
