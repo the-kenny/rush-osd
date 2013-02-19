@@ -623,7 +623,8 @@ CreateItem(GetSetting("S_MWRSSI"),  5,8*17, G_Other);
   Font_Editor_setup();
    SimSetup();
   img_Clear = LoadFont("MW_OSD_Team.mcm");
-  toggleMSP_Data = true;
+  //toggleMSP_Data = true;
+  CloseMode = 0;
   
 }
 
@@ -702,26 +703,7 @@ void BuildToolHelp(){
 
 
 
-void BounceSerial(){
-  toggleMSP_Data = false;
-  InitSerial(200.00);
-  InitSerial(LastPort);
-  toggleMSP_Data = true;
-  delay(1000);
-  
-}  
 
-void RESTART(){
-  BounceSerial();
-}  
-
-
-public void RESET(){
-  MessageText.setValue("Reset OSD to Default Settings?");
-  //messageBox.bringToFront(); 
-  messageBox.show();
-  
-}
 
 void MakePorts(){
   
@@ -768,32 +750,28 @@ void draw() {
     
   }
   
-  if (FontMode == true){
-    buttonSendFile.getCaptionLabel()
-    .toUpperCase(false)
-    .setText("Sent: "+FontCounter);
-  }
+ 
   
- if ((init_com==1)  && (time-time5 >5000) && (toggleMSP_Data == false)){
+ if ((init_com==1)  && (time-time5 >5000) && (toggleMSP_Data == false) && (!FontMode)){
    if(ClosePort) return;
    time5 = time;
    PortWrite = true; 
-   if (init_com==1)SendCommand(MSP_BOXNAMES);
+   //if (init_com==1)SendCommand(MSP_BOXNAMES);
    PortWrite = false;
  }
- if ((init_com==1)  && (time-time4 >40)){
+ if ((init_com==1)  && (time-time4 >40) && (!FontMode)){
    if(ClosePort) return;
    time4 = time; 
    PortWrite = true;
-   if (init_com==1)SendCommand(MSP_ANALOG);
-   if (init_com==1)SendCommand(MSP_STATUS);
+   //if (init_com==1)SendCommand(MSP_ANALOG);
+   //if (init_com==1)SendCommand(MSP_STATUS);
    PortWrite = false;
  }
- if ((init_com==1)  && (time-time1 >20)){
+ if ((init_com==1)  && (time-time1 >20) && (!FontMode)){
    if(ClosePort) return;
    time1 = time; 
    PortWrite = true;
-   if (init_com==1)SendCommand(MSP_ATTITUDE);
+   //if (init_com==1)SendCommand(MSP_ATTITUDE);
    PortWrite = false;
  }
  
@@ -872,7 +850,8 @@ void draw() {
 
 void CheckMessageBox(){
   
-  if (messageBoxResult == 1){
+  if (messageBoxResult > 0){
+    
   toggleConfItem[0].setValue(0);
   confItem[0].setValue(0);
   WRITE();

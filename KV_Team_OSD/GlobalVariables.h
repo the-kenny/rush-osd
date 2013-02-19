@@ -22,9 +22,10 @@ uint8_t COL=3;
 uint8_t configPage=MINPAGE;
 uint8_t configMode=0;
 uint8_t fontMode = 0;
-uint8_t needFontUpdate[32];
 uint8_t fontData[54];
 uint8_t nextCharToRequest;
+uint8_t lastCharToRequest;
+uint8_t retransmitQueue;
 
 // Mode bits
 uint32_t mode_armed;

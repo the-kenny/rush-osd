@@ -62,19 +62,20 @@ void serialMSPCheck()
     }
 
     if(cmd == OSD_GET_FONT) {
-      if(dataSize == 3) {
-        if(read16() == 7456)
+      if(dataSize == 5) {
+        if(read16() == 7456) {
+          nextCharToRequest = read8();
+          lastCharToRequest = read8();
           initFontMode();
+      }
       }
       else if(dataSize == 56) {
         for(uint8_t i = 0; i < 54; i++)
           fontData[i] = read8();
       
 	uint8_t c = read8();
-	if(needFontUpdate[c/8]&(1<< (c & 7))) // Write only once
-	  write_NVM(c);
-	fontCharReceived(c);
-	findNextCharToRequest();
+
+	fontCharacterReceived(c);
       }
     }
   }
@@ -632,20 +633,23 @@ void blankserialRequest(uint8_t requestMSP)
 }
 
 void fontSerialRequest() {
+  int16_t cindex = getNextCharToRequest();
   uint8_t txCheckSum;
   uint8_t txSize;
   Serial.write('$');
   Serial.write('M');
   Serial.write('<');
   txCheckSum=0;
-  txSize=2;
+  txSize=3;
   Serial.write(txSize);
   txCheckSum ^= txSize;
-  Serial.write(MSP_OSD&0xff);
+  Serial.write(MSP_OSD);
   txCheckSum ^= MSP_OSD;
   Serial.write(OSD_GET_FONT);
   txCheckSum ^= OSD_GET_FONT;
-  Serial.write(nextCharToRequest);
-  txCheckSum ^= nextCharToRequest;
+  Serial.write(cindex);
+  txCheckSum ^= cindex;
+  Serial.write(cindex>>8);
+  txCheckSum ^= cindex>>8;
   Serial.write(txCheckSum);
 }
