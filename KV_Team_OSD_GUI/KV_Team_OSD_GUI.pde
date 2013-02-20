@@ -42,6 +42,7 @@ import java.io.FileOutputStream;
 import java.io.FileInputStream;
 import java.util.*;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.text.DecimalFormat;
 
 
@@ -211,6 +212,8 @@ int XPortStat  = 5;            int YPortStat = 350;
 int XControlBox     = 5;        int YControlBox   = 415;
 int XRCSim    =   XSim;      int YRCSim = 430;
 
+
+String FontFileName = "data/MW_OSD_Team.mcm";
 
 //File FontFile;
 int activeTab = 1;
@@ -630,10 +633,11 @@ CreateItem(GetSetting("S_MWRSSI"),  5,8*17, G_Other);
   BuildToolHelp();
   Font_Editor_setup();
    SimSetup();
-  img_Clear = LoadFont("MW_OSD_Team.mcm");
+  img_Clear = LoadFont(FontFileName);
   //toggleMSP_Data = true;
   CloseMode = 0;
-  //InitSerial(0);
+  LoadConfig();
+  
   
 }
 
@@ -1083,7 +1087,7 @@ public void bSAVE() {
   updateModel();
   SwingUtilities.invokeLater(new Runnable(){
     public void run() {
-     final JFileChooser fc = new JFileChooser() {
+     final JFileChooser fc = new JFileChooser(dataPath("")) {
 
         private static final long serialVersionUID = 7919427933588163126L;
 
@@ -1225,7 +1229,7 @@ public class MwiFileFilter extends FileFilter {
 public void bIMPORT(){
   SwingUtilities.invokeLater(new Runnable(){
     public void run(){
-      final JFileChooser fc = new JFileChooser();
+      final JFileChooser fc = new JFileChooser(dataPath(""));
       fc.setDialogType(JFileChooser.SAVE_DIALOG);
       fc.setFileFilter(new MwiFileFilter());
       int returnVal = fc.showOpenDialog(null);
@@ -1273,15 +1277,95 @@ public void bIMPORT(){
 //  our model 
 static class MWI {
   private static Properties conf = new Properties();
-
   public static void setProperty(String key ,String value ){
     conf.setProperty( key,value );
   }
-
   public static String getProperty(String key ){
     return conf.getProperty( key,"0");
   }
+  public static void clear( ){
+    conf= null; // help gc
+    conf = new Properties();
+  }
+}
 
+
+
+public void updateConfig(){
+  String error = null;
+  FileOutputStream out =null;
+  
+  ConfigClass.setProperty("StartFontFile",FontFileName);
+  
+  
+  File file = new File(dataPath("") + "/GUI.Config");
+  try{
+    out = new FileOutputStream(file) ;
+    ConfigClass.conf.storeToXML(out, "KV_Team_OSD GUI Configuration File  " + new  Date().toString());
+    }catch(FileNotFoundException e){
+      error = e.getCause().toString();
+      }catch( IOException ioe){
+        /*failed to write the file*/
+        ioe.printStackTrace();
+        error = ioe.getCause().toString();
+      }finally{
+        if (out!=null){
+          try{
+            out.close();
+            }catch( IOException ioe){/*failed to close the file*/error = ioe.getCause().toString();}
+            }
+            if (error !=null){
+              JOptionPane.showMessageDialog(null, new StringBuffer().append("error : ").append(error) );
+            }
+      }
+}
+
+
+public void LoadConfig(){
+  String error = null;
+  FileInputStream in =null;  
+  
+  
+  
+  try{
+    //File file = new File(dataPath("") + "/GUI.Config");
+    in = new FileInputStream(dataPath("GUI.Config"));
+    
+    
+    
+  }catch(FileNotFoundException e){
+    System.out.println("Configuration Failed- Creating Default");
+    updateConfig();
+    }catch( IOException ioe){
+      /*failed to write the file*/
+      ioe.printStackTrace();
+      error = ioe.getCause().toString();
+    }//finally{
+      if (in!=null){
+        try{
+          ConfigClass.conf.loadFromXML(in); 
+          FontFileName = ConfigClass.getProperty("StartFontFile");
+          img_Clear = LoadFont(FontFileName);
+          System.out.println("Configuration Successful");
+          in.close();
+          }catch( IOException ioe){/*failed to close the file*/error = ioe.getCause().toString();}
+          }
+          if (error !=null){
+            JOptionPane.showMessageDialog(null, new StringBuffer().append("error : ").append(error) );
+          }
+    //}
+    
+}
+
+//  our configuration 
+static class ConfigClass {
+  private static Properties conf = new Properties();
+  public static void setProperty(String key ,String value ){
+    conf.setProperty( key,value );
+  }
+  public static String getProperty(String key ){
+    return conf.getProperty( key,"0");
+  }
   public static void clear( ){
     conf= null; // help gc
     conf = new Properties();
@@ -1344,9 +1428,9 @@ void exit() {
   println("Shut Down Comm & Exiting");
 //
   toggleMSP_Data = false;
-  delay(1000);
+  //delay(1000);
   InitSerial(200.00);
-  
+  updateConfig(); 
   //if (init_com==1){
     //init_com=0;
   //g_serial.stop();

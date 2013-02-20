@@ -286,6 +286,10 @@ public void WRITE(){
 }
 
 public void FONT_UPLOAD(){
+  if (init_com==0){
+    JOptionPane.showConfirmDialog(null,"Please Select a Port", "Not Connected", JOptionPane.PLAIN_MESSAGE,JOptionPane.WARNING_MESSAGE);
+  }else
+  {
   System.out.println("FONT_UPLOAD");
   toggleMSP_Data = true;
   FontMode = true;
@@ -300,6 +304,7 @@ public void FONT_UPLOAD(){
     serialize8(255);  // last char
     tailSerialReply();
  //}
+  }
   
 }
 

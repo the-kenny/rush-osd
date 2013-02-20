@@ -186,8 +186,8 @@ buttonSendFile = controlP5.addButton("FONT_UPLOAD",1,20,50,60,16)
 .setGroup(MGUploadF);
 
 buttonBrowseFile = controlP5.addButton("Browse",1,20,75,60,16)
-.setGroup(MGUploadF)
-.hide();
+.setGroup(MGUploadF);
+
 
 buttonSendFile.getCaptionLabel()
     .toUpperCase(false)
@@ -225,8 +225,8 @@ void MakePreviewChar(){
 }
 
 void FSave(){
- UpdateChar();
- CreateFontFile();
+  UpdateChar();
+  CreateFontFile();
 }
 
 void FCLOSE(){
@@ -373,9 +373,10 @@ ControllerInterface[] sctrl = ScontrolP5.getControllerList();
 public void Browse(){
   SwingUtilities.invokeLater(new Runnable(){
     public void run(){
-      final JFileChooser fc = new JFileChooser();
+      final JFileChooser fc = new JFileChooser(dataPath(""));
       fc.setDialogType(JFileChooser.SAVE_DIALOG);
       fc.setFileFilter(new FontFileFilter());
+      //fc.setCurrentDirectory();
       int returnVal = fc.showOpenDialog(null);
       if (returnVal == JFileChooser.APPROVE_OPTION) {
         File FontFile = fc.getSelectedFile();
@@ -384,7 +385,9 @@ public void Browse(){
         String error = null;
         try{
           in = new FileInputStream(FontFile) ;
-          //MWI.conf.loadFromXML(in); 
+          FontFileName = FontFile.getPath();
+          img_Clear = LoadFont(FontFileName);
+          //updateConfig(); 
           JOptionPane.showMessageDialog(null,new StringBuffer().append("Font File loaded : ").append(FontFile.toURI()) );
           completed  = true;
           

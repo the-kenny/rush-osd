@@ -2,7 +2,7 @@ byte[][] raw_font;
 PrintWriter  Output;
 
 PImage LoadFont(String filename) {
-  System.out.println("LoadFont "+filename);
+  //System.out.println("LoadFont "+filename);
   raw_font = LoadRawFont(filename);
   return RawFontToImage(raw_font);
 }
