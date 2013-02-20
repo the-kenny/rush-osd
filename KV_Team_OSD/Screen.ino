@@ -187,7 +187,7 @@ void displayArmed(void)
 {
   if(!armed)
     MAX7456_WriteString_P(disarmed_text, getPosition(motorArmedPosition));
-  else if(Blink10hz && flyTime < 9)
+  else if(Blink10hz && flyTime < 5)
     MAX7456_WriteString_P(armed_text, getPosition(motorArmedPosition));
 }
 

@@ -48,6 +48,7 @@ void serialMSPCheck()
 	txCheckSum ^= Settings[i];
       }
       Serial.write(txCheckSum);
+      
     }
 
     if (cmd == OSD_WRITE_CMD) {
@@ -77,6 +78,9 @@ void serialMSPCheck()
 
 	fontCharacterReceived(c);
       }
+    }
+    if(cmd == OSD_RESET) {
+    resetFunc();
     }
   }
 

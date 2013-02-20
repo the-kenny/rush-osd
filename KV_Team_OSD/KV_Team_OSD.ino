@@ -96,6 +96,8 @@ void setup()
 
   blankserialRequest(MSP_IDENT);
 }
+void (* resetFunc)(void)=0;
+
 
 void setMspRequests() {
   if(fontMode) {
@@ -375,6 +377,7 @@ void loop()
 
   serialMSPreceive();
 
+
 }  // End of main loop
 //---------------------  End of Timed Service Routine ---------------------------------------
 
@@ -506,3 +509,5 @@ int16_t getNextCharToRequest() {
 
   return temp2;
 }
+
+

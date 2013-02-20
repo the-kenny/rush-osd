@@ -14,8 +14,8 @@ int time,time1,time2,time3,time4,time5;
 boolean ClosePort = false;
 boolean PortIsWriting = false;
 boolean FontMode = false;
-int FontCounter = 255;
-int cindex = 0;
+int FontCounter = 0;
+//int cindex = 0;
 int CloseMode = 0;
 
 /******************************* Multiwii Serial Protocol **********************/
@@ -85,7 +85,8 @@ private static final int
   OSD_NULL                 =0,
   OSD_READ_CMD             =1,
   OSD_WRITE_CMD            =2,
-  OSD_GET_FONT             =3;
+  OSD_GET_FONT             =3,
+  OSD_RESET                =5;
 
 
 // initialize the serial port selected in the listBox
@@ -103,8 +104,11 @@ void InitSerial(float portValue) {
       buttonREAD.setColorBackground(green_);
       buttonRESET.setColorBackground(green_);
       commListbox.setColorBackground(green_);
-      g_serial.buffer(1024);
+      buttonRESTART.setColorBackground(green_);
+      
+      g_serial.buffer(256);
       System.out.println("Port Turned On " );
+      FileUploadText.setText("");
       delay(1500);
       SendCommand(MSP_IDENT);
      
@@ -120,11 +124,11 @@ void InitSerial(float portValue) {
     if(init_com == 1){
      System.out.println("Begin Port Down " ); 
       txtlblWhichcom.setValue("Comm Closed");
-      g_serial.clear();
+      //g_serial.clear();
       toggleMSP_Data = false;
       ClosePort = true;
       init_com=0;
-      delay(250);
+      //delay(250);
       
       //try{
       //toggleMSP_Data = false;
@@ -144,12 +148,14 @@ void ClosePort(){
   init_com=0;
   g_serial.clear();
   g_serial.stop();
+  
   //System.out.println("Port Turned Off " );
   init_com=0;
   commListbox.setColorBackground(red_);
   buttonREAD.setColorBackground(red_);
   buttonRESET.setColorBackground(red_);
   buttonWRITE.setColorBackground(red_);
+  buttonRESTART.setColorBackground(red_);
   if (CloseMode > 0){
     InitSerial(LastPort);
     CloseMode = 0;
@@ -158,10 +164,7 @@ void ClosePort(){
   
 }
 
-void serialEvent(Serial g_serial) { 
-  
- 
-} 
+
 
 
 void SetConfigItem(int index, int value) {
@@ -194,6 +197,11 @@ void SetConfigItem(int index, int value) {
   }  	
 }
 
+void PORTCLOSE(){
+  toggleMSP_Data = false;
+  CloseMode = 0;
+  InitSerial(200.00);
+}
 
 void BounceSerial(){
   toggleMSP_Data = false;
@@ -207,14 +215,37 @@ void BounceSerial(){
 }  
 
 void RESTART(){
-  BounceSerial();
+     toggleMSP_Data = true;
+     for (int txTimes = 0; txTimes<2; txTimes++) {
+     headSerialReply(MSP_OSD, 1);
+     serialize8(OSD_RESET);
+     tailSerialReply();
+     }
+     toggleMSP_Data = false;
+  //BounceSerial();
 }  
 
 
 public void RESET(){
-  MessageText.setValue("Reset OSD to Default Settings?");
+  int result = JOptionPane.showConfirmDialog(this,
+                        "Are you sure you wish to RESET?", "RESET OSD MEMORY",
+                        JOptionPane.YES_NO_CANCEL_OPTION);
+                switch (result) {
+                case JOptionPane.YES_OPTION:
+                    toggleConfItem[0].setValue(0);
+                    confItem[0].setValue(0);
+                    WRITE();
+                    BounceSerial();
+                case JOptionPane.CANCEL_OPTION:
+                    //cancelSelection();
+                    //return;
+                default:
+                    //return;
+                }
+  
+  //MessageText.setValue("Reset OSD to Default Settings?");
   //messageBox.bringToFront(); 
-  messageBox.show();
+  //messageBox.show();
   
 }
 
@@ -267,7 +298,8 @@ public void FONT_UPLOAD(){
     serialize16(7456);  // safety code
     serialize8(0);    // first char
     serialize8(255);  // last char
-  //}
+    tailSerialReply();
+ //}
   
 }
 
@@ -355,6 +387,40 @@ void SendCommand(int cmd){
       break;
       
       
+      case MSP_RAW_GPS:
+        // We have: GPS_fix(0-2), GPS_numSat(0-15), GPS_coord[LAT & LON](signed, in 1/10 000 000 degres), GPS_altitude(signed, in meters) and GPS_speed(in cm/s)  
+        headSerialReply(MSP_RAW_GPS,16);
+        serialize8(int(SGPS_FIX.arrayValue()[0]));
+        serialize8(int(SGPS_numSat.value()));
+        serialize32(430948610);
+        serialize32(-718897060);
+        serialize16(int(SGPS_altitude.value()/100));
+        serialize16(int(SGPS_speed.value()));
+        serialize16(355);     
+    break;
+    
+  
+    case MSP_COMP_GPS:
+      headSerialReply(MSP_COMP_GPS,5);
+      serialize16(int(SGPS_distanceToHome.value()));
+      int GPSheading = int(SGPSHeadHome.value());
+      if(GPSheading < 0) GPSheading += 360;
+      serialize16(GPSheading);
+      serialize8(0);
+    break;
+    
+    
+    case MSP_ALTITUDE:
+      headSerialReply(MSP_ALTITUDE, 6);
+      serialize32(int(sAltitude) *100);
+      serialize16(int(sVario) *10);     
+    break;
+      
+      
+      
+      
+      
+      
     }
     tailSerialReply();   
   
@@ -383,13 +449,13 @@ public static final int
 private static final String MSP_SIM_HEADER = "$M>";
 int c_state = IDLE;
 boolean err_rcvd = false;
-List<Character> payload;
+//List<Character> payload;
 byte checksum=0;
-byte cmd;
+byte cmd = 0;
 int offset=0, dataSize=0;
 byte[] inBuf = new byte[256];
 int Send_timer = 1;
-int p;
+int p=0;
 int read32() {return (inBuf[p++]&0xff) + ((inBuf[p++]&0xff)<<8) + ((inBuf[p++]&0xff)<<16) + ((inBuf[p++]&0xff)<<24); }
 int read16() {return (inBuf[p++]&0xff) + ((inBuf[p++])<<8); }
 int read8()  {return inBuf[p++]&0xff;}
@@ -400,34 +466,39 @@ int outChecksum;
 
 
 void serialize8(int val) {
- if (init_com==1){
+ if (init_com==1)  {
    
-  
-   try {
-     if(ClosePort) return;
-     g_serial.write(val);
-     outChecksum ^= val;
+      
+     if(str(val)!=null){
+       try{
+       g_serial.write(val);
+       outChecksum ^= val;
+       } catch(java.lang.Throwable t) {
+         System.out.println( t.getClass().getName() ); //this'll tell you what class has been thrown
+         t.printStackTrace(); //get a stack trace
+       }
+        
+
      }
-  catch(Exception e) {
-    println("ERROR WRITING");
-  }finally {
-  }    
-    
-    
  }
 
 }
 
 void serialize16(int a) {
+  if (str(a)!=null ){
   serialize8((a   ) & 0xFF);
   serialize8((a>>8) & 0xFF);
+  }
 }
 
 void serialize32(int a) {
-  serialize8((a    ) & 0xFF);
-  serialize8((a>> 8) & 0xFF);
-  serialize8((a>>16) & 0xFF);
-  serialize8((a>>24) & 0xFF);
+  if (str(a)!=null ){
+    serialize8((a    ) & 0xFF);
+    serialize8((a>> 8) & 0xFF);
+    serialize8((a>>16) & 0xFF);
+    serialize8((a>>24) & 0xFF);
+  }
+ 
 }
 
 void serializeNames(int s) {
@@ -435,11 +506,12 @@ void serializeNames(int s) {
    // serialize8(pgm_read_byte(c));
   //}
   for (int c = 0; c < strBoxNames.length(); c++) {
-    if (init_com==1)serialize8(strBoxNames.charAt(c));
+    serialize8(strBoxNames.charAt(c));
   }
 }
 
 void headSerialResponse(int requestMSP, Boolean err, int s) {
+  //if (FontMode)DelayTimer(1);
   serialize8('$');
   serialize8('M');
   serialize8(err ? '!' : '>');
@@ -449,15 +521,17 @@ void headSerialResponse(int requestMSP, Boolean err, int s) {
 }
 
 void headSerialReply(int requestMSP, int s) {
-  headSerialResponse(requestMSP, false, s);
+  if ((str(requestMSP) !=null) && (str(s)!=null)){
+    headSerialResponse(requestMSP, false, s);
+  }
 }
 
-void headSerialError(int requestMSP, int s) {
- headSerialResponse(requestMSP, true, s);
-}
+//void headSerialError(int requestMSP, int s) {
+// headSerialResponse(requestMSP, true, s);
+//}
 
 void tailSerialReply() {
-  serialize8(outChecksum);
+  if (outChecksum > 0) serialize8(outChecksum);
 }
 
 public void DelayTimer(int ms){
@@ -467,9 +541,14 @@ public void DelayTimer(int ms){
 
 public void evaluateCommand(byte cmd, int size) {
   if ((init_com==0)  || (toggleMSP_Data == false)) return;
-
-  int icmd = (int)(cmd&0xFF);
-//System.out.println("Sent Char "+cindex);
+    
+  int icmd = int(cmd&0xFF);
+  if (icmd !=MSP_OSD){
+  //System.out.println("Not Valid Command");
+  return;
+  }
+ 
+  //System.out.println("evaluateCommand");
 
 
  
@@ -526,21 +605,28 @@ public void evaluateCommand(byte cmd, int size) {
             //serialize16(7456);  // safety code
             //serialize8(0);    // first char
             //serialize8(255);  // last char
+           // tailSerialReply();
           }
           if(size == 3) {
+            FileUploadText.setText("  Please Wait");
             PortRead = true;
             PortWrite = true; 
             int cindex = read16();
             if((cindex&0xffff) == 0xffff) { // End!
+              FontCounter = 255;
               headSerialReply(MSP_OSD, 1);
               serialize8(OSD_NULL);
               tailSerialReply();
+              toggleMSP_Data = false;
+              g_serial.clear();
               PortRead = false;
               PortWrite = false;
               FontMode = false;      
               System.out.println("End marker "+cindex);
               buttonSendFile.getCaptionLabel().setText("  Upload");
-              BounceSerial();
+              FileUploadText.setText(" Please Restart");
+              //InitSerial(200.00);
+              RESTART();
             }
             else {
               headSerialReply(MSP_OSD, 56);
@@ -564,7 +650,8 @@ public void evaluateCommand(byte cmd, int size) {
     }
     break;
   }
-  tailSerialReply();   
+    
+    //}  
  
       
 
@@ -575,38 +662,9 @@ public void evaluateCommand(byte cmd, int size) {
     
 /*  
   
-  case MSP_RAW_GPS:
-   
-   // We have: GPS_fix(0-2), GPS_numSat(0-15), GPS_coord[LAT & LON](signed, in 1/10 000 000 degres), GPS_altitude(signed, in meters) and GPS_speed(in cm/s)  
-   FormatGPSCoord(GPS_latitude,screenBuffer+1,3,'N','S');
-    headSerialReply(MSP_RAW_GPS,16);
-    serialize8(int(SGPS_FIX.arrayValue()[0]));
-    serialize8(int(SGPS_numSat.value()));
-    serialize32(430948610);
-    serialize32(-718897060);
-    serialize16(int(SGPS_altitude.value()/100));
-    serialize16(int(SGPS_speed.value()));
-    serialize16(355);     
-    break;
-    
   
- case MSP_COMP_GPS:
-   
-     headSerialReply(MSP_COMP_GPS,5);
-     serialize16(int(SGPS_distanceToHome.value()));
-    int GPSheading = int(SGPSHeadHome.value());
-    if(GPSheading < 0) GPSheading += 360;
-     serialize16(GPSheading);
-     serialize8(0);
-    break;
   
-  case MSP_ALTITUDE:
   
-    headSerialReply(MSP_ALTITUDE, 6);
-    serialize32(int(sAltitude) *100);
-    
-    serialize16(int(sVario) *10);     
-    break;
   
   
 
@@ -632,11 +690,7 @@ public void evaluateCommand(byte cmd, int size) {
      }
      break;
 
-   case MSP_RSSI:
    
-     headSerialReply(MSP_RSSI, 2);
-     serialize16(700);
-     break;
 
 
   default:
@@ -648,19 +702,21 @@ public void evaluateCommand(byte cmd, int size) {
 }
 
 void MWData_Com() {
-  if (toggleMSP_Data == false) return;
+  if ((toggleMSP_Data == false) ||(init_com==0)) return;
  
   //List<Character> payload;
   int i,aa;
   float val,inter,a,b,h;
   int c = 0;
-  if ((init_com==1)  && (toggleMSP_Data == true)) {
+  
   //System.out.println("MWData_Com");  
     
     while (g_serial.available()>0 && (toggleMSP_Data == true)) {
-    
+    try{
       c = (g_serial.read());
-       
+      
+     if (str(c) == null)return;
+      
       PortRead = true;
       if (c_state == IDLE) {
         c_state = (c=='$') ? HEADER_START : IDLE;
@@ -733,9 +789,15 @@ void MWData_Com() {
         c_state = IDLE;
         
       }
+      
+      } catch(java.lang.Throwable t) {
+         System.out.println( t.getClass().getName() ); //this'll tell you what class has been thrown
+         t.printStackTrace(); //get a stack trace
+      }
+      
     }
      
-  }
+ 
   
 }
 

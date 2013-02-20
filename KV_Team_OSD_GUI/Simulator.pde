@@ -14,22 +14,26 @@ int mode_gpshold = 0;
 int mode_llights = 0;
 int mode_osd_switch = 0;
 
+int SendSim = 0;
+
 boolean[] keys = new boolean[526];
 
 
-Group SG,SGModes,SGAtitude,SGRadio,SGSensors1,SGGPS; 
+Group SG,SGControlBox,SGModes,SGAtitude,SGRadio,SGSensors1,SGGPS; 
 
 // Checkboxs
 CheckBox checkboxSimItem[] = new CheckBox[SIMITEMS] ;
 CheckBox ShowSimBackground, UnlockControls, SGPS_FIX;
 //Toggles
 Toggle toggleModeItems[] = new Toggle[boxnames.length] ;
+Toggle SimControlToggle;
 // Slider2d ---
 Slider2D Pitch_Roll, Throttle_Yaw,MW_Pitch_Roll;
 //Sliders ---
 Slider s_Altitude,s_Vario,s_VBat,s_MRSSI;
 
 Textlabel txtlblModeItems[] = new Textlabel[boxnames.length] ;
+Textlabel SimControlText;
 
 // Knobs----
 Knob HeadingKnob,SGPSHeadHome;
@@ -61,7 +65,7 @@ void SimSetup(){
     .disableCollapse()
     .setBackgroundColor(color(0,255))
     .setBackgroundHeight(265)
-   .setLabel("Simulator Controls")
+   .setLabel("Simulator")
    .setMoveable(true);
     ;
                 
@@ -100,7 +104,7 @@ void SimSetup(){
                 .activateEvent(true)
                 .disableCollapse()
                 .setBackgroundColor(color(30,255))
-                .setBackgroundHeight(65)
+                .setBackgroundHeight(62)
                 .setLabel("Radio")
                 .setGroup(SG)
                 //.close() 
@@ -130,6 +134,29 @@ SGGPS = ScontrolP5.addGroup("SGGPS")
                 .setGroup(SG)
                 //.close() 
                ;
+
+SGControlBox = ScontrolP5.addGroup("SGControlBox")
+                .setPosition(5,185)
+                .setWidth(175)
+                .setBarHeight(15)
+                .activateEvent(true)
+                .disableCollapse()
+                .setBackgroundColor(color(30,255))
+                .setBackgroundHeight(62)
+                .setLabel("Simulator Control")
+                .setGroup(SG)
+                //.close() 
+               ;   
+
+SimControlToggle = (controlP5.Toggle) hideLabel(controlP5.addToggle("SendSim"));
+SimControlToggle.setPosition(5,5);
+SimControlToggle.setSize(35,10);
+SimControlToggle.setMode(ControlP5.SWITCH);
+SimControlToggle.setGroup(SGControlBox);
+
+SimControlText = controlP5.addTextlabel("SimControlText","Simulate on OSD",45,3);
+SimControlText.setGroup(SGControlBox);
+               
 
 SGPS_FIX =  ScontrolP5.addCheckBox("GPS_FIX",5,5);
     SGPS_FIX.setColorBackground(color(120));

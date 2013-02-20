@@ -150,7 +150,7 @@ void CreateFontFile(){
   int fullpixels = 0;
   String OutputLine = "";
   
-  Output = createWriter("/data/MW_OSD_Team.mcm");
+  Output = createWriter("data/MW_OSD_Team.mcm");
   
   Output.println("MAX7456"); // write header
   for(int id = 0; id < 256; id++) {
