@@ -186,8 +186,8 @@ buttonSendFile = controlP5.addButton("FONT_UPLOAD",1,20,50,60,16)
 .setGroup(MGUploadF);
 
 buttonBrowseFile = controlP5.addButton("Browse",1,20,75,60,16)
-.setGroup(MGUploadF)
-.hide();
+.setGroup(MGUploadF);
+//.hide();
 
 buttonSendFile.getCaptionLabel()
     .toUpperCase(false)
