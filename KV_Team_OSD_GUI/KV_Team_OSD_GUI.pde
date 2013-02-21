@@ -156,7 +156,7 @@ ListBox commListbox;
 
 
 
-boolean PortRead = true;
+boolean PortRead = false;
 boolean PortWrite = false;
 
 
@@ -211,6 +211,8 @@ int XPortStat  = 5;            int YPortStat = 350;
 int XControlBox     = 5;        int YControlBox   = 415;
 int XRCSim    =   XSim;      int YRCSim = 430;
 
+
+String FontFileName = "data/MW_OSD_Team.mcm";
 
 //File FontFile;
 int activeTab = 1;
@@ -630,7 +632,7 @@ CreateItem(GetSetting("S_MWRSSI"),  5,8*17, G_Other);
   BuildToolHelp();
   Font_Editor_setup();
    SimSetup();
-  img_Clear = LoadFont("MW_OSD_Team.mcm");
+  img_Clear = LoadFont(FontFileName);
   //toggleMSP_Data = true;
   CloseMode = 0;
   //InitSerial(0);
@@ -1083,7 +1085,7 @@ public void bSAVE() {
   updateModel();
   SwingUtilities.invokeLater(new Runnable(){
     public void run() {
-     final JFileChooser fc = new JFileChooser() {
+     final JFileChooser fc = new JFileChooser(dataPath("")) {
 
         private static final long serialVersionUID = 7919427933588163126L;
 
@@ -1225,7 +1227,7 @@ public class MwiFileFilter extends FileFilter {
 public void bIMPORT(){
   SwingUtilities.invokeLater(new Runnable(){
     public void run(){
-      final JFileChooser fc = new JFileChooser();
+      final JFileChooser fc = new JFileChooser(dataPath(""));
       fc.setDialogType(JFileChooser.SAVE_DIALOG);
       fc.setFileFilter(new MwiFileFilter());
       int returnVal = fc.showOpenDialog(null);
