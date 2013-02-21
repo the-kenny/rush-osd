@@ -635,7 +635,8 @@ CreateItem(GetSetting("S_MWRSSI"),  5,8*17, G_Other);
   img_Clear = LoadFont(FontFileName);
   //toggleMSP_Data = true;
   CloseMode = 0;
-  //InitSerial(0);
+  LoadConfig();
+  
   
 }
 
@@ -1322,6 +1323,38 @@ public void updateConfig(){
             }
       }
 }
+
+
+public void LoadConfig(){
+  String error = null;
+  FileInputStream in =null;  
+  try{
+   
+    in = new FileInputStream(dataPath("GUI.Config"));
+  }catch(FileNotFoundException e){
+    System.out.println("Configuration Failed- Creating Default");
+    updateConfig();
+    }catch( IOException ioe){
+      /*failed to write the file*/
+      ioe.printStackTrace();
+      error = ioe.getCause().toString();
+    }//finally{
+      if (in!=null){
+        try{
+          ConfigClass.conf.loadFromXML(in); 
+          FontFileName = ConfigClass.getProperty("StartFontFile");
+          img_Clear = LoadFont(FontFileName);
+          System.out.println("Configuration Successful");
+          in.close();
+          }catch( IOException ioe){/*failed to close the file*/error = ioe.getCause().toString();}
+          }
+          if (error !=null){
+            JOptionPane.showMessageDialog(null, new StringBuffer().append("error : ").append(error) );
+          }
+    //}
+    
+}
+
 //  our configuration 
 static class ConfigClass {
   private static Properties conf = new Properties();
