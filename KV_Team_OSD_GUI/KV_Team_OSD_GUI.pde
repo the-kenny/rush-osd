@@ -1301,7 +1301,7 @@ public void updateConfig(){
   ConfigClass.setProperty("StartFontFile",FontFileName);
   
   
-  File file = new File(dataPath("") + "/GUI.Config");
+  File file = new File(dataPath("GUI.Config"));
   try{
     out = new FileOutputStream(file) ;
     ConfigClass.conf.storeToXML(out, "KV_Team_OSD GUI Configuration File  " + new  Date().toString());
