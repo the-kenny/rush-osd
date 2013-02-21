@@ -14,7 +14,20 @@ void SetupGroups(){
   //.setColorLabel(color(0, 110, 220))
   //.setColorValue(0xffff88ff)
   //.setColorActive(color(30,255))
+  G_PortStatus = FontGroupcontrolP5.addGroup("PG")
+    .setPosition(XPortStat,YPortStat)
+    .setWidth(105)
+    .setColorForeground(color(30,255))
+    .setColorBackground(color(30,255))
+    .setColorLabel(color(0, 110, 220))
+    .setBarHeight(15)
+    .setBackgroundColor(color(30,255))
+    .setColorActive(red_)
+    .setBackgroundHeight(30)
+    .setLabel("   Port Status")
+    .disableCollapse()
   
+    ;
  
  
   

@@ -749,8 +749,8 @@ void draw() {
   time=millis();
   //hint(ENABLE_DEPTH_TEST);
   //pushMatrix();
-  PortRead = false; 
-  PortWrite = false; 
+  //PortRead = false; 
+  //PortWrite = false; 
   //del++; 
   //System.out.println(del);
   if ((init_com==1)  && (toggleMSP_Data == true)) {
@@ -761,19 +761,22 @@ void draw() {
     
   }
   
+  PortWrite = false;
+  if ((SendSim ==1) && (ClosePort == false)){
+    PortWrite = true;
  
-  if (SendSim ==1){
     if ((init_com==1)  && (time-time5 >5000) && (toggleMSP_Data == false) && (!FontMode)){
       if(ClosePort) return;
       time5 = time;
-      PortWrite = true; 
+       
       if (init_com==1)SendCommand(MSP_BOXNAMES);
-      PortWrite = false;
+      //PortWrite = false;
     }
     if ((init_com==1)  && (time-time4 >200) && (!FontMode)){
       if(ClosePort) return;
       time4 = time; 
       PortWrite = true;
+     
       if (init_com==1)SendCommand(MSP_ANALOG);
       if (init_com==1)SendCommand(MSP_STATUS);
       if (init_com==1)SendCommand(MSP_RC);
@@ -781,15 +784,17 @@ void draw() {
       if (init_com==1)SendCommand(MSP_RAW_GPS);
       if (init_com==1)SendCommand(MSP_COMP_GPS);
       
-      PortWrite = false;
+      //PortWrite = false;
     }
     if ((init_com==1)  && (time-time1 >40) && (!FontMode)){
       if(ClosePort) return;
       time1 = time; 
       PortWrite = true;
+      
       if (init_com==1)SendCommand(MSP_ATTITUDE);
-      PortWrite = false;
+      //PortWrite = false;
     }
+    
   }
 
 
@@ -849,7 +854,7 @@ void draw() {
   displayHeading();
  
   
-  MakePorts();
+  
   
   //GroupcontrolP5.draw();
   //controlP5.draw();
@@ -1275,11 +1280,9 @@ public void bIMPORT(){
 //  our model 
 static class MWI {
   private static Properties conf = new Properties();
-
   public static void setProperty(String key ,String value ){
     conf.setProperty( key,value );
   }
-
   public static String getProperty(String key ){
     return conf.getProperty( key,"0");
   }

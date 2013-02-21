@@ -445,8 +445,6 @@ void serialize8(int val) {
          System.out.println( t.getClass().getName() ); //this'll tell you what class has been thrown
          t.printStackTrace(); //get a stack trace
        }
-        
-
      }
  }
 
