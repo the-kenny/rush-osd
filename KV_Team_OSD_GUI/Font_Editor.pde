@@ -187,7 +187,7 @@ buttonSendFile = controlP5.addButton("FONT_UPLOAD",1,20,50,60,16)
 
 buttonBrowseFile = controlP5.addButton("Browse",1,20,75,60,16)
 .setGroup(MGUploadF);
-//.hide();
+
 
 buttonSendFile.getCaptionLabel()
     .toUpperCase(false)
@@ -385,8 +385,8 @@ public void Browse(){
         String error = null;
         try{
           in = new FileInputStream(FontFile) ;
-          //FontFileName = FontFile.getPath();
-          img_Clear = LoadFont(FontFile.getPath());
+          FontFileName = FontFile.getPath();
+          img_Clear = LoadFont(FontFileName);
           //updateConfig(); 
           JOptionPane.showMessageDialog(null,new StringBuffer().append("Font File loaded : ").append(FontFile.toURI()) );
           completed  = true;

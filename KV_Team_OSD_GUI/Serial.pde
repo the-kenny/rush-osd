@@ -128,17 +128,6 @@ void InitSerial(float portValue) {
       toggleMSP_Data = false;
       ClosePort = true;
       init_com=0;
-      //delay(250);
-      
-      //try{
-      //toggleMSP_Data = false;
-      //g_serial.clear();
-      //System.out.println("after clear " ); 
-      //delay(1000);
-      //g_serial.stop();
-      //g_serial.clear();
-   
-     
     }
   }
   
@@ -208,10 +197,6 @@ void BounceSerial(){
   CloseMode = 1;
   InitSerial(200.00);
   
-  //InitSerial(LastPort);
-  //toggleMSP_Data = true;
-  //delay(1000);
-  
 }  
 
 void RESTART(){
@@ -227,26 +212,17 @@ void RESTART(){
 
 
 public void RESET(){
-  int result = JOptionPane.showConfirmDialog(this,
-                        "Are you sure you wish to RESET?", "RESET OSD MEMORY",
-                        JOptionPane.YES_NO_CANCEL_OPTION);
+  int result = JOptionPane.showConfirmDialog(this,"Are you sure you wish to RESET?", "RESET OSD MEMORY",JOptionPane.YES_NO_CANCEL_OPTION);
                 switch (result) {
                 case JOptionPane.YES_OPTION:
                     toggleConfItem[0].setValue(0);
                     confItem[0].setValue(0);
                     WRITE();
-                    BounceSerial();
+      RESTART();
                 case JOptionPane.CANCEL_OPTION:
-                    //cancelSelection();
-                    //return;
+     
                 default:
-                    //return;
                 }
-  
-  //MessageText.setValue("Reset OSD to Default Settings?");
-  //messageBox.bringToFront(); 
-  //messageBox.show();
-  
 }
 
 
@@ -261,10 +237,6 @@ public void READ(){
      serialize8(OSD_READ_CMD);
      tailSerialReply();
    }
-  //p = 0;
-  //inBuf[0] = OSD_READ_CMD;
-  //evaluateCommand((byte)MSP_OSD, 1);
-
 }
 
 public void WRITE(){
@@ -295,7 +267,6 @@ public void FONT_UPLOAD(){
   FontMode = true;
   p = 0;
   inBuf[0] = OSD_GET_FONT;
-  //evaluateCommand((byte)MSP_OSD, 1);
   //for (int txTimes = 0; txTimes<2; txTimes++) {
     headSerialReply(MSP_OSD, 5);
     serialize8(OSD_GET_FONT);
@@ -421,11 +392,6 @@ void SendCommand(int cmd){
       serialize16(int(sVario) *10);     
     break;
       
-      
-      
-      
-      
-      
     }
     tailSerialReply();   
   
@@ -454,7 +420,6 @@ public static final int
 private static final String MSP_SIM_HEADER = "$M>";
 int c_state = IDLE;
 boolean err_rcvd = false;
-//List<Character> payload;
 byte checksum=0;
 byte cmd = 0;
 int offset=0, dataSize=0;
@@ -472,8 +437,6 @@ int outChecksum;
 
 void serialize8(int val) {
  if (init_com==1)  {
-   
-      
      if(str(val)!=null){
        try{
        g_serial.write(val);
@@ -548,16 +511,10 @@ public void evaluateCommand(byte cmd, int size) {
   if ((init_com==0)  || (toggleMSP_Data == false)) return;
     
   int icmd = int(cmd&0xFF);
-  if (icmd !=MSP_OSD){
-  //System.out.println("Not Valid Command");
-  return;
-  }
+  if (icmd !=MSP_OSD)return;  //System.out.println("Not Valid Command");
  
   //System.out.println("evaluateCommand");
 
-
- 
-  //if ((time-time2)>40 && (toggleMSP_Data==true)) {
     time2=time;
     //int[] requests = {MSP_STATUS, MSP_RAW_IMU, MSP_SERVO, MSP_MOTOR, MSP_RC, MSP_RAW_GPS, MSP_COMP_GPS, MSP_ALTITUDE, MSP_BAT, MSP_DEBUGMSG, MSP_DEBUG};
     switch(icmd) {
@@ -629,7 +586,7 @@ public void evaluateCommand(byte cmd, int size) {
               FontMode = false;      
               System.out.println("End marker "+cindex);
               buttonSendFile.getCaptionLabel().setText("  Upload");
-              FileUploadText.setText(" Please Restart");
+              FileUploadText.setText("");
               //InitSerial(200.00);
               RESTART();
             }
@@ -655,61 +612,10 @@ public void evaluateCommand(byte cmd, int size) {
     }
     break;
   }
-    
-    //}  
- 
-      
-
-    
-
-   
-
-    
-/*  
-  
-  
-  
-  
-  
-  
-
-   case MSP_RC_TUNING:
-   
-     headSerialReply(MSP_RC_TUNING, 7);
-     serialize8(80);
-     serialize8(80);
-     serialize8(80);
-     serialize8(80);
-     serialize8(80);
-     serialize8(80);
-     serialize8(80);
-     break;
-
-   case MSP_PID:
-   
-     headSerialReply(MSP_PID, 3*10);
-     for(int i=0;i<20;i++) {
-       serialize8(40);
-       serialize8(20);
-       serialize8(70);
-     }
-     break;
-
-   
-
-
-  default:
-    System.out.print("Unsupported request = ");
-    System.out.println(str(icmd));
-    break;
-  */
-
 }
 
 void MWData_Com() {
   if ((toggleMSP_Data == false) ||(init_com==0)) return;
- 
-  //List<Character> payload;
   int i,aa;
   float val,inter,a,b,h;
   int c = 0;
@@ -782,14 +688,14 @@ void MWData_Com() {
           }
         }
         else {
-          //System.out.println("invalid checksum for command "+((int)(cmd&0xFF))+": "+(checksum&0xFF)+" expected, got "+(int)(c&0xFF));
-          //System.out.print("<"+(cmd&0xFF)+" "+(dataSize&0xFF)+"> {");
-         // for (i=0; i<dataSize; i++) {
-            //if (i!=0) { System.err.print(' '); }
-            //System.out.print((inBuf[i] & 0xFF));
-          //}
-          //System.out.println("} ["+c+"]");
-          //System.out.println(new String(inBuf, 0, dataSize));
+          System.out.println("invalid checksum for command "+((int)(cmd&0xFF))+": "+(checksum&0xFF)+" expected, got "+(int)(c&0xFF));
+          System.out.print("<"+(cmd&0xFF)+" "+(dataSize&0xFF)+"> {");
+          for (i=0; i<dataSize; i++) {
+            if (i!=0) { System.err.print(' '); }
+            System.out.print((inBuf[i] & 0xFF));
+          }
+          System.out.println("} ["+c+"]");
+          System.out.println(new String(inBuf, 0, dataSize));
         }
         c_state = IDLE;
         
@@ -799,11 +705,7 @@ void MWData_Com() {
          System.out.println( t.getClass().getName() ); //this'll tell you what class has been thrown
          t.printStackTrace(); //get a stack trace
       }
-      
     }
-     
- 
-  
 }
 
 

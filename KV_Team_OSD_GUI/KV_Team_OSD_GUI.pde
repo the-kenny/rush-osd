@@ -1283,12 +1283,12 @@ static class MWI {
   public static String getProperty(String key ){
     return conf.getProperty( key,"0");
   }
-
   public static void clear( ){
     conf= null; // help gc
     conf = new Properties();
   }
 }
+
 
 
 

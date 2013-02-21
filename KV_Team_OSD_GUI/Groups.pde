@@ -143,7 +143,7 @@ G_GPS = GroupcontrolP5.addGroup("G_GPS")
                 .setBackgroundColor(color(30,255))
                 .setColorActive(red_)
                 .setBackgroundHeight((4*17) +5)
-                .setLabel("Board Type")
+                .setLabel("GPS Settings")
                 //.setGroup(SG)
                 .disableCollapse() 
                 ; 
