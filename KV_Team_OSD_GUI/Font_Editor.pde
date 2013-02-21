@@ -385,8 +385,8 @@ public void Browse(){
         String error = null;
         try{
           in = new FileInputStream(FontFile) ;
-          FontFileName = FontFile.getPath();
-          img_Clear = LoadFont(FontFileName);
+          //FontFileName = FontFile.getPath();
+          img_Clear = LoadFont(FontFile.getPath());
           //updateConfig(); 
           JOptionPane.showMessageDialog(null,new StringBuffer().append("Font File loaded : ").append(FontFile.toURI()) );
           completed  = true;
