@@ -1294,6 +1294,48 @@ static class MWI {
 
 
 
+public void updateConfig(){
+  String error = null;
+  FileOutputStream out =null;
+  
+  ConfigClass.setProperty("StartFontFile",FontFileName);
+  
+  
+  File file = new File(dataPath("") + "/GUI.Config");
+  try{
+    out = new FileOutputStream(file) ;
+    ConfigClass.conf.storeToXML(out, "KV_Team_OSD GUI Configuration File  " + new  Date().toString());
+    }catch(FileNotFoundException e){
+      error = e.getCause().toString();
+      }catch( IOException ioe){
+        /*failed to write the file*/
+        ioe.printStackTrace();
+        error = ioe.getCause().toString();
+      }finally{
+        if (out!=null){
+          try{
+            out.close();
+            }catch( IOException ioe){/*failed to close the file*/error = ioe.getCause().toString();}
+            }
+            if (error !=null){
+              JOptionPane.showMessageDialog(null, new StringBuffer().append("error : ").append(error) );
+            }
+      }
+}
+//  our configuration 
+static class ConfigClass {
+  private static Properties conf = new Properties();
+  public static void setProperty(String key ,String value ){
+    conf.setProperty( key,value );
+  }
+  public static String getProperty(String key ){
+    return conf.getProperty( key,"0");
+  }
+  public static void clear( ){
+    conf= null; // help gc
+    conf = new Properties();
+  }
+}
 
 
 
@@ -1351,7 +1393,7 @@ void exit() {
   toggleMSP_Data = false;
   //delay(1000);
   InitSerial(200.00);
-  
+  updateConfig(); 
   //if (init_com==1){
     //init_com=0;
   //g_serial.stop();
