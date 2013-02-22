@@ -32,7 +32,7 @@
 #define DECIMAL '.'                 // Decimal point character, change to what suits you best (.) (,)
 
 /**********************************   MSP Options and compatibility **********************/
-#define USE_BOXNAMES             // Comment this line to use MSP_BOXIDS
+//#define USE_BOXNAMES             // Comment this line to use MSP_BOXIDS
 //#define BOX_OSD_SWITCH 19      // Uncomment to use this option. Otherwise LLIGHT will be used
 
 /********************       For Sensors presence      *********************/

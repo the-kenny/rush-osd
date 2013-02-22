@@ -557,7 +557,7 @@ void configExit()
     distanceMAX=0;
     altitudeMAX=0;
     speedMAX=0;
-    temperMAX = -128;
+    temperMAX =0;
     flyingTime=0;
   }
   setMspRequests();
