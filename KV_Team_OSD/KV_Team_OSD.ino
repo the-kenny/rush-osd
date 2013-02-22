@@ -310,15 +310,14 @@ void loop()
           displayClimbRate();
         }
 
-        if(MwSensorPresent&GPSSENSOR) {
+        if(MwSensorPresent&GPSSENSOR) 
+        if(Settings[S_DISPLAYGPS]){
           displayNumberOfSat();
           displayDirectionToHome();
           displayDistanceToHome();
           displayAngleToHome();
           displayGPS_speed();
-
-          if (Settings[S_DISPLAYGPS])
-            displayGPSPosition();
+          displayGPSPosition();
         }
       }
     }
