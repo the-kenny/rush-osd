@@ -269,8 +269,8 @@ String[] ConfigNames = {
   
   "Units",
   "Video Signal",
-  "Display Thottle Position",
-  "Display Hoizon Bar",
+  "Display Throttle Position",
+  "Display Horizon Bar",
   "Display Horizon Side Bars",
   "Display Battery Evo",
   "Reset Stats After Arm",
@@ -311,8 +311,8 @@ String[] ConfigHelp = {
   
   "Unit System:",
   "Screen Type NTSC / PAL:",
-  "Display Thottle Position",
-  "Display Hoizon Bar:",
+  "Display Throttle Position",
+  "Display Horizon Bar:",
   "Display Horizon Side Bars:",
   "Display Battery Evo:",
   "Reset Stats After Arm:",
