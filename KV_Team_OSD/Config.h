@@ -56,7 +56,7 @@ const uint8_t amperagePin=1;
 const uint8_t rssiPin=3;
 const uint8_t temperaturePin=6;    // Temperature pin 6 for original Rushduino Board V1.2
 const uint8_t rssiSample=30;
-const uint8_t lowrssiAlarm=75;     // This will make blink the Rssi if lower then this value
+const uint8_t lowrssiAlarm=60;     // This will make blink the Rssi if lower then this value
 
 
 /*----------------------------------------------       End of configurable parameters      ----------------------------------------------------*/
@@ -153,4 +153,4 @@ const unsigned char GPS_distanceToHomeAdd[2]={
   0xbb,0xb9};
 const unsigned char MwGPSAltPositionAdd[2]={
   0xa7,0xa8};
-const char RushduinoVersionPosition = 35;
+const char KVTeamVersionPosition = 35;

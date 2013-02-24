@@ -399,23 +399,23 @@ void displayHeadingGraph(void)
 void displayIntro(void)
 {
 
-  MAX7456_WriteString_P(message0, RushduinoVersionPosition);
+  MAX7456_WriteString_P(message0, KVTeamVersionPosition);
 
   if (Settings[S_VIDEOSIGNALTYPE])
-    MAX7456_WriteString_P(message2, RushduinoVersionPosition+30);
+    MAX7456_WriteString_P(message2, KVTeamVersionPosition+30);
   else
-    MAX7456_WriteString_P(message1, RushduinoVersionPosition+30);
+    MAX7456_WriteString_P(message1, KVTeamVersionPosition+30);
 
-  MAX7456_WriteString_P(MultiWiiLogoL1Add, RushduinoVersionPosition+120);
-  MAX7456_WriteString_P(MultiWiiLogoL2Add, RushduinoVersionPosition+120+LINE);
-  MAX7456_WriteString_P(MultiWiiLogoL3Add, RushduinoVersionPosition+120+LINE+LINE);
+  MAX7456_WriteString_P(MultiWiiLogoL1Add, KVTeamVersionPosition+120);
+  MAX7456_WriteString_P(MultiWiiLogoL2Add, KVTeamVersionPosition+120+LINE);
+  MAX7456_WriteString_P(MultiWiiLogoL3Add, KVTeamVersionPosition+120+LINE+LINE);
 
-  MAX7456_WriteString_P(message5, RushduinoVersionPosition+120+LINE+LINE+LINE);
-  MAX7456_WriteString(itoa(MwVersion,screenBuffer,10),RushduinoVersionPosition+131+LINE+LINE+LINE);
+  MAX7456_WriteString_P(message5, KVTeamVersionPosition+120+LINE+LINE+LINE);
+  MAX7456_WriteString(itoa(MwVersion,screenBuffer,10),KVTeamVersionPosition+131+LINE+LINE+LINE);
 
-  MAX7456_WriteString_P(message6, RushduinoVersionPosition+120+LINE+LINE+LINE+LINE+LINE);
-  MAX7456_WriteString_P(message7, RushduinoVersionPosition+125+LINE+LINE+LINE+LINE+LINE+LINE);
-  MAX7456_WriteString_P(message8, RushduinoVersionPosition+125+LINE+LINE+LINE+LINE+LINE+LINE+LINE);
+  MAX7456_WriteString_P(message6, KVTeamVersionPosition+120+LINE+LINE+LINE+LINE+LINE);
+  MAX7456_WriteString_P(message7, KVTeamVersionPosition+125+LINE+LINE+LINE+LINE+LINE+LINE);
+  MAX7456_WriteString_P(message8, KVTeamVersionPosition+125+LINE+LINE+LINE+LINE+LINE+LINE+LINE);
 }
 
 void displayFontScreen(void) {
