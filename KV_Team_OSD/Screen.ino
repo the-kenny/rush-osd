@@ -782,7 +782,7 @@ void displayConfigScreen(void)
 
     MAX7456_WriteString_P(configMsg40, MAGT);
     if(Settings[S_VIDEOSIGNALTYPE]){
-      MAX7456_WriteString_P(configMsg42, MAGD+1);
+      MAX7456_WriteString_P(configMsg42, MAGD);
     }
     else {
       MAX7456_WriteString_P(configMsg41, MAGD);

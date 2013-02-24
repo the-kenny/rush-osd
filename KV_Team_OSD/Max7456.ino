@@ -235,12 +235,12 @@ void MAX7456_Send(uint8_t add, uint8_t data)
 
 void MAX7456Configure() {
   // todo - automatically recognising card.
-  if(Settings[S_BOARDTYPE] == 0) {	// Minim
+  if(Settings[S_BOARDTYPE] == 0) {	// Rush
     MAX7456SELECT = 10;      // ss 
     MAX7456RESET  = 9;       // RESET
   }
 
-  if(Settings[S_BOARDTYPE] == 1) {	// Rush
+  if(Settings[S_BOARDTYPE] == 1) {	// MinimOSD
     MAX7456SELECT = 6;       // ss
     MAX7456RESET = 10;       // RESET
   }
