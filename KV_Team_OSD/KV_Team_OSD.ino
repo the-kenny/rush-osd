@@ -15,6 +15,13 @@ February  2013  V2.2
 // This team wish you great flights.
 
 
+              // This software communicates using MSP via the serial protocol. Therefore Multiwii develop-dependent.
+              // Changes the values of pid and rc-tuning, writes in eeprom of Multiwii FC.
+              // In config mode, can do acc and mag calibration.
+              // In addition, it works by collecting information analogue inputs. Such as voltage, amperage, rssi and temperature.
+              // At the end of the flight may be useful to look at the statistics.
+
+
 
               /***********************************************************************************************************************************************/
               /*                                                            KV_OSD_Team                                                                      */
@@ -31,25 +38,7 @@ February  2013  V2.2
               /***********************************************************************************************************************************************/
 
 
-
-
-              /************************************************************************************************************************************************/
-              /*                         Created for Multiwii r1240 or higher and using the KV_OSD_Team.mcm Chararter map file.                               */
-              /************************************************************************************************************************************************/
-
-
-              // This software communicates using MSP via the serial protocol. Therefore Multiwii develop-dependent.
-              // Changes the values of pid and rc-tuning, writes in eeprom of Multiwii FC.
-              // In config mode, can do acc and mag calibration.
-              // In addition, it works by collecting information analogue inputs. Such as voltage, amperage, rssi and temperature.
-              // At the end of the flight may be useful to look at the statistics.
-
-
-              /***********************************************************************************************************************************************/
-              /*                                                            KV_OSD_Team_V2.2                                                                 */
-              /*                                                                                                                                             */
-              /*                                                                                                                                             */
-              /***********************************************************************************************************************************************/
+            
 
 
 #include <avr/pgmspace.h>
