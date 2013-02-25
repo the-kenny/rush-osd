@@ -164,7 +164,7 @@ void displayMode(void)
   screenBuffer[0] = (MwSensorActive&mode_stable) ? SYM_CHECK : ' ';
   screenBuffer[1] = (MwSensorActive&mode_baro) ? SYM_CHECK : ' ';
   screenBuffer[2] = (MwSensorActive&mode_mag) ? SYM_CHECK : ' ';
-  screenBuffer[3] = (MwSensorActive&(mode_gpshome|mode_gpshome)) ? SYM_CHECK : ' ';
+  screenBuffer[3] = (MwSensorActive&(mode_gpshome|mode_gpshold)) ? SYM_CHECK : ' ';
   screenBuffer[4] = 0;
   MAX7456_WriteString(screenBuffer,getPosition(sensorPosition)+LINE);
 

@@ -85,7 +85,8 @@ void setup()
   UCSR0A  |= (1<<U2X0); UBRR0H = h; UBRR0L = l; 
 //---
   Serial.flush();
-  pinMode(BST,OUTPUT);
+  //Led output
+  pinMode(7,OUTPUT);
   checkEEPROM();
   readEEPROM();
   MAX7456Setup();
@@ -179,9 +180,9 @@ void loop()
  
   // Blink Basic Sanity Test Led at 1hz
   if(tenthSec>10)
-    BST_ON
+    digitalWrite(7,HIGH);
   else
-    BST_OFF
+    digitalWrite(7,LOW);
 
   //---------------  Start Timed Service Routines  ---------------------------------------
   unsigned long currentMillis = millis();

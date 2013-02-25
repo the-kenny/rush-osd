@@ -4,11 +4,20 @@
 #define METRIC 0
 #define IMPERIAL 1
 
+//Analog input defines
+const uint8_t voltagePin=0;
+const uint8_t vidvoltagePin=2;
+const uint8_t amperagePin=1;
+const uint8_t rssiPin=3;
+const uint8_t temperaturePin=6;            // Temperature pin 6 for original Rushduino Board V1.2
+const uint8_t rssiSample=30;
+const uint8_t lowrssiAlarm=RSSI_ALARM;     // This will make blink the Rssi if lower then this value
+
 //General use variables
 int tenthSec=0;
 int halfSec=0;
-int Blink2hz=0;                               // This is turing on and off at 2hz
-int Blink10hz=0;                              // This is turing on and off at 10hz
+int Blink2hz=0;                             // This is turing on and off at 2hz
+int Blink10hz=0;                            // This is turing on and off at 10hz
 uint8_t rssiTimer=0;
 uint8_t accCalibrationTimer=0;
 uint8_t magCalibrationTimer=0;
@@ -247,6 +256,9 @@ uint16_t flyingTime=0;
 #define OSD_RESET                5
 // End private MSP for use with the GUI
 
+const char disarmed_text[] PROGMEM = "DISARMED";
+const char armed_text[] PROGMEM = " ARMED";
+
 // For Intro
 const char message0[] PROGMEM = "KV_OSD_TEAM_2.2";
 const char message1[] PROGMEM = "VIDEO SIGNAL: NTSC";
@@ -322,6 +334,31 @@ const char configMsg55[] PROGMEM = "MAX SPEED:";
 const char configMsg56[] PROGMEM = "FLYING TIME:";
 const char configMsg57[] PROGMEM = "DRAINED AMPS:";
 const char configMsg58[] PROGMEM = "MAX TEMP:";
+
+
+// POSITION OF EACH CHARACTER OR LOGO IN THE MAX7456
+const unsigned char speedUnitAdd[2] ={
+  0xa5,0xa6} ; // [0][0] and [0][1] = Km/h   [1][0] and [1][1] = Mph
+const unsigned char temperatureUnitAdd[2] = {
+  0x0e,0x0d};
+
+const char MultiWiiLogoL1Add[17] PROGMEM = {
+  0xd0,0xd1,0xd2,0xd3,0xd4,0xd5,0xd6,0xd7,0xd8,0xd9,0xda,0xdb,0xdc,0xdd,0xde,0};
+const char MultiWiiLogoL2Add[17] PROGMEM = {
+  0xe0,0xe1,0xe2,0xe3,0xe4,0xe5,0xe6,0xe7,0xe8,0xe9,0xea,0xeb,0xec,0xed,0xee,0};
+const char MultiWiiLogoL3Add[17] PROGMEM = {
+  0xf0,0xf1,0xf2,0xf3,0xf4,0xf5,0xf6,0xf7,0xf8,0xf9,0xfa,0xfb,0xfc,0xfd,0xfe,0};
+
+const unsigned char MwAltitudeAdd[2]={
+  0xa7,0xa8};
+const unsigned char MwClimbRateAdd[2]={
+  0x9f,0x99};
+const unsigned char GPS_distanceToHomeAdd[2]={
+  0xbb,0xb9};
+const unsigned char MwGPSAltPositionAdd[2]={
+  0xa7,0xa8};
+const char KVTeamVersionPosition = 35;
+
 
 // All screen locations defines in ScreenLayout.ino
 enum Positions {

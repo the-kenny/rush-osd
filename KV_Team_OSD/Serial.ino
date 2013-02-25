@@ -270,7 +270,7 @@ void serialMSPCheck()
         mode_llights |= bit;
         break;
 #ifdef BOX_OSD_SWITCH
-      case BOX_OSD_SWITCH:
+      case 19:
         mode_osd_switch |= bit;
         break;
 #endif

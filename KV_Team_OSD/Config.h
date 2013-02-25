@@ -1,9 +1,6 @@
  
  
- 
-                                      /**********************************************************************************/
-                                      /*        KV_OSD_Team 2.2    Configurable parameters       KV_OSD_Team 2.2        */
-                                      /**********************************************************************************/
+ /*--------------------------------------------------       configurable parameters      ----------------------------------------------------*/
 
 
 
@@ -19,10 +16,9 @@
 /***************************************         Amperage        ********************************************/
 
 #define EST_PMSum 2.6                 /****  NOTE  **** If you use hardware CURRENT sensor on OSD use (#define EST_PMSum 1) BEFORE ANY ADJUSTMENT OR CALIBRATION
-                                                        this value is empirical and you can find "yours" after some flights using the same instructions as for VBAT adjustment
-                                                        on Mwc (first you have to MWC fine tune your voltage (VBat))                                                            ****/
+                                                        this value is empirical and is for fine tunning your consumption using the same instructions as for POWERMETER adjustment
+                                                        on Mwc (first you have to MWC fine tune your voltage (VBat)).                                                       ****/
 
-//#define HARDSENSOR                // Uncomment to change from MW_POWERMETER to Hard current sensor on analogue Pin (MW_POWERMETER is DEFAULT and must be defined on MWCode)
 #define AMPDIVISION 3600            // Hardware current sensor division ratio
 #define AMPERAGE_CAL 1.1            // Amperage calibration
 #define AMPRERAGE_OFFSET 512        // Amperage = AMPRERAGE_OFFSET - analogRead * AMPERAGE_CAL / 10.23
@@ -30,10 +26,11 @@
 /**********************************         Display Settings         ************************/
 
 #define DECIMAL '.'                 // Decimal point character, change to what suits you best (.) (,)
+#define RSSI_ALARM 60               // This is the (%) value that will make your alarm go on (RSSI blink on screen).
 
 /**********************************   MSP Options and compatibility **********************/
-//#define USE_BOXNAMES             // Comment this line to use MSP_BOXIDS
-//#define BOX_OSD_SWITCH 19      // Uncomment to use this option. Otherwise LLIGHT will be used
+//#define USE_BOXNAMES             // Comment this line to use BOXIDS
+#define BOX_OSD_SWITCH         // Comment to use LLIGHT switch instead. ( OSD switch will be default and only option after MW 2.2 release. It is used to hide your AH, side bars, and coordinates).
 
 /********************       For Sensors presence      *********************/
 
@@ -42,21 +39,6 @@
 #define MAGNETOMETER   4//0b00000100
 #define GPSSENSOR      8//0b00001000
 //#define SONAR         16//0b00010000
-
-/*********************      Led output      *******************************/
-#define BST 7                        // pin 7 for original Rushduino Board
-#define BST_OFF digitalWrite(BST,LOW);
-#define BST_ON digitalWrite(BST,HIGH);
-
-/********************      Analog input defines     ***********************/
-
-const uint8_t voltagePin=0;
-const uint8_t vidvoltagePin=2;
-const uint8_t amperagePin=1;
-const uint8_t rssiPin=3;
-const uint8_t temperaturePin=6;    // Temperature pin 6 for original Rushduino Board V1.2
-const uint8_t rssiSample=30;
-const uint8_t lowrssiAlarm=60;     // This will make blink the Rssi if lower then this value
 
 
 /*----------------------------------------------       End of configurable parameters      ----------------------------------------------------*/
@@ -78,6 +60,10 @@ const uint8_t lowrssiAlarm=60;     // This will make blink the Rssi if lower the
 #define LINE14    390
 #define LINE15    420
 #define LINE16    450
+
+// DEFINE CONFIGURATION MENU PAGES
+#define MINPAGE 1
+#define MAXPAGE 6
 
 #define PIDITEMS 10
 
@@ -125,32 +111,4 @@ const uint8_t lowrssiAlarm=60;     // This will make blink the Rssi if lower the
 #define SAVEP 93+(30*9)
 
 
-// DEFINE CONFIGURATION MENU PAGES
-#define MINPAGE 1
-#define MAXPAGE 6
 
-// POSITION OF EACH CHARACTER OR LOGO IN THE MAX7456
-const unsigned char speedUnitAdd[2] ={
-  0xa5,0xa6} ; // [0][0] and [0][1] = Km/h   [1][0] and [1][1] = Mph
-const unsigned char temperatureUnitAdd[2] = {
-  0x0e,0x0d};
-
-const char MultiWiiLogoL1Add[17] PROGMEM = {
-  0xd0,0xd1,0xd2,0xd3,0xd4,0xd5,0xd6,0xd7,0xd8,0xd9,0xda,0xdb,0xdc,0xdd,0xde,0};
-const char MultiWiiLogoL2Add[17] PROGMEM = {
-  0xe0,0xe1,0xe2,0xe3,0xe4,0xe5,0xe6,0xe7,0xe8,0xe9,0xea,0xeb,0xec,0xed,0xee,0};
-const char MultiWiiLogoL3Add[17] PROGMEM = {
-  0xf0,0xf1,0xf2,0xf3,0xf4,0xf5,0xf6,0xf7,0xf8,0xf9,0xfa,0xfb,0xfc,0xfd,0xfe,0};
-
-const char disarmed_text[] PROGMEM = "DISARMED";
-const char armed_text[] PROGMEM = " ARMED";
-
-const unsigned char MwAltitudeAdd[2]={
-  0xa7,0xa8};
-const unsigned char MwClimbRateAdd[2]={
-  0x9f,0x99};
-const unsigned char GPS_distanceToHomeAdd[2]={
-  0xbb,0xb9};
-const unsigned char MwGPSAltPositionAdd[2]={
-  0xa7,0xa8};
-const char KVTeamVersionPosition = 35;
