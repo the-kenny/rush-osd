@@ -191,6 +191,13 @@ void displayArmed(void)
     MAX7456_WriteString_P(armed_text, getPosition(motorArmedPosition));
 }
 
+void displayCallsign(void)
+{
+   #ifdef CALL_SIGN
+       MAX7456_WriteString_P(callsign_text, getPosition(callSignPosition)); 
+   #endif
+}
+
 void displayHorizon(int rollAngle, int pitchAngle)
 {
   if(!fieldIsVisible(horizonPosition))
@@ -584,7 +591,6 @@ void displayDirectionToHome(void)
   screenBuffer[1]=0;                //2
   MAX7456_WriteString(screenBuffer,getPosition(GPS_directionToHomePosition));
 }
-
 void displayCursor(void)
 {
   int cursorpos;

@@ -27,10 +27,13 @@
 
 #define DECIMAL '.'                 // Decimal point character, change to what suits you best (.) (,)
 #define RSSI_ALARM 60               // This is the (%) value that will make your alarm go on (RSSI blink on screen).
+//#define CALL_SIGN
+#define CALL_SIGN_TEXT "CALL_SIGN_" // Call sign must be <= 10 characteres long.
+
 
 /**********************************   MSP Options and compatibility **********************/
-//#define USE_BOXNAMES             // Comment this line to use BOXIDS
-#define BOX_OSD_SWITCH         // Comment to use LLIGHT switch instead. ( OSD switch will be default and only option after MW 2.2 release. It is used to hide your AH, side bars, and coordinates).
+//#define USE_BOXNAMES              // Comment this line to use BOXIDS
+#define BOX_OSD_SWITCH              // Comment to use LLIGHT switch instead. ( OSD switch will be default and only option after MW 2.2 release. It is used to hide your AH, side bars, and coordinates).
 
 /********************       For Sensors presence      *********************/
 

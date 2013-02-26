@@ -18,6 +18,7 @@ int tenthSec=0;
 int halfSec=0;
 int Blink2hz=0;                             // This is turing on and off at 2hz
 int Blink10hz=0;                            // This is turing on and off at 10hz
+int lastCallSign=0;                          //callsign_timer
 uint8_t rssiTimer=0;
 uint8_t accCalibrationTimer=0;
 uint8_t magCalibrationTimer=0;
@@ -259,6 +260,9 @@ uint16_t flyingTime=0;
 const char disarmed_text[] PROGMEM = "DISARMED";
 const char armed_text[] PROGMEM = " ARMED";
 
+const char callsign_text[] PROGMEM = CALL_SIGN_TEXT; // test callsign
+
+
 // For Intro
 const char message0[] PROGMEM = "KV_OSD_TEAM_2.2";
 const char message1[] PROGMEM = "VIDEO SIGNAL: NTSC";
@@ -386,6 +390,7 @@ enum Positions {
   amperagePosition,
   pMeterSumPosition,
   horizonPosition,
+  callSignPosition //test
 };
 
 #define REQ_MSP_IDENT     (1 <<  0)

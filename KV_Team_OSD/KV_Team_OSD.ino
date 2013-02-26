@@ -247,8 +247,10 @@ void loop()
       blankserialRequest(MSPcmdsend);      
 
     MAX7456_DrawScreen();
-    if( allSec < 9 )
+    if( allSec < 9 ){
       displayIntro();
+      lastCallSign = onTime;
+    }  
     else
     {
       if(armed){
@@ -286,6 +288,14 @@ void loop()
         displayArmed();
         if (Settings[S_THROTTLEPOSITION])
           displayCurrentThrottle();
+
+        if ( (onTime > (lastCallSign+60)) || (onTime < (lastCallSign+5)))
+       {
+           // Only displays 5 sec and disappears for 60 //
+        if ( onTime > (lastCallSign+60))lastCallSign = onTime;
+        if (Blink10hz) displayCallsign(); 
+       
+       }
 
         if(MwSensorPresent&ACCELEROMETER)
            displayHorizon(MwAngle[0],MwAngle[1]);
