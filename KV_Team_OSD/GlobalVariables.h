@@ -3,7 +3,6 @@
 
 #define METRIC 0
 #define IMPERIAL 1
-
 //Analog input defines
 const uint8_t voltagePin=0;
 const uint8_t vidvoltagePin=2;
@@ -11,7 +10,7 @@ const uint8_t amperagePin=1;
 const uint8_t rssiPin=3;
 const uint8_t temperaturePin=6;            // Temperature pin 6 for original Rushduino Board V1.2
 const uint8_t rssiSample=30;
-const uint8_t lowrssiAlarm=RSSI_ALARM;     // This will make blink the Rssi if lower then this value
+//const uint8_t lowrssiAlarm=RSSI_ALARM;     // This will make blink the Rssi if lower then this value
 
 //General use variables
 int tenthSec=0;
@@ -52,6 +51,7 @@ enum Setting_ {
   S_CHECK_,		// used for check
   S_RSSIMIN,
   S_RSSIMAX,
+  S_RSSI_ALARM,
   S_DISPLAYRSSI,
   S_DISPLAYVOLTAGE,
   S_VOLTAGEMIN,
@@ -79,6 +79,17 @@ enum Setting_ {
   S_RESETSTATISTICS,
   S_ENABLEADC,
   S_MWRSSI,
+  S_DISPLAY_CS,
+  S_CS0,
+  S_CS1,
+  S_CS2,
+  S_CS3,
+  S_CS4,
+  S_CS5,
+  S_CS6,
+  S_CS7,
+  S_CS8,
+  S_CS9,
   // EEPROM_SETTINGS must be last!
   EEPROM_SETTINGS
 };
@@ -91,6 +102,7 @@ uint8_t EEPROM_DEFAULT[EEPROM_SETTINGS] = {
 1,   // used for check
 0,   // S_RSSIMIN
 255, // S_RSSIMAX
+60,  //S_RSSI_ALARM
 1,   // S_DISPLAYRSSI
 1,   // S_DISPLAYVOLTAGE
 105, // S_VOLTAGEMIN
@@ -118,6 +130,17 @@ uint8_t EEPROM_DEFAULT[EEPROM_SETTINGS] = {
 1,   // S_RESETSTATISTICS
 0,   // S_ENABLEADC
 1,   // S_MWRSSI
+0,   // S_DISPLAY_CS,
+0,   // S_CS0,
+0,   // S_CS1,
+0,   // S_CS2,
+0,   // S_CS3,
+0,   // S_CS4,
+0,   // S_CS5,
+0,   // S_CS6,
+0,   // S_CS7,
+0,   // S_CS8,
+0,   // S_CS9,
 };
 
 static uint8_t P8[PIDITEMS], I8[PIDITEMS], D8[PIDITEMS];
@@ -260,7 +283,7 @@ uint16_t flyingTime=0;
 const char disarmed_text[] PROGMEM = "DISARMED";
 const char armed_text[] PROGMEM = " ARMED";
 
-const char callsign_text[] PROGMEM = CALL_SIGN_TEXT; // test callsign
+
 
 
 // For Intro

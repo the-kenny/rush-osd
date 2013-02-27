@@ -275,7 +275,7 @@ void loop()
        // CollectStatistics();      DO NOT DELETE
 
         if(Settings[S_DISPLAYVOLTAGE]&&((voltage>Settings[S_VOLTAGEMIN])||(Blink2hz))) displayVoltage();
-        if(Settings[S_DISPLAYRSSI]&&((rssi>lowrssiAlarm)||(Blink2hz))) displayRSSI();
+        if(Settings[S_DISPLAYRSSI]&&((rssi>Settings[S_RSSI_ALARM])||(Blink2hz))) displayRSSI();
 
         displayTime();
         displayMode();
@@ -289,9 +289,9 @@ void loop()
         if (Settings[S_THROTTLEPOSITION])
           displayCurrentThrottle();
 
-        if ( (onTime > (lastCallSign+60)) || (onTime < (lastCallSign+5)))
+        if ( (onTime > (lastCallSign+60)) || (onTime < (lastCallSign+2)))
        {
-           // Only displays 5 sec and disappears for 60 //
+           // Only displays 2 sec and disappears for 60 //
         if ( onTime > (lastCallSign+60))lastCallSign = onTime;
         if (Blink10hz) displayCallsign(); 
        

@@ -169,6 +169,8 @@ Textlabel MessageText;
 // Int variables
 
 String LoadPercent = "";
+String CallSign = "";
+
 int init_com = 0;
 int commListMax = 0;
 int whichKey = -1;  // Variable to hold keystoke values
@@ -200,13 +202,14 @@ int Col1Width = 180;        int Col2Width = 200;
 int XEEPROM    = 120;        int YEEPROM    = 5;  //hidden do not remove
 int XBoard     = 120;        int YBoard   = 5;
 int XRSSI      = 120;        int YRSSI    = 48;
-int XVolts      = 120;       int YVolts    = 126;
-int XAmps       = 120;       int YAmps    = 238;
-int XVVolts    = 120;        int YVVolts  = 300;
-int XTemp      = 120;        int YTemp    = 378;
-int XGPS       = 120;        int YGPS    = 442;
+int XVolts      = 120;       int YVolts    = 142;
+int XAmps       = 120;       int YAmps    = 253;
+int XVVolts    = 120;        int YVVolts  = 313;
+int XTemp      = 310;        int YTemp    = 5;
+int XCS      = 120;        int YCS    = 485;
+int XGPS       = 120;        int YGPS    = 390;
 
-int XOther     = 310;        int YOther   = 5; //48;
+int XOther     = 310;        int YOther   = 65; //48;
 int XPortStat  = 5;            int YPortStat = 350;
 int XControlBox     = 5;        int YControlBox   = 415;
 int XRCSim    =   XSim;      int YRCSim = 430;
@@ -242,6 +245,7 @@ String[] ConfigNames = {
   
   "RSSI Min",
   "RSSI Max",
+  "RSSI Alarm",
   "Display RSSI",
   
   "Display Voltage",
@@ -275,15 +279,26 @@ String[] ConfigNames = {
   "Display Battery Evo",
   "Reset Stats After Arm",
   "Enable OSD Read ADC",
-  "RSSI Over MW"
-  
-
+  "RSSI Over MW",
+  "Display CallSign",
+  "S_CS0",
+  "S_CS1",
+  "S_CS2",
+  "S_CS3",
+  "S_CS4",
+  "S_CS5",
+  "S_CS6",
+  "S_CS7",
+  "S_CS8",
+  "S_CS9",
 };
+
 String[] ConfigHelp = {
   "EEPROM Loaded:",
   
   "RSSI Min:",
   "RSSI Max:",
+  "RSSI Alarm",
   "Display RSSI:",
   
   "Display Voltage:",
@@ -312,12 +327,23 @@ String[] ConfigHelp = {
   "Unit System:",
   "Screen Type NTSC / PAL:",
   "Display Throttle Position",
-  "Display Horizon Bar:",
-  "Display Horizon Side Bars:",
-  "Display Battery Evo:",
-  "Reset Stats After Arm:",
-  "Enable OSD Read ADC:",
-  "RSSI Over MW:"
+  "Display Horizon Bar",
+  "Display Horizon Side Bars",
+  "Display Battery Evo",
+  "Reset Stats After Arm",
+  "Enable OSD Read ADC",
+  "RSSI Over MW",
+  "Display CallSign",
+  "S_CS0",
+  "S_CS1",
+  "S_CS2",
+  "S_CS3",
+  "S_CS4",
+  "S_CS5",
+  "S_CS6",
+  "S_CS7",
+  "S_CS8",
+  "S_CS9",
   
   };
 
@@ -333,6 +359,7 @@ int[] ConfigRanges = {
 
 255,   // S_RSSIMIN                7
 255,   // S_RSSIMAX                8
+100,       // S_RSSI_ALARM
 1,     // S_DISPLAYRSSI            9
 
 1,     // S_DISPLAYVOLTAGE         10
@@ -366,7 +393,19 @@ int[] ConfigRanges = {
 1,     // S_SHOWBATLEVELEVOLUTION  30 
 1,     // S_RESETSTATISTICS        31
 1,     // S_ENABLEADC              32
-1      // S_MWRSSI                 33
+1,     // S_MWRSSI                 33
+1,      // call sign
+255,
+255,
+ 255,
+ 255,
+ 255,
+ 255,
+ 255,
+ 255,
+ 255,
+ 255,
+
 };
 String[] SimNames= {
   "Armed:",
@@ -442,7 +481,9 @@ Group MGUploadF,
   G_Board,
   G_GPS,
   G_Other,
+  G_CallSign,
   G_PortStatus
+  
   ;
 
 // Timers --------------------------------------------------------------------------------------------------------------------
@@ -545,7 +586,8 @@ CreateItem(GetSetting("S_CHECK_"), 5, 0, G_EEPROM);
 
 CreateItem(GetSetting("S_RSSIMIN"), 5, 0, G_RSSI);
 CreateItem(GetSetting("S_RSSIMAX"), 5,1*17, G_RSSI);
-CreateItem(GetSetting("S_DISPLAYRSSI"), 5, 2*17, G_RSSI);
+CreateItem(GetSetting("S_RSSI_ALARM"), 5,2*17, G_RSSI);
+CreateItem(GetSetting("S_DISPLAYRSSI"), 5, 3*17, G_RSSI);
 
 // Voltage  ------------------------------------------------------------------------
 
@@ -592,7 +634,28 @@ CreateItem(GetSetting("S_RESETSTATISTICS"),  5,6*17, G_Other);
 CreateItem(GetSetting("S_ENABLEADC"),  5,7*17, G_Other);
 CreateItem(GetSetting("S_MWRSSI"),  5,8*17, G_Other);
 
+//  Call Sign ---------------------------------------------------------------------------
+CreateItem(GetSetting("S_DISPLAY_CS"),  5,0, G_CallSign);
 
+controlP5.addTextfield("CallSign")
+     .setPosition(5,1*17)
+     .setSize(105,15)
+     .setFont(font10)
+     .setAutoClear(false)
+     .setGroup(G_CallSign);
+     ;
+ controlP5.addTextlabel("TXTCallSign","Call Sign",120,1*17)
+ .setGroup(G_CallSign);
+ CreateCS(GetSetting("S_CS0"),  0,0, G_CallSign);
+ CreateCS(GetSetting("S_CS1"),  0,0, G_CallSign);
+ CreateCS(GetSetting("S_CS2"),  0,0, G_CallSign);
+ CreateCS(GetSetting("S_CS3"),  0,0, G_CallSign);
+ CreateCS(GetSetting("S_CS4"),  0,0, G_CallSign);
+ CreateCS(GetSetting("S_CS5"),  0,0, G_CallSign);
+ CreateCS(GetSetting("S_CS6"),  0,0, G_CallSign);
+ CreateCS(GetSetting("S_CS7"),  0,0, G_CallSign);
+ CreateCS(GetSetting("S_CS8"),  0,0, G_CallSign);
+ CreateCS(GetSetting("S_CS9"),  0,0, G_CallSign);
 
 
 
@@ -613,7 +676,11 @@ CreateItem(GetSetting("S_MWRSSI"),  5,8*17, G_Other);
       confItem[i].hide();
     }
     if (ConfigRanges[i] > 1) {
+      try{
       toggleConfItem[i].hide();
+      }catch(Exception e) {
+      }finally {
+      }  	
     }
       
     if (ConfigRanges[i] == 1){
@@ -682,6 +749,20 @@ void BuildRadioButton(int ItemIndex, int XLoction, int YLocation,Group inGroup, 
   
 }
 
+void CreateCS(int ItemIndex, int XLoction, int YLocation, Group inGroup){
+  //numberbox
+  confItem[ItemIndex] = (controlP5.Numberbox) hideLabel(controlP5.addNumberbox("configItem"+ItemIndex,0,XLoction,YLocation,35,14));
+  confItem[ItemIndex].setMin(0);
+  confItem[ItemIndex].setMax(255);
+  confItem[ItemIndex].setDecimalPrecision(0);
+  confItem[ItemIndex].setGroup(inGroup);
+  confItem[ItemIndex].hide();
+  toggleConfItem[ItemIndex] = (controlP5.Toggle) hideLabel(controlP5.addToggle("toggleValue"+ItemIndex));
+  toggleConfItem[ItemIndex].hide();
+  
+  
+
+}
 
 void CreateItem(int ItemIndex, int XLoction, int YLocation, Group inGroup){
   //numberbox
@@ -863,6 +944,7 @@ void draw() {
   //SmallcontrolP5.draw();
   //FontGroupcontrolP5.draw();
   MatchConfigs();
+  //CheckCallSign();
   //popMatrix();
   //hint(DISABLE_DEPTH_TEST);
   
@@ -891,6 +973,39 @@ void ShowSimBackground(float[] a) {
 //void SimulateMultiWii(float[] a) {
 //}
 
+public void BuildCallSign(){
+  String CallSText = "";
+  for (int i=0; i<10; i++){ 
+    //confItem[GetSetting("S_CS0")+i].setValue(0);
+    if (int(confItem[GetSetting("S_CS0")+i].getValue())>0){
+    CallSText+=char(int(confItem[GetSetting("S_CS0")+i].getValue()));
+    }
+  }
+  controlP5.get(Textfield.class,"CallSign").setText(CallSText);
+}  
+
+public void CheckCallSign() {
+  // automatically receives results from controller input
+  String CallSText = controlP5.get(Textfield.class,"CallSign").getText().toUpperCase();
+  controlP5.get(Textfield.class,"CallSign").setText(CallSText);
+  //if (CallSText.length()  >0){
+    if (CallSText.length()  >10){
+      controlP5.get(Textfield.class,"CallSign").setText(CallSText.substring(0, 10));
+      CallSText = controlP5.get(Textfield.class,"CallSign").getText();
+    } 
+    for (int i=0; i<10; i++){ 
+    confItem[GetSetting("S_CS0")+i].setValue(0);
+    }
+    for (int i=0; i<CallSText.length(); i++){ 
+      confItem[(GetSetting("S_CS0"))+i].setValue(int(CallSText.charAt(i)));
+    //println(int(CallSText.charAt(0)));
+    //println(controlP5.get(Textfield.class,"CallSign").getText());
+    }
+  //}
+}
+
+
+
 
 void MatchConfigs(){
  for(int i=0;i<CONFIGITEMS;i++) {
@@ -900,16 +1015,16 @@ void MatchConfigs(){
        }
         }catch(Exception e) {}finally {}
     
-   
-   if  (toggleConfItem[i].isVisible()){
-     //confItem[i].setValue(int(checkboxConfItem[i].arrayValue()[0]));
-     if (int(toggleConfItem[i].getValue())== 1){
+  
+     if  (toggleConfItem[i].isVisible()){
+       if (int(toggleConfItem[i].getValue())== 1){
        confItem[i].setValue(1);
      }
      else{ 
        confItem[i].setValue(0);
      }
    }
+   
    if (ConfigRanges[i] == 0) {
       toggleConfItem[i].hide();
       //RadioButtonConfItem[i].hide();
@@ -949,6 +1064,10 @@ public void controlEvent(ControlEvent theEvent) {
   }catch(Exception e){
     System.out.println("error with Port");
   }
+
+if (theEvent.name()=="CallSign"){
+  CheckCallSign();
+}
 
       
   try{

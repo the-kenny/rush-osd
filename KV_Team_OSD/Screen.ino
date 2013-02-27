@@ -193,9 +193,17 @@ void displayArmed(void)
 
 void displayCallsign(void)
 {
-   #ifdef CALL_SIGN
-       MAX7456_WriteString_P(callsign_text, getPosition(callSignPosition)); 
-   #endif
+  if(Settings[S_DISPLAY_CS]){
+      for(int X=0; X<10; X++) {
+          screenBuffer[X] = char(Settings[S_CS0 + X]);
+      }
+       //screenBuffer[0] = char(65);
+       screenBuffer[10] = 0;
+       
+       
+       //MAX7456_WriteString_P("TEST", getPosition(callSignPosition)); 
+       MAX7456_WriteString(screenBuffer, getPosition(callSignPosition)); 
+  }
 }
 
 void displayHorizon(int rollAngle, int pitchAngle)

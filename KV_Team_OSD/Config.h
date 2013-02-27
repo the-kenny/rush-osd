@@ -26,9 +26,9 @@
 /**********************************         Display Settings         ************************/
 
 #define DECIMAL '.'                 // Decimal point character, change to what suits you best (.) (,)
-#define RSSI_ALARM 60               // This is the (%) value that will make your alarm go on (RSSI blink on screen).
+// moved to eeprom #define RSSI_ALARM 60               // This is the (%) value that will make your alarm go on (RSSI blink on screen).
 //#define CALL_SIGN
-#define CALL_SIGN_TEXT "CALL_SIGN_" // Call sign must be <= 10 characteres long.
+//#define CALL_SIGN_TEXT "CALL_SIGN_" // Call sign must be <= 10 characteres long.
 
 
 /**********************************   MSP Options and compatibility **********************/

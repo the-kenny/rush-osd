@@ -183,7 +183,8 @@ void SetConfigItem(int index, int value) {
   }
   catch(Exception e) {
   }finally {
-  }  	
+  }
+BuildCallSign();  	
 }
 
 void PORTCLOSE(){
@@ -207,23 +208,12 @@ void RESTART(){
      tailSerialReply();
      }
      toggleMSP_Data = false;
-  //BounceSerial();
+     delay(1500);
+     READ();
 }  
 
 
-public void RESET(){
-  int result = JOptionPane.showConfirmDialog(this,"Are you sure you wish to RESET?", "RESET OSD MEMORY",JOptionPane.YES_NO_CANCEL_OPTION);
-                switch (result) {
-                case JOptionPane.YES_OPTION:
-                    toggleConfItem[0].setValue(0);
-                    confItem[0].setValue(0);
-                    WRITE();
-      RESTART();
-                case JOptionPane.CANCEL_OPTION:
-     
-                default:
-                }
-}
+
 
 
 public void READ(){
@@ -240,6 +230,7 @@ public void READ(){
 }
 
 public void WRITE(){
+  CheckCallSign();
   toggleMSP_Data = true;
   p = 0;
   inBuf[0] = OSD_WRITE_CMD;
@@ -277,6 +268,32 @@ public void FONT_UPLOAD(){
  //}
   }
   
+}
+
+
+public void RESET(){
+ if (init_com==1){
+    noLoop();
+    int Reset_result = JOptionPane.showConfirmDialog(this,"Are you sure you wish to RESET?", "RESET OSD MEMORY",JOptionPane.WARNING_MESSAGE,JOptionPane.YES_NO_CANCEL_OPTION);
+    loop();
+    switch (Reset_result) {
+      case JOptionPane.YES_OPTION:
+        toggleConfItem[0].setValue(0);
+        confItem[0].setValue(0);
+        WRITE();
+        RESTART();
+        return;
+      case JOptionPane.CANCEL_OPTION:
+        return;
+      default:
+        return;
+    }
+ }else
+ {
+   noLoop();
+   JOptionPane.showConfirmDialog(null,"Please Select a Port", "Not Connected", JOptionPane.PLAIN_MESSAGE,JOptionPane.WARNING_MESSAGE);
+   loop();
+ }
 }
 
 

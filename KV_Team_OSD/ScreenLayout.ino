@@ -35,7 +35,7 @@ const uint16_t screenPosition[] PROGMEM = {
   POS(LINE13+10, 2, DISPLAY_ALWAYS), // amperagePosition
   POS(LINE13+16, 2, DISPLAY_ALWAYS), // pMeterSumPosition
   POS(LINE05+8,  1, DISPLAY_CONDR),  // horizonPosition
-  POS(LINE14+50, 1, DISPLAY_ALWAYS), // CallSign Position 
+  POS(LINE01+19, 1, DISPLAY_ALWAYS), // CallSign Position 
 };
 
 uint16_t getPosition(uint8_t pos) {
