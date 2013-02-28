@@ -31,7 +31,7 @@ import controlP5.*; // controlP5 library
 import java.io.File;
 import java.lang.*; // for efficient String concatemation
 import javax.swing.SwingUtilities; // required for swing and EDT
-import javax.swing.JFileChooser; // Saving dialogue
+import javax.swing.JFileChooser;// Saving dialogue
 import javax.swing.filechooser.FileFilter; // for our configuration file filter "*.mwi"
 import javax.swing.JOptionPane; // for message dialogue
 //import java.io.BufferedReader;
@@ -49,7 +49,7 @@ import java.text.DecimalFormat;
 
 
 
-String KV_OSD_GUI_Version = "2.02";
+String KV_OSD_GUI_Version = "2.03";
 
 
 PImage img_Clear,OSDBackground,RadioPot;
@@ -211,7 +211,7 @@ int XGPS       = 120;        int YGPS    = 390;
 
 int XOther     = 310;        int YOther   = 65; //48;
 int XPortStat  = 5;            int YPortStat = 350;
-int XControlBox     = 5;        int YControlBox   = 415;
+int XControlBox     = 5;        int YControlBox   = 385;
 int XRCSim    =   XSim;      int YRCSim = 430;
 
 
@@ -264,7 +264,7 @@ String[] ConfigNames = {
   "Display Temperature",
   "Temperature Max",
   
-  "",
+  "", // for Board type do not remove
   
   "Display GPS",
   "Display GPS Coords",
@@ -280,6 +280,7 @@ String[] ConfigNames = {
   "Reset Stats After Arm",
   "Enable OSD Read ADC",
   "RSSI Over MW",
+  "Use BoxNames",
   "Display CallSign",
   "S_CS0",
   "S_CS1",
@@ -333,6 +334,7 @@ String[] ConfigHelp = {
   "Reset Stats After Arm",
   "Enable OSD Read ADC",
   "RSSI Over MW",
+  "Use BoxNames",
   "Display CallSign",
   "S_CS0",
   "S_CS1",
@@ -394,6 +396,7 @@ int[] ConfigRanges = {
 1,     // S_RESETSTATISTICS        31
 1,     // S_ENABLEADC              32
 1,     // S_MWRSSI                 33
+1,     // S_USE_BOXNAMES
 1,      // call sign
 255,
 255,
@@ -446,11 +449,11 @@ grey_ = color(30, 30, 30);
 // textlabels -------------------------------------------------------------------------------------------------------------
 Textlabel txtlblconfItem[] = new Textlabel[CONFIGITEMS] ;
 Textlabel txtlblSimItem[] = new Textlabel[SIMITEMS] ;
-Textlabel FileUploadText;
+Textlabel FileUploadText, TXText, RXText;
 // textlabels -------------------------------------------------------------------------------------------------------------
 
 // Buttons------------------------------------------------------------------------------------------------------------------
-Button buttonIMPORT,buttonSAVE,buttonREAD,buttonClosePort,buttonRESET,buttonWRITE,buttonRESTART;
+Button buttonIMPORT,buttonSAVE,buttonREAD,buttonUploadHex,buttonRESET,buttonWRITE,buttonRESTART;
 // Buttons------------------------------------------------------------------------------------------------------------------
 
 // Toggles------------------------------------------------------------------------------------------------------------------
@@ -504,8 +507,14 @@ void setup() {
 OnTimer = millis();
   frameRate(30); 
 OSDBackground = loadImage("Background.jpg");
-RadioPot = loadImage("Radio_Pot.png");
-
+//RadioPot = loadImage("kvImage.jpg");
+//PGraphics icon = createGraphics(16, 16, P3D);
+//icon.beginDraw();
+//icon.beginShape();
+//icon.texture(RadioPot);
+//icon.endShape();
+//icon.endDraw();
+//frame.setIconImage(icon.image);
   font8 = createFont("Arial bold",8,false);
   font9 = createFont("Arial bold",10,false);
   font10 = createFont("Arial bold",11,false);
@@ -569,12 +578,12 @@ RadioPot = loadImage("Radio_Pot.png");
   buttonRESET = controlP5.addButton("RESET",1,XControlBox+30,YControlBox+50,45,16);buttonRESET.setColorBackground(red_);
   buttonWRITE = controlP5.addButton("WRITE",1,XControlBox+30,YControlBox+75,45,16);buttonWRITE.setColorBackground(red_);
   buttonRESTART = controlP5.addButton("RESTART",1,XControlBox+25,YControlBox+100,55,16);buttonRESTART.setColorBackground(red_);
-  buttonClosePort = controlP5.addButton("PORTCLOSE",1,XControlBox+15,YControlBox- 25 ,70,16);buttonClosePort.setColorBackground(red_);
-  buttonClosePort.getCaptionLabel()
+  buttonUploadHex = controlP5.addButton("UPLOADHEX",1,XControlBox+15,YControlBox+125 ,75,16);//buttonUploadHex.setColorBackground(red_);
+  buttonUploadHex.getCaptionLabel()
     //.setFont(font12)
     .toUpperCase(false)
-    .setText("Close Port");
-    buttonClosePort.hide();
+    .setText("UPLOAD HEX");
+    //buttonClosePort.hide();
     
     
 
@@ -633,6 +642,8 @@ CreateItem(GetSetting("S_SHOWBATLEVELEVOLUTION"),  5,5*17, G_Other);
 CreateItem(GetSetting("S_RESETSTATISTICS"),  5,6*17, G_Other);
 CreateItem(GetSetting("S_ENABLEADC"),  5,7*17, G_Other);
 CreateItem(GetSetting("S_MWRSSI"),  5,8*17, G_Other);
+CreateItem(GetSetting("S_USE_BOXNAMES"),  5,9*17, G_Other);
+
 
 //  Call Sign ---------------------------------------------------------------------------
 CreateItem(GetSetting("S_DISPLAY_CS"),  5,0, G_CallSign);
@@ -799,32 +810,20 @@ void BuildToolHelp(){
 
 
 void MakePorts(){
-  
-  //time=millis();
-  strokeWeight(3);stroke(100);
-  fill(100); strokeWeight(3);stroke(200); rectMode(CORNERS); rect(XPortStat,YPortStat, XPortStat+105 , YPortStat+30);
-  //if ((PortRead) && (time - time2 >200)){
-  if (PortRead){  
-    //time2 = time;
-    fill(255, 10, 0);
+  if (PortWrite){  
+       TXText.setColorValue(color(255,10,0));
   }
   else
   {
-    fill(100, 10, 0);
+    TXText.setColorValue(color(100,10,0));
   }
-  ellipse(XPortStat+35, YPortStat+15, 10, 10);
-  //if ((PortWrite) && (time - time3 > 200)){
-  if (PortWrite){  
-   //time3 = time;
-    fill(0,240, 0);
+  if (PortRead){  
+    RXText.setColorValue(color(0,240,0));
   }
    else
   {
-   fill(0,100, 0);
+    RXText.setColorValue(color(0,100,0));
   }
-   
-  ellipse(XPortStat+ 65, YPortStat+15, 10, 10);
-  
 }
 
 void draw() {
@@ -838,27 +837,32 @@ void draw() {
   if ((init_com==1)  && (toggleMSP_Data == true)) {
     //time2 = time;
     PortRead = true;
+    MakePorts();
     MWData_Com();
-    PortRead = false;
+    if (!FontMode) PortRead = false;
     
   }
   
-  PortWrite = false;
+  //PortWrite = false;
   if ((SendSim ==1) && (ClosePort == false)){
     PortWrite = true;
+      MakePorts();
  
     if ((init_com==1)  && (time-time5 >5000) && (toggleMSP_Data == false) && (!FontMode)){
       if(ClosePort) return;
       time5 = time;
        
-      if (init_com==1)SendCommand(MSP_BOXNAMES);
+      if (init_com==1){
+        SendCommand(MSP_BOXNAMES);
+        SendCommand(MSP_BOXIDS);
+      }
       //PortWrite = false;
     }
     if ((init_com==1)  && (time-time4 >200) && (!FontMode)){
       if(ClosePort) return;
       time4 = time; 
-      PortWrite = true;
-     
+      //PortWrite = true;
+      //MakePorts();
       if (init_com==1)SendCommand(MSP_ANALOG);
       if (init_com==1)SendCommand(MSP_STATUS);
       if (init_com==1)SendCommand(MSP_RC);
@@ -866,7 +870,7 @@ void draw() {
       if (init_com==1)SendCommand(MSP_RAW_GPS);
       if (init_com==1)SendCommand(MSP_COMP_GPS);
       
-      //PortWrite = false;
+      
     }
     if ((init_com==1)  && (time-time1 >40) && (!FontMode)){
       if(ClosePort) return;
@@ -876,11 +880,14 @@ void draw() {
       if (init_com==1)SendCommand(MSP_ATTITUDE);
       //PortWrite = false;
     }
-    
+  }
+  else
+  {
+    if (!FontMode) PortWrite = false; 
   }
 
 
- 
+  MakePorts();
   
   background(80);
   
@@ -889,7 +896,7 @@ void draw() {
   // ------------------------------------------------------------------------
 
   // Coltrol Box
-  fill(100); strokeWeight(3);stroke(200); rectMode(CORNERS); rect(XControlBox,YControlBox, XControlBox+105 , YControlBox+120);
+  fill(100); strokeWeight(3);stroke(200); rectMode(CORNERS); rect(XControlBox,YControlBox, XControlBox+105 , YControlBox+150);
   textFont(font12); fill(255, 255, 255); text("OSD Controls",XControlBox + 15,YControlBox + 15);
   if (activeTab == 1) {
   
@@ -935,20 +942,9 @@ void draw() {
   displayHeadingGraph();
   displayHeading();
  
-  
-  
-  
-  //GroupcontrolP5.draw();
-  //controlP5.draw();
-  //ScontrolP5.draw();
-  //SmallcontrolP5.draw();
-  //FontGroupcontrolP5.draw();
   MatchConfigs();
-  //CheckCallSign();
-  //popMatrix();
-  //hint(DISABLE_DEPTH_TEST);
-  
-  
+  MakePorts();
+
   
   if ((ClosePort ==true)&& (PortWrite == false)){ //&& (init_com==1)
     ClosePort();
@@ -1535,8 +1531,81 @@ public void mousePressed() {
                 return mouseUp;
         }
         
+void UPLOADHEX(){
+  PORTCLOSE();
+  SketchUploader();
+}  
         
+void SketchUploader(){
+  String ArduioLocal = ConfigClass.getProperty("ArduinoLocation");
+  if (ArduioLocal == "0"){
+   try {  
+    SwingUtilities.invokeAndWait(new Runnable(){
+    public void run(){
+      JFileChooser fc = new JFileChooser();
+      fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+      fc.setDialogType(JFileChooser.SAVE_DIALOG);
+      fc.setDialogTitle("Select Arduino Folder");
+      //fc.setFileFilter(new FontFileFilter());
+      //fc.setCurrentDirectory();
+      int returnVal = fc.showOpenDialog(null);
+      if (returnVal == JFileChooser.APPROVE_OPTION) {
+        File ArduioFile = fc.getSelectedFile();
+        String ArduioLocal = ArduioFile.getPath();
+        ConfigClass.setProperty("ArduinoLocation",ArduioLocal);
+        updateConfig();
         
+        String error = null;
+        
+      }
+    }
+  }
+  );  
+  } catch (Exception e) { }
+  }
+ 
+
+  
+  SwingUtilities.invokeLater(new Runnable(){
+    public void run(){
+      final JFileChooser fc = new JFileChooser(dataPath(""));
+      fc.setDialogType(JFileChooser.SAVE_DIALOG);
+      fc.setDialogTitle("Select Hex File For Upload");
+      //fc.setFileFilter(new FontFileFilter());
+      //fc.setCurrentDirectory();
+      int returnVal = fc.showOpenDialog(null);
+      if (returnVal == JFileChooser.APPROVE_OPTION) {
+        File InHexFile = fc.getSelectedFile();
+        String error = null;
+        try{
+          FileInputStream in = new FileInputStream(InHexFile) ;
+         String hexfile = InHexFile.getPath();
+         String exefile = ConfigClass.getProperty("ArduinoLocation") + "\\hardware/tools/avr/bin/avrdude";     //  "C:\\Arduino_Programing\\arduino-1.0.3\\hardware/tools/avr/bin/avrdude.exe";
+         String conffile = ConfigClass.getProperty("ArduinoLocation") +"\\hardware/tools/avr/etc/avrdude.conf";
+         String opts = " -v -v -v -v -patmega328p -carduino -P\\.\\"+Serial.list()[int(LastPort)] +" -b57600 -D -Uflash:w:";
+         String Upcmd = exefile +" -C"+ conffile + opts + hexfile +":i";
+         open(Upcmd);
+         JOptionPane.showConfirmDialog(null,"Please Wait until your FTDI Board stops flashing", "Uploading Hex File", JOptionPane.PLAIN_MESSAGE,JOptionPane.WARNING_MESSAGE);
+        }catch(FileNotFoundException e){
+                error = e.getCause().toString();
+
+        }catch( IOException ioe){/*failed to read the file*/
+          ioe.printStackTrace();
+          error = ioe.getCause().toString();
+        }
+      }
+    }
+  }
+  );  
+  
+
+}  
+      
+
+
+
+
+
 
 
 void exit() {

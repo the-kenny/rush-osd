@@ -171,7 +171,7 @@ void serialMSPCheck()
     modeMSPRequests &=~ REQ_MSP_PID;
   }
 
-#ifdef USE_BOXNAMES 
+if (Settings[S_USE_BOXNAMES]){ 
   if(cmdMSP==MSP_BOXNAMES) {
     uint32_t bit = 1;
     uint8_t remaining = dataSize;
@@ -214,10 +214,10 @@ void serialMSPCheck()
           if(lastc == 'D') // "GPS HOLD;"
             mode_gpshold |= bit;
         }
-#ifdef BOX_OSD_SWITCH
+        #ifdef BOX_OSD_SWITCH
         if(firstc == 'O' && lastc == 'W') // "OSD SW;"
           mode_osd_switch |= bit;
-#endif
+        #endif
 
         len = 0;
         bit <<= 1L;
@@ -225,12 +225,12 @@ void serialMSPCheck()
       lastc = c;
       --remaining;
     }
-#ifndef BOX_OSD_SWITCH
-    mode_osd_switch = mode_llights;
-#endif
+    #ifndef BOX_OSD_SWITCH
+      mode_osd_switch = mode_llights;
+    #endif
     modeMSPRequests &=~ REQ_MSP_BOX;
   }
-#else // use MSP_BOXIDS
+}else{ // use MSP_BOXIDS
   if(cmdMSP==MSP_BOXIDS) {
     uint32_t bit = 1;
     uint8_t remaining = dataSize;
@@ -283,7 +283,7 @@ void serialMSPCheck()
 #endif
     modeMSPRequests &=~ REQ_MSP_BOX;
   }
-  #endif
+}
 }
 
 // End of decoded received commands from MultiWii

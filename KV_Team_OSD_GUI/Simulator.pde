@@ -385,6 +385,10 @@ boolean checkKey(int k)
 void keyPressed()
 { 
   keys[keyCode] = true;
+  //println(keyCode);
+  if((checkKey(CONTROL) == true) && (checkKey(85) == true)){
+    SketchUploader();
+  }
 }
 
 

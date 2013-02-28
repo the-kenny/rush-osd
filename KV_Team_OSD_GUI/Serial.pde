@@ -19,19 +19,30 @@ int FontCounter = 0;
 int CloseMode = 0;
 
 /******************************* Multiwii Serial Protocol **********************/
-
+//String boxnames[] = { // names for dynamic generation of config GUI
+    //"ANGLE;",
+    //"HORIZON;",
+    //"BARO;",
+    //"MAG;",
+    //"ARM;",
+    //"LLIGHTS;",
+    //"GPS HOME;",
+   // "GPS HOLD;",
+   // "OSD SW;",
+    
+  //};
 
 
 String boxnames[] = { // names for dynamic generation of config GUI
+    "ARM;",
     "ANGLE;",
     "HORIZON;",
     "BARO;",
     "MAG;",
-    "ARM;",
     "LLIGHTS;",
     "GPS HOME;",
     "GPS HOLD;",
-    "OSD SW;",
+    "OSD SW;"
     
   };
 String strBoxNames = join(boxnames,""); 
@@ -115,6 +126,9 @@ void InitSerial(float portValue) {
       SendCommand(MSP_STATUS);
       READ();
        } catch (Exception e) { // null pointer or serial port dead
+         noLoop();
+        JOptionPane.showConfirmDialog(null,"Error Opening Port It may be in Use", "Port Error", JOptionPane.PLAIN_MESSAGE,JOptionPane.WARNING_MESSAGE);
+        loop();
         System.out.println("OpenPort error " + e);
      }
       //+((int)(cmd&0xFF))+": "+(checksum&0xFF)+" expected, got "+(int)(c&0xFF));
@@ -201,15 +215,16 @@ void BounceSerial(){
 }  
 
 void RESTART(){
-     toggleMSP_Data = true;
-     for (int txTimes = 0; txTimes<2; txTimes++) {
-     headSerialReply(MSP_OSD, 1);
-     serialize8(OSD_RESET);
-     tailSerialReply();
-     }
-     toggleMSP_Data = false;
-     delay(1500);
-     READ();
+  SketchUploader();
+  //toggleMSP_Data = true;
+  //for (int txTimes = 0; txTimes<2; txTimes++) {
+    //headSerialReply(MSP_OSD, 1);
+    //serialize8(OSD_RESET);
+    //tailSerialReply();
+  //}
+  //toggleMSP_Data = false;
+  //delay(1500);
+  //READ();
 }  
 
 
@@ -220,7 +235,9 @@ public void READ(){
   
   for(int i = 0; i < CONFIGITEMS; i++){
     SetConfigItem((byte)i, 0);
-  } 
+  }
+  PortRead = true; 
+  MakePorts();
    for (int txTimes = 0; txTimes<2; txTimes++) {
      toggleMSP_Data = true;
      headSerialReply(MSP_OSD, 1);
@@ -231,6 +248,8 @@ public void READ(){
 
 public void WRITE(){
   CheckCallSign();
+  PortWrite = true;
+  MakePorts();
   toggleMSP_Data = true;
   p = 0;
   inBuf[0] = OSD_WRITE_CMD;
@@ -246,6 +265,7 @@ public void WRITE(){
   
   toggleMSP_Data = false;
   g_serial.clear();
+  PortWrite = false;
 }
 
 public void FONT_UPLOAD(){
@@ -256,6 +276,8 @@ public void FONT_UPLOAD(){
   System.out.println("FONT_UPLOAD");
   toggleMSP_Data = true;
   FontMode = true;
+  PortWrite = true;
+  MakePorts();
   p = 0;
   inBuf[0] = OSD_GET_FONT;
   //for (int txTimes = 0; txTimes<2; txTimes++) {
@@ -355,6 +377,18 @@ void SendCommand(int cmd){
         PortIsWriting = false;
       break;
       
+      case MSP_BOXIDS:
+        headSerialReply(MSP_BOXIDS,19);
+        for(int i=0;i<4;i++) 
+        {serialize8(i);
+        serialize8(5);
+        serialize8(10);
+        serialize8(11);
+        serialize8(16);
+        serialize8(19);
+        tailSerialReply();
+        PortIsWriting = false;
+     }
      
       case MSP_ATTITUDE:
         PortIsWriting = true;
@@ -454,7 +488,7 @@ int outChecksum;
 
 void serialize8(int val) {
  if (init_com==1)  {
-     if(str(val)!=null){
+     //if(str(val)!=null){
        try{
        g_serial.write(val);
        outChecksum ^= val;
@@ -462,7 +496,7 @@ void serialize8(int val) {
          System.out.println( t.getClass().getName() ); //this'll tell you what class has been thrown
          t.printStackTrace(); //get a stack trace
        }
-     }
+     //}
  }
 
 }
@@ -524,7 +558,8 @@ public void DelayTimer(int ms){
 
 public void evaluateCommand(byte cmd, int size) {
   if ((init_com==0)  || (toggleMSP_Data == false)) return;
-    
+  PortRead = true;
+  MakePorts(); 
   int icmd = int(cmd&0xFF);
   if (icmd !=MSP_OSD)return;  //System.out.println("Not Valid Command");
  
@@ -535,7 +570,6 @@ public void evaluateCommand(byte cmd, int size) {
     switch(icmd) {
     
       case MSP_OSD:
-        PortRead = true;
         int cmd_internal = read8();
         
         if(cmd_internal == OSD_NULL) {
@@ -560,7 +594,7 @@ public void evaluateCommand(byte cmd, int size) {
             if (FontMode == false){
               toggleMSP_Data = false;
               g_serial.clear();
-              PortRead = false;
+              
               
             }
           }
@@ -606,6 +640,8 @@ public void evaluateCommand(byte cmd, int size) {
               RESTART();
             }
             else {
+              PortWrite = true;
+              MakePorts();
               headSerialReply(MSP_OSD, 56);
               serialize8(OSD_GET_FONT);
               for(int i = 0; i < 54; i++){
@@ -690,6 +726,7 @@ void MWData_Com() {
             try{
               if ((init_com==1)  && (toggleMSP_Data == true)) {
                   evaluateCommand(cmd, (int)dataSize);
+                  //PortRead = false;
               }
               else{
                 System.out.println("port is off ");

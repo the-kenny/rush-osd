@@ -30,6 +30,7 @@ enum Settings {
   S_RESETSTATISTICS,
   S_ENABLEADC,
   S_MWRSSI,
+  S_USE_BOXNAMES,
   S_DISPLAY_CS,
   S_CS0,
   S_CS1,

@@ -14,7 +14,7 @@ void SetupGroups(){
   //.setColorLabel(color(0, 110, 220))
   //.setColorValue(0xffff88ff)
   //.setColorActive(color(30,255))
-  G_PortStatus = FontGroupcontrolP5.addGroup("PG")
+  G_PortStatus = FontGroupcontrolP5.addGroup("G_PortStatus")
     .setPosition(XPortStat,YPortStat)
     .setWidth(105)
     .setColorForeground(color(30,255))
@@ -26,8 +26,16 @@ void SetupGroups(){
     .setBackgroundHeight(30)
     .setLabel("   Port Status")
     .disableCollapse()
-  
     ;
+    
+    TXText = FontGroupcontrolP5.addTextlabel("TXText","TX",65,5)
+    .setColorValue(red_)
+    .setGroup("G_PortStatus");
+    
+    RXText = FontGroupcontrolP5.addTextlabel("RXText","RX",15,5)
+    .setColorValue(green_)
+    .setGroup("G_PortStatus");
+    
  
  
   
@@ -212,7 +220,7 @@ G_Other = GroupcontrolP5.addGroup("G_Other")
                 .setBarHeight(15)
                 .setBackgroundColor(color(30,255))
                 .setColorActive(red_)
-                .setBackgroundHeight((9*17) +5)
+                .setBackgroundHeight((10*17) +5)
                 .setLabel("Other")
                 //.setGroup(SG)
                 .disableCollapse() 
