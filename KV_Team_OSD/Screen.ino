@@ -187,25 +187,23 @@ void displayArmed(void)
 {
   if(!armed)
     MAX7456_WriteString_P(disarmed_text, getPosition(motorArmedPosition));
-  else if(Blink10hz && flyTime < 5)
+  else if(Blink10hz && flyTime < 8)
     MAX7456_WriteString_P(armed_text, getPosition(motorArmedPosition));
 }
 
 void displayCallsign(void)
 {
+  //if(armed){
+  uint16_t position = getPosition(callSignPosition);
   if(Settings[S_DISPLAY_CS]){
       for(int X=0; X<10; X++) {
           screenBuffer[X] = char(Settings[S_CS0 + X]);
-      }
-       //screenBuffer[0] = char(65);
+     }   
        screenBuffer[10] = 0;
-       
-       
-       //MAX7456_WriteString_P("TEST", getPosition(callSignPosition)); 
        MAX7456_WriteString(screenBuffer, getPosition(callSignPosition)); 
+    //}
   }
 }
-
 void displayHorizon(int rollAngle, int pitchAngle)
 {
   if(!fieldIsVisible(horizonPosition))
@@ -421,6 +419,8 @@ void displayIntro(void)
   else
     MAX7456_WriteString_P(message1, KVTeamVersionPosition+30);
 
+    
+
   MAX7456_WriteString_P(MultiWiiLogoL1Add, KVTeamVersionPosition+120);
   MAX7456_WriteString_P(MultiWiiLogoL2Add, KVTeamVersionPosition+120+LINE);
   MAX7456_WriteString_P(MultiWiiLogoL3Add, KVTeamVersionPosition+120+LINE+LINE);
@@ -431,6 +431,15 @@ void displayIntro(void)
   MAX7456_WriteString_P(message6, KVTeamVersionPosition+120+LINE+LINE+LINE+LINE+LINE);
   MAX7456_WriteString_P(message7, KVTeamVersionPosition+125+LINE+LINE+LINE+LINE+LINE+LINE);
   MAX7456_WriteString_P(message8, KVTeamVersionPosition+125+LINE+LINE+LINE+LINE+LINE+LINE+LINE);
+  
+  MAX7456_WriteString_P(message59, KVTeamVersionPosition+120+LINE+LINE+LINE+LINE+LINE+LINE+LINE+LINE);
+   if(Settings[S_DISPLAY_CS]){
+      for(int X=0; X<10; X++) {
+          screenBuffer[X] = char(Settings[S_CS0 + X]);
+      }
+   if (Blink2hz)
+   MAX7456_WriteString(screenBuffer, KVTeamVersionPosition+130+LINE+LINE+LINE+LINE+LINE+LINE+LINE+LINE);;     // Call Sign on the beggining of the transmission (blink 2hz)  
+   }
 }
 
 void displayFontScreen(void) {

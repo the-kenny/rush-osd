@@ -222,7 +222,8 @@ int8_t temperMAX=0;
 int16_t altitudeMAX=0;
 int16_t distanceMAX=0;
 float trip=0;
-uint16_t flyingTime=0;
+uint16_t flyingTime=0; 
+
 
 // ---------------------------------------------------------------------------------------
 // Defines imported from Multiwii Serial Protocol MultiWii_shared svn r1337
@@ -296,6 +297,7 @@ const char message5[] PROGMEM = "MW VERSION:";
 const char message6[] PROGMEM = "MENU:THRT MIDDLE";
 const char message7[] PROGMEM = "YAW RIGHT";
 const char message8[] PROGMEM = "PITCH FULL";
+const char message59[] PROGMEM = "CALL SIGN:";         // Call Sign on the beggining of the transmission   
 
 // For Config
 const char configMsg0[] PROGMEM = "EXIT";
@@ -365,6 +367,7 @@ const char configMsg57[] PROGMEM = "DRAINED AMPS:";
 const char configMsg58[] PROGMEM = "MAX TEMP:";
 
 
+
 // POSITION OF EACH CHARACTER OR LOGO IN THE MAX7456
 const unsigned char speedUnitAdd[2] ={
   0xa5,0xa6} ; // [0][0] and [0][1] = Km/h   [1][0] and [1][1] = Mph
@@ -415,7 +418,7 @@ enum Positions {
   amperagePosition,
   pMeterSumPosition,
   horizonPosition,
-  callSignPosition //test
+  callSignPosition
 };
 
 #define REQ_MSP_IDENT     (1 <<  0)

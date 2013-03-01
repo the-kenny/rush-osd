@@ -247,7 +247,7 @@ void loop()
       blankserialRequest(MSPcmdsend);      
 
     MAX7456_DrawScreen();
-    if( allSec < 9 ){
+    if( allSec < 10 ){
       displayIntro();
       lastCallSign = onTime;
     }  
@@ -279,7 +279,7 @@ void loop()
 
         displayTime();
         displayMode();
-
+        
         if(Settings[S_DISPLAYTEMPERATURE]&&((temperature<Settings[S_TEMPERATUREMAX])||(Blink2hz))) displayTemperature();
 
         if(Settings[S_AMPERAGE]) displayAmperage();
@@ -289,11 +289,11 @@ void loop()
         if (Settings[S_THROTTLEPOSITION])
           displayCurrentThrottle();
 
-        if ( (onTime > (lastCallSign+60)) || (onTime < (lastCallSign+2)))
+        if ( (onTime > (lastCallSign+300)) || (onTime < (lastCallSign+4)))
        {
-           // Only displays 2 sec and disappears for 60 //
-        if ( onTime > (lastCallSign+60))lastCallSign = onTime;
-        if (Blink10hz) displayCallsign(); 
+           // Displays 4 sec every 5min (no blink during flight)
+        if ( onTime > (lastCallSign+300))lastCallSign = onTime; 
+        displayCallsign(); 
        
        }
 
