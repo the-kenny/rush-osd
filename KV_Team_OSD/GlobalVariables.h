@@ -297,7 +297,7 @@ const char message5[] PROGMEM = "MW VERSION:";
 const char message6[] PROGMEM = "MENU:THRT MIDDLE";
 const char message7[] PROGMEM = "YAW RIGHT";
 const char message8[] PROGMEM = "PITCH FULL";
-const char message59[] PROGMEM = "CALL SIGN:";         // Call Sign on the beggining of the transmission   
+const char message59[] PROGMEM = "UNIQUE ID:";         // Call Sign on the beggining of the transmission   
 
 // For Config
 const char configMsg0[] PROGMEM = "EXIT";
