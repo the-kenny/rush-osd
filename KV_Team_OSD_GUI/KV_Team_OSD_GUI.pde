@@ -1531,7 +1531,7 @@ void SketchUploader(){
          if (OSname.startsWith("Lin")){
          }
          
-         open(Upcmd);
+         //open(Upcmd);
          JOptionPane.showConfirmDialog(null,"Please Wait until your FTDI Board stops flashing", "Uploading Hex File", JOptionPane.PLAIN_MESSAGE,JOptionPane.WARNING_MESSAGE);
         }catch(FileNotFoundException e){
                 error = e.getCause().toString();
