@@ -1524,14 +1524,14 @@ void SketchUploader(){
          if (OSname.startsWith("Mac")){
            String exefile = ConfigClass.getProperty("ArduinoLocation") +  "/Contents/Resources/Java/hardware/tools/avr/bin/avrdude";
            String conffile = ConfigClass.getProperty("ArduinoLocation") + "/Contents/Resources/Java/hardware/tools/avr/etc/avrdude.conf";
-           String opts = " -v -v -v -v -patmega328p -carduino -P/"+Serial.list()[int(LastPort)] +" -b57600 -D -Uflash:w:";
-           Upcmd = exefile +" "+ conffile + opts + hexfile +":i";
+           String opts = " -v -v -v -v -patmega328p -carduino -P"+Serial.list()[int(LastPort)] +" -b57600 -D -Uflash:w:";
+           Upcmd = exefile +" C"+ conffile + opts + hexfile +":i";
            System.out.println("Perform Mac Code Upload   " + Upcmd);
          }
          if (OSname.startsWith("Lin")){
          }
          
-         //open(Upcmd);
+         open(Upcmd);
          JOptionPane.showConfirmDialog(null,"Please Wait until your FTDI Board stops flashing", "Uploading Hex File", JOptionPane.PLAIN_MESSAGE,JOptionPane.WARNING_MESSAGE);
         }catch(FileNotFoundException e){
                 error = e.getCause().toString();
