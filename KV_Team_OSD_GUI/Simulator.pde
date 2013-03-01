@@ -17,7 +17,7 @@ int mode_osd_switch = 0;
 int SendSim = 0;
 
 boolean[] keys = new boolean[526];
-
+boolean armed = false;
 
 Group SG,SGControlBox,SGModes,SGAtitude,SGRadio,SGSensors1,SGGPS; 
 
@@ -408,6 +408,104 @@ void CalcAlt_Vario(){
   }
 }
 
+String RightPadd(int inInt,int Places){
+  String OutString = nf(inInt,Places).replaceFirst("^0+(?!$)",  " ");
+  for(int X=0; X<=3; X++) {
+    if (OutString.length() < Places){ OutString = " " + OutString;}
+  }
+  return OutString;  
+  
+}
+
+
+
+
+
+
+void ShowVolts(float voltage){
+  
+String output = OnePlaceDecimal.format(voltage);
+  mapchar(0x97, voltagePosition[ScreenType]);
+  makeText(output, voltagePosition[ScreenType]+2);
+}
+
+void ShowFlyTime(String FMinutes_Seconds){
+  mapchar(0x9c, flyTimePosition[ScreenType]);
+  makeText(FMinutes_Seconds, flyTimePosition[ScreenType]+1);
+}
+
+void ShowOnTime(String Minutes_Seconds){
+  mapchar(0x9b, onTimePosition[ScreenType]);
+  makeText(Minutes_Seconds, onTimePosition[ScreenType]+1);
+}
+
+void ShowCurrentThrottlePosition(){
+  mapchar(0xc8, CurrentThrottlePosition[ScreenType]);
+  
+  if(armed){
+    int CurThrottle = int(map(Throttle_Yaw.arrayValue()[1],1000,2000,0,100));
+    makeText(RightPadd(CurThrottle,3) + "%", CurrentThrottlePosition[ScreenType]+1);   
+  }
+  else
+  {
+    makeText(" --", CurrentThrottlePosition[ScreenType]+1);
+  }
+
+  
+  
+  
+  //makeText(" 40%", CurrentThrottlePosition[ScreenType]+1);
+}
+
+void ShowRSSI(){
+  mapchar(0xba, rssiPosition[ScreenType]);
+  makeText("93%", rssiPosition[ScreenType]+1);
+}
+
+void ShowAmperage(){
+  mapchar(0xa4, amperagePosition[ScreenType]);
+  makeText("2306", amperagePosition[ScreenType]+1);
+}
+
+void SimulateTimer(){
+  String OnTimerString ="";
+  String FlyTimerString ="";
+  int seconds = (millis() - OnTimer) / 1000;
+  int minutes = seconds / 60;
+  int hours = minutes / 60;
+  seconds -= minutes * 60;
+  minutes -= hours * 60;
+  if (seconds < 10){
+    OnTimerString = str(minutes) + ":0" + str(seconds);
+  }
+  else
+  {
+    OnTimerString = str(minutes) + ":" + str(seconds);
+  }
+  
+  ShowOnTime(OnTimerString);
+
+  if (FlyTimer >0) {
+    seconds = (millis() - FlyTimer) / 1000;
+    minutes = seconds / 60;
+    hours = minutes / 60;
+    seconds -= minutes * 60;
+    minutes -= hours * 60;
+    if (seconds < 10){
+      FlyTimerString = str(minutes) + ":0" + str(seconds);
+    }
+    else
+    {
+      FlyTimerString = str(minutes) + ":" + str(seconds);
+    }
+  }
+  else
+  {
+    FlyTimerString = "0:00";
+  } 
+   ShowFlyTime(FlyTimerString);
+}
+
 
 void displayMode()
 {
@@ -419,9 +517,11 @@ void displayMode()
 }
     if((SimModebits&mode_armed) >0){
     makeText("ARMED", motorArmedPosition[0]);
+    armed = true;
   }
     else{
     makeText("DISARMED", motorArmedPosition[0]);
+    armed = false;
   }
     
     if((SimModebits&mode_stable) >0)

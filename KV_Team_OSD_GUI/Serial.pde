@@ -215,16 +215,15 @@ void BounceSerial(){
 }  
 
 void RESTART(){
-  SketchUploader();
-  //toggleMSP_Data = true;
-  //for (int txTimes = 0; txTimes<2; txTimes++) {
-    //headSerialReply(MSP_OSD, 1);
-    //serialize8(OSD_RESET);
-    //tailSerialReply();
-  //}
-  //toggleMSP_Data = false;
-  //delay(1500);
-  //READ();
+  toggleMSP_Data = true;
+  for (int txTimes = 0; txTimes<2; txTimes++) {
+    headSerialReply(MSP_OSD, 1);
+    serialize8(OSD_RESET);
+    tailSerialReply();
+  }
+  toggleMSP_Data = false;
+  delay(1500);
+  READ();
 }  
 
 
@@ -270,9 +269,12 @@ public void WRITE(){
 
 public void FONT_UPLOAD(){
   if (init_com==0){
+    noLoop();
     JOptionPane.showConfirmDialog(null,"Please Select a Port", "Not Connected", JOptionPane.PLAIN_MESSAGE,JOptionPane.WARNING_MESSAGE);
+    loop();
   }else
   {
+  SimControlToggle.setValue(0);
   System.out.println("FONT_UPLOAD");
   toggleMSP_Data = true;
   FontMode = true;

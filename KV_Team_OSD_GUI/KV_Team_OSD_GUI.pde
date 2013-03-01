@@ -167,7 +167,7 @@ Textlabel MessageText;
 
 
 // Int variables
-
+String OSname = System.getProperty("os.name");
 String LoadPercent = "";
 String CallSign = "";
 
@@ -1125,76 +1125,7 @@ void displaySensors()
 
 
 
-void ShowVolts(float voltage){
-  
-String output = OnePlaceDecimal.format(voltage);
-  mapchar(0x97, voltagePosition[ScreenType]);
-  makeText(output, voltagePosition[ScreenType]+2);
-}
 
-void ShowFlyTime(String FMinutes_Seconds){
-  mapchar(0x9c, flyTimePosition[ScreenType]);
-  makeText(FMinutes_Seconds, flyTimePosition[ScreenType]+1);
-}
-
-void ShowOnTime(String Minutes_Seconds){
-  mapchar(0x9b, onTimePosition[ScreenType]);
-  makeText(Minutes_Seconds, onTimePosition[ScreenType]+1);
-}
-
-void ShowCurrentThrottlePosition(){
-  mapchar(0xc8, CurrentThrottlePosition[ScreenType]);
-  makeText(" 40%", CurrentThrottlePosition[ScreenType]+1);
-}
-
-void ShowRSSI(){
-  mapchar(0xba, rssiPosition[ScreenType]);
-  makeText("93%", rssiPosition[ScreenType]+1);
-}
-
-void ShowAmperage(){
-  mapchar(0xa4, amperagePosition[ScreenType]);
-  makeText("2306", amperagePosition[ScreenType]+1);
-}
-
-void SimulateTimer(){
-  String OnTimerString ="";
-  String FlyTimerString ="";
-  int seconds = (millis() - OnTimer) / 1000;
-  int minutes = seconds / 60;
-  int hours = minutes / 60;
-  seconds -= minutes * 60;
-  minutes -= hours * 60;
-  if (seconds < 10){
-    OnTimerString = str(minutes) + ":0" + str(seconds);
-  }
-  else
-  {
-    OnTimerString = str(minutes) + ":" + str(seconds);
-  }
-  
-  ShowOnTime(OnTimerString);
-
-  if (FlyTimer >0) {
-    seconds = (millis() - FlyTimer) / 1000;
-    minutes = seconds / 60;
-    hours = minutes / 60;
-    seconds -= minutes * 60;
-    minutes -= hours * 60;
-    if (seconds < 10){
-      FlyTimerString = str(minutes) + ":0" + str(seconds);
-    }
-    else
-    {
-      FlyTimerString = str(minutes) + ":" + str(seconds);
-    }
-  }
-  else
-  {
-    FlyTimerString = "0:00";
-  } 
-   ShowFlyTime(FlyTimerString);
-}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////// BEGIN FILE OPS//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1287,7 +1218,7 @@ public void updateView(){
   int value = int(MWI.getProperty(ConfigNames[j]));
   confItem[j].setValue(value);
   if (j == CONFIGITEMS-1){
-    buttonWRITE.setColorBackground(green_);
+    //buttonWRITE.setColorBackground(green_);
   }  
   if (value >0){
     toggleConfItem[j].setValue(1);
@@ -1308,6 +1239,7 @@ public void updateView(){
   }
   catch(Exception e) {}finally {}
   }
+  BuildCallSign();
 }
 
 public class MwiFileFilter extends FileFilter {
@@ -1568,6 +1500,7 @@ void SketchUploader(){
   
   SwingUtilities.invokeLater(new Runnable(){
     public void run(){
+      String Upcmd="";
       final JFileChooser fc = new JFileChooser(dataPath(""));
       fc.setDialogType(JFileChooser.SAVE_DIALOG);
       fc.setDialogTitle("Select Hex File For Upload");
@@ -1580,10 +1513,24 @@ void SketchUploader(){
         try{
           FileInputStream in = new FileInputStream(InHexFile) ;
          String hexfile = InHexFile.getPath();
-         String exefile = ConfigClass.getProperty("ArduinoLocation") + "\\hardware/tools/avr/bin/avrdude";     //  "C:\\Arduino_Programing\\arduino-1.0.3\\hardware/tools/avr/bin/avrdude.exe";
-         String conffile = ConfigClass.getProperty("ArduinoLocation") +"\\hardware/tools/avr/etc/avrdude.conf";
-         String opts = " -v -v -v -v -patmega328p -carduino -P\\.\\"+Serial.list()[int(LastPort)] +" -b57600 -D -Uflash:w:";
-         String Upcmd = exefile +" -C"+ conffile + opts + hexfile +":i";
+         
+         if (OSname.startsWith("Windows")){
+           String exefile = ConfigClass.getProperty("ArduinoLocation") + "\\hardware/tools/avr/bin/avrdude";     //  "C:\\Arduino_Programing\\arduino-1.0.3\\hardware/tools/avr/bin/avrdude.exe";
+           String conffile = ConfigClass.getProperty("ArduinoLocation") +"\\hardware/tools/avr/etc/avrdude.conf";
+           String opts = " -v -v -v -v -patmega328p -carduino -P\\.\\"+Serial.list()[int(LastPort)] +" -b57600 -D -Uflash:w:";
+           Upcmd = exefile +" -C"+ conffile + opts + hexfile +":i";
+           System.out.println("Perform Windows Code Upload ");
+         }
+         if (OSname.startsWith("Mac")){
+           String exefile = ConfigClass.getProperty("ArduinoLocation") +  "/Contents/Resources/Java/hardware/tools/avr/bin/avrdude";
+           String conffile = ConfigClass.getProperty("ArduinoLocation") + "/Contents/Resources/Java/hardware/tools/avr/etc/avrdude.conf";
+           String opts = " -v -v -v -v -patmega328p -carduino -P/dev/tty."+Serial.list()[int(LastPort)] +" -b57600 -D -Uflash:w:";
+           Upcmd = exefile +" "+ conffile + opts + hexfile +":i";
+           System.out.println("Perform Mac Code Upload ");
+         }
+         if (OSname.startsWith("Lin")){
+         }
+         
          open(Upcmd);
          JOptionPane.showConfirmDialog(null,"Please Wait until your FTDI Board stops flashing", "Uploading Hex File", JOptionPane.PLAIN_MESSAGE,JOptionPane.WARNING_MESSAGE);
         }catch(FileNotFoundException e){
