@@ -1524,7 +1524,7 @@ void SketchUploader(){
          if (OSname.startsWith("Mac")){
            String exefile = ConfigClass.getProperty("ArduinoLocation") +  "/Contents/Resources/Java/hardware/tools/avr/bin/avrdude";
            String conffile = ConfigClass.getProperty("ArduinoLocation") + "/Contents/Resources/Java/hardware/tools/avr/etc/avrdude.conf";
-           String opts = " -v -v -v -v -patmega328p -carduino -P"+Serial.list()[int(LastPort)] +" -b57600 -D -Uflash:w:";
+           String opts = " -v -v -v -v -patmega328p -carduino -P"+Serial.list()[int(LastPort)] +" -b57600 -D -Uflash:w:/var/folders";
            Upcmd = exefile +" C"+ conffile + opts + hexfile +":i";
            System.out.println("Perform Mac Code Upload   " + Upcmd);
          }
