@@ -282,13 +282,11 @@ public void FONT_UPLOAD(){
   PortWrite = true;
   MakePorts();
  
+ // send throttle back command
+  SendToggleSpeed();
  
-  headSerialReply(MSP_OSD, 1);
-  serialize8(OSD_SERIAL_SPEED);
-  tailSerialReply();
- 
- 
- 
+   delay(500);
+   //throttle back baud rate for transfer
   g_serial.clear();
   g_serial.stop();
   g_serial = new Serial(this, Serial.list()[int(LastPort)], 19200);
@@ -334,6 +332,12 @@ public void RESET(){
 }
 
 
+void SendToggleSpeed(){
+  headSerialReply(MSP_OSD, 1);
+  serialize8(OSD_SERIAL_SPEED);
+  tailSerialReply(); 
+}
+  
 
 
 void SendCommand(int cmd){
@@ -459,7 +463,12 @@ void SendCommand(int cmd){
     break;
       
     }
-    tailSerialReply();   
+    
+    
+    
+    
+    tailSerialReply(); 
+    
   
 }
 
@@ -643,6 +652,7 @@ public void evaluateCommand(byte cmd, int size) {
               headSerialReply(MSP_OSD, 1);
               serialize8(OSD_NULL);
               tailSerialReply();
+              SendToggleSpeed();
               toggleMSP_Data = false;
               g_serial.clear();
               PortRead = false;
