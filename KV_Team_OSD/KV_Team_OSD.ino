@@ -67,31 +67,17 @@ int lo_speed_cycle = 100;
 
 void setup()
 {
-  checkEEPROM();
-  readEEPROM();
-  
-  if (FontSpeed == false){
   Serial.begin(115200);
 //---- override UBRR with MWC settings
   uint8_t h = ((F_CPU  / 4 / (115200) -1) / 2) >> 8;
   uint8_t l = ((F_CPU  / 4 / (115200) -1) / 2);
   UCSR0A  |= (1<<U2X0); UBRR0H = h; UBRR0L = l; 
 //---
-  }
-  else{
-    Serial.begin(19200);
-    //---- override UBRR with MWC settings
-    uint8_t h = ((F_CPU  / 4 / (19200) -1) / 2) >> 8;
-    uint8_t l = ((F_CPU  / 4 / (19200) -1) / 2);
-    UCSR0A  |= (1<<U2X0); UBRR0H = h; UBRR0L = l; 
-    //---
-  } 
-  
-
   Serial.flush();
   //Led output
   pinMode(7,OUTPUT);
-  
+  checkEEPROM();
+  readEEPROM();
   MAX7456Setup();
   
   analogReference(INTERNAL);
@@ -442,7 +428,6 @@ void readEEPROM(void)
   for(int en=0;en<EEPROM_SETTINGS;en++){
      Settings[en] = EEPROM.read(en);
   }
-  FontSpeed = EEPROM.read(100);
 }
 
 

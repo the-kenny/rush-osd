@@ -182,8 +182,6 @@ int16_t I2CError=0;
 uint16_t cycleTime=0;
 uint16_t pMeterSum=0;
 uint8_t MwRssi=0;
-bool FontSpeed = false;
- 
 
 //For Current Throttle
 int LowT = 1100;
