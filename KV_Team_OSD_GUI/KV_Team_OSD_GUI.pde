@@ -583,7 +583,7 @@ OSDBackground = loadImage("Background.jpg");
     //.setFont(font12)
     .toUpperCase(false)
     .setText("UPLOAD HEX");
-    //buttonClosePort.hide();
+    buttonUploadHex.hide();
     
     
 
