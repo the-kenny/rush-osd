@@ -280,6 +280,7 @@ uint16_t flyingTime=0;
 #define OSD_READ_CMD             1
 #define OSD_WRITE_CMD            2
 #define OSD_GET_FONT             3
+#define OSD_SERIAL_SPEED         4
 #define OSD_RESET                5
 // End private MSP for use with the GUI
 

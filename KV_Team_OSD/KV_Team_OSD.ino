@@ -67,10 +67,10 @@ int lo_speed_cycle = 100;
 
 void setup()
 {
-  Serial.begin(SERIAL_SPEED);
+  Serial.begin(115200);
 //---- override UBRR with MWC settings
-  uint8_t h = ((F_CPU  / 4 / (SERIAL_SPEED) -1) / 2) >> 8;
-  uint8_t l = ((F_CPU  / 4 / (SERIAL_SPEED) -1) / 2);
+  uint8_t h = ((F_CPU  / 4 / (115200) -1) / 2) >> 8;
+  uint8_t l = ((F_CPU  / 4 / (115200) -1) / 2);
   UCSR0A  |= (1<<U2X0); UBRR0H = h; UBRR0L = l; 
 //---
   Serial.flush();
@@ -501,7 +501,7 @@ int16_t getNextCharToRequest() {
   }
 
   // Already at last char... check for missed characters.
-  while(!(temp1 & 0x02)) {
+  while(!(temp1 & 0x03)) {
     temp1 >>= 1;
     temp2++;
   }

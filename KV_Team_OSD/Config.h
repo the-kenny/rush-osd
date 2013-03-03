@@ -6,7 +6,7 @@
 
 /**********************       Serial speed      ************************/
 
-#define SERIAL_SPEED 115200
+//#define SERIAL_SPEED 115200
 
 /**********    Here you can define time out for Mag calibration and EEProm write (mostly useful for mag calibration)    ***********/
 

@@ -1,4 +1,4 @@
- 
+
 //   KV Team OSD GUI
 //   http://code.google.com/p/rush-osd-development/
 //   February  2013  V2.02
@@ -583,7 +583,7 @@ OSDBackground = loadImage("Background.jpg");
     //.setFont(font12)
     .toUpperCase(false)
     .setText("UPLOAD HEX");
-    buttonUploadHex.hide();
+    //buttonClosePort.hide();
     
     
 
@@ -1524,9 +1524,9 @@ void SketchUploader(){
          if (OSname.startsWith("Mac")){
            String exefile = ConfigClass.getProperty("ArduinoLocation") +  "/Contents/Resources/Java/hardware/tools/avr/bin/avrdude";
            String conffile = ConfigClass.getProperty("ArduinoLocation") + "/Contents/Resources/Java/hardware/tools/avr/etc/avrdude.conf";
-           String opts = " -v -v -v -v -patmega328p -carduino -P"+Serial.list()[int(LastPort)] +" -b57600 -D -Uflash:w:/var/folders";
-           Upcmd = exefile +" C"+ conffile + opts + hexfile +":i";
-           System.out.println("Perform Mac Code Upload   " + Upcmd);
+           String opts = " -v -v -v -v -patmega328p -carduino -P/dev/tty."+Serial.list()[int(LastPort)] +" -b57600 -D -Uflash:w:";
+           Upcmd = exefile +" "+ conffile + opts + hexfile +":i";
+           System.out.println("Perform Mac Code Upload ");
          }
          if (OSname.startsWith("Lin")){
          }

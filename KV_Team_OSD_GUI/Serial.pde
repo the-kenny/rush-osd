@@ -97,6 +97,7 @@ private static final int
   OSD_READ_CMD             =1,
   OSD_WRITE_CMD            =2,
   OSD_GET_FONT             =3,
+  OSD_SERIAL_SPEED         =4,
   OSD_RESET                =5;
 
 
@@ -280,6 +281,18 @@ public void FONT_UPLOAD(){
   FontMode = true;
   PortWrite = true;
   MakePorts();
+ 
+ 
+  headSerialReply(MSP_OSD, 1);
+  serialize8(OSD_SERIAL_SPEED);
+  tailSerialReply();
+ 
+ 
+ 
+  g_serial.clear();
+  g_serial.stop();
+  g_serial = new Serial(this, Serial.list()[int(LastPort)], 19200);
+ 
   p = 0;
   inBuf[0] = OSD_GET_FONT;
   //for (int txTimes = 0; txTimes<2; txTimes++) {
@@ -640,6 +653,11 @@ public void evaluateCommand(byte cmd, int size) {
               FileUploadText.setText("");
               //InitSerial(200.00);
               RESTART();
+              g_serial.clear();
+              g_serial.stop();
+              g_serial = new Serial(this, Serial.list()[int(LastPort)], 115200);
+              READ();
+              
             }
             else {
               PortWrite = true;
