@@ -845,8 +845,8 @@ void draw() {
   
   //PortWrite = false;
   if ((SendSim ==1) && (ClosePort == false)){
-    PortWrite = true;
-      MakePorts();
+    //PortWrite = true;
+      //MakePorts();
  
     if ((init_com==1)  && (time-time5 >5000) && (toggleMSP_Data == false) && (!FontMode)){
       if(ClosePort) return;
@@ -861,7 +861,7 @@ void draw() {
     if ((init_com==1)  && (time-time4 >200) && (!FontMode)){
       if(ClosePort) return;
       time4 = time; 
-      //PortWrite = true;
+      //PortWrite = !PortWrite;
       //MakePorts();
       if (init_com==1)SendCommand(MSP_ANALOG);
       if (init_com==1)SendCommand(MSP_STATUS);
@@ -875,7 +875,7 @@ void draw() {
     if ((init_com==1)  && (time-time1 >40) && (!FontMode)){
       if(ClosePort) return;
       time1 = time; 
-      PortWrite = true;
+      PortWrite = !PortWrite;
       
       if (init_com==1)SendCommand(MSP_ATTITUDE);
       //PortWrite = false;
@@ -887,7 +887,14 @@ void draw() {
   }
 
 
-  MakePorts();
+  
+  
+  if ((FontMode) && (time-time2 >100)){
+    SendChar();
+   }
+    
+    
+  MakePorts();  
   
   background(80);
   

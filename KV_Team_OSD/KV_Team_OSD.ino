@@ -244,6 +244,7 @@ void loop()
       MSPcmdsend = MSP_OSD;
       break;
     }
+      if(!fontMode)
       blankserialRequest(MSPcmdsend);      
 
     MAX7456_DrawScreen();

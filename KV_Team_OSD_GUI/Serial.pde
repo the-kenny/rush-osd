@@ -277,22 +277,12 @@ public void FONT_UPLOAD(){
   {
   SimControlToggle.setValue(0);
   System.out.println("FONT_UPLOAD");
-  toggleMSP_Data = true;
+  //toggleMSP_Data = true;
   FontMode = true;
   PortWrite = true;
   MakePorts();
- 
- 
-  headSerialReply(MSP_OSD, 1);
-  serialize8(OSD_SERIAL_SPEED);
-  tailSerialReply();
- 
- 
- 
-  g_serial.clear();
-  g_serial.stop();
-  g_serial = new Serial(this, Serial.list()[int(LastPort)], 19200);
- 
+  FontCounter = 0;
+  FileUploadText.setText("  Please Wait");
   p = 0;
   inBuf[0] = OSD_GET_FONT;
   //for (int txTimes = 0; txTimes<2; txTimes++) {
@@ -304,6 +294,34 @@ public void FONT_UPLOAD(){
     tailSerialReply();
  //}
   }
+
+}
+
+public void SendChar(){
+ time2=time;
+    PortWrite = !PortWrite;  // toggle PortWrite to flash TX
+    MakePorts();
+    System.out.println("Sent Char "+FontCounter);
+    buttonSendFile.getCaptionLabel().setText("  " +nf(FontCounter, 3)+"/256");
+    headSerialReply(MSP_OSD, 56);
+    serialize8(OSD_GET_FONT);
+    for(int i = 0; i < 54; i++){
+      serialize8(int(raw_font[FontCounter][i]));
+    }
+    serialize8(FontCounter);
+    tailSerialReply();
+    if (FontCounter <255){
+      FontCounter++;
+    }else{ 
+      g_serial.clear();
+      PortWrite = false;
+      FontMode = false;      
+      System.out.println("Finished Uploading Font");
+      buttonSendFile.getCaptionLabel().setText("  Upload");
+      FileUploadText.setText("");
+      RESTART();
+      READ();
+    } 
   
 }
 
@@ -573,7 +591,7 @@ public void DelayTimer(int ms){
 
 public void evaluateCommand(byte cmd, int size) {
   if ((init_com==0)  || (toggleMSP_Data == false)) return;
-  PortRead = true;
+  //PortRead = true;
   MakePorts(); 
   int icmd = int(cmd&0xFF);
   if (icmd !=MSP_OSD)return;  //System.out.println("Not Valid Command");
@@ -615,14 +633,7 @@ public void evaluateCommand(byte cmd, int size) {
           }
         }
 
-        //if(((cmd_internal == OSD_WRITE_CMD) && (size == 1) {
-         // headSerialReply(MSP_OSD, CONFIGITEMS+1);
-          //serialize8(OSD_WRITE_CMD);
-          //for(int i = 0; i < CONFIGITEMS; i++){
-            //serialize8(int(confItem[i].value()));
-          //}
-          //toggleMSP_Data = false;
-        //}
+        
 
         if(cmd_internal == OSD_GET_FONT) {
           if( size == 1) {
@@ -634,41 +645,43 @@ public void evaluateCommand(byte cmd, int size) {
            // tailSerialReply();
           }
           if(size == 3) {
-            FileUploadText.setText("  Please Wait");
-            PortRead = true;
-            PortWrite = true; 
-            int cindex = read16();
-            if((cindex&0xffff) == 0xffff) { // End!
-              FontCounter = 255;
-              headSerialReply(MSP_OSD, 1);
-              serialize8(OSD_NULL);
-              tailSerialReply();
-              toggleMSP_Data = false;
-              g_serial.clear();
-              PortRead = false;
-              PortWrite = false;
-              FontMode = false;      
-              System.out.println("End marker "+cindex);
-              buttonSendFile.getCaptionLabel().setText("  Upload");
-              FileUploadText.setText("");
+           
+            //FileUploadText.setText("  Please Wait");
+           // PortRead = true;
+            //PortWrite = true; 
+            //int cindex = read16();
+            //if((cindex&0xffff) == 0xffff) { // End!
+              //FontCounter = 255;
+             // headSerialReply(MSP_OSD, 1);
+             // serialize8(OSD_NULL);
+             // tailSerialReply();
+             // toggleMSP_Data = false;
+             // g_serial.clear();
+             // PortRead = false;
+             // PortWrite = false;
+              //FontMode = false;      
+             // System.out.println("End marker "+cindex);
+             // buttonSendFile.getCaptionLabel().setText("  Upload");
+             // FileUploadText.setText("");
               //InitSerial(200.00);
-              RESTART();
-              g_serial.clear();
-              g_serial.stop();
-              g_serial = new Serial(this, Serial.list()[int(LastPort)], 115200);
-              READ();
+             // RESTART();
+             // g_serial.clear();
+             // g_serial.stop();
+             // g_serial = new Serial(this, Serial.list()[int(LastPort)], 115200);
+             // READ();
               
-            }
-            else {
-              PortWrite = true;
-              MakePorts();
-              headSerialReply(MSP_OSD, 56);
-              serialize8(OSD_GET_FONT);
-              for(int i = 0; i < 54; i++){
-                serialize8(int(raw_font[cindex][i]));
-              }
-              serialize8(cindex);
-              tailSerialReply();   
+            //}
+            //else {
+              //PortWrite = true;
+              //MakePorts();
+              //headSerialReply(MSP_OSD, 56);
+              //serialize8(OSD_GET_FONT);
+             // for(int i = 0; i < 54; i++){
+                //serialize8(int(raw_font[cindex][i]));
+              //}
+              //serialize8(cindex);
+              //tailSerialReply(); 
+              
 //     // XXX Fake errors to force retransmission
 //        if(int(random(3)) == 0) {
 //          System.out.println("Messed char "+cindex);
@@ -676,9 +689,9 @@ public void evaluateCommand(byte cmd, int size) {
 //        }
 //        else
 //     // End fake errors code
-          System.out.println("Sent Char "+cindex);
-          buttonSendFile.getCaptionLabel().setText("  " +nf(cindex, 3)+"/256");
-        }
+          //System.out.println("Sent Char "+cindex);
+          //buttonSendFile.getCaptionLabel().setText("  " +nf(cindex, 3)+"/256");
+        //}
       }
     }
     break;
