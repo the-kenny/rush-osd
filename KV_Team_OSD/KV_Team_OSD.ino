@@ -99,6 +99,7 @@ void setMspRequests() {
       REQ_MSP_STATUS|
       REQ_MSP_RAW_GPS|
       REQ_MSP_ATTITUDE|
+      REQ_MSP_RAW_IMU|
       REQ_MSP_ALTITUDE|
       REQ_MSP_RC_TUNING|
       REQ_MSP_PID|
