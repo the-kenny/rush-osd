@@ -453,7 +453,7 @@ Textlabel FileUploadText, TXText, RXText;
 // textlabels -------------------------------------------------------------------------------------------------------------
 
 // Buttons------------------------------------------------------------------------------------------------------------------
-Button buttonIMPORT,buttonSAVE,buttonREAD,buttonUploadHex,buttonRESET,buttonWRITE,buttonRESTART;
+Button buttonIMPORT,buttonSAVE,buttonREAD,buttonRESET,buttonWRITE,buttonRESTART;
 // Buttons------------------------------------------------------------------------------------------------------------------
 
 // Toggles------------------------------------------------------------------------------------------------------------------
@@ -578,12 +578,6 @@ OSDBackground = loadImage("Background.jpg");
   buttonRESET = controlP5.addButton("RESET",1,XControlBox+30,YControlBox+50,45,16);buttonRESET.setColorBackground(red_);
   buttonWRITE = controlP5.addButton("WRITE",1,XControlBox+30,YControlBox+75,45,16);buttonWRITE.setColorBackground(red_);
   buttonRESTART = controlP5.addButton("RESTART",1,XControlBox+25,YControlBox+100,55,16);buttonRESTART.setColorBackground(red_);
-  buttonUploadHex = controlP5.addButton("UPLOADHEX",1,XControlBox+15,YControlBox+125 ,75,16);//buttonUploadHex.setColorBackground(red_);
-  buttonUploadHex.getCaptionLabel()
-    //.setFont(font12)
-    .toUpperCase(false)
-    .setText("UPLOAD HEX");
-    buttonUploadHex.hide();
     
     
 
@@ -1470,10 +1464,6 @@ public void mousePressed() {
                 return mouseUp;
         }
         
-void UPLOADHEX(){
-  PORTCLOSE();
-  SketchUploader();
-}  
         
 void SketchUploader(){
   String ArduioLocal = ConfigClass.getProperty("ArduinoLocation");
@@ -1502,69 +1492,7 @@ void SketchUploader(){
   );  
   } catch (Exception e) { }
   }
- 
 
-  
-  SwingUtilities.invokeLater(new Runnable(){
-    public void run(){
-      String Upcmd="";
-      final JFileChooser fc = new JFileChooser(dataPath(""));
-      fc.setDialogType(JFileChooser.SAVE_DIALOG);
-      fc.setDialogTitle("Select Hex File For Upload");
-      //fc.setFileFilter(new FontFileFilter());
-      //fc.setCurrentDirectory();
-      int returnVal = fc.showOpenDialog(null);
-      if (returnVal == JFileChooser.APPROVE_OPTION) {
-        File InHexFile = fc.getSelectedFile();
-        String error = null;
-        try{
-          FileInputStream in = new FileInputStream(InHexFile) ;
-         String hexfile = InHexFile.getPath();
-         
-         if (OSname.startsWith("Windows")){
-           String exefile = ConfigClass.getProperty("ArduinoLocation") + "\\hardware/tools/avr/bin/avrdude";     //  "C:\\Arduino_Programing\\arduino-1.0.3\\hardware/tools/avr/bin/avrdude.exe";
-           String conffile = ConfigClass.getProperty("ArduinoLocation") +"\\hardware/tools/avr/etc/avrdude.conf";
-           String opts = " -v -v -v -v -patmega328p -carduino -P\\.\\"+Serial.list()[int(LastPort)] +" -b57600 -D -Uflash:w:";
-           Upcmd = exefile +" -C"+ conffile + opts + hexfile +":i";
-           System.out.println("Perform Windows Code Upload ");
-         }
-         if (OSname.startsWith("Mac")){
-           String exefile = ConfigClass.getProperty("ArduinoLocation") +  "/Contents/Resources/Java/hardware/tools/avr/bin/avrdude";
-           String conffile = ConfigClass.getProperty("ArduinoLocation") + "/Contents/Resources/Java/hardware/tools/avr/etc/avrdude.conf";
-           String opts = " -v -v -v -v -patmega328p -carduino -P/dev/tty."+Serial.list()[int(LastPort)] +" -b57600 -D -Uflash:w:";
-           Upcmd = exefile +" "+ conffile + opts + hexfile +":i";
-           System.out.println("Perform Mac Code Upload ");
-         }
-         if (OSname.startsWith("Lin")){
-         }
-         
-         open(Upcmd);
-         JOptionPane.showConfirmDialog(null,"Please Wait until your FTDI Board stops flashing", "Uploading Hex File", JOptionPane.PLAIN_MESSAGE,JOptionPane.WARNING_MESSAGE);
-        }catch(FileNotFoundException e){
-                error = e.getCause().toString();
-
-        }catch( IOException ioe){/*failed to read the file*/
-          ioe.printStackTrace();
-          error = ioe.getCause().toString();
-        }
-      }
-    }
-  }
-  );  
-  
-
-}  
-      
-
-
-
-
-
-
-
-void exit() {
-  println("Shut Down Comm & Exiting");
-//
   toggleMSP_Data = false;
   //delay(1000);
   InitSerial(200.00);

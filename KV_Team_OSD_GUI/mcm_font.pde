@@ -26,7 +26,7 @@ byte[][] LoadRawFont(String filename) {
     
     while(in.available() > 0) {
       int inB = in.read();
-      //System.out.println("inB="+hex(inB));
+     
       if(inHeader) {
         if(hIndex < header.length && header[hIndex] == inB) {
           hIndex++;
@@ -52,7 +52,7 @@ byte[][] LoadRawFont(String filename) {
               raw[charNo][byteNo] = (byte)curByte;
             }
             bitNo = 0;
-            //System.out.println("Loaded byte "+byteNo+" "+hex(curByte));
+          
             curByte = 0;
             ++byteNo;
             if(byteNo == 64) {

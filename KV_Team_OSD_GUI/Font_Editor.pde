@@ -301,9 +301,7 @@ void GetChar(int id){
       }
       
     }
-    //LabelCurChar.setValue("          ");
-    //String HexId = " -- Hex ID 0x" + hex(id).substring(hex(id).length()-2, hex(id).length());  
-    //LabelCurChar.setValue("INDEX # "+id + HexId);
+   
     LabelCurChar.setValue(str(id));
     LabelCurChar.setColorBackground(0);
     MakePreviewChar();
