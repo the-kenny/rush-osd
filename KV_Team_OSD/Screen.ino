@@ -452,8 +452,8 @@ void displayFontScreen(void) {
 
 void displayGPSPosition(void)
 {
-  if(!GPS_fix)
-    return;
+  /*if(!GPS_fix)
+    return;*/
 
   if(Settings[S_COORDINATES]){
     if(fieldIsVisible(MwGPSLatPosition)) {
@@ -490,9 +490,9 @@ void displayNumberOfSat(void)
 
 void displayGPS_speed(void)
 {
-//  if(!GPS_fix)
-  if(!GPS_fix) return;
-  if(!armed) GPS_speed=0;
+
+  /*if(!GPS_fix) return;
+  if(!armed) GPS_speed=0;*/
 
   int xx;
   if(!Settings[S_UNITSYSTEM])
@@ -561,8 +561,8 @@ void displayClimbRate(void)
 
 void displayDistanceToHome(void)
 {
-  if(!GPS_fix)
-    return;
+  /*if(!GPS_fix)
+    return;*/
 
   int16_t dist;
   if(Settings[S_UNITSYSTEM])
@@ -580,10 +580,10 @@ void displayDistanceToHome(void)
 
 void displayAngleToHome(void)
 {
-  if(!GPS_fix)
+  /*if(!GPS_fix)
     return;
   if(GPS_distanceToHome <= 2 && Blink2hz)
-    return;
+    return;*/
 
   ItoaPadded(GPS_directionToHome,screenBuffer,3,0);
   screenBuffer[3] = SYM_DEGREES;
@@ -593,18 +593,16 @@ void displayAngleToHome(void)
 
 void displayDirectionToHome(void)
 {
-  if(!GPS_fix)
+  /*if(!GPS_fix)
     return;
   if(GPS_distanceToHome <= 2 && Blink2hz)
-    return;
-
-  int16_t d = MwHeading + 180 + 360 - GPS_directionToHome;
-  d *= 4;
-  d += 45;
-  d = (d/90)%16;
+    return;*/
+  
+  int16_t d = MwHeading + 11 + 180 + 360 - GPS_directionToHome;
+  d = ((d % 360) / 22.5);
 
   screenBuffer[0] = SYM_ARROW_SOUTH + d;
-  //screenBuffer[1] = 0x81 + d;
+  screenBuffer[1] = SYM_ARROW_16 + d;
   screenBuffer[1]=0;                //2
   MAX7456_WriteString(screenBuffer,getPosition(GPS_directionToHomePosition));
 }
@@ -853,29 +851,29 @@ void displayConfigScreen(void)
     MAX7456_WriteString_P(configMsg51, 38);
 
     MAX7456_WriteString_P(configMsg52, ROLLT);
-    MAX7456_WriteString(itoa(trip,screenBuffer,10),ROLLD);
+    MAX7456_WriteString(itoa(trip,screenBuffer,10),ROLLD-3);
 
     MAX7456_WriteString_P(configMsg53, PITCHT);
-    MAX7456_WriteString(itoa(distanceMAX,screenBuffer,10),PITCHD);
+    MAX7456_WriteString(itoa(distanceMAX,screenBuffer,10),PITCHD-3);
 
     MAX7456_WriteString_P(configMsg54, YAWT);
-    MAX7456_WriteString(itoa(altitudeMAX,screenBuffer,10),YAWD);
+    MAX7456_WriteString(itoa(altitudeMAX,screenBuffer,10),YAWD-3);
 
     MAX7456_WriteString_P(configMsg55, ALTT);
-    MAX7456_WriteString(itoa(speedMAX,screenBuffer,10),ALTD);
+    MAX7456_WriteString(itoa(speedMAX,screenBuffer,10),ALTD-3);
     //MAX7456_WriteString(itoa(CMsToKMh(speedMAX), screenBuffer, 10), ALTD);     DO NOT DELETE
 
     MAX7456_WriteString_P(configMsg56, VELT);
 
     formatTime(flyingTime, screenBuffer, 1);
-    MAX7456_WriteString(screenBuffer,VELD-7);
+    MAX7456_WriteString(screenBuffer,VELD-4);
 
     MAX7456_WriteString_P(configMsg57, LEVT);
     xx= pMeterSum / EST_PMSum;
-    MAX7456_WriteString(itoa(xx,screenBuffer,10),LEVD);
+    MAX7456_WriteString(itoa(xx,screenBuffer,10),LEVD-3);
 
     MAX7456_WriteString_P(configMsg58, MAGT);
-    MAX7456_WriteString(itoa(temperMAX,screenBuffer,10),MAGD);
+    MAX7456_WriteString(itoa(temperMAX,screenBuffer,10),MAGD-3);
     //MAX7456_WriteString(itoa(TempConverter(temperMAX), screenBuffer, 10), MAGD);      DO NOT DELETE
   }
   displayCursor();

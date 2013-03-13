@@ -292,8 +292,8 @@ const char armed_text[] PROGMEM = " ARMED";
 
 // For Intro
 const char message0[] PROGMEM = "KV_OSD_TEAM_2.2";
-const char message1[] PROGMEM = "VIDEO SIGNAL: NTSC";
-const char message2[] PROGMEM = "VIDEO SIGNAL: PAL ";
+const char message1[] PROGMEM = "VIDEO SIGNAL NTSC";
+const char message2[] PROGMEM = "VIDEO SIGNAL PAL ";
 const char message5[] PROGMEM = "MW VERSION:";
 const char message6[] PROGMEM = "MENU:THRT MIDDLE";
 const char message7[] PROGMEM = "YAW RIGHT";
@@ -316,7 +316,7 @@ const char configMsg10[] PROGMEM = "MAG";
 //-----------------------------------------------------------Page2
 const char configMsg11[] PROGMEM = "2/6 RC TUNING";
 const char configMsg12[] PROGMEM = "RC RATE";
-const char configMsg13[] PROGMEM = "EXPO";
+const char configMsg13[] PROGMEM = "EXPONENTIAL";
 const char configMsg14[] PROGMEM = "ROLL PITCH RATE";
 const char configMsg15[] PROGMEM = "YAW RATE";
 const char configMsg16[] PROGMEM = "THROTTLE PID ATT";
@@ -337,7 +337,7 @@ const char configMsg29[] PROGMEM = " ";
 const char configMsg30[] PROGMEM = "                   ";
 //-----------------------------------------------------------Page4
 const char configMsg31[] PROGMEM = "4/6 DISPLAY";
-const char configMsg32[] PROGMEM = "ACTUAL RSSIADC(/4)";
+const char configMsg32[] PROGMEM = "ACTUAL RSSIADC";
 const char configMsg33[] PROGMEM = "ACTUAL RSSI";
 const char configMsg34[] PROGMEM = "SET RSSI MIN";
 const char configMsg35[] PROGMEM = "SET RSSI MAX";
@@ -351,21 +351,21 @@ const char configMsg42[] PROGMEM = "PAL";
 //-----------------------------------------------------------Page5
 const char configMsg43[] PROGMEM = "5/6 CALIBRATION";
 const char configMsg44[] PROGMEM = "ACC CALIBRATION";
-const char configMsg45[] PROGMEM = "ACC ROLL :";
-const char configMsg46[] PROGMEM = "ACC PITCH :";
-const char configMsg47[] PROGMEM = "ACC Z :";
+const char configMsg45[] PROGMEM = "ACC ROLL";
+const char configMsg46[] PROGMEM = "ACC PITCH";
+const char configMsg47[] PROGMEM = "ACC Z";
 const char configMsg48[] PROGMEM = "MAG CALIBRATION";
 const char configMsg49[] PROGMEM = "HEADING";
 const char configMsg50[] PROGMEM = "MW EEPROM WRITE";
 //-----------------------------------------------------------Page6
 const char configMsg51[] PROGMEM = "6/6 STATISTICS";
-const char configMsg52[] PROGMEM = "TRIP:";
-const char configMsg53[] PROGMEM = "MAX DISTANCE:";
-const char configMsg54[] PROGMEM = "MAX ALTITUDE:";
-const char configMsg55[] PROGMEM = "MAX SPEED:";
-const char configMsg56[] PROGMEM = "FLYING TIME:";
-const char configMsg57[] PROGMEM = "DRAINED AMPS:";
-const char configMsg58[] PROGMEM = "MAX TEMP:";
+const char configMsg52[] PROGMEM = "TRIP";
+const char configMsg53[] PROGMEM = "MAX DISTANCE";
+const char configMsg54[] PROGMEM = "MAX ALTITUDE";
+const char configMsg55[] PROGMEM = "MAX SPEED";
+const char configMsg56[] PROGMEM = "FLYING TIME";
+const char configMsg57[] PROGMEM = "AMPS DRAINED";
+const char configMsg58[] PROGMEM = "MAX TEMP";
 
 
 
