@@ -382,15 +382,6 @@ void loop()
 }  // End of main loop
 //---------------------  End of Timed Service Routine ---------------------------------------
 
-
-/*void CollectStatistics() {
-  if(GPS_fix && GPS_speed > speedMAX)    // DO NOT DELETE
-    speedMAX = GPS_speed;
-
-  if(temperature > temperMAX)
-    temperMAX = temperature;
-}*/
-
 void calculateTrip(void)
 {
   if(GPS_fix && armed && (GPS_speed>0)) {

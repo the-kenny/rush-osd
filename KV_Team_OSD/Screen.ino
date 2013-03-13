@@ -87,30 +87,6 @@ uint8_t FindNull(void)
   return xx;
 }
 
-// Unit conversions
-/*uint8_t CMsToKMh(uint16_t speed)       // cm/sec to km/h or to mph
-{
-  return GPS_speed *
-           (Settings[S_UNITSYSTEM] ?
-               (0.036*0.62137) :       // From MWii cm/sec to mph
-               0.036);                 // From MWii cm/sec to Km/h           //   NOT DELETE
-}
-
-int16_t TempConverter(int16_t temp) { // deg-C to deg-C or deg-F
-  return Settings[S_UNITSYSTEM] ?
-           temp * 1.8 + 32 :       // convert to Fahrenheit
-           temp;
-}
-
-void displayTemperature(void)        // WILL WORK ONLY WITH V1.2                 //   NOT DELETE
-{
-  itoa(TempConverter(temperature), screenBuffer, 10);
-  uint8_t xx = FindNull();
-  screenBuffer[xx++] = temperatureUnitAdd[Settings[S_UNITSYSTEM]];
-  screenBuffer[xx] = 0;
-  MAX7456_WriteString(screenBuffer,getPosition(temperaturePosition));
-}*/
-
 void displayTemperature(void)        // WILL WORK ONLY WITH V1.2
 {
   int xxx;
@@ -168,19 +144,6 @@ void displayMode(void)
   screenBuffer[4] = 0;
   MAX7456_WriteString(screenBuffer,getPosition(sensorPosition)+LINE);
 
-/*
-  if(MwSensorActive & mode_llights)
-    screenBuffer[0] = 0x04;
-  else
-    screenBuffer[0] = ' ';
-
-  if(MwSensorActive & mode_osd_switch)
-    screenBuffer[1] = 0x05;
-  else
-    screenBuffer[1] = ' ';
-  screenBuffer[2]=0;
-  MAX7456_WriteString(screenBuffer,getPosition(sensorPosition)+2*LINE);
-*/
 }
 
 void displayArmed(void)
@@ -193,7 +156,6 @@ void displayArmed(void)
 
 void displayCallsign(void)
 {
-  //if(armed){
   uint16_t position = getPosition(callSignPosition);
   if(Settings[S_DISPLAY_CS]){
       for(int X=0; X<10; X++) {
@@ -201,7 +163,6 @@ void displayCallsign(void)
      }   
        screenBuffer[10] = 0;
        MAX7456_WriteString(screenBuffer, getPosition(callSignPosition)); 
-    //}
   }
 }
 void displayHorizon(int rollAngle, int pitchAngle)
@@ -452,8 +413,8 @@ void displayFontScreen(void) {
 
 void displayGPSPosition(void)
 {
-  /*if(!GPS_fix)
-    return;*/
+  if(!GPS_fix)
+    return;
 
   if(Settings[S_COORDINATES]){
     if(fieldIsVisible(MwGPSLatPosition)) {
@@ -491,8 +452,8 @@ void displayNumberOfSat(void)
 void displayGPS_speed(void)
 {
 
-  /*if(!GPS_fix) return;
-  if(!armed) GPS_speed=0;*/
+  if(!GPS_fix) return;
+  if(!armed) GPS_speed=0;
 
   int xx;
   if(!Settings[S_UNITSYSTEM])
@@ -507,17 +468,6 @@ void displayGPS_speed(void)
   itoa(xx,screenBuffer+1,10);
   MAX7456_WriteString(screenBuffer,getPosition(speedPosition));
 }
-
-
-/*void displayGPS_speed(void)
-{
-  if(!GPS_fix)
-    return;                                               //  DO NOT DELETE
-
-  screenBuffer[0] = speedUnitAdd[Settings[S_UNITSYSTEM]];
-  itoa(CMsToKMh(GPS_speed), screenBuffer+1, 10);
-  MAX7456_WriteString(screenBuffer,getPosition(speedPosition));
-}*/
 
 void displayAltitude(void)
 {
@@ -561,8 +511,8 @@ void displayClimbRate(void)
 
 void displayDistanceToHome(void)
 {
-  /*if(!GPS_fix)
-    return;*/
+  if(!GPS_fix)
+    return;
 
   int16_t dist;
   if(Settings[S_UNITSYSTEM])
@@ -580,10 +530,10 @@ void displayDistanceToHome(void)
 
 void displayAngleToHome(void)
 {
-  /*if(!GPS_fix)
+  if(!GPS_fix)
     return;
   if(GPS_distanceToHome <= 2 && Blink2hz)
-    return;*/
+    return;
 
   ItoaPadded(GPS_directionToHome,screenBuffer,3,0);
   screenBuffer[3] = SYM_DEGREES;
@@ -593,10 +543,10 @@ void displayAngleToHome(void)
 
 void displayDirectionToHome(void)
 {
-  /*if(!GPS_fix)
+  if(!GPS_fix)
     return;
   if(GPS_distanceToHome <= 2 && Blink2hz)
-    return;*/
+    return;
   
   int16_t d = MwHeading + 11 + 180 + 360 - GPS_directionToHome;
   d = ((d % 360) / 22.5);
@@ -861,7 +811,6 @@ void displayConfigScreen(void)
 
     MAX7456_WriteString_P(configMsg55, ALTT);
     MAX7456_WriteString(itoa(speedMAX,screenBuffer,10),ALTD-3);
-    //MAX7456_WriteString(itoa(CMsToKMh(speedMAX), screenBuffer, 10), ALTD);     DO NOT DELETE
 
     MAX7456_WriteString_P(configMsg56, VELT);
 
@@ -874,7 +823,6 @@ void displayConfigScreen(void)
 
     MAX7456_WriteString_P(configMsg58, MAGT);
     MAX7456_WriteString(itoa(temperMAX,screenBuffer,10),MAGD-3);
-    //MAX7456_WriteString(itoa(TempConverter(temperMAX), screenBuffer, 10), MAGD);      DO NOT DELETE
-  }
+   
   displayCursor();
 }
