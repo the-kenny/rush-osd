@@ -823,6 +823,6 @@ void displayConfigScreen(void)
 
     MAX7456_WriteString_P(configMsg58, MAGT);
     MAX7456_WriteString(itoa(temperMAX,screenBuffer,10),MAGD-3);
-   
+  } 
   displayCursor();
 }
