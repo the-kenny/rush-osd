@@ -146,7 +146,7 @@ void loop()
 {
   // Process AI   
   if (Settings[S_ENABLEADC]){
-    temperature=(analogRead(temperaturePin)*1.1)/10.23; 
+    temperature=(analogRead(temperaturePin)-102)/2.048; 
     if (!Settings[S_MAINVOLTAGE_VBAT]){
       static uint8_t ind = 0;
       static uint16_t voltageRawArray[8];
