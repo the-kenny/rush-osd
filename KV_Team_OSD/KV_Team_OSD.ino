@@ -76,6 +76,10 @@ void setup()
   Serial.flush();
   //Led output
   pinMode(7,OUTPUT);
+  
+  //PWM RSSI
+  pinMode(RSSIPIN, INPUT);
+  
   checkEEPROM();
   readEEPROM();
   MAX7456Setup();
@@ -166,6 +170,9 @@ void loop()
   }
   if (Settings[S_MWRSSI]) {
       rssiADC = MwRssi;
+  } 
+   if (Settings[S_PWMRSSI]){
+   rssiADC = ((pulseIn(RSSIPIN, HIGH,500)*100)/PWM_CAL)/3;     
   }
  
   // Blink Basic Sanity Test Led at 1hz
