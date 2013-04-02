@@ -43,6 +43,10 @@
 #define GPSSENSOR      8//0b00001000
 //#define SONAR         16//0b00010000
 
+/********************       PWM RSSI      *********************/
+
+#define RSSIPIN 12   
+#define PWM_CAL 255
 
 /*----------------------------------------------       End of configurable parameters      ----------------------------------------------------*/
 
