@@ -74,12 +74,12 @@ void setup()
   UCSR0A  |= (1<<U2X0); UBRR0H = h; UBRR0L = l; 
 //---
   Serial.flush();
+
+  pinMode(PwmRssiPin, INPUT);
+  
   //Led output
   pinMode(7,OUTPUT);
-  
-  //PWM RSSI
-  pinMode(RSSIPIN, INPUT);
-  
+ 
   checkEEPROM();
   readEEPROM();
   MAX7456Setup();
@@ -165,15 +165,17 @@ void loop()
     }
     if (!Settings[S_MWRSSI]) {
       rssiADC = (analogRead(rssiPin)*1.1)/1023;
+      
+      if (Settings[S_PWMRSSI]){
+        rssiADC = pulseIn(PwmRssiPin, HIGH);
+      }
     }
     amperage = (AMPRERAGE_OFFSET - (analogRead(amperagePin)*AMPERAGE_CAL))/10.23;
   }
   if (Settings[S_MWRSSI]) {
       rssiADC = MwRssi;
   } 
-   if (Settings[S_PWMRSSI]){
-   rssiADC = ((pulseIn(RSSIPIN, HIGH,500)*100)/PWM_CAL)/3;     
-  }
+  
  
   // Blink Basic Sanity Test Led at 1hz
   if(tenthSec>10)
@@ -407,11 +409,23 @@ void calculateRssi(void)
   }
   else
   {
+   if (Settings[S_PWMRSSI]){
+     //Digital read Pin
+   aa = pulseIn(PwmRssiPin, HIGH);
+   aa = ((aa-Settings[S_RSSIMIN]) *101)/((Settings[S_RSSIMAX]*4)-Settings[S_RSSIMIN]) ; 
+   }
+   else
+   {
+     // Analog read pin
     aa =analogRead(rssiPin)/4; 
- }   
   aa = ((aa-Settings[S_RSSIMIN]) *101)/(Settings[S_RSSIMAX]-Settings[S_RSSIMIN]) ;
+   }
+  }
+  
+  
   rssi_Int += ( ( (signed int)((aa*rssiSample) - rssi_Int )) / rssiSample );
   rssi = rssi_Int / rssiSample ;
+ 
   if(rssi<0) rssi=0;
   if(rssi>100) rssi=100;
 }

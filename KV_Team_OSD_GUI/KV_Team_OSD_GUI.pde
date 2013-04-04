@@ -1,7 +1,7 @@
 
 //   KV Team OSD GUI
 //   http://code.google.com/p/rush-osd-development/
-//   February  2013  V2.02
+//   March  2013  V2.1
 //   This program is free software: you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as published by
 //   the Free Software Foundation, either version 3 of the License, or
@@ -49,7 +49,7 @@ import java.text.DecimalFormat;
 
 
 
-String KV_OSD_GUI_Version = "2.03";
+String KV_OSD_GUI_Version = "2.1";
 
 
 PImage img_Clear,OSDBackground,RadioPot;
@@ -280,6 +280,7 @@ String[] ConfigNames = {
   "Reset Stats After Arm",
   "Enable OSD Read ADC",
   "RSSI Over MW",
+  "PWM RSSI",
   "Use BoxNames",
   "Display CallSign",
   "S_CS0",
@@ -334,6 +335,7 @@ String[] ConfigHelp = {
   "Reset Stats After Arm",
   "Enable OSD Read ADC",
   "RSSI Over MW",
+  "PWM RSSI",
   "Use BoxNames",
   "Display CallSign",
   "S_CS0",
@@ -396,6 +398,7 @@ int[] ConfigRanges = {
 1,     // S_RESETSTATISTICS        31
 1,     // S_ENABLEADC              32
 1,     // S_MWRSSI                 33
+1,     // S_PWMRSSI
 1,     // S_USE_BOXNAMES
 1,      // call sign
 255,
@@ -636,7 +639,8 @@ CreateItem(GetSetting("S_SHOWBATLEVELEVOLUTION"),  5,5*17, G_Other);
 CreateItem(GetSetting("S_RESETSTATISTICS"),  5,6*17, G_Other);
 CreateItem(GetSetting("S_ENABLEADC"),  5,7*17, G_Other);
 CreateItem(GetSetting("S_MWRSSI"),  5,8*17, G_Other);
-CreateItem(GetSetting("S_USE_BOXNAMES"),  5,9*17, G_Other);
+CreateItem(GetSetting("S_PWMRSSI"),  5,9*17, G_Other);
+CreateItem(GetSetting("S_USE_BOXNAMES"),  5,10*17, G_Other);
 
 
 //  Call Sign ---------------------------------------------------------------------------
