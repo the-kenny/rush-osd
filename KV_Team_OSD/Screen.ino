@@ -552,10 +552,10 @@ void displayDirectionToHome(void)
   d = ((d % 360) / 22.5);
 
   screenBuffer[0] = SYM_ARROW_SOUTH + d;
-  screenBuffer[1] = SYM_ARROW_16 + d;
-  screenBuffer[1]=0;                //2
+  screenBuffer[1] = 0;
   MAX7456_WriteString(screenBuffer,getPosition(GPS_directionToHomePosition));
 }
+
 void displayCursor(void)
 {
   int cursorpos;
