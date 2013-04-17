@@ -17,7 +17,7 @@
 
 /***************************************         Amperage        ********************************************/
 
-#define EST_PMSum 2.6                 /****  NOTE  **** If you use hardware CURRENT sensor on OSD use (#define EST_PMSum 1) BEFORE ANY ADJUSTMENT OR CALIBRATION
+#define EST_PMSum 3.8                 /****  NOTE  **** If you use hardware CURRENT sensor on OSD use (#define EST_PMSum 1) BEFORE ANY ADJUSTMENT OR CALIBRATION
                                                         this value is empirical and is for fine tunning your consumption using the same instructions as for POWERMETER adjustment
                                                         on Mwc (first you have to MWC fine tune your voltage (VBat)).                                                       ****/
 

@@ -183,7 +183,7 @@ uint8_t GPS_numSat=0;
 int16_t I2CError=0;
 uint16_t cycleTime=0;
 uint16_t pMeterSum=0;
-uint8_t MwRssi=0;
+uint16_t MwRssi=0;
 
 //For Current Throttle
 int LowT = 1100;
