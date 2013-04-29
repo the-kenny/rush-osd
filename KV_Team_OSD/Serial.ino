@@ -322,11 +322,11 @@ void handleRawRC() {
     else if(configMode) {
       if(previousarmedstatus&&(MwRcData[THROTTLESTICK]>MINSTICK))
       {
-	// EXIT from SHOW STATISTICS (menu page 6) AFTER DISARM (push throttle up) (Carlonb) NEB
+	// EXIT from SHOW STATISTICS AFTER DISARM (push throttle up)
 	waitStick = 2;
 	configExit();
       }
-      if(!previousarmedstatus&&configMode&&(MwRcData[THROTTLESTICK]<MINSTICK)) // EXIT NEB mod for autostatistics
+      if(!previousarmedstatus&&configMode&&(MwRcData[THROTTLESTICK]<MINSTICK)) // EXIT
       {
 	waitStick = 2;
 	configExit();
@@ -386,29 +386,46 @@ void handleRawRC() {
 	}
 
 	if(configPage == 3 && COL == 3) {
-	  if(ROW==2) Settings[S_DISPLAYVOLTAGE]=!Settings[S_DISPLAYVOLTAGE];
-	  if(ROW==3) Settings[S_VOLTAGEMIN]--;
+	  if(ROW==1) Settings[S_DISPLAYVOLTAGE]=!Settings[S_DISPLAYVOLTAGE];
+	  if(ROW==2) Settings[S_VOLTAGEMIN]--;
+	  if(ROW==3) Settings[S_VIDVOLTAGE]=!Settings[S_VIDVOLTAGE];
 	  if(ROW==4) Settings[S_DISPLAYTEMPERATURE]=!Settings[S_DISPLAYTEMPERATURE];
 	  if(ROW==5) Settings[S_TEMPERATUREMAX]--;
-	  if(ROW==6) Settings[S_DISPLAYGPS]=!Settings[S_DISPLAYGPS];
-          if(ROW==7) Settings[S_COORDINATES]=!Settings[S_COORDINATES];
+	  if(ROW==6) Settings[S_AMPER_HOUR]=!Settings[S_AMPER_HOUR];
+	  if(ROW==7) Settings[S_AMPERAGE]=!Settings[S_AMPERAGE];
 	}
 
 	if(configPage == 4 && COL == 3) {
 	  if(ROW==3) rssiTimer=15;
 	  if(ROW==4) Settings[S_RSSIMAX]=rssiADC;
 	  if(ROW==5) Settings[S_DISPLAYRSSI]=!Settings[S_DISPLAYRSSI];
-	  if(ROW==6) Settings[S_UNITSYSTEM]=!Settings[S_UNITSYSTEM];
-	  if(ROW==7) {
-	    Settings[S_VIDEOSIGNALTYPE]=!Settings[S_VIDEOSIGNALTYPE];
-	    MAX7456Setup();
-	  }
 	}
 
 	if(configPage == 5 && COL == 3) {
 	  if(ROW==1) accCalibrationTimer=0;
 	  if(ROW==5) magCalibrationTimer=0;
 	  if(ROW==7) eepromWriteTimer=0;
+	}
+
+	if(configPage == 6 && COL == 3) {
+  	  if(ROW==1) Settings[S_DISPLAYGPS]=!Settings[S_DISPLAYGPS];
+  	  if(ROW==2) Settings[S_COORDINATES]=!Settings[S_COORDINATES];
+  	  if(ROW==3) Settings[S_GPSCOORDTOP]=!Settings[S_GPSCOORDTOP];  // Coord on top
+	  if(ROW==4) Settings[S_GPSALTITUDE]=!Settings[S_GPSALTITUDE];  // GPS Altitude
+	  if(ROW==5) Settings[S_ANGLETOHOME]=!Settings[S_ANGLETOHOME];  // Angle to Home
+	  if(ROW==6) Settings[S_SHOWHEADING]=!Settings[S_SHOWHEADING];
+	  if(ROW==7) Settings[S_MODEICON]=!Settings[S_MODEICON];        // Mode Icons
+	}
+
+	if(configPage == 7 && COL == 3) {
+	  if(ROW==1) Settings[S_DISPLAY_CS]=!Settings[S_DISPLAY_CS];
+	  if(ROW==2) Settings[S_THROTTLEPOSITION]=!Settings[S_THROTTLEPOSITION];
+	  if(ROW==3) Settings[S_WITHDECORATION]=!Settings[S_WITHDECORATION];
+	  if(ROW==4) Settings[S_UNITSYSTEM]=!Settings[S_UNITSYSTEM];
+	  if(ROW==5) {
+	    Settings[S_VIDEOSIGNALTYPE]=!Settings[S_VIDEOSIGNALTYPE];
+	    MAX7456Setup();
+	    }
 	}
 
 	if((ROW==10)&&(COL==3)) configPage--;
@@ -445,29 +462,46 @@ void handleRawRC() {
 	}
 
 	if(configPage == 3 && COL == 3) {
-	  if(ROW==2) Settings[S_DISPLAYVOLTAGE]=!Settings[S_DISPLAYVOLTAGE];
-	  if(ROW==3) Settings[S_VOLTAGEMIN]++;
+	  if(ROW==1) Settings[S_DISPLAYVOLTAGE]=!Settings[S_DISPLAYVOLTAGE];
+	  if(ROW==2) Settings[S_VOLTAGEMIN]++;
+	  if(ROW==3) Settings[S_VIDVOLTAGE]=!Settings[S_VIDVOLTAGE];
 	  if(ROW==4) Settings[S_DISPLAYTEMPERATURE]=!Settings[S_DISPLAYTEMPERATURE];
 	  if(ROW==5) Settings[S_TEMPERATUREMAX]++;
-	  if(ROW==6) Settings[S_DISPLAYGPS]=!Settings[S_DISPLAYGPS];
-          if(ROW==7) Settings[S_COORDINATES]=!Settings[S_COORDINATES];
+	  if(ROW==6) Settings[S_AMPER_HOUR]=!Settings[S_AMPER_HOUR];
+	  if(ROW==7) Settings[S_AMPERAGE]=!Settings[S_AMPERAGE];
 	}
 
 	if(configPage == 4 && COL == 3) {
 	  if(ROW==3) rssiTimer=15;
 	  if(ROW==4) Settings[S_RSSIMAX]=rssiADC;
 	  if(ROW==5) Settings[S_DISPLAYRSSI]=!Settings[S_DISPLAYRSSI];
-	  if(ROW==6) Settings[S_UNITSYSTEM]=!Settings[S_UNITSYSTEM];
-	  if(ROW==7) {
-	    Settings[S_VIDEOSIGNALTYPE]=!Settings[S_VIDEOSIGNALTYPE];
-	    MAX7456Setup();
-	  }
 	}
 
 	if(configPage == 5 && COL == 3) {
 	  if(ROW==1) accCalibrationTimer=CALIBRATION_DELAY;
 	  if(ROW==5) magCalibrationTimer=CALIBRATION_DELAY;
 	  if(ROW==7) eepromWriteTimer=EEPROM_WRITE_DELAY;
+	}
+
+	if(configPage == 6 && COL == 3) {
+  	  if(ROW==1) Settings[S_DISPLAYGPS]=!Settings[S_DISPLAYGPS];
+  	  if(ROW==2) Settings[S_COORDINATES]=!Settings[S_COORDINATES];
+  	  if(ROW==3) Settings[S_GPSCOORDTOP]=!Settings[S_GPSCOORDTOP];  // Coord on top
+	  if(ROW==4) Settings[S_GPSALTITUDE]=!Settings[S_GPSALTITUDE];  // GPS Altitude
+	  if(ROW==5) Settings[S_ANGLETOHOME]=!Settings[S_ANGLETOHOME];  // Angle to Home
+	  if(ROW==6) Settings[S_SHOWHEADING]=!Settings[S_SHOWHEADING];
+	  if(ROW==7) Settings[S_MODEICON]=!Settings[S_MODEICON];        // Mode Icons
+	}
+
+	if(configPage == 7 && COL == 3) {
+	  if(ROW==1) Settings[S_DISPLAY_CS]=!Settings[S_DISPLAY_CS];
+	  if(ROW==2) Settings[S_THROTTLEPOSITION]=!Settings[S_THROTTLEPOSITION];
+	  if(ROW==3) Settings[S_WITHDECORATION]=!Settings[S_WITHDECORATION];
+	  if(ROW==4) Settings[S_UNITSYSTEM]=!Settings[S_UNITSYSTEM];
+	  if(ROW==5) {
+	    Settings[S_VIDEOSIGNALTYPE]=!Settings[S_VIDEOSIGNALTYPE];
+	    MAX7456Setup();
+	    }
 	}
 
 	if((ROW==10)&&(COL==3)) configPage++;
@@ -556,7 +590,7 @@ void configExit()
   configMode=0;
   //waitStick=3;
   previousarmedstatus = 0;
-  if (Settings[S_RESETSTATISTICS]){  // NEB added for reset statistics if defined
+  if (Settings[S_RESETSTATISTICS]){
     trip=0;
     distanceMAX=0;
     altitudeMAX=0;
@@ -620,7 +654,8 @@ void saveExit()
     Serial.write(txCheckSum);
   }
 
-  if (configPage==3 || configPage==4){
+//  if (configPage==3 || configPage==4){
+  if (configPage==3 || configPage==4 || configPage==6 || configPage==7){
     writeEEPROM();
   }
   configExit();

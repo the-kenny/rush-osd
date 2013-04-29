@@ -68,7 +68,7 @@
 
 // DEFINE CONFIGURATION MENU PAGES
 #define MINPAGE 1
-#define MAXPAGE 6
+#define MAXPAGE 8
 
 #define PIDITEMS 10
 

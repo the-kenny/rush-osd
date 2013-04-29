@@ -12,6 +12,7 @@
 
 const uint16_t screenPosition[] PROGMEM = {
   POS(LINE02+2,  0, DISPLAY_ALWAYS), // GPS_numSatPosition
+  POS(LINE01+13,  0, DISPLAY_ALWAYS), // GPS_numSatPositionTop      // On top of screen
   POS(LINE03+14, 0, DISPLAY_ALWAYS), // GPS_directionToHomePosition
   POS(LINE02+24, 0, DISPLAY_ALWAYS), // GPS_distanceToHomePosition
   POS(LINE03+24, 0, DISPLAY_ALWAYS), // speedPosition
@@ -28,6 +29,8 @@ const uint16_t screenPosition[] PROGMEM = {
   POS(LINE12+11, 2, DISPLAY_ALWAYS), // motorArmedPosition
   POS(LINE10+2,  2, DISPLAY_CONDR),  // MwGPSLatPosition
   POS(LINE10+15, 2, DISPLAY_CONDR),  // MwGPSLonPosition
+  POS(LINE01+1,  0, DISPLAY_CONDR),  // MwGPSLatPositionTop      // On top of screen
+  POS(LINE01+16, 0, DISPLAY_CONDR),  // MwGPSLonPositionTop      // On top of screen
   POS(LINE12+2,  2, DISPLAY_ALWAYS), // rssiPosition
   POS(LINE11+2,  0, DISPLAY_ALWAYS), // temperaturePosition
   POS(LINE13+3,  2, DISPLAY_ALWAYS), // voltagePosition

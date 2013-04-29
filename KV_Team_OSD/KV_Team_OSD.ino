@@ -268,7 +268,7 @@ void loop()
         previousarmedstatus=1;
       }
       if(previousarmedstatus && !armed){
-        configPage=6;
+        configPage=8;
         ROW=10;
         COL=1;
         configMode=1;
