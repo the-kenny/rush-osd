@@ -423,7 +423,7 @@ void displayGPSPosition(void)
     if(fieldIsVisible(MwGPSLatPosition)) {
       screenBuffer[0] = SYM_LAT;
       FormatGPSCoord(GPS_latitude,screenBuffer+1,3,'N','S');
-      if(Settings[!S_GPSCOORDTOP])
+      if(!Settings[S_GPSCOORDTOP])
         MAX7456_WriteString(screenBuffer,getPosition(MwGPSLatPosition));
       else
         MAX7456_WriteString(screenBuffer,getPosition(MwGPSLatPositionTop));  
@@ -432,7 +432,7 @@ void displayGPSPosition(void)
     if(fieldIsVisible(MwGPSLatPosition)) {
       screenBuffer[0] = SYM_LON;
       FormatGPSCoord(GPS_longitude,screenBuffer+1,4,'E','W');
-      if(Settings[!S_GPSCOORDTOP])
+      if(!Settings[S_GPSCOORDTOP])
         MAX7456_WriteString(screenBuffer,getPosition(MwGPSLonPosition));
       else
         MAX7456_WriteString(screenBuffer,getPosition(MwGPSLonPositionTop));          
@@ -456,7 +456,7 @@ void displayNumberOfSat(void)
   screenBuffer[0] = SYM_SAT_L;
   screenBuffer[1] = SYM_SAT_R;
   itoa(GPS_numSat,screenBuffer+2,10);
-  if(Settings[!S_GPSCOORDTOP])
+  if(!Settings[S_GPSCOORDTOP])
     MAX7456_WriteString(screenBuffer,getPosition(GPS_numSatPosition));
   else 
     MAX7456_WriteString(screenBuffer,getPosition(GPS_numSatPositionTop)); 
