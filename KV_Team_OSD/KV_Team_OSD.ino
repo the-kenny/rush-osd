@@ -173,7 +173,7 @@ void loop()
     amperage = (AMPRERAGE_OFFSET - (analogRead(amperagePin)*AMPERAGE_CAL))/10.23;
   }
   if (Settings[S_MWRSSI]) {
-      rssiADC = MwRssi;
+      rssiADC = MwRssi/4;
   } 
   
  
@@ -403,9 +403,10 @@ void calculateTrip(void)
 
 void calculateRssi(void)
 {
-  float aa=0; 
+  float aa=0;  
   if (Settings[S_MWRSSI]) {
-    aa =  MwRssi;    
+    aa =  MwRssi;
+    aa = ((aa-Settings[S_RSSIMIN]) *101)/((Settings[S_RSSIMAX]*4)-Settings[S_RSSIMIN]) ;    
   }
   else
   {
@@ -418,7 +419,7 @@ void calculateRssi(void)
    {
      // Analog read pin
     aa =analogRead(rssiPin)/4; 
-  aa = ((aa-Settings[S_RSSIMIN]) *101)/(Settings[S_RSSIMAX]-Settings[S_RSSIMIN]) ;
+    aa = ((aa-Settings[S_RSSIMIN]) *101)/(Settings[S_RSSIMAX]-Settings[S_RSSIMIN]) ;
    }
   }
   
