@@ -146,11 +146,11 @@ void loop()
   if (Settings[S_ENABLEADC]){
     temperature=(analogRead(temperaturePin)-102)/2.048; 
     if (!Settings[S_MAINVOLTAGE_VBAT]){
-      static uint8_t ind = 0;
-      static uint16_t voltageRawArray[8];
+      static uint16_t ind = 0;
+      static uint32_t voltageRawArray[8];
       voltageRawArray[(ind++)%8] = analogRead(voltagePin);                  
       uint16_t voltageRaw = 0;
-      for (uint8_t i=0;i<8;i++)
+      for (uint16_t i=0;i<8;i++)
         voltageRaw += voltageRawArray[i];
       voltage = float(voltageRaw) * Settings[S_DIVIDERRATIO] * (1.1/102.3/4/8);  
     }

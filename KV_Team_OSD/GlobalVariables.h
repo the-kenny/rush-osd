@@ -4,11 +4,11 @@
 #define METRIC 0
 #define IMPERIAL 1
 //Analog input defines
-const uint8_t voltagePin=0;
-const uint8_t vidvoltagePin=2;
-const uint8_t amperagePin=1;
-const uint8_t rssiPin=3;
-const uint8_t temperaturePin=6;            // Temperature pin 6 for original Rushduino Board V1.2
+const uint16_t voltagePin=0;
+const uint16_t vidvoltagePin=2;
+const uint16_t amperagePin=1;
+const uint16_t rssiPin=3;
+const uint16_t temperaturePin=6;            // Temperature pin 6 for original Rushduino Board V1.2
 const uint8_t rssiSample=30;
 //const uint8_t lowrssiAlarm=RSSI_ALARM;     // This will make blink the Rssi if lower then this value
 
@@ -219,11 +219,11 @@ int rssi_Int=0;
 
 
 // For Voltage
-uint8_t voltage=0;                      // its the value x10
-uint8_t vidvoltage=0;                   // its the value x10
+uint16_t voltage=0;                      // its the value x10
+uint16_t vidvoltage=0;                   // its the value x10
 
 // For temprature
-int8_t temperature=0;                  // temperature in degrees Centigrade
+int16_t temperature=0;                  // temperature in degrees Centigrade
 
 
 // For Statistics
