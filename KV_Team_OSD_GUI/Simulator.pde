@@ -58,7 +58,7 @@ void SimSetup(){
  
 
   SG = ScontrolP5.addGroup("SG")
-    .setPosition(310,YSim + 30)
+    .setPosition(310,YSim + 45)
     .setWidth(680)
     .setBarHeight(12)
     .activateEvent(true)

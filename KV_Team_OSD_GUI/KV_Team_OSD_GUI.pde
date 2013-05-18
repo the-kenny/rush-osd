@@ -182,7 +182,7 @@ int serialCount = 0;                 // A count of how many bytes we receive
 int ConfigEEPROM = -1;
 int ConfigVALUE = -1;
 
-int windowsX    = 1000;       int windowsY    = 540;
+int windowsX    = 995;       int windowsY    = 573;
 int xGraph      = 10;         int yGraph      = 325;
 int xObj        = 520;        int yObj        = 293; //900,450
 int xCompass    = 920;        int yCompass    = 341; //760,336
@@ -268,8 +268,10 @@ String[] ConfigNames = {
   
   "Display GPS",
   "Display GPS Coords",
+  "Display Coords on Top",
   "Display Heading",
   "Display Heading 360",
+  
   
   "Units",
   "Video Signal",
@@ -323,8 +325,11 @@ String[] ConfigHelp = {
   
   "Display GPS:",
   "Display GPS Coords:",
+  "Display Coords on Top",
   "Display Heading:",
   "Display Heading 360:",
+  
+  
   
   "Unit System:",
   "Screen Type NTSC / PAL:",
@@ -386,6 +391,7 @@ int[] ConfigRanges = {
 
 1,     // S_DISPLAYGPS             21
 1,     // S_COORDINATES            22
+1,     // S_GPSCOORDTOP
 1,     // S_SHOWHEADING            28 
 1,     // S_HEADING360             29
 
@@ -509,7 +515,7 @@ void setup() {
 //Map<Settings, String> table = new EnumMap<Settings>(Settings.class);
 OnTimer = millis();
   frameRate(30); 
-OSDBackground = loadImage("Background.jpg");
+OSDBackground = loadImage("Background2.jpg");
 //RadioPot = loadImage("kvImage.jpg");
 //PGraphics icon = createGraphics(16, 16, P3D);
 //icon.beginDraw();
@@ -624,8 +630,10 @@ BuildRadioButton(GetSetting("S_BOARDTYPE"),  5,0, G_Board, "Rush","Minim");
 //  GPS  ----------------------------------------------------------------------------
 CreateItem(GetSetting("S_DISPLAYGPS"), 5,0, G_GPS);
 CreateItem(GetSetting("S_COORDINATES"),  5,1*17, G_GPS);
-CreateItem(GetSetting("S_SHOWHEADING"),  5,2*17, G_GPS);
-CreateItem(GetSetting("S_HEADING360"),  5,3*17, G_GPS);
+CreateItem(GetSetting("S_GPSCOORDTOP"),  5,2*17, G_GPS);
+CreateItem(GetSetting("S_SHOWHEADING"),  5,3*17, G_GPS);
+CreateItem(GetSetting("S_HEADING360"),  5,4*17, G_GPS);
+
 
 //  Other ---------------------------------------------------------------------------
 CreateItem(GetSetting("S_UNITSYSTEM"),  5,0, G_Other);
@@ -901,7 +909,7 @@ void draw() {
   // ------------------------------------------------------------------------
 
   // Coltrol Box
-  fill(100); strokeWeight(3);stroke(200); rectMode(CORNERS); rect(XControlBox,YControlBox, XControlBox+105 , YControlBox+150);
+  fill(100); strokeWeight(3);stroke(200); rectMode(CORNERS); rect(XControlBox,YControlBox, XControlBox+108, YControlBox+130);
   textFont(font12); fill(255, 255, 255); text("OSD Controls",XControlBox + 15,YControlBox + 15);
   if (activeTab == 1) {
   
