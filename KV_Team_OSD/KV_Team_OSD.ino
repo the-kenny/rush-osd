@@ -1,7 +1,7 @@
 /*
 KV Team OSD
 http://code.google.com/p/rush-osd-development/
-February  2013  V2.2
+May  2013  V2.2
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
@@ -74,7 +74,8 @@ void setup()
   UCSR0A  |= (1<<U2X0); UBRR0H = h; UBRR0L = l; 
 //---
   Serial.flush();
-
+  
+  //PWM RSSI
   pinMode(PwmRssiPin, INPUT);
   
   //Led output
@@ -126,14 +127,7 @@ void setMspRequests() {
 
     if(mode_armed == 0) {
         modeMSPRequests |= REQ_MSP_BOX;
-/*
-#ifdef REQ_MSP_BOXNAMES
-      if(msp_ids_failed)
-        modeMSPRequests |= REQ_MSP_BOXNAMES;
-      else
-#endif
-        modeMSPRequests |= REQ_MSP_BOXIDS;
-*/
+
     }
   }
  
@@ -165,17 +159,15 @@ void loop()
     }
     if (!Settings[S_MWRSSI]) {
       rssiADC = (analogRead(rssiPin)*1.1)/1023;
-      
-      if (Settings[S_PWMRSSI]){
-        rssiADC = pulseIn(PwmRssiPin, HIGH);
-      }
     }
     amperage = (AMPRERAGE_OFFSET - (analogRead(amperagePin)*AMPERAGE_CAL))/10.23;
   }
   if (Settings[S_MWRSSI]) {
-      rssiADC = MwRssi/4;
+      rssiADC = MwRssi;
   } 
-  
+   if (Settings[S_PWMRSSI]){
+   rssiADC = pulseIn(PwmRssiPin, HIGH);     
+  }
  
   // Blink Basic Sanity Test Led at 1hz
   if(tenthSec>10)
@@ -403,32 +395,28 @@ void calculateTrip(void)
 
 void calculateRssi(void)
 {
-  float aa=0;  
+  float aa=0;
+ 
+ if (Settings[S_PWMRSSI]){
+     //Digital read Pin
+   aa = pulseIn(PwmRssiPin, HIGH);
+   aa = ((aa-Settings[S_RSSIMIN]) *101)/((Settings[S_RSSIMAX]*4)-Settings[S_RSSIMIN]) ;  
+ }
+  else
+  { 
   if (Settings[S_MWRSSI]) {
-    aa =  MwRssi;
-    aa = ((aa-Settings[S_RSSIMIN]) *101)/((Settings[S_RSSIMAX]*4)-Settings[S_RSSIMIN]) ;    
+    aa =  MwRssi;    
   }
   else
   {
-   if (Settings[S_PWMRSSI]){
-     //Digital read Pin
-   aa = pulseIn(PwmRssiPin, HIGH);
-   aa = ((aa-Settings[S_RSSIMIN]) *101)/((Settings[S_RSSIMAX]*4)-Settings[S_RSSIMIN]) ; 
-   }
-   else
-   {
-     // Analog read pin
     aa =analogRead(rssiPin)/4; 
-    aa = ((aa-Settings[S_RSSIMIN]) *101)/(Settings[S_RSSIMAX]-Settings[S_RSSIMIN]) ;
-   }
-  }
-  
-  
+ }   
+  aa = ((aa-Settings[S_RSSIMIN]) *101)/(Settings[S_RSSIMAX]-Settings[S_RSSIMIN]) ;
   rssi_Int += ( ( (signed int)((aa*rssiSample) - rssi_Int )) / rssiSample );
   rssi = rssi_Int / rssiSample ;
- 
   if(rssi<0) rssi=0;
   if(rssi>100) rssi=100;
+  }
 }
 
 void writeEEPROM(void)
