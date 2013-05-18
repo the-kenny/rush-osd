@@ -565,8 +565,10 @@ void displayDirectionToHome(void)
   if(GPS_distanceToHome <= 2 && Blink2hz)
     return;
   
-  int16_t d = MwHeading + 22 + 180 + 360 - GPS_directionToHome;
-  d = ((d % 360) / 22.5);
+  int16_t d = MwHeading + 180 + 360 - GPS_directionToHome;
+  d *= 4;
+  d += 45;
+  d = (d/90)%16;
 
   screenBuffer[0] = SYM_ARROW_SOUTH + d;
   screenBuffer[1] = 0;
