@@ -82,7 +82,7 @@ int TestLine = 300;
 int[] GPS_numSatPosition = {
  LINE02+2,LINE02+2};
 int[] GPS_directionToHomePosition=    {
-  LINE03+14 ,LINE03+14};
+  LINE03+13 ,LINE03+13};
 
 int[] GPS_distanceToHomePosition=  {
   LINE02+22  ,LINE02+24 };
@@ -103,13 +103,13 @@ int[] MwHeadingGraphPosition =  {
 int[] MwAltitudePosition=  {
   LINE07+2,LINE07+2 };
 int[] MwClimbRatePosition=  {
-  LINE07+24 ,LINE07+25 };
+  LINE07+27 ,LINE07+28 };
 int[] CurrentThrottlePosition = {
-  LINE11+22,LINE11+23+60};
+  LINE11+23,LINE11+24+60};
 int[] flyTimePosition=                {
-  LINE12+22,LINE12+23+60};
+  LINE12+23,LINE12+24+60};
 int[] onTimePosition=                 {
-  LINE13+22,LINE13+23+60};
+  LINE13+23,LINE13+24+60};
 int[] motorArmedPosition=            {
   LINE12+11,LINE11+11+60};
 int[] MwGPSLatPosition =              {
@@ -117,22 +117,22 @@ int[] MwGPSLatPosition =              {
 int[] MwGPSLonPosition =              {
   LINE10+13+2,LINE10+2+13+60};
 int[]  rssiPosition = {
-  LINE12+3 ,LINE12+3+60};
+  LINE12+2 ,LINE12+2+60};
 int[] temperaturePosition= {
   LINE11+2   ,LINE11+2};
 int[] voltagePosition =                {
-  LINE13+3  ,LINE13+3+60 };
+  LINE13+2  ,LINE13+2+60 };
 int[] vidvoltagePosition =   {
   LINE11+3  ,LINE11+3+60};
 int[] amperagePosition =     {
-  LINE13+10,LINE13+10+60};
+  LINE13+17,LINE13+19+60};
 int[] pMeterSumPosition =       {
-  LINE13+16,LINE13+16+60};
+  LINE15+30,LINE15+30+60};
   
-int DisplayWindowX = 585; //380;//380;
-int DisplayWindowY = 35; //10;
-int WindowAdjX = 15;
-int WindowAdjY = 0;
+int DisplayWindowX = 583; //500;
+int DisplayWindowY = 40; //5;
+int WindowAdjX = -69; //15
+int WindowAdjY = -31;
 int WindowShrinkX = 10;
 int WindowShrinkY = 50;
 
@@ -193,7 +193,7 @@ int xMot        = 690;        int yMot        = 155; //850,155
 int xButton     = 845;        int yButton     = 231; //685,222
 int xBox        = 415;        int yBox        = 10;
 //int xGPS        = 853;        int yGPS        = 438; //693,438
-int XSim        = DisplayWindowX+WindowAdjX;        int YSim        = 288-WindowShrinkY + 20;
+int XSim        = DisplayWindowX+WindowAdjX;        int YSim        = 288-WindowShrinkY + 85;
 
 //DisplayWindowX+WindowAdjX, DisplayWindowY+WindowAdjY, 360-WindowShrinkX, 288-WindowShrinkY);
 // Box locations -------------------------------------------------------------------------
@@ -205,13 +205,13 @@ int XRSSI      = 120;        int YRSSI    = 46;
 int XVolts      = 120;       int YVolts    = 172;
 int XAmps       = 120;       int YAmps    = 281;
 int XVVolts    = 120;        int YVVolts  = 339;
-int XTemp      = 120;        int YTemp    = 414;
+int XTemp      = 120;        int YTemp    = 415;
 int XCS      = 120;          int YCS    = 472;
 int XGPS       = 305;        int YGPS    = 5;
 
 int XOther     = 305;        int YOther   = 149; //48;
 int XPortStat  = 5;            int YPortStat = 350;
-int XControlBox     = 5;        int YControlBox   = 385;
+int XControlBox     = 5;        int YControlBox   = 416;  //389
 int XRCSim    =   XSim;      int YRCSim = 430;
 
 
@@ -374,49 +374,49 @@ static int SIMITEMS=6;
 int[] ConfigRanges = {
 1,   // used for check             0
 
-255,   // S_RSSIMIN                1
-255,   // S_RSSIMAX                2
+255,   // S_RSSIMIN                7
+255,   // S_RSSIMAX                8
 100,       // S_RSSI_ALARM
-1,     // S_DISPLAYRSSI            3
+1,     // S_DISPLAYRSSI            9
 
-1,     // S_DISPLAYVOLTAGE         4
-255,   // S_VOLTAGEMIN             5
-6,     // S_BATCELLS               6
-255,   // S_DIVIDERRATIO           7
-1,     // S_MAINVOLTAGE_VBAT       8
+1,     // S_DISPLAYVOLTAGE         10
+255,   // S_VOLTAGEMIN             11
+6,     // S_BATCELLS               12
+255,   // S_DIVIDERRATIO           13
+1,     // S_MAINVOLTAGE_VBAT       14
 
-1,     // S_AMPERAGE,              9
-1,     // S_AMPER_HOUR,            10
+1,     // S_AMPERAGE,
+1,     // S_AMPER_HOUR,
 
-1,     // S_VIDVOLTAGE             11
-255,   // S_VIDDIVIDERRATIO        12    
-1,     // S_VIDVOLTAGE_VBAT        13
+1,     // S_VIDVOLTAGE             15
+255,   // S_VIDDIVIDERRATIO        16    
+1,     // S_VIDVOLTAGE_VBAT        17
 
-1,     // S_DISPLAYTEMPERATURE     14
+1,     // S_DISPLAYTEMPERATURE     18
 255,   // S_TEMPERATUREMAX         19
 
-1,     // S_BOARDTYPE              15
+1,     // S_BOARDTYPE              20
 
-1,     // S_DISPLAYGPS             16
-1,     // S_COORDINATES            17
-1,     // S_GPSCOORDTOP            18
-1,     // S_GPSALTITUDE            19
-1,     // S_ANGLETOHOME            20
-1,     // S_SHOWHEADING            21 
-1,     // S_HEADING360             22
+1,     // S_DISPLAYGPS             21
+1,     // S_COORDINATES            22
+1,     // S_GPSCOORDTOP
+1,     // S_GPSALTITUDE
+1,     // S_ANGLETOHOME
+1,     // S_SHOWHEADING            28 
+1,     // S_HEADING360             29
 
 1,     // S_UNITSYSTEM             23
 1,     // S_SCREENTYPE             24
 1,     // S_THROTTLEPOSITION       25
 1,     // S_DISPLAY_HORIZON_BR     26
 1,     // S_WITHDECORATION         27
-1,     // S_SHOWBATLEVELEVOLUTION  28 
-1,     // S_RESETSTATISTICS        29
-1,     // S_ENABLEADC              30
-1,     // S_MWRSSI                 31
-1,     // S_PWMRSSI                32
-1,     // S_USE_BOXNAMES           33         
-1,     // S_MODEICON               34
+1,     // S_SHOWBATLEVELEVOLUTION  30 
+1,     // S_RESETSTATISTICS        31
+1,     // S_ENABLEADC              32
+1,     // S_MWRSSI                 33
+1,     // S_PWMRSSI
+1,     // S_USE_BOXNAMES
+1,     // S_MODEICON
 1,     // call sign
 255,
 255,
@@ -694,7 +694,7 @@ controlP5.addTextfield("CallSign")
 
        
   // CheckBox "Hide Background"
-  ShowSimBackground = controlP5.addCheckBox("ShowSimBackground",XSim+120,YSim+50);
+  ShowSimBackground = controlP5.addCheckBox("ShowSimBackground",XSim,YSim+1);
   ShowSimBackground.setColorActive(color(255));
   ShowSimBackground.setColorBackground(color(120));
   ShowSimBackground.setItemsPerRow(1);
@@ -924,7 +924,7 @@ void draw() {
   // ------------------------------------------------------------------------
 
   // Coltrol Box
-  fill(100); strokeWeight(3);stroke(200); rectMode(CORNERS); rect(XControlBox,YControlBox, XControlBox+108, YControlBox+130);
+  fill(100); strokeWeight(3);stroke(200); rectMode(CORNERS); rect(XControlBox,YControlBox, XControlBox+108, YControlBox+123); //108//130
   textFont(font12); fill(255, 255, 255); text("OSD Controls",XControlBox + 15,YControlBox + 15);
   if (activeTab == 1) {
   
@@ -944,10 +944,10 @@ void draw() {
   strokeWeight(3);stroke(0);
   rectMode(CORNERS);
   if (int(ShowSimBackground.arrayValue()[0]) < 1){
-    image(OSDBackground,DisplayWindowX+WindowAdjX, DisplayWindowY+WindowAdjY, 360-WindowShrinkX, 288-WindowShrinkY); //480-WindowShrinkX, 360-WindowShrinkY);
+    image(OSDBackground,DisplayWindowX+WindowAdjX, DisplayWindowY+WindowAdjY, 528-WindowShrinkX, 360-WindowShrinkY); //528-WindowShrinkX, 360-WindowShrinkY);
   }
   else{
-    fill(80, 80,80); strokeWeight(3);stroke(1); rectMode(CORNER); rect(DisplayWindowX+WindowAdjX, DisplayWindowY+WindowAdjY, 360-WindowShrinkX, 288-WindowShrinkY);
+    fill(80, 80,80); strokeWeight(3);stroke(1); rectMode(CORNER); rect(DisplayWindowX+WindowAdjX, DisplayWindowY+WindowAdjY, 528-WindowShrinkX, 360-WindowShrinkY);  //335-WindowShrinkX, 288-WindowShrinkY);
   }
 
 

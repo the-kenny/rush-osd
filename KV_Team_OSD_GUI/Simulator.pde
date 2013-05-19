@@ -58,7 +58,7 @@ void SimSetup(){
  
 
   SG = ScontrolP5.addGroup("SG")
-    .setPosition(305,YSim + 98)
+    .setPosition(305,YSim + 33)
     .setWidth(733)
     .setBarHeight(13)
     .activateEvent(true)
@@ -459,12 +459,12 @@ void ShowCurrentThrottlePosition(){
 
 void ShowRSSI(){
   mapchar(0xba, rssiPosition[ScreenType]);
-  makeText("93%", rssiPosition[ScreenType]+1);
+  makeText("85%", rssiPosition[ScreenType]+1);
 }
 
 void ShowAmperage(){
   mapchar(0xa4, amperagePosition[ScreenType]);
-  makeText("2306", amperagePosition[ScreenType]+1);
+  makeText("1221", amperagePosition[ScreenType]+1);
 }
 
 void SimulateTimer(){
