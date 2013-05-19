@@ -1,7 +1,7 @@
 
 //   KV Team OSD GUI
 //   http://code.google.com/p/rush-osd-development/
-//   March  2013  V2.1
+//   May  2013  V2.2
 //   This program is free software: you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as published by
 //   the Free Software Foundation, either version 3 of the License, or
@@ -49,7 +49,7 @@ import java.text.DecimalFormat;
 
 
 
-String KV_OSD_GUI_Version = "2.1";
+String KV_OSD_GUI_Version = "2.2";
 
 
 PImage img_Clear,OSDBackground,RadioPot;
@@ -129,11 +129,11 @@ int[] amperagePosition =     {
 int[] pMeterSumPosition =       {
   LINE13+16,LINE13+16+60};
   
-int DisplayWindowX = 635; //380;//380;
-int DisplayWindowY = 10; //10;
+int DisplayWindowX = 585; //380;//380;
+int DisplayWindowY = 35; //10;
 int WindowAdjX = 15;
 int WindowAdjY = 0;
-int WindowShrinkX = 20;
+int WindowShrinkX = 10;
 int WindowShrinkY = 50;
 
 int currentCol = 0;
@@ -182,7 +182,7 @@ int serialCount = 0;                 // A count of how many bytes we receive
 int ConfigEEPROM = -1;
 int ConfigVALUE = -1;
 
-int windowsX    = 995;       int windowsY    = 573;
+int windowsX    = 1041;       int windowsY    =544;        //995; //573;
 int xGraph      = 10;         int yGraph      = 325;
 int xObj        = 520;        int yObj        = 293; //900,450
 int xCompass    = 920;        int yCompass    = 341; //760,336
@@ -201,15 +201,15 @@ int Col1Width = 180;        int Col2Width = 200;
 
 int XEEPROM    = 120;        int YEEPROM    = 5;  //hidden do not remove
 int XBoard     = 120;        int YBoard   = 5;
-int XRSSI      = 120;        int YRSSI    = 48;
-int XVolts      = 120;       int YVolts    = 142;
-int XAmps       = 120;       int YAmps    = 253;
-int XVVolts    = 120;        int YVVolts  = 313;
-int XTemp      = 310;        int YTemp    = 5;
-int XCS      = 120;        int YCS    = 485;
-int XGPS       = 120;        int YGPS    = 390;
+int XRSSI      = 120;        int YRSSI    = 46;
+int XVolts      = 120;       int YVolts    = 172;
+int XAmps       = 120;       int YAmps    = 281;
+int XVVolts    = 120;        int YVVolts  = 339;
+int XTemp      = 120;        int YTemp    = 414;
+int XCS      = 120;          int YCS    = 472;
+int XGPS       = 305;        int YGPS    = 5;
 
-int XOther     = 310;        int YOther   = 65; //48;
+int XOther     = 305;        int YOther   = 149; //48;
 int XPortStat  = 5;            int YPortStat = 350;
 int XControlBox     = 5;        int YControlBox   = 385;
 int XRCSim    =   XSim;      int YRCSim = 430;
@@ -269,8 +269,11 @@ String[] ConfigNames = {
   "Display GPS",
   "Display GPS Coords",
   "Display Coords on Top",
+  "Display GPS Altitude",
+  "Display Angle to Home",
   "Display Heading",
   "Display Heading 360",
+  
   
   
   "Units",
@@ -284,6 +287,7 @@ String[] ConfigNames = {
   "RSSI Over MW",
   "PWM RSSI",
   "Use BoxNames",
+  "Display Flight Mode Icons",
   "Display CallSign",
   "S_CS0",
   "S_CS1",
@@ -326,8 +330,11 @@ String[] ConfigHelp = {
   "Display GPS:",
   "Display GPS Coords:",
   "Display Coords on Top",
+  "Display GPS Altitude",
+  "Display Angle to Home",
   "Display Heading:",
   "Display Heading 360:",
+  
   
   
   
@@ -342,6 +349,7 @@ String[] ConfigHelp = {
   "RSSI Over MW",
   "PWM RSSI",
   "Use BoxNames",
+  "Show Sensor Icons",
   "Display CallSign",
   "S_CS0",
   "S_CS1",
@@ -366,47 +374,50 @@ static int SIMITEMS=6;
 int[] ConfigRanges = {
 1,   // used for check             0
 
-255,   // S_RSSIMIN                7
-255,   // S_RSSIMAX                8
+255,   // S_RSSIMIN                1
+255,   // S_RSSIMAX                2
 100,       // S_RSSI_ALARM
-1,     // S_DISPLAYRSSI            9
+1,     // S_DISPLAYRSSI            3
 
-1,     // S_DISPLAYVOLTAGE         10
-255,   // S_VOLTAGEMIN             11
-6,     // S_BATCELLS               12
-255,   // S_DIVIDERRATIO           13
-1,     // S_MAINVOLTAGE_VBAT       14
+1,     // S_DISPLAYVOLTAGE         4
+255,   // S_VOLTAGEMIN             5
+6,     // S_BATCELLS               6
+255,   // S_DIVIDERRATIO           7
+1,     // S_MAINVOLTAGE_VBAT       8
 
-1,     // S_AMPERAGE,
-1,     // S_AMPER_HOUR,
+1,     // S_AMPERAGE,              9
+1,     // S_AMPER_HOUR,            10
 
-1,     // S_VIDVOLTAGE             15
-255,   // S_VIDDIVIDERRATIO        16    
-1,     // S_VIDVOLTAGE_VBAT        17
+1,     // S_VIDVOLTAGE             11
+255,   // S_VIDDIVIDERRATIO        12    
+1,     // S_VIDVOLTAGE_VBAT        13
 
-1,     // S_DISPLAYTEMPERATURE     18
+1,     // S_DISPLAYTEMPERATURE     14
 255,   // S_TEMPERATUREMAX         19
 
-1,     // S_BOARDTYPE              20
+1,     // S_BOARDTYPE              15
 
-1,     // S_DISPLAYGPS             21
-1,     // S_COORDINATES            22
-1,     // S_GPSCOORDTOP
-1,     // S_SHOWHEADING            28 
-1,     // S_HEADING360             29
+1,     // S_DISPLAYGPS             16
+1,     // S_COORDINATES            17
+1,     // S_GPSCOORDTOP            18
+1,     // S_GPSALTITUDE            19
+1,     // S_ANGLETOHOME            20
+1,     // S_SHOWHEADING            21 
+1,     // S_HEADING360             22
 
 1,     // S_UNITSYSTEM             23
 1,     // S_SCREENTYPE             24
 1,     // S_THROTTLEPOSITION       25
 1,     // S_DISPLAY_HORIZON_BR     26
 1,     // S_WITHDECORATION         27
-1,     // S_SHOWBATLEVELEVOLUTION  30 
-1,     // S_RESETSTATISTICS        31
-1,     // S_ENABLEADC              32
-1,     // S_MWRSSI                 33
-1,     // S_PWMRSSI
-1,     // S_USE_BOXNAMES
-1,      // call sign
+1,     // S_SHOWBATLEVELEVOLUTION  28 
+1,     // S_RESETSTATISTICS        29
+1,     // S_ENABLEADC              30
+1,     // S_MWRSSI                 31
+1,     // S_PWMRSSI                32
+1,     // S_USE_BOXNAMES           33         
+1,     // S_MODEICON               34
+1,     // call sign
 255,
 255,
  255,
@@ -515,7 +526,7 @@ void setup() {
 //Map<Settings, String> table = new EnumMap<Settings>(Settings.class);
 OnTimer = millis();
   frameRate(30); 
-OSDBackground = loadImage("Background2.jpg");
+OSDBackground = loadImage("Background3.jpg");
 //RadioPot = loadImage("kvImage.jpg");
 //PGraphics icon = createGraphics(16, 16, P3D);
 //icon.beginDraw();
@@ -600,6 +611,8 @@ CreateItem(GetSetting("S_RSSIMIN"), 5, 0, G_RSSI);
 CreateItem(GetSetting("S_RSSIMAX"), 5,1*17, G_RSSI);
 CreateItem(GetSetting("S_RSSI_ALARM"), 5,2*17, G_RSSI);
 CreateItem(GetSetting("S_DISPLAYRSSI"), 5, 3*17, G_RSSI);
+CreateItem(GetSetting("S_MWRSSI"),  5,4*17, G_RSSI);
+CreateItem(GetSetting("S_PWMRSSI"),  5,5*17, G_RSSI);
 
 // Voltage  ------------------------------------------------------------------------
 
@@ -631,8 +644,11 @@ BuildRadioButton(GetSetting("S_BOARDTYPE"),  5,0, G_Board, "Rush","Minim");
 CreateItem(GetSetting("S_DISPLAYGPS"), 5,0, G_GPS);
 CreateItem(GetSetting("S_COORDINATES"),  5,1*17, G_GPS);
 CreateItem(GetSetting("S_GPSCOORDTOP"),  5,2*17, G_GPS);
-CreateItem(GetSetting("S_SHOWHEADING"),  5,3*17, G_GPS);
-CreateItem(GetSetting("S_HEADING360"),  5,4*17, G_GPS);
+CreateItem(GetSetting("S_GPSALTITUDE"),  5,3*17, G_GPS);
+CreateItem(GetSetting("S_ANGLETOHOME"),  5,4*17, G_GPS);
+CreateItem(GetSetting("S_SHOWHEADING"),  5,5*17, G_GPS);
+CreateItem(GetSetting("S_HEADING360"),  5,6*17, G_GPS);
+
 
 
 //  Other ---------------------------------------------------------------------------
@@ -646,9 +662,8 @@ CreateItem(GetSetting("S_WITHDECORATION"),  5,4*17, G_Other);
 CreateItem(GetSetting("S_SHOWBATLEVELEVOLUTION"),  5,5*17, G_Other);
 CreateItem(GetSetting("S_RESETSTATISTICS"),  5,6*17, G_Other);
 CreateItem(GetSetting("S_ENABLEADC"),  5,7*17, G_Other);
-CreateItem(GetSetting("S_MWRSSI"),  5,8*17, G_Other);
-CreateItem(GetSetting("S_PWMRSSI"),  5,9*17, G_Other);
-CreateItem(GetSetting("S_USE_BOXNAMES"),  5,10*17, G_Other);
+CreateItem(GetSetting("S_USE_BOXNAMES"),  5,8*17, G_Other);
+CreateItem(GetSetting("S_MODEICON"),  5,9*17, G_Other);
 
 
 //  Call Sign ---------------------------------------------------------------------------
@@ -679,7 +694,7 @@ controlP5.addTextfield("CallSign")
 
        
   // CheckBox "Hide Background"
-  ShowSimBackground = controlP5.addCheckBox("ShowSimBackground",XSim+50,YSim);
+  ShowSimBackground = controlP5.addCheckBox("ShowSimBackground",XSim+120,YSim+50);
   ShowSimBackground.setColorActive(color(255));
   ShowSimBackground.setColorBackground(color(120));
   ShowSimBackground.setItemsPerRow(1);
@@ -929,7 +944,7 @@ void draw() {
   strokeWeight(3);stroke(0);
   rectMode(CORNERS);
   if (int(ShowSimBackground.arrayValue()[0]) < 1){
-    image(OSDBackground,DisplayWindowX+WindowAdjX, DisplayWindowY+WindowAdjY, 360-WindowShrinkX, 288-WindowShrinkY);
+    image(OSDBackground,DisplayWindowX+WindowAdjX, DisplayWindowY+WindowAdjY, 360-WindowShrinkX, 288-WindowShrinkY); //480-WindowShrinkX, 360-WindowShrinkY);
   }
   else{
     fill(80, 80,80); strokeWeight(3);stroke(1); rectMode(CORNER); rect(DisplayWindowX+WindowAdjX, DisplayWindowY+WindowAdjY, 360-WindowShrinkX, 288-WindowShrinkY);

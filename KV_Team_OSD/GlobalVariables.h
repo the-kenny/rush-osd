@@ -69,6 +69,8 @@ enum Setting_ {
   S_DISPLAYGPS,
   S_COORDINATES,
   S_GPSCOORDTOP,
+  S_GPSALTITUDE,
+  S_ANGLETOHOME,
   S_SHOWHEADING,
   S_HEADING360,
   S_UNITSYSTEM,
@@ -82,6 +84,7 @@ enum Setting_ {
   S_MWRSSI,
   S_PWMRSSI,
   S_USE_BOXNAMES,
+  S_MODEICON,
   S_DISPLAY_CS,
   S_CS0,
   S_CS1,
@@ -93,10 +96,6 @@ enum Setting_ {
   S_CS7,
   S_CS8,
   S_CS9,
-  S_GPSALTITUDE,  // These last 4 option added by Carlonb
-  S_ANGLETOHOME,
-  S_MODEICON,
-  //S_GPSCOORDTOP,
   // EEPROM_SETTINGS must be last!
   EEPROM_SETTINGS
 };
@@ -127,6 +126,8 @@ uint8_t EEPROM_DEFAULT[EEPROM_SETTINGS] = {
 1,   // S_DISPLAYGPS
 0,   // S_COORDINATES
 0,   // S_GPSCOORDTOP
+1,   // S_GPSALTITUDE
+1,   // S_ANGLETOHOME
 1,   // S_SHOWHEADING
 1,   // S_HEADING360
 0,   // S_UNITSYSTEM
@@ -140,6 +141,7 @@ uint8_t EEPROM_DEFAULT[EEPROM_SETTINGS] = {
 1,   // S_MWRSSI
 0,   // S_PWMRSSI
 0,   // S_USE_BOXNAMES
+1,   // S_MODEICON
 0,   // S_DISPLAY_CS,
 0,   // S_CS0,
 0,   // S_CS1,
@@ -151,9 +153,9 @@ uint8_t EEPROM_DEFAULT[EEPROM_SETTINGS] = {
 0,   // S_CS7,
 0,   // S_CS8,
 0,   // S_CS9,
-1,   // S_GPSALTITUDE
-1,   // S_ANGLETOHOME
-1,   // S_MODEICON
+
+
+
 
 };
 
