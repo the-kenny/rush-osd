@@ -53,6 +53,8 @@ enum Setting_ {
   S_RSSIMAX,
   S_RSSI_ALARM,
   S_DISPLAYRSSI,
+  S_MWRSSI,
+  S_PWMRSSI,
   S_DISPLAYVOLTAGE,
   S_VOLTAGEMIN,
   S_BATCELLS,
@@ -81,8 +83,6 @@ enum Setting_ {
   S_SHOWBATLEVELEVOLUTION,
   S_RESETSTATISTICS,
   S_ENABLEADC,
-  S_MWRSSI,
-  S_PWMRSSI,
   S_USE_BOXNAMES,
   S_MODEICON,
   S_DISPLAY_CS,
@@ -105,44 +105,53 @@ uint8_t Settings[EEPROM_SETTINGS];
 
 // For Settings Defaults
 uint8_t EEPROM_DEFAULT[EEPROM_SETTINGS] = {
-1,   // used for check
-0,   // S_RSSIMIN
-255, // S_RSSIMAX
-60,  //S_RSSI_ALARM
-1,   // S_DISPLAYRSSI
-1,   // S_DISPLAYVOLTAGE
-105, // S_VOLTAGEMIN
-3,   // S_BATCELLS
-100, // S_DIVIDERRATIO
-0,   // S_MAINVOLTAGE_VBAT
-0,   // S_AMPERAGE
-0,   // S_AMPER_HOUR
-0,   // S_VIDVOLTAGE
-100, // S_VIDDIVIDERRATIO
-0,   // S_VIDVOLTAGE_VBAT
-0,   // S_DISPLAYTEMPERATURE
-255, // S_TEMPERATUREMAX
-0,   // S_BOARDTYPE
-1,   // S_DISPLAYGPS
-0,   // S_COORDINATES
-0,   // S_GPSCOORDTOP
-1,   // S_GPSALTITUDE
-1,   // S_ANGLETOHOME
-1,   // S_SHOWHEADING
-1,   // S_HEADING360
-0,   // S_UNITSYSTEM
-1,   // S_VIDEOSIGNALTYPE
-1,   // S_THROTTLEPOSITION
-1,   // S_DISPLAY_HORIZON_BR
-1,   // S_WITHDECORATION
-0,   // S_SHOWBATLEVELEVOLUTION
-1,   // S_RESETSTATISTICS
-0,   // S_ENABLEADC
-1,   // S_MWRSSI
-0,   // S_PWMRSSI
-0,   // S_USE_BOXNAMES
-1,   // S_MODEICON
-0,   // S_DISPLAY_CS,
+1,   // used for check              0
+
+0,   // S_RSSIMIN                   1
+255, // S_RSSIMAX                   2
+60,  //S_RSSI_ALARM                 3
+1,   // S_DISPLAYRSSI               4
+1,   // S_MWRSSI                    5
+0,   // S_PWMRSSI                   6
+
+1,   // S_DISPLAYVOLTAGE            7
+105, // S_VOLTAGEMIN                8
+3,   // S_BATCELLS                  9
+100, // S_DIVIDERRATIO              10
+1,   // S_MAINVOLTAGE_VBAT          11
+
+0,   // S_AMPERAGE                  12
+0,   // S_AMPER_HOUR                13
+
+0,   // S_VIDVOLTAGE                14
+100, // S_VIDDIVIDERRATIO           15
+0,   // S_VIDVOLTAGE_VBAT           16 
+
+0,   // S_DISPLAYTEMPERATURE        17
+255, // S_TEMPERATUREMAX            18
+
+1,   // S_BOARDTYPE                 19
+
+1,   // S_DISPLAYGPS                20
+0,   // S_COORDINATES               21
+0,   // S_GPSCOORDTOP               22
+1,   // S_GPSALTITUDE               23
+1,   // S_ANGLETOHOME               24 
+1,   // S_SHOWHEADING               25
+1,   // S_HEADING360                26
+
+0,   // S_UNITSYSTEM                27
+1,   // S_VIDEOSIGNALTYPE           28
+1,   // S_THROTTLEPOSITION          29
+1,   // S_DISPLAY_HORIZON_BR        30
+1,   // S_WITHDECORATION            31
+1,   // S_SHOWBATLEVELEVOLUTION     32
+0,   // S_RESETSTATISTICS           33
+0,   // S_ENABLEADC                 34
+0,   // S_USE_BOXNAMES              35
+1,   // S_MODEICON                  36
+
+0,   // S_DISPLAY_CS,               37
 0,   // S_CS0,
 0,   // S_CS1,
 0,   // S_CS2,

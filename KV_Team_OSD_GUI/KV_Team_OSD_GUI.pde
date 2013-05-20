@@ -129,12 +129,12 @@ int[] amperagePosition =     {
 int[] pMeterSumPosition =       {
   LINE15+30,LINE15+30+60};
   
-int DisplayWindowX = 583; //500;
+int DisplayWindowX = 598; //500;
 int DisplayWindowY = 40; //5;
-int WindowAdjX = -69; //15
+int WindowAdjX = -84; //15
 int WindowAdjY = -31;
-int WindowShrinkX = 10;
-int WindowShrinkY = 50;
+int WindowShrinkX = 8;
+int WindowShrinkY = 48;
 
 int currentCol = 0;
 int currentRow = 0;  
@@ -247,6 +247,8 @@ String[] ConfigNames = {
   "RSSI Max",
   "RSSI Alarm",
   "Display RSSI",
+  "RSSI Over MW",
+  "PWM RSSI",
   
   "Display Voltage",
   "Voltage Min",
@@ -274,8 +276,6 @@ String[] ConfigNames = {
   "Display Heading",
   "Display Heading 360",
   
-  
-  
   "Units",
   "Video Signal",
   "Display Throttle Position",
@@ -284,10 +284,9 @@ String[] ConfigNames = {
   "Display Battery Evo",
   "Reset Stats After Arm",
   "Enable OSD Read ADC",
-  "RSSI Over MW",
-  "PWM RSSI",
   "Use BoxNames",
   "Display Flight Mode Icons",
+  
   "Display CallSign",
   "S_CS0",
   "S_CS1",
@@ -308,6 +307,8 @@ String[] ConfigHelp = {
   "RSSI Max:",
   "RSSI Alarm",
   "Display RSSI:",
+  "RSSI Over MW",
+  "PWM RSSI",
   
   "Display Voltage:",
   "Voltage Min:",
@@ -335,9 +336,6 @@ String[] ConfigHelp = {
   "Display Heading:",
   "Display Heading 360:",
   
-  
-  
-  
   "Unit System:",
   "Screen Type NTSC / PAL:",
   "Display Throttle Position",
@@ -346,10 +344,9 @@ String[] ConfigHelp = {
   "Display Battery Evo",
   "Reset Stats After Arm",
   "Enable OSD Read ADC",
-  "RSSI Over MW",
-  "PWM RSSI",
   "Use BoxNames",
-  "Show Sensor Icons",
+  "Display Flight Mode Icons",
+  
   "Display CallSign",
   "S_CS0",
   "S_CS1",
@@ -374,50 +371,51 @@ static int SIMITEMS=6;
 int[] ConfigRanges = {
 1,   // used for check             0
 
-255,   // S_RSSIMIN                7
-255,   // S_RSSIMAX                8
-100,       // S_RSSI_ALARM
-1,     // S_DISPLAYRSSI            9
+255,   // S_RSSIMIN                1
+255,   // S_RSSIMAX                2
+100,   // S_RSSI_ALARM             3
+1,     // S_DISPLAYRSSI            4
+1,     // S_MWRSSI                 5
+1,     // S_PWMRSSI                6
 
-1,     // S_DISPLAYVOLTAGE         10
-255,   // S_VOLTAGEMIN             11
-6,     // S_BATCELLS               12
-255,   // S_DIVIDERRATIO           13
-1,     // S_MAINVOLTAGE_VBAT       14
+1,     // S_DISPLAYVOLTAGE         7
+255,   // S_VOLTAGEMIN             8
+6,     // S_BATCELLS               9
+255,   // S_DIVIDERRATIO           10
+1,     // S_MAINVOLTAGE_VBAT       11
 
-1,     // S_AMPERAGE,
-1,     // S_AMPER_HOUR,
+1,     // S_AMPERAGE,              12
+1,     // S_AMPER_HOUR,            13
 
-1,     // S_VIDVOLTAGE             15
-255,   // S_VIDDIVIDERRATIO        16    
-1,     // S_VIDVOLTAGE_VBAT        17
+1,     // S_VIDVOLTAGE             14
+255,   // S_VIDDIVIDERRATIO        15    
+1,     // S_VIDVOLTAGE_VBAT        16
 
-1,     // S_DISPLAYTEMPERATURE     18
-255,   // S_TEMPERATUREMAX         19
+1,     // S_DISPLAYTEMPERATURE     17
+255,   // S_TEMPERATUREMAX         18
 
-1,     // S_BOARDTYPE              20
+1,     // S_BOARDTYPE              19
 
-1,     // S_DISPLAYGPS             21
-1,     // S_COORDINATES            22
-1,     // S_GPSCOORDTOP
-1,     // S_GPSALTITUDE
-1,     // S_ANGLETOHOME
-1,     // S_SHOWHEADING            28 
-1,     // S_HEADING360             29
+1,     // S_DISPLAYGPS             20
+1,     // S_COORDINATES            21
+1,     // S_GPSCOORDTOP            22
+1,     // S_GPSALTITUDE            23
+1,     // S_ANGLETOHOME            24
+1,     // S_SHOWHEADING            25
+1,     // S_HEADING360             26
 
-1,     // S_UNITSYSTEM             23
-1,     // S_SCREENTYPE             24
-1,     // S_THROTTLEPOSITION       25
-1,     // S_DISPLAY_HORIZON_BR     26
-1,     // S_WITHDECORATION         27
-1,     // S_SHOWBATLEVELEVOLUTION  30 
-1,     // S_RESETSTATISTICS        31
-1,     // S_ENABLEADC              32
-1,     // S_MWRSSI                 33
-1,     // S_PWMRSSI
-1,     // S_USE_BOXNAMES
-1,     // S_MODEICON
-1,     // call sign
+1,     // S_UNITSYSTEM             27
+1,     // S_SCREENTYPE             28
+1,     // S_THROTTLEPOSITION       29
+1,     // S_DISPLAY_HORIZON_BR     30
+1,     // S_WITHDECORATION         31
+1,     // S_SHOWBATLEVELEVOLUTION  32
+1,     // S_RESETSTATISTICS        33
+1,     // S_ENABLEADC              34
+1,     // S_USE_BOXNAMES           35
+1,     // S_MODEICON               36
+
+1,     // call sign                37
 255,
 255,
  255,
@@ -944,10 +942,10 @@ void draw() {
   strokeWeight(3);stroke(0);
   rectMode(CORNERS);
   if (int(ShowSimBackground.arrayValue()[0]) < 1){
-    image(OSDBackground,DisplayWindowX+WindowAdjX, DisplayWindowY+WindowAdjY, 528-WindowShrinkX, 360-WindowShrinkY); //528-WindowShrinkX, 360-WindowShrinkY);
+    image(OSDBackground,DisplayWindowX+WindowAdjX, DisplayWindowY+WindowAdjY, 529-WindowShrinkX, 360-WindowShrinkY); //529-WindowShrinkX, 360-WindowShrinkY);
   }
   else{
-    fill(80, 80,80); strokeWeight(3);stroke(1); rectMode(CORNER); rect(DisplayWindowX+WindowAdjX, DisplayWindowY+WindowAdjY, 528-WindowShrinkX, 360-WindowShrinkY);  //335-WindowShrinkX, 288-WindowShrinkY);
+    fill(80, 80,80); strokeWeight(3);stroke(1); rectMode(CORNER); rect(DisplayWindowX+WindowAdjX, DisplayWindowY+WindowAdjY, 529-WindowShrinkX, 360-WindowShrinkY);  //335-WindowShrinkX, 288-WindowShrinkY);
   }
 
 

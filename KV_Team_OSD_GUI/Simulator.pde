@@ -545,7 +545,7 @@ void displayMode()
 
 void displayHorizon(int rollAngle, int pitchAngle)
 {
-  if(pitchAngle>250) pitchAngle=250;
+  if(pitchAngle>250) pitchAngle=250;                //250
   if(pitchAngle<-200) pitchAngle=-200;
   if(rollAngle>400) rollAngle=400;
   if(rollAngle<-400) rollAngle=-400;
