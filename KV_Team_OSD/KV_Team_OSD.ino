@@ -158,7 +158,7 @@ void loop()
       vidvoltage = float(analogRead(vidvoltagePin)) * Settings[S_VIDDIVIDERRATIO] * (1.1/102.3/4);
     }
     if (!Settings[S_MWRSSI]) {
-      rssiADC = (analogRead(rssiPin)*1.1)/1023;
+      rssiADC = (analogRead(rssiPin)*1.1*100)/1023;  // RSSI Readings, result in mV/10 (example 1.1V=1100mV=110 mV/10)
     }
     amperage = (AMPRERAGE_OFFSET - (analogRead(amperagePin)*AMPERAGE_CAL))/10.23;
   }
@@ -183,6 +183,9 @@ void loop()
     previous_millis_low = currentMillis;    
     if(!fontMode)
       blankserialRequest(MSP_ATTITUDE);
+      
+    if(Settings[S_DISPLAYRSSI])
+      calculateRssi();
   }  // End of slow Timed Service Routine (100ms loop)
 
   if((currentMillis - previous_millis_high) >= hi_speed_cycle)  // 20 Hz (Executed every 50ms)
@@ -193,9 +196,7 @@ void loop()
     halfSec++;
     Blink10hz=!Blink10hz;
     calculateTrip();
-    if(Settings[S_DISPLAYRSSI])
-      calculateRssi();
-
+    
       uint8_t MSPcmdsend;
       if(queuedMSPRequests == 0)
         queuedMSPRequests = modeMSPRequests;
@@ -324,7 +325,7 @@ void loop()
         }
       }
     }
-  }  // End of fast Timed Service Routine (20ms loop)
+  }  // End of fast Timed Service Routine (50ms loop)
 
   if(halfSec >= 10) {
     halfSec = 0;
@@ -371,7 +372,7 @@ void loop()
     if(eepromWriteTimer>0) eepromWriteTimer--;
 
     if((rssiTimer==1)&&(configMode)) {
-      Settings[S_RSSIMIN]=rssiADC;
+      Settings[S_RSSIMIN]=rssiADC;  // set MIN RSSI signal received (tx off?)
       rssiTimer=0;
     }
     if(rssiTimer>0) rssiTimer--;
@@ -400,19 +401,17 @@ void calculateRssi(void)
  if (Settings[S_PWMRSSI]){
      //Digital read Pin
    aa = pulseIn(PwmRssiPin, HIGH);
-   aa = ((aa-Settings[S_RSSIMIN]) *101)/((Settings[S_RSSIMAX]*4)-Settings[S_RSSIMIN]) ;  
+   aa = ((aa-Settings[S_RSSIMIN]) *101)/((Settings[S_RSSIMAX]*4)-Settings[S_RSSIMIN]) ;
  }
-  else
-  { 
-  if (Settings[S_MWRSSI]) {
-    aa =  MwRssi;    
-  }
-  else
-  {
-    aa =analogRead(rssiPin)/4; 
- }   
-  aa = ((aa-Settings[S_RSSIMIN]) *101)/(Settings[S_RSSIMAX]-Settings[S_RSSIMIN]) ;
-  rssi_Int += ( ( (signed int)((aa*rssiSample) - rssi_Int )) / rssiSample );
+  else { 
+      if (Settings[S_MWRSSI]) {
+        aa =  MwRssi;
+      }
+      else {
+        aa=rssiADC;  // actual RSSI analogic signal received
+      }
+  aa = ((aa-Settings[S_RSSIMIN]) *101)/(Settings[S_RSSIMAX]-Settings[S_RSSIMIN]) ;  // Percentage of signal strength
+  rssi_Int += ( ( (signed int)((aa*rssiSample) - rssi_Int )) / rssiSample );  // Smoothing the readings
   rssi = rssi_Int / rssiSample ;
   if(rssi<0) rssi=0;
   if(rssi>100) rssi=100;
