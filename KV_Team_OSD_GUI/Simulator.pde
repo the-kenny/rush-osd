@@ -434,10 +434,10 @@ void ShowFlyTime(String FMinutes_Seconds){
   makeText(FMinutes_Seconds, flyTimePosition[ScreenType]+1);
 }
 
-void ShowOnTime(String Minutes_Seconds){
-  mapchar(0x9b, onTimePosition[ScreenType]);
-  makeText(Minutes_Seconds, onTimePosition[ScreenType]+1);
-}
+//void ShowOnTime(String Minutes_Seconds){
+  //mapchar(0x9b, onTimePosition[ScreenType]);
+  //makeText(Minutes_Seconds, onTimePosition[ScreenType]+1);
+//}
 
 void ShowCurrentThrottlePosition(){
   mapchar(0xc8, CurrentThrottlePosition[ScreenType]);
@@ -483,7 +483,7 @@ void SimulateTimer(){
     OnTimerString = str(minutes) + ":" + str(seconds);
   }
   
-  ShowOnTime(OnTimerString);
+  //ShowOnTime(OnTimerString);
 
   if (FlyTimer >0) {
     seconds = (millis() - FlyTimer) / 1000;

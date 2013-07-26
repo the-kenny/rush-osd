@@ -431,7 +431,7 @@ void displayGPSPosition(void)
 
     if(fieldIsVisible(MwGPSLatPosition)) {
       screenBuffer[0] = SYM_LON;
-      FormatGPSCoord(GPS_longitude,screenBuffer+1,4,'E','W');
+      FormatGPSCoord(GPS_longitude,screenBuffer+1,3,'E','W');
       if(!Settings[S_GPSCOORDTOP])
         MAX7456_WriteString(screenBuffer,getPosition(MwGPSLonPosition));
       else

@@ -1,7 +1,7 @@
 
 //   KV Team OSD GUI
 //   http://code.google.com/p/rush-osd-development/
-//   May  2013  V2.2
+//   July  2013  V_r370
 //   This program is free software: you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as published by
 //   the Free Software Foundation, either version 3 of the License, or
@@ -49,7 +49,7 @@ import java.text.DecimalFormat;
 
 
 
-String KV_OSD_GUI_Version = "2.2";
+String KV_OSD_GUI_Version = "r370";
 
 
 PImage img_Clear,OSDBackground,RadioPot;
@@ -105,11 +105,11 @@ int[] MwAltitudePosition=  {
 int[] MwClimbRatePosition=  {
   LINE07+27 ,LINE07+28 };
 int[] CurrentThrottlePosition = {
-  LINE11+23,LINE11+24+60};
-int[] flyTimePosition=                {
   LINE12+23,LINE12+24+60};
-int[] onTimePosition=                 {
+int[] flyTimePosition=                {
   LINE13+23,LINE13+24+60};
+//int[] onTimePosition=                 {
+ // LINE13+23,LINE13+24+60};
 int[] motorArmedPosition=            {
   LINE12+11,LINE11+11+60};
 int[] MwGPSLatPosition =              {
