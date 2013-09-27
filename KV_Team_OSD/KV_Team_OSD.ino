@@ -237,12 +237,11 @@ void loop()
         MSPcmdsend = MSP_PID;
         break;
       case REQ_MSP_BOX:
-#ifdef USE_BOXNAMES
-        MSPcmdsend = MSP_BOXNAMES;
-#else
-        MSPcmdsend = MSP_BOXIDS;
-#endif
-         break;
+        if(Settings[S_USE_BOXNAMES])
+          MSPcmdsend = MSP_BOXNAMES;
+        else
+          MSPcmdsend = MSP_BOXIDS;
+        break;
     case REQ_MSP_FONT:
       MSPcmdsend = MSP_OSD;
       break;
