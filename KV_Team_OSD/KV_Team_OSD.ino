@@ -409,7 +409,7 @@ void calculateRssi(void)
       else {
         aa=rssiADC;  // actual RSSI analogic signal received
       }
-  aa = ((aa-Settings[S_RSSIMIN]) *101)/(Settings[S_RSSIMAX]-Settings[S_RSSIMIN]) ;  // Percentage of signal strength
+  aa = ((aa-Settings[S_RSSIMIN]) *101)/(Settings[S_RSSIMAX]*4-Settings[S_RSSIMIN]) ;  // Percentage of signal strength
   rssi_Int += ( ( (signed int)((aa*rssiSample) - rssi_Int )) / rssiSample );  // Smoothing the readings
   rssi = rssi_Int / rssiSample ;
   if(rssi<0) rssi=0;
